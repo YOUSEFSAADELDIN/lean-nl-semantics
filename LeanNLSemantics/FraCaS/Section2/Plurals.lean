@@ -71,7 +71,7 @@ theorem every_most {A : Type*} [Fintype A] (P Q : A → Prop)
     intro x
     simp only [Finset.mem_filter, Finset.mem_univ, true_and]
     exact ⟨fun hx => hx.1, fun hx => ⟨hx, h x hx⟩⟩
-  have heqc : card (fun x => P x ∧ Q x) = card P := by simp [heq]
+  have heqc : card (fun x => P x ∧ Q x) = card P := congrArg Finset.card heq
   obtain ⟨x0, hx0⟩ := hne
   have hpos : 0 < card P := by
     have hmem : x0 ∈ Finset.univ.filter P := by simp [Finset.mem_filter, hx0]
