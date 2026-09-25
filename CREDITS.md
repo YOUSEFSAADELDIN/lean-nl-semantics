@@ -59,14 +59,17 @@ below change.
   individuation, an NLI mini-suite, and an assumption audit (Parts 1-9;
   its own header cites CL14/CL20/L12, the same three papers this project
   is based on). It is cleaner and more current than CoqLACL and, being
-  MIT, needs no permission to port from. **Parts 1-6 are now ported**
+  MIT, needs no permission to port from. **Parts 1-7 are now ported**
   (`MTT/Quantifiers.lean`, `MTT/Subtyping.lean`, `MTT/Judgments.lean`,
-  `MTT/Adjectives.lean`, `MTT/Adverbs.lean`, `MTT/DotTypes.lean`) —
-  faithfully, theorem names and CL20 section references kept alongside
-  the Lean names so the correspondence stays checkable (Part 6's T-DOT3
-  excepted — Coq-section-local-coercion trick, doesn't generalise, see
-  `DotTypes.lean`). Parts 7-9 (individuation gets the `Prop`-irrelevance
-  caveat noted throughout this repo) are not yet. It does *not* cover the
+  `MTT/Adjectives.lean`, `MTT/Adverbs.lean`, `MTT/DotTypes.lean`,
+  `MTT/Individuation.lean`) — faithfully, theorem names and CL20 section
+  references kept alongside the Lean names so the correspondence stays
+  checkable (Part 6's T-DOT3 excepted — Coq-section-local-coercion trick,
+  doesn't generalise, see `DotTypes.lean`). Part 7 turned out not to need
+  the `Prop`-irrelevance caveat noted throughout this repo — it compares
+  plain equality on a concrete model, not which proof a Σ-type carries;
+  see `Individuation.lean`. Parts 8-9 (an NLI mini-suite, an assumption
+  audit) are not yet. It does *not* cover the
   full
   346-problem FraCaS suite (only a curated illustrative subset) and is
   Coq, not Lean, so a faithful Lean port plus the full FraCaS suite are
