@@ -112,8 +112,14 @@ below change.
   credit"). **Vendored** at `LeanNLSemantics/FraCaS/Data/fracas.xml`,
   fetched from a byte-identical GitHub mirror since the canonical
   `nlp.stanford.edu` host is unreachable from this project's sandbox; full
-  provenance in `FraCaS/Data/SOURCE.md`. Not yet transcribed into `Problem`
-  values (`FraCaS/Types.lean`) — that's the next step.
+  provenance in `FraCaS/Data/SOURCE.md`. Transcribed into `Problem` values
+  (`FraCaS/Types.lean`, `FraCaS/Data/Problems.lean`) — 342 of 346 (4 have
+  an empty hypothesis in the source and are skipped). **Section 1 (all 80
+  problems) is formalized and proved** in `FraCaS/Section1/` (`GQ.lean` +
+  `Batch1.lean`–`Batch5.lean`), each theorem proved against its
+  `Problem.answer`; see the README's Phase 2 section for the two
+  documented divergences from FraCaS's own gold answers. Sections 2–9 are
+  still English strings only.
 
 ## GF and autoformalization tooling (background, not yet integrated)
 
