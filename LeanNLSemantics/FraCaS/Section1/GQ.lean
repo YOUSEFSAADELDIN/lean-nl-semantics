@@ -216,4 +216,32 @@ theorem atMost_trans {A : Type*} [Fintype A] (n : Nat) (P Q S R : A → Prop)
   have hle : card (fun x => P x ∧ Q x) ≤ card (fun x => P x ∧ R x) := Finset.card_le_card hsub
   omega
 
+/-- Weakening the scope predicate under `AtMost`, in the direction that
+*narrows* it (dual of `atLeast_mono_scope`, which widens): if at most `n`
+`P`s are `Q`, and `R` implies `Q`, then at most `n` `P`s are `R` too,
+since `P ∩ R ⊆ P ∩ Q` — problem 48's "at most ten commissioners spend
+time at home ⊢ at most ten spend a lot of time at home" shape (spending
+"a lot" implies spending *some*, so the narrower set can only be
+smaller). -/
+theorem atMost_mono_scope {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x] :
+    AtMost n P Q → (∀ x, R x → Q x) → AtMost n P R := by
+  intro h hrq
+  have hsub : (Finset.univ.filter fun x => P x ∧ R x) ⊆ Finset.univ.filter fun x => P x ∧ Q x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, hrq x hx.2⟩
+  have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
+  omega
+
+/-- `Some P Q` plus `Every P R` gives `Some R Q`: the witness for `P` is
+also `R`, so it witnesses `Some R Q` too — problem 49's "a Swede won a
+Nobel prize; every Swede is a Scandinavian ⊢ a Scandinavian won a Nobel
+prize" shape (also reused, with `R` the plain superset predicate, for
+problems 55/57/59's "some Irish/Portuguese/female-committee X ⊢ some X"
+restrictor-dropping pattern). -/
+theorem some_restrict {A : Type*} (P Q R : A → Prop) :
+    Some P Q → Every P R → Some R Q :=
+  fun ⟨x, hx, hq⟩ h => ⟨x, h x hx, hq⟩
+
 end FraCaS.Section1
