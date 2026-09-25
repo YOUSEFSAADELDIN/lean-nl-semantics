@@ -1,0 +1,15 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Installs elan (matching lean-toolchain), fetches the Mathlib
+      # cache via `lake exe cache get`, and runs `lake build` — the
+      # thing this sandbox's network policy couldn't do (see README).
+      - uses: leanprover/lean-action@v1
