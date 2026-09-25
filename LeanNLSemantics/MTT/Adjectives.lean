@@ -17,10 +17,10 @@ import LeanNLSemantics.MTT.Quantifiers
 namespace MTT
 
 /-- An intersective adjective restricts a CN to those elements satisfying
-an extra property: `Intersective Man Tall` is "tall man". The forgetful
-map back to `A` (`Subtype.val`) is registered as a coercion, so "tall man"
-can itself be used wherever a `Man` (or, chained, a `Human` or `Animal`)
-is expected. -/
+an extra property: `Intersective (CN .man) Tall` is "tall man". The
+forgetful map back to `A` (`Subtype.val`) is registered as a coercion, so
+"tall man" can itself be used wherever a `CN .man` (or, chained, `CN
+.human`/`CN .animal`) is expected. -/
 def Intersective (A : Type) (P : A → Prop) : Type := {x : A // P x}
 
 instance {A : Type} {P : A → Prop} : Coe (Intersective A P) A := ⟨Subtype.val⟩
@@ -28,6 +28,6 @@ instance {A : Type} {P : A → Prop} : Coe (Intersective A P) A := ⟨Subtype.va
 axiom Tall : ∀ {A : Type}, A → Prop
 
 /-- "every tall man walks" -/
-example : Prop := Every (Intersective Man Tall) (fun x => walk x)
+example : Prop := Every (Intersective (CN .man) Tall) (fun x => walk x)
 
 end MTT

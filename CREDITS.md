@@ -53,10 +53,18 @@ below change.
   watching as a potential collaboration rather than a code source, since it
   targets Coq, not Lean.
 - **linglib** — `github.com/hawkrobe/linglib`. Apache-2.0. A large, active
-  Lean 4 linguistics library, but Montagovian (nouns as `E → Prop`
-  predicates), not MTT (nouns as types). Complementary; a bridge module
-  comparing the two semantics is a plausible contribution, not a
-  dependency.
+  Lean 4 linguistics library. Confirmed by reading `Composition/Ty.lean`
+  directly: its composition engine is Montagovian (a CN denotes at type
+  `Ty.et`, i.e. `E → Prop` for a fragment-chosen entity type `E`), not MTT
+  (CNs as types with their own elements) — the two are complementary, not
+  overlapping. `MTT/CN.lean`'s `CNTag`/`ancestors`/`PartialOrder`/`by
+  decide` pattern for the CN lattice is adapted directly from
+  `Studies/Pustejovsky1995.lean`'s `SemType` (same file also formalizes
+  Pustejovsky's *argument-selection* type coercion — a different problem
+  from this project's dot-types/copredication, and not duplicated here;
+  see `MTT/DotTypes.lean`). `MTT/LinglibBridge.lean` sketches connecting
+  the two semantics over a shared entity domain; it is optional and not
+  built by default (see that file for why).
 
 ## Data
 
