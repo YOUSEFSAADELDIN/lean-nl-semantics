@@ -26,12 +26,16 @@ section P127
 variable {Person Machine : Type*} (smith jones : Person) (m1 m2 : Machine) (hne : m1 ≠ m2)
 variable (took putInLobby : Person → Machine → Prop)
 
+include hne in
 /-- "Smith took a machine on Tuesday, and Jones took a machine on
 Wednesday. They put them in the lobby." — "they"/"them" build a plural
 antecedent out of the two separately-introduced individuals/machines
 across the conjoined clause, the same cumulative-bundling move as
 Section 2's problem 111 (`hne` records that "a machine"/"a machine" were
-two different ones, per FraCaS's own `<why>`). -/
+two different ones, per FraCaS's own `<why>`). `include hne`: it's used
+only in the *proof*, not the stated type, and `variable` auto-inclusion
+only scans the type (the same gotcha `NLIExamples.lean`'s `include john
+in` documents). -/
 theorem fracas_127 :
     (took smith m1 ∧ took jones m2 ∧ putInLobby smith m1 ∧ putInLobby jones m2) →
       ∃ n1 n2 : Machine, n1 ≠ n2 ∧ (putInLobby smith n1 ∨ putInLobby jones n1) ∧

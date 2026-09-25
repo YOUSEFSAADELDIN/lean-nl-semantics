@@ -45,7 +45,7 @@ end P114
 
 section P117
 variable {A : Type*} (student : A → Prop) (mary : A) (workstationOf : A → A)
-variable (female hasA usedBy : A → A → Prop)
+variable (female : A → Prop) (hasA usedBy : A → A → Prop)
 
 /-- "Every student used her workstation": the bound possessive "her"
 becomes a Skolem function `workstationOf : A → A` assigning each student
