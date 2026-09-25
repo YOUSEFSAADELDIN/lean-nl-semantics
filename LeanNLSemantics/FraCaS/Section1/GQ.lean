@@ -167,7 +167,7 @@ theorem atLeast_mono_scope {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop
     intro x hx
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
     exact ⟨hx.1, hqr x hx.2⟩
-  have hle := Finset.card_le_card hsub
+  have hle : card (fun x => P x ∧ Q x) ≤ card (fun x => P x ∧ R x) := Finset.card_le_card hsub
   omega
 
 /-- `Some P R` plus two universal facts (`Every P S`, and "every `S` that
@@ -193,7 +193,7 @@ theorem most_trans {A : Type*} [Fintype A] (P R S Q : A → Prop)
     intro x hx
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
     exact ⟨hx.1, h3 x ⟨h2 x hx.1, hx.2⟩⟩
-  have hle := Finset.card_le_card hsub
+  have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
   omega
 
 end FraCaS.Section1
