@@ -1,3 +1,5 @@
+import LeanNLSemantics.MTT.CN
+
 /-!
 # Quantifiers
 
@@ -6,7 +8,6 @@ paired with a domain restriction (contrast Montague's generalized
 quantifiers over `E → Prop`). This is the same `(A : Type) → (A → Prop) →
 Prop` shape used throughout CoqLACL's `MainCoq.v`.
 -/
-import LeanNLSemantics.MTT.CN
 
 namespace MTT
 

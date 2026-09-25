@@ -1,3 +1,6 @@
+import LeanNLSemantics.MTT.CN
+import LeanNLSemantics.MTT.Quantifiers
+
 /-!
 # Adjectival modification
 
@@ -11,8 +14,6 @@ Anything that hinges on *which* proof a Σ-type carries (identity criteria,
 individuation — see `DotTypes.lean`) needs re-checking against this
 difference rather than assumed to transfer unchanged from CoqLACL.
 -/
-import LeanNLSemantics.MTT.CN
-import LeanNLSemantics.MTT.Quantifiers
 
 namespace MTT
 

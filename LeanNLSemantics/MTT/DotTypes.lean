@@ -1,3 +1,5 @@
+import LeanNLSemantics.MTT.CN
+
 /-!
 # Dot-types for copredication
 
@@ -20,7 +22,6 @@ coercion (not copredication specifically) should probably reuse their
 `SemType`/`Shifter` machinery via `LinglibBridge.lean` rather than
 re-deriving it here.
 -/
-import LeanNLSemantics.MTT.CN
 
 namespace MTT
 
