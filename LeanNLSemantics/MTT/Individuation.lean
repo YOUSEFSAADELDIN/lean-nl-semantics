@@ -25,16 +25,19 @@ def countGe2 (A : Type) (R : A → A → Prop) : Prop :=
 section Individuation
 
 /-- The concrete two-copies/one-content lexicon: two physical copies
-(`Bool`), one informational content (`Unit`). -/
-def Phy0 : Type := Bool
-def Info0 : Type := Unit
-def Book0 : Type := Bool -- the two copies
+(`Bool`), one informational content (`Unit`). `abbrev`, not `def`, on
+every one of these (including `Phy0`/`Info0`/`Book0`, not just `bk0`
+below): `by decide` on `phyEq`/`infoEq` needs typeclass search to unfold
+the *entire* chain down to `Bool`'s `DecidableEq`, and a plain `def` is
+opaque to instance search at every link — making only `bk0` reducible
+first still failed ("failed to synthesize Decidable ¬phyEq true false"),
+since `Phy0`/`Book0` themselves were still blocking it. Unlike Coq's
+`Definition`, which unfolds much more eagerly under
+`unfold`/`simpl`/`compute`. -/
+abbrev Phy0 : Type := Bool
+abbrev Info0 : Type := Unit
+abbrev Book0 : Type := Bool -- the two copies
 
-/-- `abbrev`, not `def`: `by decide` on `phyEq`/`infoEq` below needs
-typeclass search to unfold through `bk0` down to `Bool`'s `DecidableEq` —
-a plain `def` is opaque to instance search (caught by CI: "failed to
-synthesize Decidable ¬phyEq true false"), unlike Coq's `Definition`,
-which unfolds much more eagerly under `unfold`/`simpl`/`compute`. -/
 abbrev bk0 (b : Book0) : DotType Phy0 Info0 := ⟨b, ()⟩
 
 abbrev phyEq (a b : Book0) : Prop := (bk0 a).phy = (bk0 b).phy
