@@ -76,11 +76,15 @@ def problems : List Problem := [
 """
     footer = (
         f"\n]\n\n"
+        # `set_option ... in` wraps a command; a doc comment attaches to
+        # the declaration itself, so it must come AFTER `set_option ... in`,
+        # not before it (Lean rejected the reverse order: "unexpected
+        # token 'set_option'; expected ... 'example' ... 'theorem'").
+        f"set_option maxRecDepth 4000 in\n"
         f"/-- Regression check that the generator's output made it through\n"
         f"intact: exactly {len(entries)} problems, matching this file's own header.\n"
         f"Plain `by decide` hits Lean's default `maxRecDepth` on a list this long\n"
         f"(caught by CI, not visible from reading the code). -/\n"
-        f"set_option maxRecDepth 4000 in\n"
         f"example : problems.length = {len(entries)} := by decide\n\n"
         f"end FraCaS\n"
     )
