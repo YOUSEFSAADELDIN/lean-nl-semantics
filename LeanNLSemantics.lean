@@ -1,6 +1,9 @@
 import LeanNLSemantics.MTT.CN
 import LeanNLSemantics.MTT.Quantifiers
+import LeanNLSemantics.MTT.Subtyping
+import LeanNLSemantics.MTT.Judgments
 import LeanNLSemantics.MTT.Adjectives
+import LeanNLSemantics.MTT.Adverbs
 import LeanNLSemantics.MTT.DotTypes
 import LeanNLSemantics.MTT.Tense
 import LeanNLSemantics.Tactic.NLI

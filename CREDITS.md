@@ -59,7 +59,13 @@ below change.
   individuation, an NLI mini-suite, and an assumption audit (Parts 1-9;
   its own header cites CL14/CL20/L12, the same three papers this project
   is based on). It is cleaner and more current than CoqLACL and, being
-  MIT, needs no permission to port from. It does *not* cover the full
+  MIT, needs no permission to port from. **Parts 1, 2, 3, 4 and 5 are now
+  ported** (`MTT/Quantifiers.lean`, `MTT/Subtyping.lean`,
+  `MTT/Judgments.lean`, `MTT/Adjectives.lean`, `MTT/Adverbs.lean`) —
+  faithfully, theorem names and CL20 section references kept alongside
+  the Lean names so the correspondence stays checkable; Parts 6-9
+  (individuation gets the `Prop`-irrelevance caveat noted throughout this
+  repo) are not yet. It does *not* cover the full
   346-problem FraCaS suite (only a curated illustrative subset) and is
   Coq, not Lean, so a faithful Lean port plus the full FraCaS suite are
   both still open — see the README's roadmap. `atlas/mtt_ranta/Ranta.v`,
