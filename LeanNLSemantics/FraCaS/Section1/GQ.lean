@@ -196,4 +196,24 @@ theorem most_trans {A : Type*} [Fintype A] (P R S Q : A → Prop)
   have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
   omega
 
+/-- `AtMost n P R` plus two universal facts (`Every P S`, and "every `S`
+that is also `Q` is `R`") gives `AtMost n P Q`: every `P ∩ Q` element is
+forced into `P ∩ R` (since `S` always holds on `P`, so `S ∧ Q` does too,
+giving `R`), so `P ∩ Q` is no bigger than the already-bounded `P ∩ R` —
+problem 44's "few committee members are from southern Europe; all
+committee members are people; all people from Portugal are from
+southern Europe ⊢ few committee members are from Portugal" shape (the
+`AtMost`-headed analogue of `every_trans`/`some_trans`/`most_trans`,
+and the mirror image of `atLeast_mono_scope`: there the scope widens
+along a known implication, here the *restrictor* narrows along one). -/
+theorem atMost_trans {A : Type*} [Fintype A] (n : Nat) (P Q S R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x]
+    (h1 : AtMost n P R) (h2 : Every P S) (h3 : Every (fun x => S x ∧ Q x) R) : AtMost n P Q := by
+  have hsub : (Finset.univ.filter fun x => P x ∧ Q x) ⊆ Finset.univ.filter fun x => P x ∧ R x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, h3 x ⟨h2 x hx.1, hx.2⟩⟩
+  have hle : card (fun x => P x ∧ Q x) ≤ card (fun x => P x ∧ R x) := Finset.card_le_card hsub
+  omega
+
 end FraCaS.Section1
