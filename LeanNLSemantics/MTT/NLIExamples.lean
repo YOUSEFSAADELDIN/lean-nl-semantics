@@ -21,6 +21,10 @@ variable {Man Human : Type} (mh : Man → Human)
 variable (walk talk : Human → Prop) (black : Man → Prop)
 variable (john : Man)
 
+-- `include ... in` wraps a command, same rule as `set_option ... in`
+-- (see CN.lean's history): the doc comment goes after it, attached to
+-- the theorem, not before.
+include john in
 /-- N1. `every` + an inhabitant gives `some`. `include john`: `john`
 appears only in the *proof*, not the stated type, and Lean's `variable`
 — unlike Coq's `Section`/`Variable`, which generalizes over the whole
@@ -28,7 +32,6 @@ definition — only auto-binds variables it finds in the type. Without
 this, `john` in the proof silently resolved to the unrelated global
 `CN.lean` constant of the same name (caught by CI: "expected Man, got CN
 CNTag.man"). -/
-include john in
 theorem nli_every_some :
     Every Man (predLift mh walk) → Some' Man (predLift mh walk) :=
   fun h => ⟨john, h john⟩
