@@ -5,3 +5,4 @@ import LeanNLSemantics.MTT.DotTypes
 import LeanNLSemantics.MTT.Tense
 import LeanNLSemantics.Tactic.NLI
 import LeanNLSemantics.FraCaS.Types
+import LeanNLSemantics.FraCaS.Data.Problems

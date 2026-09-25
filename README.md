@@ -179,15 +179,24 @@ for history; `MTT.v` is now the thing to actually port from.
   Part 9 (assumption audit) → adopt the practice, not just the port —
   keep a running list of what's still axiomatized.
 - **Phase 2 — the actual novel contribution: the full FraCaS suite.**
-  `fracas.xml` is now vendored (`FraCaS/Data/fracas.xml`, all 346
-  problems — see `FraCaS/Data/SOURCE.md` for how, since the canonical
-  host was unreachable from this sandbox but a GitHub mirror wasn't).
-  Parse it, emit one `fracas_NNN` theorem per problem, report YES/NO/UNK
-  accuracy per-section. Nobody has done this for all 346 in any proof
-  assistant — FraCoq's published 83%/81% (5 sections, then a temporal
-  subset) is the closest prior result and a sanity baseline, not a target
-  to match exactly, since the underlying semantics differ (types vs.
-  predicates).
+  `fracas.xml` is vendored (`FraCaS/Data/fracas.xml`, all 346 problems —
+  see `FraCaS/Data/SOURCE.md`). The data layer is done:
+  `scripts/gen_fracas_problems.py` parses it into
+  `FraCaS/Data/Problems.lean`, 342 `Problem` records (4 of 346 have an
+  empty hypothesis in the source and are skipped), CI-checked
+  (`problems.length = 342 := by decide`). **What's not done, and is the
+  actual work**: each `Problem`'s `premises`/`hypothesis` are still plain
+  English strings — turning those into real `CN`/quantifier/adjective
+  terms and proving or refuting each one is a per-sentence formalization
+  effort, not a mechanical step, and the current fragment (`CN.lean`
+  etc.) only covers §1's quantifier phenomena — most of FraCaS's other 8
+  sections (plurals, anaphora, ellipsis, comparatives, ...) need
+  substantially more of `MTT.v` ported first. Report YES/NO/UNK accuracy
+  per-section once theorems exist. Nobody has done this for all 346 in
+  any proof assistant — FraCoq's published 83%/81% (5 sections, then a
+  temporal subset) is the closest prior result and a sanity baseline, not
+  a target to match exactly, since the underlying semantics differ
+  (types vs. predicates).
 - **Phase 2b — the other actual novel contribution: a linglib bridge.**
   `MTT/LinglibBridge.lean` already sketches the connection; atlas has no
   equivalent of linglib (an independent, large, actively-maintained
