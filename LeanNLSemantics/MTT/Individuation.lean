@@ -30,10 +30,15 @@ def Phy0 : Type := Bool
 def Info0 : Type := Unit
 def Book0 : Type := Bool -- the two copies
 
-def bk0 (b : Book0) : DotType Phy0 Info0 := ⟨b, ()⟩
+/-- `abbrev`, not `def`: `by decide` on `phyEq`/`infoEq` below needs
+typeclass search to unfold through `bk0` down to `Bool`'s `DecidableEq` —
+a plain `def` is opaque to instance search (caught by CI: "failed to
+synthesize Decidable ¬phyEq true false"), unlike Coq's `Definition`,
+which unfolds much more eagerly under `unfold`/`simpl`/`compute`. -/
+abbrev bk0 (b : Book0) : DotType Phy0 Info0 := ⟨b, ()⟩
 
-def phyEq (a b : Book0) : Prop := (bk0 a).phy = (bk0 b).phy
-def infoEq (a b : Book0) : Prop := (bk0 a).info = (bk0 b).info
+abbrev phyEq (a b : Book0) : Prop := (bk0 a).phy = (bk0 b).phy
+abbrev infoEq (a b : Book0) : Prop := (bk0 a).info = (bk0 b).info
 
 /-- T-IND1. Physically individuated, there are (at least) two books. -/
 theorem two_books_phy : countGe2 Book0 phyEq :=
