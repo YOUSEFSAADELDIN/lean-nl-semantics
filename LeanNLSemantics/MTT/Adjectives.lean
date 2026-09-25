@@ -18,17 +18,22 @@ difference rather than assumed to transfer unchanged from CoqLACL.
 namespace MTT
 
 /-- An intersective adjective restricts a CN to those elements satisfying
-an extra property: `Intersective (CN .man) Tall` is "tall man". The
-forgetful map back to `A` (`Subtype.val`) is registered as a coercion, so
-"tall man" can itself be used wherever a `CN .man` (or, chained, `CN
-.human`/`CN .animal`) is expected. -/
+an extra property: `Intersective (CN .man) Tall` is "tall man". -/
 def Intersective (A : Type) (P : A → Prop) : Type := {x : A // P x}
 
-instance {A : Type} {P : A → Prop} : Coe (Intersective A P) A := ⟨Subtype.val⟩
+/-- Forgetting the extra proof recovers the `A` value, which then flows
+through `CN`'s own `Coe` chain. Kept as an explicit function rather than a
+registered `Coe` instance: `Coe`'s source position is a semi-out-param,
+and CI caught what the doc comments elsewhere only warned about in the
+abstract — a generic `Coe (Intersective A P) A` instance is rejected
+("does not provide concrete values for (semi-)out-params") because `P`
+isn't recoverable from the target type alone. Same tradeoff as
+`CN.widen`: explicit call, not silent `↑`. -/
+def Intersective.forget {A : Type} {P : A → Prop} : Intersective A P → A := Subtype.val
 
 axiom Tall : ∀ {A : Type}, A → Prop
 
 /-- "every tall man walks" -/
-example : Prop := Every (Intersective (CN .man) Tall) (fun x => walk x)
+example : Prop := Every (Intersective (CN .man) Tall) (fun x => walk x.forget)
 
 end MTT
