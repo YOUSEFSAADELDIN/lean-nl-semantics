@@ -12,3 +12,5 @@ import LeanNLSemantics.MTT.Tense
 import LeanNLSemantics.Tactic.NLI
 import LeanNLSemantics.FraCaS.Types
 import LeanNLSemantics.FraCaS.Data.Problems
+import LeanNLSemantics.FraCaS.Section1.GQ
+import LeanNLSemantics.FraCaS.Section1.Batch1
