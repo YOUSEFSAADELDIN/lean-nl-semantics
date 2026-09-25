@@ -48,10 +48,24 @@ below change.
   copying its `.gf`/`.xml`/`.pl` files in verbatim makes this repo
   GPL-3.0 for the parts that include them.
 - **formal_atlas_of_semantics** — `github.com/StergiosCha/formal_atlas_of_semantics`.
-  MIT. Newer, active Coq work by the same lead author, revisiting formal
-  semantics in proof assistants (TTR/MTT/Ranta/DTS comparisons). Worth
-  watching as a potential collaboration rather than a code source, since it
-  targets Coq, not Lean.
+  MIT. Newer, active, much larger project by the same lead author: a
+  230-source survey connected to Coq mechanizations, live-deployed at
+  https://orange-beach-0c447e210.5.azurestaticapps.net. **This is now
+  this project's primary Coq reference, superseding CoqLACL**:
+  `atlas/mtt_ranta/MTT.v` (read directly, 541 lines, MIT) is a current,
+  axiom-free, CI-verified formalization of exactly Chatzikyriakidis &
+  Luo's MTT semantics — CNs as types, subtyping, judgmental
+  interpretations, adjectives, veridical adverbs, copredication/dot-types,
+  individuation, an NLI mini-suite, and an assumption audit (Parts 1-9;
+  its own header cites CL14/CL20/L12, the same three papers this project
+  is based on). It is cleaner and more current than CoqLACL and, being
+  MIT, needs no permission to port from. It does *not* cover the full
+  346-problem FraCaS suite (only a curated illustrative subset) and is
+  Coq, not Lean, so a faithful Lean port plus the full FraCaS suite are
+  both still open — see the README's roadmap. `atlas/mtt_ranta/Ranta.v`,
+  `DTS.v`/`DTS_Resolution.v`, `MTT_vs_Ranta.v` and `atlas/ttr/TTR_vs_MTT.v`
+  compare it against Ranta's/Bekki's DTS and Cooper's TTR — reference
+  material for a future bridge/comparison file, not yet ported.
 - **linglib** — `github.com/hawkrobe/linglib`. Apache-2.0. A large, active
   Lean 4 linguistics library. Confirmed by reading `Composition/Ty.lean`
   directly: its composition engine is Montagovian (a CN denotes at type
@@ -69,13 +83,13 @@ below change.
 ## Data
 
 - **FraCaS** (Cooper et al. 1996, LRE 62-051r). Machine-readable version:
-  Bill MacCartney's `fracas.xml`
-  (`nlp.stanford.edu/~wcmac/downloads/fracas.xml`), 346 problems, stated as
-  public domain with credit requested. **Not yet vendored** — this
-  session's network policy blocks `nlp.stanford.edu`; fetch it and drop it
-  under `LeanNLSemantics/FraCaS/Data/` (with the source URL and date noted
-  in a comment) from an environment that can reach it, then transcribe
-  into `Problem` values per `FraCaS/Types.lean`.
+  Bill MacCartney's `fracas.xml`, 346 problems, public domain with credit
+  requested ("If you benefit from my work, please give me appropriate
+  credit"). **Vendored** at `LeanNLSemantics/FraCaS/Data/fracas.xml`,
+  fetched from a byte-identical GitHub mirror since the canonical
+  `nlp.stanford.edu` host is unreachable from this project's sandbox; full
+  provenance in `FraCaS/Data/SOURCE.md`. Not yet transcribed into `Problem`
+  values (`FraCaS/Types.lean`) — that's the next step.
 
 ## GF and autoformalization tooling (background, not yet integrated)
 

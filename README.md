@@ -120,10 +120,12 @@ consequences:
   `lake build` catches nothing on first run. `Quantifiers.lean`,
   `Adjectives.lean`, `Tactic/NLI.lean`, `DotTypes.lean`, `Tense.lean` are
   still closer to best-effort-from-known-syntax than confirmed-compiling.
-- **No FraCaS data is vendored.** MacCartney's `fracas.xml` lives on
-  `nlp.stanford.edu`, which this session cannot reach. `FraCaS/Types.lean`
-  defines the target shape (`Problem`, `Answer`); fetch the XML from an
-  environment with access and transcribe it into `FraCaS/Data/*.lean`.
+- **FraCaS data is now vendored** (`FraCaS/Data/fracas.xml`, all 346
+  problems) — `nlp.stanford.edu` itself stayed unreachable, but a
+  byte-identical mirror on GitHub wasn't; see `FraCaS/Data/SOURCE.md` for
+  exact provenance. Still needs transcribing into `Problem` values
+  (`FraCaS/Types.lean` defines the target shape) — that's a parsing step,
+  not a network problem, from here.
 
 To fix the network restriction itself: broaden this environment's network
 access (or add the specific hosts above to its allowed domains) from the
@@ -153,26 +155,44 @@ this space with tooling similar to this one.
 
 - **Phase 0 — done here:** licensing decision, Lake scaffold, directory
   layout.
-- **Phase 1 — core MTT library** (`MTT/*.lean`, started here): the
-  `CNTag` lattice foundation is in place; next is growing `CNTag` to
-  cover `MainCoq.v`'s actual CN set (confirmed by reading it: `bank`,
-  `manager`, `car`, `delegate`, `student`, `swede`, `scandinavian`, ~30
-  more), porting multidimensional adjectives and comparatives from
-  `Adjectives.v`, then `CN_predhyp.v` and `Individuation.v` — the latter
-  needs care around Lean's definitional proof irrelevance for `Prop`
-  (see encoding notes below). Acceptance test: every example in
-  `FracasCoq.v` restated and proved in Lean with the `nli` tactic — note
-  `FracasCoq.v` itself mostly uses hand-written `cbv; intro; exists x;
-  assumption`-style scripts rather than one robust automation tactic
-  (confirmed by reading it), so matching or beating that bar is a
-  realistic goal for `nli`, not a given.
-- **Phase 2 — FraCaS harness:** vendor `fracas.xml` (see limitation
-  above), parse it into `FraCaS/Data/SectionN.lean`, emit one
-  `fracas_NNN` theorem per problem, and report YES/NO/UNK accuracy
-  per-section against FraCoq's published numbers (83% on its 5 sections;
-  81% overall including temporal reference) as a sanity baseline — not a
-  target to match exactly, since the semantics differ (types vs.
+**Decision (this conversation, after reading `atlas/mtt_ranta/MTT.v`
+directly)**: that file already solves Phase 1 cleanly, in Coq, current
+and MIT. Redoing that design work from scratch in Lean is a weak novelty
+claim once a better reference exists; porting it fast and putting the
+real effort into the two things nothing does yet (the full FraCaS suite,
+and a linglib bridge) is the better use of time. `CoqLACL` stays cited
+for history; `MTT.v` is now the thing to actually port from.
+
+- **Phase 1 — core MTT library, reframed as a port of `atlas/mtt_ranta/MTT.v`**
+  (`MTT/*.lean`, `CNTag`/`CN`/`Quantifiers.lean` started here, predating
+  this decision): translate its Parts 1–9 faithfully, crediting it
+  explicitly in each file's header (see `CREDITS.md`) rather than
+  re-deriving the design: Part 1–2 (CNs as types, subtyping, quantifier
+  monotonicity) → `CN.lean`/`Quantifiers.lean`, already close, needs the
+  monotonicity theorems (T-SUB1–3) added; Part 3 (judgmental
+  interpretations) → new `MTT/Judgments.lean`; Part 4 (adjectives) →
+  extend `Adjectives.lean`; Part 5 (veridical adverbs) → new
+  `MTT/Adverbs.lean`; Part 6 (copredication/dot-types) → extend
+  `DotTypes.lean`; Part 7 (individuation) → new `MTT/Individuation.lean`
+  (watch the `Prop`-irrelevance caveat below); Part 8 (NLI mini-suite) →
+  a handful of worked examples, distinct from the real Phase 2 suite;
+  Part 9 (assumption audit) → adopt the practice, not just the port —
+  keep a running list of what's still axiomatized.
+- **Phase 2 — the actual novel contribution: the full FraCaS suite.**
+  `fracas.xml` is now vendored (`FraCaS/Data/fracas.xml`, all 346
+  problems — see `FraCaS/Data/SOURCE.md` for how, since the canonical
+  host was unreachable from this sandbox but a GitHub mirror wasn't).
+  Parse it, emit one `fracas_NNN` theorem per problem, report YES/NO/UNK
+  accuracy per-section. Nobody has done this for all 346 in any proof
+  assistant — FraCoq's published 83%/81% (5 sections, then a temporal
+  subset) is the closest prior result and a sanity baseline, not a target
+  to match exactly, since the underlying semantics differ (types vs.
   predicates).
+- **Phase 2b — the other actual novel contribution: a linglib bridge.**
+  `MTT/LinglibBridge.lean` already sketches the connection; atlas has no
+  equivalent of linglib (an independent, large, actively-maintained
+  predicate-semantics library) to bridge into, so this is Lean-specific
+  territory regardless of what happens with the FraCaS suite.
 - **Phase 3 — GF integration:** either a GF concrete syntax linearizing
   directly to Lean source (GFLean's approach) or a Haskell/Python
   PGF-AST-to-Lean translator (FraCoq's `FraToCoq.hs` approach, recommended
