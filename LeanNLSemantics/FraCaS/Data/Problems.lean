@@ -1,3 +1,5 @@
+import LeanNLSemantics.FraCaS.Types
+
 /-!
 # FraCaS problems (generated)
 
@@ -11,7 +13,6 @@ MTT statements — turning `hypothesis`/`premises` strings into actual CN/
 quantifier terms and proving or refuting each one is the real Phase 2
 work (see the README roadmap), not this file.
 -/
-import LeanNLSemantics.FraCaS.Types
 
 namespace FraCaS
 
