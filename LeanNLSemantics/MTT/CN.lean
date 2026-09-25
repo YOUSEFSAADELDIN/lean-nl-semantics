@@ -44,7 +44,16 @@ inductive CNTag where
   | human
   | man
   | woman
-  deriving DecidableEq, Repr, Fintype
+  deriving DecidableEq, Repr
+
+/-- Written by hand rather than `deriving Fintype`: on this toolchain
+(`v4.35.0-rc3`) the derived instance's generated completeness proof fails
+with a `Finset`/`SetLike` coercion mismatch inside `Fintype`'s own
+machinery (caught by CI, not visible from reading the code) — a case
+analysis by hand sidesteps whatever's fragile in the generated tactic. -/
+instance : Fintype CNTag where
+  elems := {.thing, .animal, .human, .man, .woman}
+  complete x := by cases x <;> decide
 
 /-- Each tag's ancestors, itself first. Mirrors
 `Pustejovsky1995.SemType.ancestors` in shape. -/
