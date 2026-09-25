@@ -17,3 +17,4 @@ import LeanNLSemantics.FraCaS.Section1.Batch1
 import LeanNLSemantics.FraCaS.Section1.Batch2
 import LeanNLSemantics.FraCaS.Section1.Batch3
 import LeanNLSemantics.FraCaS.Section1.Batch4
+import LeanNLSemantics.FraCaS.Section1.Batch5

@@ -244,4 +244,46 @@ theorem some_restrict {A : Type*} (P Q R : A → Prop) :
     Some P Q → Every P R → Some R Q :=
   fun ⟨x, hx, hq⟩ h => ⟨x, h x hx, hq⟩
 
+/-- `Every R Q` plus `Every P R` gives `Every P Q` (plain transitivity of
+`Every`, restricting a universal from a superset down to a known
+subset) — problems 66–69/77's "every North American resident can
+travel; every Canadian resident is a North American resident ⊢ every
+Canadian resident can travel" shape: unlike 50–53's *converse* (which
+tried to go from the subset's universal to the superset's, and fails),
+this direction always holds. -/
+theorem every_restrict {A : Type*} (P Q R : A → Prop) :
+    Every R Q → Every P R → Every P Q :=
+  fun hRQ hPR x hx => hRQ x (hPR x hx)
+
+/-- `AtLeast n P Q` plus `Every P R` gives `AtLeast n R Q`: `P`'s
+witnesses for the bound are already `R`-witnesses too, since `P ⊆ R` —
+problem 63's "at least three female commissioners spend time at home ⊢
+at least three commissioners do" shape (a lower bound on a subset always
+transfers up to any superset). -/
+theorem atLeast_restrict {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => R x ∧ Q x]
+    (h : AtLeast n P Q) (hPR : Every P R) : AtLeast n R Q := by
+  have hsub : (Finset.univ.filter fun x => P x ∧ Q x) ⊆ Finset.univ.filter fun x => R x ∧ Q x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hPR x hx.1, hx.2⟩
+  have hle : card (fun x => P x ∧ Q x) ≤ card (fun x => R x ∧ Q x) := Finset.card_le_card hsub
+  omega
+
+/-- `AtMost n P Q` plus `Every R P` gives `AtMost n R Q`: any `R`-witness
+is already a `P`-witness, since `R ⊆ P`, so `R`'s count can't exceed the
+bound already holding for the bigger set `P` — problem 76's "few
+committee members are from southern Europe ⊢ few female committee
+members are" shape (an upper bound on a superset always transfers down
+to any subset; the mirror image of `atLeast_restrict`). -/
+theorem atMost_restrict {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => R x ∧ Q x]
+    (h : AtMost n P Q) (hRP : Every R P) : AtMost n R Q := by
+  have hsub : (Finset.univ.filter fun x => R x ∧ Q x) ⊆ Finset.univ.filter fun x => P x ∧ Q x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hRP x hx.1, hx.2⟩
+  have hle : card (fun x => R x ∧ Q x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
+  omega
+
 end FraCaS.Section1
