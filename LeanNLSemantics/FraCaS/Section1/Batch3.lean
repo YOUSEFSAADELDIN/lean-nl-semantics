@@ -68,7 +68,7 @@ end P033
 
 /-! ## Problems 34–37: converse of the every_trans chain (18–21) -/
 
-/-- Shared shape for problems 34–37 (every/all/each/the-residents, same
+/-! Shared shape for problems 34–37 (every/all/each/the-residents, same
 as 18–21): "every P can travel; every P is a person; every person with
 the right can travel" doesn't tell you every P *has* the right —
 travel could hold some other way. A model where everyone travels and
