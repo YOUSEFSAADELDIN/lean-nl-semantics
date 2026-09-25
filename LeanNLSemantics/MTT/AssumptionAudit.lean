@@ -19,16 +19,27 @@ predicate/individual it needs (`walk`, `john`, ...) is a Coq `Section`
 a free top-level `Parameter`.
 
 This repo isn't guaranteed clean the same way, and this file is where
-that gets checked rather than assumed: `CN.lean` declares
-`axiom walk : CN .animal → Prop` and `Adjectives.lean` declares
-`axiom Tall`, genuine top-level Lean `axiom`s (not `variable`s scoped to
-a section), specifically so those two files' own worked examples have a
-concrete predicate to apply to a concrete model. Nothing audited below
-touches either — the 14 theorems here are all built from
-`variable`/`section`, matching `MTT.v`'s approach throughout
-`Subtyping.lean`, `Judgments.lean`, `Adjectives.lean`, `Adverbs.lean`,
-`DotTypes.lean`, `Individuation.lean`, `NLIExamples.lean` — so the CI log
-for this file is the actual evidence for that, not a repeated claim.
+that gets checked rather than assumed — and the check found something an
+earlier version of this comment got wrong: this repo has *three* genuine
+top-level `axiom`s outside any `section` (`CN.lean`'s `walk`,
+`Adjectives.lean`'s `Tall`, and `DotTypes.lean`'s `Physical`/
+`Informational`, kept as uninterpreted types for `Book`), not the two
+originally flagged here. CI's actual result, from `#print axioms` on each
+of the 14: 13 come back "does not depend on any axioms" — but
+`copred_some` (`DotTypes.lean`, Part 6) depends on `[MTT.Informational,
+MTT.Physical]`. Not because it's any less general than its neighbours —
+`copred_left`/`copred_right`/`copred_some` are all stated over a fully
+abstract `{A : Type} (bk : A → DotType Physical Informational)`, same
+shape as `Subtyping.lean`'s theorems — but because `Physical`/
+`Informational` are themselves free top-level axioms, not section
+variables, so any statement mentioning `DotType Physical Informational`
+at all carries that dependency regardless of how abstract everything
+else in it is. Turning them into ordinary `variable`s the way the rest of this repo
+does would mean `Book`, its two `Coe` instances, and every theorem in
+this file all take an explicit `Physical`/`Informational` pair — since
+`Book`'s own definition already fixes a specific choice — a bigger
+design change than fixing this one dependency is worth right now, not
+something ruled out in principle.
 -/
 
 #print axioms MTT.every_anti

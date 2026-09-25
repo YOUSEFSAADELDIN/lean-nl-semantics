@@ -72,11 +72,18 @@ below change.
   carries; see `Individuation.lean`. Part 8 is eight small worked
   entailments, not the full FraCaS suite — don't confuse it with the
   real Phase 2 work in `FraCaS/Data/Problems.lean`. Part 9 (`#print
-  axioms` over the same 14 theorems `MTT.v` audits) is a genuine check
-  here, not a repeated claim — this repo has two real top-level
-  `axiom`s (`CN.lean`'s `walk`, `Adjectives.lean`'s `Tall`) that `MTT.v`'s
-  section-variable style avoids, and the audit is what actually confirms
-  none of the 14 touch them. It does *not* cover the full
+  axioms` over the same 14 theorems `MTT.v` audits) is a genuine check,
+  not a repeated claim, and it found something worth knowing: this repo
+  has three real top-level `axiom`s (`CN.lean`'s `walk`,
+  `Adjectives.lean`'s `Tall`, `DotTypes.lean`'s `Physical`/
+  `Informational`) that `MTT.v`'s section-variable style avoids. 13 of
+  the 14 audited theorems come back clean, but `copred_some`
+  (`DotTypes.lean`) depends on `Physical`/`Informational` — not because
+  it's less general than its neighbours, but because those two are free
+  axioms rather than section variables, so anything mentioning
+  `DotType Physical Informational` carries the dependency regardless.
+  See `AssumptionAudit.lean` for the full accounting. It does *not*
+  cover the full
   346-problem FraCaS suite (only a curated illustrative subset) and is
   Coq, not Lean, so a faithful Lean port plus the full FraCaS suite are
   both still open — see the README's roadmap. `atlas/mtt_ranta/Ranta.v`,
