@@ -47,10 +47,10 @@ hypothesis on an abstract `Fintype`, instead of forcing a concrete
 100-element type just to make `card` compute. -/
 theorem card_true_eq_card_type {A : Type*} [Fintype A] :
     card (fun _ : A => True) = Fintype.card A := by
-  rw [← Finset.card_univ]
-  congr 1
-  apply Finset.ext
-  intro x
-  simp
+  have heq : (Finset.univ.filter fun _ : A => True) = (Finset.univ : Finset A) :=
+    Finset.ext (fun x => by simp)
+  calc card (fun _ : A => True) = (Finset.univ.filter fun _ : A => True).card := rfl
+    _ = (Finset.univ : Finset A).card := congrArg Finset.card heq
+    _ = Fintype.card A := Finset.card_univ
 
 end FraCaS.Section3
