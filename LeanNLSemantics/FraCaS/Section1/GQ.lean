@@ -148,4 +148,52 @@ theorem some_mono_scope {A : Type*} (P Q R : A → Prop) :
     Some P Q → (∀ x, Q x → R x) → Some P R :=
   fun ⟨x, hx, hq⟩ h => ⟨x, hx, h x hq⟩
 
+/-- Weakening the scope predicate under `Every` — problem 29's "both
+commissioners used to be leading businessmen ⊢ both used to be
+businessmen" shape (dual of `some_mono_scope`). -/
+theorem every_mono_scope {A : Type*} (P Q R : A → Prop) :
+    Every P Q → (∀ x, Q x → R x) → Every P R :=
+  fun h hqr x hx => hqr x (h x hx)
+
+/-- Weakening the scope predicate under `AtLeast` — problem 31's "at
+least three commissioners spend a lot of time at home ⊢ at least three
+spend time at home" shape: widening the scope predicate can only grow
+the qualifying set, so the same lower bound still holds. -/
+theorem atLeast_mono_scope {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x] :
+    AtLeast n P Q → (∀ x, Q x → R x) → AtLeast n P R := by
+  intro h hqr
+  have hsub : (Finset.univ.filter fun x => P x ∧ Q x) ⊆ Finset.univ.filter fun x => P x ∧ R x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, hqr x hx.2⟩
+  have hle := Finset.card_le_card hsub
+  omega
+
+/-- `Some P R` plus two universal facts (`Every P S`, and "every `S` that
+is also `R` is `Q`") gives `Some P Q` — problem 27's "a few committee
+members are from Sweden; all committee members are people; all people
+from Sweden are from Scandinavia ⊢ some committee members are from
+Scandinavia" shape (the `Some`-headed analogue of `every_trans`). -/
+theorem some_trans {A : Type*} (P R S Q : A → Prop) :
+    Some P R → Every P S → Every (fun x => S x ∧ R x) Q → Some P Q :=
+  fun ⟨x, hx, hr⟩ h2 h3 => ⟨x, hx, h3 x ⟨h2 x hx, hr⟩⟩
+
+/-- `Most P R` plus two universal facts (`Every P S`, and "every `S` that
+is also `R` is `Q`") gives `Most P Q`: the majority witnessing `Most P R`
+is a subset of `P ∩ Q` (since every `P ∩ R` element is `S ∧ R`, hence
+`Q`), so it's at least as big — problem 26's "most Europeans are
+resident; all Europeans are people; all resident people can travel ⊢
+most Europeans can travel" shape (the `Most`-headed analogue of
+`every_trans`). -/
+theorem most_trans {A : Type*} [Fintype A] (P R S Q : A → Prop)
+    [DecidablePred P] [DecidablePred fun x => P x ∧ R x] [DecidablePred fun x => P x ∧ Q x]
+    (h1 : Most P R) (h2 : Every P S) (h3 : Every (fun x => S x ∧ R x) Q) : Most P Q := by
+  have hsub : (Finset.univ.filter fun x => P x ∧ R x) ⊆ Finset.univ.filter fun x => P x ∧ Q x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, h3 x ⟨h2 x hx.1, hx.2⟩⟩
+  have hle := Finset.card_le_card hsub
+  omega
+
 end FraCaS.Section1
