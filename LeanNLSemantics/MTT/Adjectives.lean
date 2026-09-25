@@ -117,9 +117,15 @@ def fakeGun (g : Gun RGun FGun) : Prop := ∃ f : FGun, g = Sum.inr f
 theorem fake_is_gun (f : FGun) : fakeGun RGun FGun (Sum.inr f) := ⟨f, rfl⟩
 
 /-- T-ADJ8. A fake gun is provably not a real gun: privativity (CL20
-§3.3.3). -/
-theorem fake_not_real (f : FGun) : ¬ realGun RGun FGun (Sum.inr f) :=
-  fun ⟨_, hr⟩ => Sum.noConfusion hr
+§3.3.3). `cases hr` rather than a bare `Sum.noConfusion hr` term: `Sum`'s
+auto-generated `noConfusion` carries a `HEq` between the (differently
+typed) payloads, and calling it bare here left metavariables Lean
+couldn't resolve without the tactic framework's help (caught by CI: it
+worked fine for `Bool.noConfusion` above, whose constructors carry no
+data, and failed only here). -/
+theorem fake_not_real (f : FGun) : ¬ realGun RGun FGun (Sum.inr f) := by
+  rintro ⟨r, hr⟩
+  cases hr
 
 /-- T-ADJ9. Every gun is really real or fake, exclusively. -/
 theorem gun_partition (g : Gun RGun FGun) :
@@ -129,11 +135,11 @@ theorem gun_partition (g : Gun RGun FGun) :
   | inl r =>
     refine ⟨Or.inl ⟨r, rfl⟩, ?_⟩
     rintro ⟨_, _, hf⟩
-    exact Sum.noConfusion hf
+    cases hf
   | inr f =>
     refine ⟨Or.inr ⟨f, rfl⟩, ?_⟩
     rintro ⟨⟨_, hr⟩, _⟩
-    exact Sum.noConfusion hr
+    cases hr
 
 /-! ## Non-committal adjectives (CL20 §3.3.4) -/
 

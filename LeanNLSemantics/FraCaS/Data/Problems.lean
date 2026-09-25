@@ -704,7 +704,10 @@ def problems : List Problem := [
 ]
 
 /-- Regression check that the generator's output made it through
-intact: exactly 342 problems, matching this file's own header. -/
+intact: exactly 342 problems, matching this file's own header.
+Plain `by decide` hits Lean's default `maxRecDepth` on a list this long
+(caught by CI, not visible from reading the code). -/
+set_option maxRecDepth 4000 in
 example : problems.length = 342 := by decide
 
 end FraCaS
