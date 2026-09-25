@@ -9,7 +9,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Installs elan (matching lean-toolchain), fetches the Mathlib
-      # cache via `lake exe cache get`, and runs `lake build` — the
-      # thing this sandbox's network policy couldn't do (see README).
-      - uses: leanprover/lean-action@v1
+
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # No lake-manifest.json is committed (nothing here has ever
+      # actually resolved the Mathlib dependency), so `lake build` alone
+      # fails with "No lake-manifest.json found" — `lake update` writes
+      # it first. Once one exists, commit it so future runs are pinned
+      # to a fixed Mathlib revision instead of re-resolving `main` every time.
+      - name: Resolve dependencies
+        run: lake update
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Build
+        run: lake build
