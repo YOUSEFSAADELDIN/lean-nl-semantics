@@ -59,18 +59,20 @@ below change.
   individuation, an NLI mini-suite, and an assumption audit (Parts 1-9;
   its own header cites CL14/CL20/L12, the same three papers this project
   is based on). It is cleaner and more current than CoqLACL and, being
-  MIT, needs no permission to port from. **Parts 1-7 are now ported**
+  MIT, needs no permission to port from. **Parts 1-8 are now ported**
   (`MTT/Quantifiers.lean`, `MTT/Subtyping.lean`, `MTT/Judgments.lean`,
   `MTT/Adjectives.lean`, `MTT/Adverbs.lean`, `MTT/DotTypes.lean`,
-  `MTT/Individuation.lean`) — faithfully, theorem names and CL20 section
-  references kept alongside the Lean names so the correspondence stays
-  checkable (Part 6's T-DOT3 excepted — Coq-section-local-coercion trick,
-  doesn't generalise, see `DotTypes.lean`). Part 7 turned out not to need
-  the `Prop`-irrelevance caveat noted throughout this repo — it compares
-  plain equality on a concrete model, not which proof a Σ-type carries;
-  see `Individuation.lean`. Parts 8-9 (an NLI mini-suite, an assumption
-  audit) are not yet. It does *not* cover the
-  full
+  `MTT/Individuation.lean`, `MTT/NLIExamples.lean`) — faithfully, theorem
+  names and CL20 section references kept alongside the Lean names so the
+  correspondence stays checkable (Part 6's T-DOT3 excepted —
+  Coq-section-local-coercion trick, doesn't generalise, see
+  `DotTypes.lean`). Part 7 turned out not to need the `Prop`-irrelevance
+  caveat noted throughout this repo — it compares plain equality on a
+  concrete model, not which proof a Σ-type carries; see
+  `Individuation.lean`. Part 8 is eight small worked entailments, not the
+  full FraCaS suite — don't confuse it with the real Phase 2 work in
+  `FraCaS/Data/Problems.lean`. Part 9 (an assumption audit) is not yet
+  ported. It does *not* cover the full
   346-problem FraCaS suite (only a curated illustrative subset) and is
   Coq, not Lean, so a faithful Lean port plus the full FraCaS suite are
   both still open — see the README's roadmap. `atlas/mtt_ranta/Ranta.v`,

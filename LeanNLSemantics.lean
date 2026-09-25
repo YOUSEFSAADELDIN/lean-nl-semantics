@@ -6,6 +6,7 @@ import LeanNLSemantics.MTT.Adjectives
 import LeanNLSemantics.MTT.Adverbs
 import LeanNLSemantics.MTT.DotTypes
 import LeanNLSemantics.MTT.Individuation
+import LeanNLSemantics.MTT.NLIExamples
 import LeanNLSemantics.MTT.Tense
 import LeanNLSemantics.Tactic.NLI
 import LeanNLSemantics.FraCaS.Types
