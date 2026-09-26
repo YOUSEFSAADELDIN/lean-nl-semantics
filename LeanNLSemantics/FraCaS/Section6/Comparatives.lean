@@ -1,4 +1,4 @@
-import Mathlib
+import LeanNLSemantics.FraCaS.Section1.GQ
 
 /-!
 # FraCaS Section 6 (Comparatives) — approach
