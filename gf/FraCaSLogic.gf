@@ -87,6 +87,11 @@
 -- `{s = \n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g}` - the first
 -- noun always singular-nominative ("member"), the second inflected for
 -- whatever number/case is asked of the whole compound.
+--
+-- of_Prep : Prep doesn't exist as such anywhere in the current RGL at
+-- all ("of" is hardcoded directly inside PossNP/PartNP's own concrete
+-- definitions rather than exposed as a reusable Prep) - self-declared
+-- via the generic `mkPrep "of"`.
 abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase ** {
   fun
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
@@ -98,6 +103,7 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
     win_V2, take_V2, contribute_V2 : V2 ;
     live_V : V ;
     europe_PN : PN ;
+    of_Prep : Prep ;
     ComplV2 : V2 -> NP -> VP ;
     CompoundCN : CN -> CN -> CN ;
 }

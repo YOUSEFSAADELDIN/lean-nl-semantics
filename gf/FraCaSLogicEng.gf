@@ -42,6 +42,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     contribute_V2 = mkV2 "contribute" ;
     live_V = mkV "live" ;
     europe_PN = mkPN "Europe" ;
+    of_Prep = mkPrep "of" ;
     ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v) ;
     CompoundCN a b = {s = \\n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g} ;
 }
