@@ -1,7 +1,7 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
   TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng
-  ** open ParadigmsEng, MorphoEng, ResEng, Prelude in {
+  ** open ParadigmsEng, MorphoEng, Prelude in {
   lin
     -- PPos/PNeg excluded from TenseX above (real conflict: TenseX's own
     -- CAdv/CommonX shape doesn't unify with CatEng's) - GrammarEng.gf
@@ -47,7 +47,6 @@ concrete FraCaSLogicEng of FraCaSLogic =
     europe_PN = mkPN "Europe" ;
     pavarotti_PN = mkPN "Pavarotti" ;
     of_Prep = mkPrep "of" ;
-    ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v) ;
     CompoundCN a b = {s = \\n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g} ;
 }
 
@@ -97,22 +96,26 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- first subject-verb-object sentence shape (every prior one was
 -- copula/control-verb - "is"/"are"/"wants to be"). The object is
 -- itself a full determiner-quantified NP, same as the subject, built
--- from the plain transitive-VP constructor ComplV2 - self-declared
--- above (see gf/FraCaSLogic.gf's own comment on why, not extended from
--- Backward/BackwardEng). IndefArt (from Noun, already in scope) is the
--- a/an quantifier; the RGL picks "a" vs "an" for us automatically based
--- on the following word. Note this project's target category Cl is
--- tenseless by choice (see the file-top comment - tense support is
--- fully available now, just not used by default), so the confirmed
--- output correctly comes out present tense ("wins"), not an exact
--- string match to FraCaS's own past-tense wording ("won") - that's the
--- deliberate default, not a limitation we're stuck with:
+-- from `ComplSlash (SlashV2a win_V2) np` (Verb, already extended - the
+-- same combinator problems 15/16/21 already use for their own
+-- transitive/prepositional objects). IndefArt (from Noun, already in
+-- scope) is the a/an quantifier; the RGL picks "a" vs "an" for us
+-- automatically based on the following word. Note this project's
+-- target category Cl is tenseless by choice (see the file-top comment
+-- - tense support is fully available now, just not used by default),
+-- so the confirmed output correctly comes out present tense ("wins"),
+-- not an exact string match to FraCaS's own past-tense wording ("won")
+-- - that's the deliberate default, not a limitation we're stuck with:
 --   linearize PredVP
 --     (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N))
---     (ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))
+--     (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))
 --   => "an Irishman wins a Nobel prize"
 --
--- Confirmed end-to-end on the real toolchain.
+-- Confirmed end-to-end on the real toolchain. (This premise originally
+-- used a self-declared `ComplV2`/`predV` combinator instead of
+-- `ComplSlash`/`SlashV2a` - see FraCaSLogic.gf's own comment on why
+-- that was replaced: it had a real bug under `TPast`, caught by
+-- run_gf_tests.py's past-tense pilot.)
 --
 -- FraCaS problem 3's premise ("All Italian men want to be a great
 -- tenor."): see gf/FraCaSLogic.gf's own comment on why "all" is

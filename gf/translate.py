@@ -453,10 +453,10 @@ if __name__ == "__main__":
     # All five are confirmed end-to-end via `linearize` on the real
     # toolchain (gf/FraCaSLogicEng.gf / gf/NOTES.md). fracas_033 is also
     # the first VP shape this translator has been fed that isn't
-    # copula/control-verb: the ComplV2 tree's object NP flattens into
-    # the scope predicate's name exactly like every other VP-internal
-    # structure does, so no new code path was needed here, just the
-    # IndefArt quantifier mapping above.
+    # copula/control-verb: the ComplSlash/SlashV2a tree's object NP
+    # flattens into the scope predicate's name exactly like every other
+    # VP-internal structure does, so no new code path was needed here,
+    # just the IndefArt quantifier mapping above.
     examples = {
         "fracas_002 (premise)": (
             "PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -477,7 +477,7 @@ if __name__ == "__main__":
         ),
         "fracas_033 (premise)": (
             "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
-            "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
+            "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
         ),
         "fracas_003 (premise)": (
             "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "

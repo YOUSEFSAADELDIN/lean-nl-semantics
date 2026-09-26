@@ -28,14 +28,23 @@
 -- (MorphoEng, opened directly - NOT inherited from StructuralEng just
 -- because StructuralEng happens to use it internally).
 --
--- ComplV2 : V2 -> NP -> VP (the plain transitive-verb VP constructor,
--- needed for the first subject-verb-object sentence shape, problem 33
--- "An Irishman won a Nobel prize.") is declared directly below rather
--- than extending Backward (where the RGL itself puts it) - Backward.gf
--- has the exact same problem DictEngAbs did: it isn't part of
--- Setup.sh's build output either (same "File X.gf does not exist"
--- error, confirmed the same way). Its real recipe is copied from
--- gf-rgl/src/english/BackwardEng.gf instead - see gf/NOTES.md.
+-- Problem 33 ("An Irishman won a Nobel prize.", the first plain
+-- subject-verb-object sentence) originally used a self-declared
+-- `ComplV2 : V2 -> NP -> VP`, copied from Backward.gf/BackwardEng.gf's
+-- own recipe (`insertObj (\_ => v.c2 ++ np.s ! NPAcc) (predV v)`,
+-- needed because Backward.gf has the exact same "not part of Setup.sh's
+-- build output" problem DictEngAbs did). That self-declared combinator
+-- turned out to have its own real bug: under `TPast`, it produced "won"
+-- -> "winned" (the past-tense pilot in run_gf_tests.py caught this) -
+-- `predV`/`insertObj` from ResEng apparently don't thread a V's own
+-- irregular preterite through correctly, even though present tense
+-- ("wins") came out right. Since `ComplSlash (SlashV2a v2) np` (Verb,
+-- already extended - the SAME combinator problems 15/16/21 already use
+-- for their own transitive objects) is a genuine RGL combinator that's
+-- already proven correct under full tense-wrapping, problem 33 was
+-- switched to it instead and the self-declared `ComplV2`/`predV` hack
+-- was deleted outright - no sentence needs it anymore, and it was
+-- wrong.
 --
 -- each_Det (problems 4, 18-20 etc: "each Italian tenor"/"each
 -- European") is declared directly below rather than extending
@@ -126,6 +135,5 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
     live_V, come_V : V ;
     europe_PN, pavarotti_PN : PN ;
     of_Prep : Prep ;
-    ComplV2 : V2 -> NP -> VP ;
     CompoundCN : CN -> CN -> CN ;
 }

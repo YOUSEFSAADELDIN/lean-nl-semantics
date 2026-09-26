@@ -85,7 +85,7 @@ BASE_CHECKS = [
     (
         "fracas_033",
         "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
-        "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
         "an Irishman wins a Nobel prize",
     ),
     (
@@ -191,15 +191,17 @@ TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
 # confirmed for TPres before now. "wins"/"won"/"will win" (fracas_033's
-# ComplV2 tree - a plain transitive main verb, no auxiliary/control verb
+# tree - a plain transitive main verb, no auxiliary/control verb
 # involved) is a clean, simple test of whether TPast/TFut's own verb
 # conjugation actually differs correctly, not just TPres's already-
 # confirmed path. Picked as pilots (rather than converting every
 # sentence's tense outright) precisely because this is genuinely new
-# ground - past/future have never been checked via CI before.
+# ground - past/future have never been checked via CI before. This
+# pilot is exactly what caught fracas_033's own ComplV2/predV bug (see
+# FraCaSLogic.gf's comment) - TPast originally gave "winned" here.
 _FRACAS_033_TREE = (
     "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
-    "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
+    "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
 )
 
 PILOT_TENSE_CHECKS = [
