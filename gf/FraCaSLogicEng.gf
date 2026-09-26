@@ -634,3 +634,78 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --   linearize PredVP (DetCN atLeastAFew_Det (CompoundCN (UseN committee_N) (UseN member_N)))
 --     (UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))
 --   => "at least a few committee members are from Scandinavia"
+--
+-- FraCaS problems 60-80 (Batch5.lean) complete Section 1's own 80
+-- problems. Every word needed (business_N, outside_Prep, male_A)
+-- already exists in DictEngAbs, checked directly the same way as every
+-- other bucket. This is the highest-reuse bucket yet - most of these 21
+-- problems' own premise/hypothesis sentences are EXACT matches of a
+-- sentence already confirmed under an earlier problem's label (see
+-- run_gf_tests.py's own comment for the full reuse map: 66/67/68 in
+-- particular need zero new GF at all, all three of their sentences
+-- already existing from 50/51/52). Only the genuinely new sentences
+-- get their own example here.
+--   linearize PredVP (DetCN few_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N))))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN southernEurope_PN))))
+--   => "few female committee members are from southern Europe"
+--   linearize PredVP (DetCN both_Det (AdjCN (PositA female_A) (UseN commissioner_N)))
+--     (UseComp (CompAdv (PrepNP in_Prep (MassNP (UseN business_N)))))
+--   => "both female commissioners are in business"
+--   linearize PredVP (DetCN both_Det (UseN commissioner_N)) (UseComp (CompAdv (PrepNP in_Prep (MassNP (UseN business_N)))))
+--   => "both commissioners are in business"
+--   linearize PredVP (DetCN neither_Det (AdjCN (PositA female_A) (UseN commissioner_N)))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "neither female commissioner spends a lot of time at home"
+--   linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3)))))))))
+--       (AdjCN (PositA female_A) (UseN commissioner_N)))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "at least three female commissioners spend time at home"
+--   linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN (NumNumeral (num (pot2as3 (pot1as2 pot110)))))))
+--       (AdjCN (PositA female_A) (UseN commissioner_N)))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "at most ten female commissioners spend time at home" (also reused verbatim as 80's own hypothesis)
+--   linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN scandinavian_N))
+--     (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))
+--   => "a Scandinavian wins a Nobel prize"
+--   linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N))
+--       (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N)))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "the residents of Western countries can travel freely within Europe"
+--   linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N))
+--       (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) (AdjCN (PositA western_A) (UseN country_N))))))
+--     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg)
+--       (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))
+--   => "the residents of major Western countries have the right to live in Europe"
+--   linearize PredVP (DetCN someSg_Det (AdjCN (PositA scandinavian_A) (UseN delegate_N)))
+--     (AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))
+--       (PrepNP on_Prep (MassNP (UseN time_N))))
+--   => "some Scandinavian delegate finishes the report on time"
+--   linearize PredVP (DetCN most_Det (RelCN (UseN european_N)
+--       (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP
+--         (AdvAP (PositA resident_A) (PrepNP outside_Prep (UsePN europe_PN)))))))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "most Europeans that are resident outside Europe can travel freely within Europe"
+--   linearize PredVP (DetCN atLeastAFew_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N))))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))
+--   => "at least a few female committee members are from Scandinavia"
+--   linearize PredVP (CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01)))))))
+--       (DetCN (DetQuant DefArt NumPl) (AdjCN (PositA female_A) (UseN commissioner_N))))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "one of the female commissioners spends a lot of time at home"
+--   linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3)))))))))
+--       (AdjCN (PositA male_A) (UseN commissioner_N)))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "at least three male commissioners spend time at home"
+--
+-- Not added to translate.py: problems 60-62/64/65/71-75/79 are all
+-- countermodel/independence proofs (checked directly against
+-- Batch5.lean), same reasoning as problem 12. Problem 76 is a real
+-- theorem (atMost_restrict) but its own stated premise uses few_Det,
+-- which still has no Lean quantifier mapping - excluded same as
+-- problems 12/44.
+--
+-- This completes FraCaS Section 1 (all 80 problems) in the GF/RGL
+-- toolchain - every problem confirmed via run_gf_tests.py, and every
+-- one whose Lean formalization is a genuine named-predicate Prop (not
+-- a countermodel, and not blocked by "few"/"many" having no single
+-- Lean quantifier) cross-checked via translate.py too.

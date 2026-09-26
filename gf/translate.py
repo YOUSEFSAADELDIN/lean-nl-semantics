@@ -824,6 +824,67 @@ if __name__ == "__main__":
             "PredVP (DetCN aFew_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N)))) "
             "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))"
         ),
+        # Problems 60-62/64/65/71-75/79 (Batch5.lean) are countermodels,
+        # same reasoning as above - not here. Problem 76 is a real
+        # theorem (atMost_restrict) but its own stated premise uses
+        # few_Det, which still has no Lean quantifier mapping - excluded
+        # same as problems 12/44. 63/66-70/77/78/80 are real theorems,
+        # added below - all reusing an earlier problem's own tree
+        # verbatim except 63 and 69's premise 1 (both genuinely new).
+        "fracas_063 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+            "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (AdjCN (PositA female_A) (UseN commissioner_N))) "
+            "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))"
+        ),
+        "fracas_066 (premise 1)": (
+            "PredVP (DetCN every_Det (AdvCN (UseN resident_N) (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) "
+            "(AdjCN (PositA northAmerican_A) (UseN continent_N)))))) "
+            "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))"
+        ),
+        "fracas_066 (premise 2)": (
+            "PredVP (DetCN every_Det (AdjCN (PositA canadian_A) (UseN resident_N))) "
+            "(UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN resident_N) "
+            "(PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) (AdjCN (PositA northAmerican_A) (UseN continent_N))))))))"
+        ),
+        "fracas_067 (premise 1)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (AdvCN (UseN resident_N) "
+            "(PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) (AdjCN (PositA northAmerican_A) (UseN continent_N))))))) "
+            "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))"
+        ),
+        "fracas_068 (premise 1)": (
+            "PredVP (DetCN each_Det (AdvCN (UseN resident_N) (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) "
+            "(AdjCN (PositA northAmerican_A) (UseN continent_N)))))) "
+            "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))"
+        ),
+        "fracas_069 (premise 1)": (
+            "PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+            "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N))))) "
+            "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))"
+        ),
+        "fracas_069 (premise 2)": (
+            "PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+            "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) (AdjCN (PositA western_A) (UseN country_N))))))) "
+            "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdvCN (UseN resident_N) "
+            "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N))))))))"
+        ),
+        "fracas_070 (premise)": (
+            "PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+            "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+            "(PrepNP on_Prep (MassNP (UseN time_N))))"
+        ),
+        "fracas_077 (premise)": (
+            "PredVP (DetCN both_Det (UseN commissioner_N)) "
+            "(UseComp (CompAdv (PrepNP in_Prep (MassNP (UseN business_N)))))"
+        ),
+        "fracas_078 (premise)": (
+            "PredVP (DetCN neither_Det (UseN commissioner_N)) "
+            "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))"
+        ),
+        "fracas_080 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
+            "(NumNumeral (num (pot2as3 (pot1as2 pot110))))))) (UseN commissioner_N)) "
+            "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))"
+        ),
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

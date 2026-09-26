@@ -785,6 +785,116 @@ BASE_CHECKS += [
     ),
 ]
 
+# Problems 60-80 (Batch5.lean, completing Section 1's 80 problems) -
+# "restrictor variance": narrowing/widening which subgroup a
+# determiner ranges over. Every word needed (business_N, outside_Prep,
+# male_A) already exists in DictEngAbs, checked directly the same way
+# as every other bucket. This is the highest-reuse bucket yet: most of
+# these 21 problems' own premise/hypothesis sentences are EXACT
+# byte-for-byte matches of a sentence already confirmed under an
+# earlier problem's label (66/67/68's own three sentences = 50/51/52's,
+# entirely, zero new GF; 69's premise 2 = 53's; 70/71/72/73/76/77/78/80's
+# stated premise = 22/23/24/25/28/61/30/32's, respectively) - not
+# re-added under a new label. Only the genuinely new sentences below
+# get their own check. 64's own premise ("at most ten female
+# commissioners spend time at home") is itself reused again as 80's
+# hypothesis (same restrictor+scope combination both problems need).
+BASE_CHECKS += [
+    (
+        "fracas_060_premise",
+        "linearize PredVP (DetCN few_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N)))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN southernEurope_PN))))",
+        "few female committee members are from southern Europe",
+    ),
+    (
+        "fracas_061_premise",
+        "linearize PredVP (DetCN both_Det (AdjCN (PositA female_A) (UseN commissioner_N))) "
+        "(UseComp (CompAdv (PrepNP in_Prep (MassNP (UseN business_N)))))",
+        "both female commissioners are in business",
+    ),
+    (
+        "fracas_061_hypothesis",
+        "linearize PredVP (DetCN both_Det (UseN commissioner_N)) "
+        "(UseComp (CompAdv (PrepNP in_Prep (MassNP (UseN business_N)))))",
+        "both commissioners are in business",
+    ),
+    (
+        "fracas_062_premise",
+        "linearize PredVP (DetCN neither_Det (AdjCN (PositA female_A) (UseN commissioner_N))) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "neither female commissioner spends a lot of time at home",
+    ),
+    (
+        "fracas_063_premise",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (AdjCN (PositA female_A) (UseN commissioner_N))) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at least three female commissioners spend time at home",
+    ),
+    (
+        "fracas_064_premise",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 pot110))))))) (AdjCN (PositA female_A) (UseN commissioner_N))) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at most ten female commissioners spend time at home",
+    ),
+    (
+        "fracas_065_premise1",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN scandinavian_N)) "
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "a Scandinavian wins a Nobel prize",
+    ),
+    (
+        "fracas_069_premise1",
+        "linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N))))) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "the residents of Western countries can travel freely within Europe",
+    ),
+    (
+        "fracas_069_hypothesis",
+        "linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+        f"(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) {_MAJOR_WESTERN_COUNTRY_CN}))) "
+        f"{_HAVE_RIGHT_VP}",
+        "the residents of major Western countries have the right to live in Europe",
+    ),
+    (
+        "fracas_070_hypothesis",
+        "linearize PredVP (DetCN someSg_Det (AdjCN (PositA scandinavian_A) (UseN delegate_N))) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some Scandinavian delegate finishes the report on time",
+    ),
+    (
+        "fracas_074_hypothesis",
+        "linearize PredVP (DetCN most_Det (RelCN (UseN european_N) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP "
+        "(AdvAP (PositA resident_A) (PrepNP outside_Prep (UsePN europe_PN))))))))) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "most Europeans that are resident outside Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_075_hypothesis",
+        "linearize PredVP (DetCN atLeastAFew_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N)))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "at least a few female committee members are from Scandinavia",
+    ),
+    (
+        "fracas_078_hypothesis",
+        "linearize PredVP (CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(DetCN (DetQuant DefArt NumPl) (AdjCN (PositA female_A) (UseN commissioner_N)))) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "one of the female commissioners spends a lot of time at home",
+    ),
+    (
+        "fracas_079_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (AdjCN (PositA male_A) (UseN commissioner_N))) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at least three male commissioners spend time at home",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
