@@ -30,7 +30,7 @@
 -- Setup.sh's build output either (same "File X.gf does not exist"
 -- error, confirmed the same way). Its real recipe is copied from
 -- gf-rgl/src/english/BackwardEng.gf instead - see gf/NOTES.md.
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Phrase ** {
   fun
     most_Det : Det ;
     really_AdA : AdA ;

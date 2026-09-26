@@ -55,6 +55,21 @@ CHECKS = [
         "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
         "an Irishman wins a Nobel prize",
     ),
+    (
+        # Diagnostic, not yet relied on: NOTES.md documents that linearizing
+        # a bare `S` (via UseCl directly) produced empty output, so this
+        # project's target category is the tenseless `Cl`. But the RGL's
+        # own treebank (src/english/treebank.txt) always wraps UseCl's
+        # result in UttS before linearizing, never linearizing a bare S
+        # directly - this checks whether that was the actual missing step
+        # all along (i.e. tense support may not be blocked after all),
+        # rather than a genuine RGL limitation.
+        "uttS_diagnostic",
+        "linearize UttS (UseCl (TTAnt TPres ASimul) PPos "
+        "(PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))))",
+        "wants to be a great tenor",
+    ),
 ]
 
 
