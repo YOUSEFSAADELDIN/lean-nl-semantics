@@ -165,6 +165,12 @@
 -- instead" pattern as most_Det/of_Prep/etc. above.
 abstract FraCaSLogic =
   Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase,
+  -- Conjunction (ConjNP/BaseNP/ConsNP and friends) is FraCaS Section 2's
+  -- own first new requirement: named-individual subjects joined by
+  -- "and"/"or"/"either...or" ("Smith, Jones and Anderson signed the
+  -- contract"), never needed in Section 1 (every subject there was a
+  -- single quantified NP, not a list of proper nouns).
+  Conjunction,
   -- Extended the dictionary swap (originally piloted on win_V2 alone)
   -- to the rest of the 30 collisions checked directly against this
   -- grammar's own words, after comparing each one's real DictEng
@@ -209,6 +215,11 @@ abstract FraCaSLogic =
     -- so there's no single already-existing word with the right
     -- sg/pl pair to source from.
     person_N,
+    -- mp_N joins irishman_N/person_N as a third word excluded and
+    -- hand-declared instead: DictEngAbs's own `mp_N = mkN "mp" "mp's"`
+    -- is lowercase, but the actual abbreviation "MP"/"MPs" needs
+    -- capitalizing.
+    mp_N,
     quite_Adv, she_Pron, so_AdA,
     somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
     there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
@@ -282,4 +293,25 @@ abstract FraCaSLogic =
     -- (AdjCN combines an AP with a CN, not two APs) - self-declared as
     -- its own fixed string instead, same pattern as worlds_Det/etc.
     northAmerican_A : A ;
+    -- Section 2's own new proper nouns: smith_PN/jones_PN/anderson_PN
+    -- (FraCaS's own recurring fictional cast for Section 2's contract-
+    -- signing problems) aren't in a general-purpose dictionary -
+    -- checked directly, same as every other word here, and unsurprising
+    -- for personal surnames (cf. pavarotti_PN, a real person, still
+    -- needed the same treatment in Section 1).
+    smith_PN, jones_PN, anderson_PN : PN ;
+    -- mp_N ("a Labour MP") is excluded above (joining irishman_N/
+    -- person_N) and hand-declared here instead: same casing mismatch,
+    -- "MP"/"MPs" not "mp"/"mp's".
+    mp_N : N ;
+    -- labour_A ("a Labour MP", the UK political party as an attributive
+    -- adjective) and noted_A ("noted philosophers") are both genuine
+    -- dictionary gaps - checked directly - self-declared as fixed
+    -- strings, same pattern as most_Det/of_Prep/etc.
+    labour_A, noted_A : A ;
+    -- exactly_AdN ("exactly two lawyers", problems 85/86) is the exact-
+    -- cardinality counterpart of Structural's own at_least_AdN/
+    -- at_most_AdN (both already free, same AdNum-wrapping mechanism) -
+    -- checked directly, no dictionary entry under this name.
+    exactly_AdN : AdN ;
 }

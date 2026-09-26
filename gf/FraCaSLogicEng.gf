@@ -1,11 +1,12 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
-  TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng,
+  TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng, ConjunctionEng,
   -- Same exclusion as FraCaSLogic.gf's own extends line (kept in sync
-  -- with it - see that file's comment for the full story: irishman_N
-  -- and person_N are the only two words still excluded from this
-  -- grammar's own 31 original collisions - the rest come from DictEng -
-  -- plus the 74 against StructuralEng's own closed-class words).
+  -- with it - see that file's comment for the full story: irishman_N,
+  -- person_N, and mp_N are the only three words still excluded from
+  -- this grammar's own 31 original collisions - the rest come from
+  -- DictEng - plus the 74 against StructuralEng's own closed-class
+  -- words).
   DictEng - [
     above_Prep, after_Prep, all_Predet, almost_AdA, almost_AdN,
     although_Subj, always_AdV, and_Conj, at_least_AdN, because_Subj,
@@ -14,7 +15,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     everything_NP, everywhere_Adv, except_Prep, for_Prep, from_Prep, have_V2,
     he_Pron, here_Adv, how8many_IDet, how_IAdv, i_Pron, if_Subj, in_Prep,
     irishman_N, it_Pron, many_Det, much_Det, must_VV, no_Quant, nobody_NP,
-    nothing_NP, on_Prep, only_Predet, or_Conj, person_N, quite_Adv, she_Pron, so_AdA,
+    nothing_NP, on_Prep, only_Predet, or_Conj, person_N, mp_N, quite_Adv, she_Pron, so_AdA,
     somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
     there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
     under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP, whatSg_IP, when_IAdv,
@@ -53,6 +54,13 @@ concrete FraCaSLogicEng of FraCaSLogic =
     southernEurope_PN = mkPN "southern Europe" ;
     atLeastAFew_Det = mkDeterminer plural "at least a few" ;
     northAmerican_A = mkA "North American" ;
+    smith_PN = mkPN "Smith" ;
+    jones_PN = mkPN "Jones" ;
+    anderson_PN = mkPN "Anderson" ;
+    mp_N = mkN "MP" "MPs" ;
+    labour_A = mkA "Labour" ;
+    noted_A = mkA "noted" ;
+    exactly_AdN = mkAdN "exactly" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -709,3 +717,43 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- one whose Lean formalization is a genuine named-predicate Prop (not
 -- a countermodel, and not blocked by "few"/"many" having no single
 -- Lean quantifier) cross-checked via translate.py too.
+--
+-- FraCaS Section 2 (Plurals), problems 81-97 (Section2/Batch1.lean) -
+-- the first bucket outside Section 1's own determiner-monotonicity
+-- phenomena. Needs a genuinely new module (Conjunction, for named-
+-- individual/CN conjunction - "Smith, Jones and Anderson signed the
+-- contract", "every representative and client was at the meeting")
+-- and new self-declared words: smith_PN/jones_PN/anderson_PN (FraCaS's
+-- own recurring cast, not in a general dictionary - same as
+-- pavarotti_PN in Section 1), mp_N (excluded/hand-declared for
+-- capitalization, joining irishman_N/person_N), labour_A/noted_A/
+-- exactly_AdN (genuine dictionary gaps). representativeMasc_N (not
+-- rep_N, which exists but means the informal abbreviation "rep", wrong
+-- register for FraCaS's own "representative") and greek_N (already
+-- capitalizes to "Greek" - no fix needed there) were both confirmed by
+-- running the real toolchain, not assumed. ancient_A stays lowercase
+-- ("the ancient Greeks") - a genuine judgment call, not a dictionary
+-- bug, so left as the dictionary gives it rather than self-declaring
+-- a capitalized alternative.
+--
+-- Two genuine surprises from the real toolchain, caught locally:
+-- ConjNP's own list rendering puts a space before each comma ("Smith ,
+-- Jones and Anderson", not "Smith, Jones and Anderson") - accepted as
+-- the grammar's actual output rather than fought; and problem 84's own
+-- conditional hypothesis ("if S1, S2") needed moving out of the usual
+-- BASE_CHECKS/tense-reconfirmation machinery entirely - see
+-- run_gf_tests.py's own comment on why (it's already S-typed, not a
+-- bare Cl, so _tense_reconfirm's own wrapping logic doesn't apply to
+-- it) - and, once run, turned out to contract negation to "don't" and
+-- skip the comma before the main clause, neither of which was assumed
+-- correctly on the first attempt.
+--
+-- Not added to translate.py: 81/82/83/85/86 need a ConjNP-of-named-
+-- individuals subject translated into a conjunction of atomic named
+-- Props, and 85/86 also need Section2.Plurals' own Exactly quantifier
+-- - both genuinely new translate.py architecture, out of scope this
+-- pass (see translate.py's own comment). 84/91/94/95 are countermodels/
+-- independence proofs, not translatable either way. 87/88 are real
+-- theorems (87) or countermodels (88) whose own premise doesn't fit a
+-- single quantified clause either - see translate.py's own comment on
+-- both. 89/90/92/96/97 are added.

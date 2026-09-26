@@ -895,6 +895,155 @@ BASE_CHECKS += [
     ),
 ]
 
+# FraCaS Section 2 (Plurals), problems 81-97 (Section2/Batch1.lean) -
+# this project's first bucket outside Section 1's own determiner-
+# monotonicity phenomena. Needs a genuinely new module (Conjunction,
+# for named-individual/CN conjunction - "Smith, Jones and Anderson",
+# "representative and client") plus new vocabulary: smith_PN/jones_PN/
+# anderson_PN (FraCaS's own recurring cast, self-declared - not in a
+# general dictionary), mp_N (excluded/hand-declared for capitalization,
+# same reason as irishman_N/person_N), labour_A/noted_A/exactly_AdN
+# (genuine dictionary gaps, self-declared). Every other word
+# (lawyer_N, accountant_N, sign_V2, contract_N, representativeMasc_N, client_N,
+# meeting_N, chairman_N, item_N, agenda_N, inhabitant_N, cambridge_PN,
+# ancient_A, greek_N, philosopher_N, software_N, fault_N, blame_V2,
+# system_N, failure_N, vote_V, new_A, read_out_V2) already exists in
+# DictEngAbs, checked directly the same way as every Section 1 bucket.
+BASE_CHECKS += [
+    (
+        "fracas_081_premise",
+        "linearize PredVP (ConjNP and_Conj (ConsNP (UsePN smith_PN) (BaseNP (UsePN jones_PN) (UsePN anderson_PN)))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "Smith , Jones and Anderson sign the contract",
+    ),
+    (
+        "fracas_081_hypothesis",
+        "linearize PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "Jones signs the contract",
+    ),
+    (
+        "fracas_082_premise",
+        "linearize PredVP (ConjNP and_Conj (ConsNP (UsePN smith_PN) (BaseNP (UsePN jones_PN) (DetCN several_Det (UseN lawyer_N))))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "Smith , Jones and several lawyers sign the contract",
+    ),
+    (
+        "fracas_083_premise",
+        "linearize PredVP (ConjNP either7or_DConj (ConsNP (UsePN smith_PN) (BaseNP (UsePN jones_PN) (UsePN anderson_PN)))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "either Smith , Jones or Anderson signs the contract",
+    ),
+    (
+        "fracas_085_premise",
+        "linearize PredVP (ConjNP and_Conj (BaseNP "
+        "(DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2))))))))) (UseN lawyer_N)) "
+        "(DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN accountant_N)))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "exactly two lawyers and exactly three accountants sign the contract",
+    ),
+    (
+        "fracas_085_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n6)))))))) (UseN lawyer_N)) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "six lawyers sign the contract",
+    ),
+    (
+        "fracas_086_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n6)))))))) (UseN accountant_N)) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "six accountants sign the contract",
+    ),
+    (
+        "fracas_088_premise",
+        "linearize PredVP (DetCN every_Det (ConjCN and_Conj (BaseCN (UseN representativeMasc_N) (UseN client_N)))) "
+        "(UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "every representative and client is at the meeting",
+    ),
+    (
+        "fracas_089_premise",
+        "linearize PredVP (DetCN every_Det (ConjCN or_Conj (BaseCN (UseN representativeMasc_N) (UseN client_N)))) "
+        "(UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "every representative or client is at the meeting",
+    ),
+    (
+        "fracas_089_hypothesis_rep",
+        "linearize PredVP (DetCN every_Det (UseN representativeMasc_N)) (UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "every representative is at the meeting",
+    ),
+    (
+        "fracas_089_hypothesis_client",
+        "linearize PredVP (DetCN every_Det (UseN client_N)) (UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "every client is at the meeting",
+    ),
+    (
+        "fracas_090_premise",
+        "linearize PredVP (DetCN (DetQuant DefArt NumSg) (UseN chairman_N)) "
+        "(ComplSlash (SlashV2a read_out_V2) (DetCN (DetQuant DefArt NumPl) "
+        "(AdvCN (UseN item_N) (PrepNP on_Prep (DetCN (DetQuant DefArt NumSg) (UseN agenda_N))))))",
+        "the chairman reads out the items on the agenda",
+    ),
+    (
+        "fracas_090_hypothesis",
+        "linearize PredVP (DetCN (DetQuant DefArt NumSg) (UseN chairman_N)) "
+        "(ComplSlash (SlashV2a read_out_V2) (DetCN every_Det "
+        "(AdvCN (UseN item_N) (PrepNP on_Prep (DetCN (DetQuant DefArt NumSg) (UseN agenda_N))))))",
+        "the chairman reads out every item on the agenda",
+    ),
+    (
+        "fracas_091_premise",
+        "linearize PredVP (DetCN (DetQuant DefArt NumPl) (RelCN (UseN person_N) "
+        "(UseRCl (TTAnt TPast ASimul) PPos (RelVP IdRP (UseComp (CompAdv "
+        "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N))))))))) "
+        "(AdvVP (UseV vote_V) (PrepNP for_Prep (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN chairman_N)))))",
+        "the people that were at the meeting vote for a new chairman",
+    ),
+    (
+        "fracas_092_premise",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (RelCN (UseN person_N) "
+        "(UseRCl (TTAnt TPast ASimul) PPos (RelVP IdRP (UseComp (CompAdv "
+        "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))))))) "
+        "(AdvVP (UseV vote_V) (PrepNP for_Prep (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN chairman_N)))))",
+        "all the people that were at the meeting vote for a new chairman",
+    ),
+    (
+        "fracas_092_hypothesis",
+        "linearize PredVP everyone_NP (AdvVP (AdvVP (UseV vote_V) (PrepNP for_Prep "
+        "(DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN chairman_N))))) "
+        "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N))))",
+        "everyone votes for a new chairman at the meeting",
+    ),
+    (
+        "fracas_094_premise",
+        "linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN inhabitant_N)) (PrepNP of_Prep (UsePN cambridge_PN))) "
+        "(AdvVP (UseV vote_V) (PrepNP for_Prep (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA labour_A) (UseN mp_N)))))",
+        "the inhabitants of Cambridge vote for a Labour MP",
+    ),
+    (
+        "fracas_095_premise",
+        "linearize PredVP (DetCN (DetQuant DefArt NumPl) (AdjCN (PositA ancient_A) (UseN greek_N))) "
+        "(UseComp (CompCN (AdjCN (PositA noted_A) (UseN philosopher_N))))",
+        "the ancient Greeks are noted philosophers",
+    ),
+    (
+        "fracas_096_premise",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (AdjCN (PositA ancient_A) (UseN greek_N)))) "
+        "(UseComp (CompCN (AdjCN (PositA noted_A) (UseN philosopher_N))))",
+        "all the ancient Greeks are noted philosophers",
+    ),
+    (
+        "fracas_096_hypothesis",
+        "linearize PredVP (DetCN every_Det (AdjCN (PositA ancient_A) (UseN greek_N))) "
+        "(UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA noted_A) (UseN philosopher_N)))))",
+        "every ancient Greek is a noted philosopher",
+    ),
+    (
+        "fracas_097_premise",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN software_N) (UseN fault_N))) "
+        "(AdvVP (PassV2 blame_V2) (PrepNP for_Prep (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN system_N) (UseN failure_N)))))",
+        "software faults are blamed for the system failure",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -931,7 +1080,31 @@ PILOT_TENSE_CHECKS = [
     ),
 ]
 
-CHECKS = BASE_CHECKS + TENSE_RECONFIRMATIONS + PILOT_TENSE_CHECKS
+# fracas_084's own hypothesis ("If Smith and Anderson did not sign the
+# contract, Jones signed the contract.") is a full conditional S built
+# from AdvS/SubjS/UseCl directly - already S-typed, not a bare Cl - so
+# it can't go through _tense_reconfirm (which assumes every BASE_CHECKS
+# entry is a bare Cl it can wrap in its own UseCl; feeding an
+# already-S-typed tree into that produces a genuine "Couldn't match
+# expected type Cl" build error, caught locally before ever reaching
+# CI). Kept as its own standalone check instead, same reasoning as
+# PILOT_TENSE_CHECKS above. Two real surprises from the actual
+# toolchain, not just this file's own guesses: negative polarity
+# contracts to "don't" (not "do not"), and AdvS's own "if..., ..."
+# placement doesn't insert a comma before the main clause.
+_FRACAS_084_HYPOTHESIS_CHECK = [
+    (
+        "fracas_084_hypothesis",
+        "linearize UttS (AdvS (SubjS if_Subj (UseCl (TTAnt TPres ASimul) PNeg "
+        "(PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN anderson_PN))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) "
+        "(UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN jones_PN) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))))))",
+        "if Smith and Anderson don't sign the contract Jones signs the contract",
+    ),
+]
+
+CHECKS = BASE_CHECKS + TENSE_RECONFIRMATIONS + PILOT_TENSE_CHECKS + _FRACAS_084_HYPOTHESIS_CHECK
 
 
 def main() -> int:

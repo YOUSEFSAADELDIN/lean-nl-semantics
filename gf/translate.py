@@ -445,6 +445,29 @@ def _restrictor_expr(cn):
         base_name = camel_name(_leaf_words(base_cn))
         vp_name = _scope_name(inner_vp)
         return f"(fun x => {base_name} x ∧ {vp_name} x)", [base_name, vp_name]
+    # A CN-conjunction - `ConjCN and_Conj (BaseCN cn1 cn2)`, "every
+    # representative and client" on its narrow-scope (N-bar-conjunction)
+    # reading - is the same "conjunction of predicates, not one fused
+    # name" story as the RelCN case above: FraCaS problem 88's own Lean
+    # encoding treats "representative and client" as the intersection
+    # restrictor `fun x => rep x ∧ client x`, matching this project's
+    # own conjunctive-restrictor convention exactly (problem 89's
+    # "representative or client" is the disjunctive analogue,
+    # `∨` instead of `∧`). Only the two-element case is handled - a
+    # longer conjoined list would need a real n-ary fold, not attempted
+    # here since no FraCaS problem so far needs one.
+    if (
+        cn.head == "ConjCN"
+        and len(cn.args) == 2
+        and cn.args[0].head in ("and_Conj", "or_Conj")
+        and cn.args[1].head == "BaseCN"
+        and len(cn.args[1].args) == 2
+    ):
+        op = "∧" if cn.args[0].head == "and_Conj" else "∨"
+        left_cn, right_cn = cn.args[1].args
+        left_name = camel_name(_leaf_words(left_cn))
+        right_name = camel_name(_leaf_words(right_cn))
+        return f"(fun x => {left_name} x {op} {right_name} x)", [left_name, right_name]
     name = camel_name(_leaf_words(cn))
     return name, [name]
 
@@ -884,6 +907,55 @@ if __name__ == "__main__":
             "PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
             "(NumNumeral (num (pot2as3 (pot1as2 pot110))))))) (UseN commissioner_N)) "
             "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))"
+        ),
+        # FraCaS Section 2 (Plurals), problems 81-97 (Section2/Batch1.lean).
+        # Most of this bucket is deliberately NOT here: 81/82/83/85/86
+        # need a ConjNP-of-named-individuals subject translated into a
+        # conjunction of atomic named Props (`smithSigned ∧ jonesSigned
+        # ∧ ...`), and 85/86 also need Section2.Plurals' own `Exactly`
+        # quantifier - both genuinely new translate.py architecture this
+        # pass doesn't build (this translator's whole design is
+        # "one quantified Cl -> one GQ.lean Prop"; a bare conjunction of
+        # named individuals is a different shape entirely, out of scope
+        # here the same way the "there are few..." existential was in
+        # Section 1). 84/91/94/95 are countermodels/independence proofs
+        # (checked directly against Batch1.lean), not translatable
+        # either way. 87 is a real theorem but its premise is itself a
+        # conjunction of two separate `Every` facts, not one clause -
+        # same "not this translator's shape" reason as 81/82/83.
+        # 89/90/92/96/97 are real theorems this translator DOES reach,
+        # added below. 88 itself is NOT among them despite looking like
+        # 89's own mirror-image: checked directly against Batch1.lean,
+        # fracas_088 is actually a countermodel (dir1/dir2, `.unknown`)
+        # over Bool-indexed stand-ins, not a named-predicate Prop -
+        # the "every representative and client" premise, on this
+        # narrow-scope reading, genuinely doesn't license "every
+        # representative" (a rep who isn't also a client breaks it),
+        # unlike 89's wide-scope "representative or client" premise,
+        # which does. Its own GF sentence is still confirmed via
+        # run_gf_tests.py independently.
+        "fracas_089 (premise)": (
+            "PredVP (DetCN every_Det (ConjCN or_Conj (BaseCN (UseN representativeMasc_N) (UseN client_N)))) "
+            "(UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))"
+        ),
+        "fracas_090 (premise)": (
+            "PredVP (DetCN (DetQuant DefArt NumSg) (UseN chairman_N)) "
+            "(ComplSlash (SlashV2a read_out_V2) (DetCN (DetQuant DefArt NumPl) "
+            "(AdvCN (UseN item_N) (PrepNP on_Prep (DetCN (DetQuant DefArt NumSg) (UseN agenda_N))))))"
+        ),
+        "fracas_092 (premise)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (RelCN (UseN person_N) "
+            "(UseRCl (TTAnt TPast ASimul) PPos (RelVP IdRP (UseComp (CompAdv "
+            "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))))))) "
+            "(AdvVP (UseV vote_V) (PrepNP for_Prep (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN chairman_N)))))"
+        ),
+        "fracas_096 (premise)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (AdjCN (PositA ancient_A) (UseN greek_N)))) "
+            "(UseComp (CompCN (AdjCN (PositA noted_A) (UseN philosopher_N))))"
+        ),
+        "fracas_097 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN software_N) (UseN fault_N))) "
+            "(AdvVP (PassV2 blame_V2) (PrepNP for_Prep (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN system_N) (UseN failure_N)))))"
         ),
     }
     for label, tree_text in examples.items():
