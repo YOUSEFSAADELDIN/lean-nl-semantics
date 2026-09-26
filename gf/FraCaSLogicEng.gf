@@ -1,6 +1,17 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
-  TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng
+  TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng,
+  -- Same 30-name exclusion as FraCaSLogic.gf's own extends line (kept
+  -- in sync with it - see that file's comment for the full story).
+  DictEng - [
+    most_Det, each_Det, both_Det, neither_Det,
+    italian_A, great_A, swedish_A, modest_A, german_A, british_A,
+      excellent_A, indispensable_A, cheap_A,
+    man_N, tenor_N, irishman_N, part_N, concert_N, fee_N, charity_N,
+      member_N, state_N, resident_N, right_N,
+    take_V2, contribute_V2, live_V, come_V,
+    europe_PN, of_Prep
+  ]
   ** open ParadigmsEng, MorphoEng, ResEng, Prelude in {
   lin
     -- PPos/PNeg excluded from TenseX above (real conflict: TenseX's own
@@ -39,7 +50,6 @@ concrete FraCaSLogicEng of FraCaSLogic =
     state_N = mkN "state" ;
     resident_N = mkN "resident" ;
     right_N = mkN "right" ;
-    win_V2 = mkV2 (mkV "win" "won" "won") ;
     take_V2 = mkV2 "take" ;
     contribute_V2 = mkV2 "contribute" ;
     live_V = mkV "live" ;
@@ -263,3 +273,11 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- past-participle happen to coincide). 3rd-singular present ("wins")
 -- and the present participle ("winning") are still regular, so still
 -- derived automatically.
+--
+-- This whole bug-hunt is also why win_V2 no longer has a hand-declared
+-- `lin` rule at all: it's the one word this grammar now takes from
+-- DictEng (see FraCaSLogic.gf's own comment on the dictionary
+-- integration pilot this motivated) - DictEng's own
+-- `win_V2 = mkV2 (IrregEng.win_V)` already had the correct irregular
+-- conjugation the whole time, via IrregEng's dedicated
+-- `win_V = irregDuplV "win" "won" "won"`.

@@ -19,14 +19,32 @@
 -- ~/gf-libs -iname 'DictEngAbs*'` finds nothing anywhere under the
 -- built libs directory, even though the module exists in the gf-rgl
 -- *source* tree) - it's a separate, much heavier build step Setup.sh
--- doesn't run. So this grammar doesn't extend it; every content word
--- and determiner it needs is declared here instead, same as
--- really_AdA always was. most_Det's own linearization is copied
--- directly from DictEngAbs's real recipe (checked against
--- gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"` - see
--- gf/NOTES.md for where mkDeterminer itself actually needs to come from
--- (MorphoEng, opened directly - NOT inherited from StructuralEng just
--- because StructuralEng happens to use it internally).
+-- doesn't run, which is why every content word and determiner this
+-- grammar needs was originally declared here by hand instead, same as
+-- really_AdA always was.
+--
+-- DICTIONARY INTEGRATION PILOT: the win_V2 bug-hunt below (three CI
+-- round-trips to get `mkV "win" "won" "won"`'s arity right) motivated
+-- actually measuring whether extending DictEngAbs/DictEng is worth it
+-- instead of hand-declaring everything - see .github/workflows/build.yml's
+-- own "Build DictEng" step and gf/NOTES.md for the measured build-time
+-- cost. Checking every one of this grammar's ~33 hand-declared words
+-- against DictEngAbs found 31 *already there*, same name, same type
+-- (most_Det, italian_A, man_N, win_V2, come_V, europe_PN, ...). As a
+-- pilot, DictEngAbs/DictEng are now extended, with 30 of those 31
+-- collisions excluded on the extends line below (kept hand-declared,
+-- unchanged) - only win_V2 is let through, now coming from the
+-- dictionary instead of a hand-declared recipe. DictEng's own
+-- `win_V2 = mkV2 (IrregEng.win_V)` (built from IrregEng's dedicated
+-- irregular-verb table, `irregDuplV "win" "won" "won"`) is exactly the
+-- correctly-conjugated entry the hand-declared version took three
+-- attempts to get right. most_Det's own linearization was originally
+-- copied directly from DictEngAbs's real recipe this same way (checked
+-- against gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"`
+-- - see gf/NOTES.md for where mkDeterminer itself actually needs to
+-- come from (MorphoEng, opened directly - NOT inherited from
+-- StructuralEng just because StructuralEng happens to use it
+-- internally).
 --
 -- Problem 33 ("An Irishman won a Nobel prize.", the first plain
 -- subject-verb-object sentence) originally used a self-declared
@@ -123,7 +141,24 @@
 -- generic `mkAdv "cheap"`, same "don't trust an RGL derivation whose
 -- exact behavior isn't pinned down, self-declare the literal string
 -- instead" pattern as most_Det/of_Prep/etc. above.
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase ** {
+abstract FraCaSLogic =
+  Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase,
+  -- Every one of these 30 is a pre-existing hand-declared word below,
+  -- kept as-is (excluded so DictEngAbs's own copy doesn't collide with
+  -- it) - of 31 total name collisions found between this grammar's own
+  -- words and DictEngAbs, only win_V2 is deliberately NOT excluded, so
+  -- it now resolves to DictEngAbs's own `win_V2 : V2` instead of the
+  -- hand-declared one.
+  DictEngAbs - [
+    most_Det, each_Det, both_Det, neither_Det,
+    italian_A, great_A, swedish_A, modest_A, german_A, british_A,
+      excellent_A, indispensable_A, cheap_A,
+    man_N, tenor_N, irishman_N, part_N, concert_N, fee_N, charity_N,
+      member_N, state_N, resident_N, right_N,
+    take_V2, contribute_V2, live_V, come_V,
+    europe_PN, of_Prep
+  ]
+  ** {
   fun
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
@@ -132,7 +167,7 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
     cheap_Adv : Adv ;
     man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N,
       member_N, state_N, resident_N, right_N : N ;
-    win_V2, take_V2, contribute_V2 : V2 ;
+    take_V2, contribute_V2 : V2 ;
     live_V, come_V : V ;
     europe_PN, pavarotti_PN : PN ;
     of_Prep : Prep ;
