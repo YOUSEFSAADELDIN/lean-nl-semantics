@@ -169,6 +169,93 @@ BASE_CHECKS = [
     ),
 ]
 
+# Problems 18-21 ("three-premise universal transitivity", GQ.lean's
+# every_trans shape) complete the bucket problem 21's own premise 1
+# started. Every word these need - european_N, person_N, individual_N,
+# travel_V, within_Prep, free_A - already exists in DictEngAbs/DictEng
+# with exactly the recipe wanted (checked directly, same as the
+# dictionary-integration work above), so none of them needed a single
+# hand-declared fun/lin rule - a first for a whole mechanism bucket.
+# _HAVE_RIGHT_VP ("have the right to live in Europe") is exactly
+# fracas_021_premise1's own VP subtree, reused verbatim - it's shared
+# by every premise below that needs it. Built with an explicit
+# paren-balance assertion (not hand-typed into each f-string) after an
+# earlier draft of this exact block had a stray extra ')' that only a
+# balance check - not eyeballing - actually caught.
+def _balanced(tree: str, label: str) -> str:
+    opens, closes = tree.count("("), tree.count(")")
+    assert opens == closes, f"{label}: unbalanced parens ({opens} open, {closes} close): {tree!r}"
+    return tree
+
+
+_HAVE_RIGHT_VP = _balanced(
+    "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+    "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))",
+    "_HAVE_RIGHT_VP",
+)
+# "can travel freely within Europe" - PositAdvAdj free_A is safe here
+# (unlike cheap_A's own idiom, see FraCaSLogicEng.gf's comment) since
+# "free" -> "freely" genuinely is the regular -ly derivation this
+# combinator performs.
+_CAN_TRAVEL_FREELY_VP = _balanced(
+    "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) "
+    "(PrepNP within_Prep (UsePN europe_PN))))",
+    "_CAN_TRAVEL_FREELY_VP",
+)
+
+
+def _relative_subject(det: str, head_n: str) -> str:
+    """DetCN det (RelCN (UseN head_n) (UseRCl ... (RelVP IdRP _HAVE_RIGHT_VP)))
+    - "<det> <head_n> who has the right to live in Europe"."""
+    return _balanced(
+        f"(DetCN {det} (RelCN (UseN {head_n}) "
+        f"(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP {_HAVE_RIGHT_VP}))))",
+        f"_relative_subject({det},{head_n})",
+    )
+
+
+BASE_CHECKS += [
+    (
+        "fracas_018_premise1",
+        f"linearize PredVP (DetCN every_Det (UseN european_N)) {_HAVE_RIGHT_VP}",
+        "every European has the right to live in Europe",
+    ),
+    (
+        "fracas_018_premise2",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) "
+        "(UseComp (CompCN (UseN person_N)))",
+        "every European is a person",
+    ),
+    (
+        "fracas_018_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'person_N')} {_CAN_TRAVEL_FREELY_VP}",
+        "every person who has the right to live in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_019_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N))) "
+        f"{_HAVE_RIGHT_VP}",
+        "all Europeans have the right to live in Europe",
+    ),
+    (
+        "fracas_020_premise1",
+        f"linearize PredVP (DetCN each_Det (UseN european_N)) {_HAVE_RIGHT_VP}",
+        "each European has the right to live in Europe",
+    ),
+    (
+        "fracas_021_premise2",
+        "linearize PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))) "
+        "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (UseN individual_N))))",
+        "all residents of member states are individuals",
+    ),
+    (
+        "fracas_021_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'individual_N')} {_CAN_TRAVEL_FREELY_VP}",
+        "every individual who has the right to live in Europe can travel freely within Europe",
+    ),
+]
+
 
 def _tense_reconfirm(label: str, cmd: str, expected: str):
     """Wraps an already-confirmed bare-`Cl` check's own tree in `UttS
