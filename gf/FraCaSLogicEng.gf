@@ -13,7 +13,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     irishman_N = mkN "Irishman" "Irishmen" ;
     nobelPrize_N = mkN "Nobel prize" ;
     win_V2 = mkV2 "win" ;
-    ComplV2 v np = insertObj (\_ => v.c2 ++ np.s ! Acc) (predV v) ;
+    ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! Acc) (predV v) ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

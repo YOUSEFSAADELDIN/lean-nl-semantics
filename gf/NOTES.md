@@ -185,6 +185,21 @@ finds it there, not in `Constructors.gf` or `ParadigmsEng.gf`), so the
 fix is to `open` `MorphoEng` directly ourselves alongside `ParadigmsEng`,
 not to rely on it being pulled in transitively through `StructuralEng`.
 
+## Two different lambda syntaxes: `\x -> e` vs `\\x => e`
+
+Copying a recipe out of RGL source verbatim and dropping a backslash
+produces a real, confusing compile error: `Unexpected token '=>'.
+Expected one of: '->'`. GF has two lambda forms, not one - `\x -> e`
+builds a plain function (arrow type `A -> B`), while `\\x => e` (double
+backslash) builds a *table* (finite function over a param type, e.g.
+`Agr => Str`). `ComplV2`'s recipe (`insertObj (\\_ => v.c2 ++ np.s !
+Acc) (predV v)`) needs the double-backslash form because `insertObj`'s
+first argument is table-typed (`(Agr => Str) -> VP -> VP`) - `insertObj`
+itself is defined with the plain single-backslash form (`\obj,vp -> ...`)
+since it's an ordinary two-argument function. When copying a recipe,
+match the backslash count exactly as printed - it's not a stylistic
+choice or a typo in the source, it's meaningful syntax.
+
 ## `mk*` sugar only works inside compiled source files
 
 The `mk*` "smart constructor" family (`mkS`, `mkCl`, `mkNP`, `mkCN`,
