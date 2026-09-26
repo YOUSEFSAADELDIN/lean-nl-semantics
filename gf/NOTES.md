@@ -150,9 +150,21 @@ word that DictEng already has a recipe for (e.g. `most_Det`), the fix is
 to copy that recipe, not the dependency: `grep` the word's own `lin` rule
 directly out of `gf-rgl/src/english/DictEng.gf` (the source clone, not
 the built libs) and reuse the same right-hand side. `most_Det`'s real
-recipe is `mkDeterminer plural "most"` - and `mkDeterminer` itself is
-already in scope via `StructuralEng` (it's what `someSg_Det`/`somePl_Det`
-are built from there too), so this adds no new dependency.
+recipe is `mkDeterminer plural "most"`.
+
+**Watch out: a module using an oper internally doesn't re-export it.**
+`someSg_Det`/`somePl_Det` in `StructuralEng.gf` are themselves built from
+`mkDeterminer`, but that's `StructuralEng`'s own private
+`open MorphoEng in {...}` at work - a module that merely `extends`
+`StructuralEng` (as this project's own concrete syntax does) does NOT
+inherit that opening. Confirmed by a real compile error: `constant not
+found: mkDeterminer` even with `StructuralEng` (and `ParadigmsEng`,
+which provides the *other* smart constructors this grammar uses - `mkA`,
+`mkN`, `mkAdA` - fine) already in scope. `mkDeterminer` is declared in
+`MorphoEng` specifically (`grep -rn "mkDeterminer :" ~/gf-rgl/src/english/`
+finds it there, not in `Constructors.gf` or `ParadigmsEng.gf`), so the
+fix is to `open` `MorphoEng` directly ourselves alongside `ParadigmsEng`,
+not to rely on it being pulled in transitively through `StructuralEng`.
 
 ## `mk*` sugar only works inside compiled source files
 

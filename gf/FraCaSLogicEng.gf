@@ -1,6 +1,6 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng
-  ** open ParadigmsEng in {
+  ** open ParadigmsEng, MorphoEng in {
   lin
     most_Det = mkDeterminer plural "most" ;
     really_AdA = mkAdA "really" ;
