@@ -206,7 +206,9 @@ _CAN_TRAVEL_FREELY_VP = _balanced(
 
 def _relative_subject(det: str, head_n: str) -> str:
     """DetCN det (RelCN (UseN head_n) (UseRCl ... (RelVP IdRP _HAVE_RIGHT_VP)))
-    - "<det> <head_n> who has the right to live in Europe"."""
+    - "<det> <head_n> that has the right to live in Europe" (IdRP's own
+    linearization here is "that", not "who" - confirmed via CI; matches
+    problem 13's own "leading tenors that are excellent")."""
     return _balanced(
         f"(DetCN {det} (RelCN (UseN {head_n}) "
         f"(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP {_HAVE_RIGHT_VP}))))",
@@ -229,7 +231,7 @@ BASE_CHECKS += [
     (
         "fracas_018_premise3",
         f"linearize PredVP {_relative_subject('every_Det', 'person_N')} {_CAN_TRAVEL_FREELY_VP}",
-        "every person who has the right to live in Europe can travel freely within Europe",
+        "every person that has the right to live in Europe can travel freely within Europe",
     ),
     (
         "fracas_019_premise1",
@@ -252,7 +254,7 @@ BASE_CHECKS += [
     (
         "fracas_021_premise3",
         f"linearize PredVP {_relative_subject('every_Det', 'individual_N')} {_CAN_TRAVEL_FREELY_VP}",
-        "every individual who has the right to live in Europe can travel freely within Europe",
+        "every individual that has the right to live in Europe can travel freely within Europe",
     ),
 ]
 

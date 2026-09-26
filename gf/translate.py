@@ -27,7 +27,7 @@ right, rather than a uniform "restrictor/scope" split.
 Two further wrinkles, both surfaced by problems 13/18-21 ("every_mp"/
 "every_trans" in GQ.lean): a restrictor CN that's itself
 relative-clause-modified (`RelCN base (UseRCl _ _ (RelVP IdRP vp))`,
-"person who has the right to live in Europe") translates to a
+"person that has the right to live in Europe") translates to a
 CONJUNCTION of two separate predicates (`_restrictor_expr`, `fun x =>
 basePred x ∧ vpPred x`), not one fused name - that's what the Lean
 side's own `every_trans`/`every_mp` hypotheses actually need, and the
@@ -415,7 +415,7 @@ def _restrictor_expr(cn):
     CNs name a single free predicate over the whole CN's own lexical
     content (the existing behavior, matching e.g. `italianMan`). A
     relative-clause-modified CN - `RelCN base (UseRCl _ _ (RelVP IdRP
-    vp))`, "person who has the right to live in Europe" - is different
+    vp))`, "person that has the right to live in Europe" - is different
     on purpose: FraCaS problems 18-21's own Lean encoding (`every_trans`
     in GQ.lean) treats this as a CONJUNCTION of two separate predicates
     (`fun x => person x ∧ right x`), not one fused name - matching that

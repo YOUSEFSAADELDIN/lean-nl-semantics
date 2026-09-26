@@ -273,8 +273,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- DictEngAbs/DictEng with exactly the recipe wanted, checked directly
 -- the same way the dictionary-integration pass above did - a whole new
 -- mechanism bucket with zero new hand-declared fun/lin rules, a first.
--- Premise 3's own construction ("every person who has the right to
--- live in Europe can travel freely within Europe") reuses problem 13's
+-- Premise 3's own construction ("every person that has the right to
+-- live in Europe can travel freely within Europe" - IdRP's own
+-- linearization is "that", not "who", matching problem 13's own
+-- "leading tenors that are excellent") reuses problem 13's
 -- already-extended relative-clause machinery (RelCN/UseRCl/RelVP/IdRP)
 -- and problem 21 premise 1's own "have the right to live in Europe" VP
 -- verbatim, adding only `can_VV` (Structural, already free) and
@@ -289,7 +291,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --   linearize PredVP
 --     (DetCN every_Det (RelCN (UseN person_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))))))
 --     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
---   => "every person who has the right to live in Europe can travel freely within Europe"
+--   => "every person that has the right to live in Europe can travel freely within Europe"
 --   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N)))
 --     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))
 --   => "all Europeans have the right to live in Europe"
@@ -310,11 +312,11 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --   linearize PredVP
 --     (DetCN every_Det (RelCN (UseN individual_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))))))
 --     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
---   => "every individual who has the right to live in Europe can travel freely within Europe"
+--   => "every individual that has the right to live in Europe can travel freely within Europe"
 --
 -- translate.py needed two real extensions to keep up with these (not
 -- just new example trees): a relative-clause-modified restrictor
--- ("person who has the right...") now translates to a CONJUNCTION of
+-- ("person that has the right...") now translates to a CONJUNCTION of
 -- two predicates (`fun x => person x ∧ right x`), matching GQ.lean's
 -- own every_trans/every_mp hypotheses exactly, not one fused name; and
 -- a definite subject NP (bare or PP-modified, "the residents of member
