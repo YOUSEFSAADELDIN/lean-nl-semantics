@@ -97,12 +97,12 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A, german_A, british_A,
-      leading_A, excellent_A, indispensable_A : A ;
+      leading_A, excellent_A, indispensable_A, cheap_A : A ;
     man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N,
       member_N, state_N, resident_N, right_N : N ;
     win_V2, take_V2, contribute_V2 : V2 ;
-    live_V : V ;
-    europe_PN : PN ;
+    live_V, come_V : V ;
+    europe_PN, pavarotti_PN : PN ;
     of_Prep : Prep ;
     ComplV2 : V2 -> NP -> VP ;
     CompoundCN : CN -> CN -> CN ;

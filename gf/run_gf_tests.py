@@ -141,6 +141,20 @@ CHECKS = [
         "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))",
         "the residents of member states have the right to live in Europe",
     ),
+    (
+        "fracas_014_premise1",
+        "linearize PredVP (DetCN neither_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
+        "(AdvVP (UseV come_V) (PositAdvAdj cheap_A))",
+        "neither leading tenor comes cheap",
+    ),
+    (
+        "fracas_014_premise2",
+        "linearize PredVP "
+        "(CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(DetCN (DetQuant DefArt NumPl) (AdjCN (PositA leading_A) (UseN tenor_N)))) "
+        "(UseComp (CompNP (UsePN pavarotti_PN)))",
+        "one of the leading tenors is Pavarotti",
+    ),
 ]
 
 

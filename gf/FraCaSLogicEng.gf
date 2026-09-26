@@ -25,6 +25,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     leading_A = mkA "leading" ;
     excellent_A = mkA "excellent" ;
     indispensable_A = mkA "indispensable" ;
+    cheap_A = mkA "cheap" ;
     man_N = mkN "man" "men" ;
     tenor_N = mkN "tenor" ;
     irishman_N = mkN "Irishman" "Irishmen" ;
@@ -41,7 +42,9 @@ concrete FraCaSLogicEng of FraCaSLogic =
     take_V2 = mkV2 "take" ;
     contribute_V2 = mkV2 "contribute" ;
     live_V = mkV "live" ;
+    come_V = mkV "come" ;
     europe_PN = mkPN "Europe" ;
+    pavarotti_PN = mkPN "Pavarotti" ;
     of_Prep = mkPrep "of" ;
     ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v) ;
     CompoundCN a b = {s = \\n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g} ;
@@ -211,3 +214,19 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --     (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))
 --     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))
 --   => "the residents of member states have the right to live in Europe"
+--
+-- FraCaS problem 14's premises ("Neither leading tenor comes cheap."/
+-- "One of the leading tenors is Pavarotti."): "comes cheap" is not the
+-- copula (UseComp is specifically "be") - it's an intransitive verb
+-- plus an adjective used adverbially (PositAdvAdj, Adverb, already
+-- extended - same function "can travel freely" already used). The
+-- partitive "one of the X" is CountNP : Det -> NP -> NP ("three of
+-- them" - Noun, already extended) with "one" built the same numeral
+-- way as problems 15/16, using pot01 (Numeral's own dedicated constant
+-- for 1, since Digit only covers 2..9):
+--   linearize PredVP (DetCN neither_Det (AdjCN (PositA leading_A) (UseN tenor_N))) (AdvVP (UseV come_V) (PositAdvAdj cheap_A))
+--   => "neither leading tenor comes cheap"
+--   linearize PredVP
+--     (CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (DetCN (DetQuant DefArt NumPl) (AdjCN (PositA leading_A) (UseN tenor_N))))
+--     (UseComp (CompNP (UsePN pavarotti_PN)))
+--   => "one of the leading tenors is Pavarotti"
