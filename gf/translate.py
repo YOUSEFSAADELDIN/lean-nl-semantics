@@ -24,6 +24,22 @@ becomes a predicate applied to it, matching Batch1.lean's own
 of the match runs GF-tree-shape -> whatever-gets-a-human-picked-name-
 right, rather than a uniform "restrictor/scope" split.
 
+Two further wrinkles, both surfaced by problems 13/18-21 ("every_mp"/
+"every_trans" in GQ.lean): a restrictor CN that's itself
+relative-clause-modified (`RelCN base (UseRCl _ _ (RelVP IdRP vp))`,
+"person that has the right to live in Europe") translates to a
+CONJUNCTION of two separate predicates (`_restrictor_expr`, `fun x =>
+basePred x ∧ vpPred x`), not one fused name - that's what the Lean
+side's own `every_trans`/`every_mp` hypotheses actually need, and the
+one place a restrictor isn't a bare predicate name. And a definite
+subject NP, whether bare (`DetCN (DetQuant DefArt _) cn`) or
+PP-modified (`AdvNP (DetCN ...) pp`, "the residents of member states"),
+resolves to `Every`, not `Some` (`_QUANTIFIER_BY_QUANT`/
+`_det_and_restrictor`) - matching how this project's own Lean proofs
+already treat a definite-plural-subject premise (fracas_005,
+fracas_021), and never for a definite NP used as an object elsewhere in
+the same sentence.
+
 Direction of the match, generally: this module always goes GF tree ->
 Lean text, never the reverse. A GF tree carries real, unambiguous
 linguistic structure (it comes from parsing/generating actual English
@@ -206,9 +222,18 @@ _QUANTIFIER_BY_DET = {
 # IndefArt ("a"/"an") is treated as existential, matching how this
 # project's own Lean `Some` already covers "a/an/some/many/..." (see
 # LeanNLSemantics/FraCaS/Section1/GQ.lean's doc comment on `Some`).
+# DefArt ("the") is treated as universal when it's the SUBJECT's own
+# determiner ("the residents of member states have..."/"the really
+# ambitious tenors are Italian") - this only ever fires from
+# `_resolve_subject` (never for a definite NP used as an object, e.g.
+# "the concert" inside a PP), matching this project's own Lean
+# convention for a definite-plural-subject premise (fracas_005,
+# fracas_021: `Every ambitious italianPred`/`Every residentMemberState
+# right`, not `Some`).
 _QUANTIFIER_BY_QUANT = {
     "no_Quant": "No",
     "IndefArt": "Some",
+    "DefArt": "Every",
 }
 
 
@@ -315,11 +340,39 @@ _QUANTIFIER_BY_PREDET = {
 }
 
 
+def _det_and_restrictor(np):
+    """Returns (det, restrictor_tree) for an NP that's either a bare
+    `DetCN det cn` or a PP-modified `AdvNP (DetCN det cn) pp` - "the
+    residents of member states" (problem 21). For the AdvNP case,
+    restrictor_tree is the WHOLE AdvNP, not just its inner cn: the PP's
+    own lexical content has to fold into the restrictor's name too
+    ("the residents of member states" is one fused restrictor,
+    `residentMemberState`, matching Batch1.lean's own variable name -
+    not just `resident`, dropping "member states" on the floor)."""
+    if np.head == "DetCN" and len(np.args) == 2:
+        det, cn = np.args
+        return det, cn
+    if np.head == "AdvNP" and len(np.args) == 2:
+        inner_np, _pp = np.args
+        if inner_np.head != "DetCN" or len(inner_np.args) != 2:
+            raise NotImplementedError(
+                "AdvNP's own wrapped NP is only handled as a bare DetCN so far, "
+                f"got head={inner_np.head!r}"
+            )
+        det, _inner_cn = inner_np.args
+        return det, np
+    raise NotImplementedError(
+        f"only a DetCN or a PP-modified AdvNP(DetCN) subject is handled so far, "
+        f"got head={np.head!r}"
+    )
+
+
 def _resolve_subject(subject):
-    """Returns (quantifier, restrictor_cn_tree) for a Cl's subject NP,
-    handling both `DetCN det cn` and `PredetNP predet (DetCN _ cn)`."""
-    if subject.head == "DetCN" and len(subject.args) == 2:
-        det, cn = subject.args
+    """Returns (quantifier, restrictor_tree) for a Cl's subject NP,
+    handling `DetCN det cn`, `AdvNP (DetCN det cn) pp`, and either of
+    those wrapped in `PredetNP predet (...)`."""
+    if subject.head in ("DetCN", "AdvNP"):
+        det, cn = _det_and_restrictor(subject)
         return _resolve_quantifier(det), cn
     if subject.head == "PredetNP" and len(subject.args) == 2:
         predet, np = subject.args
@@ -328,17 +381,12 @@ def _resolve_subject(subject):
                 f"predeterminer {predet.head!r} has no known Lean mapping yet "
                 "(see _QUANTIFIER_BY_PREDET)"
             )
-        if np.head != "DetCN" or len(np.args) != 2:
-            raise NotImplementedError(
-                "PredetNP's own NP is only handled as a bare DetCN so far, "
-                f"got head={np.head!r}"
-            )
-        _det, cn = np.args
+        _det, cn = _det_and_restrictor(np)
         return _QUANTIFIER_BY_PREDET[predet.head], cn
     raise NotImplementedError(
-        "only a determiner-quantified subject (DetCN det cn) or a "
-        "predeterminer-quantified one (PredetNP predet (DetCN _ cn)) is "
-        f"handled so far, got subject head={subject.head!r}"
+        "only a determiner-quantified subject (DetCN det cn), a PP-modified "
+        "one (AdvNP (DetCN det cn) pp), or either wrapped in a predeterminer "
+        f"(PredetNP predet (...)) is handled so far, got subject head={subject.head!r}"
     )
 
 
@@ -360,6 +408,35 @@ def _scope_name(vp) -> str:
     ):
         return camel_name(_leaf_words(vp.args[1]))
     return camel_name(_leaf_words(vp))
+
+
+def _restrictor_expr(cn):
+    """Returns (expr, free_predicates) for a Cl's restrictor CN. Most
+    CNs name a single free predicate over the whole CN's own lexical
+    content (the existing behavior, matching e.g. `italianMan`). A
+    relative-clause-modified CN - `RelCN base (UseRCl _ _ (RelVP IdRP
+    vp))`, "person that has the right to live in Europe" - is different
+    on purpose: FraCaS problems 18-21's own Lean encoding (`every_trans`
+    in GQ.lean) treats this as a CONJUNCTION of two separate predicates
+    (`fun x => person x ∧ right x`), not one fused name - matching that
+    shape exactly is what "faithfully as possible" means here, the same
+    principle behind `_try_translate_partitive_identity`'s inversion."""
+    if (
+        cn.head == "RelCN"
+        and len(cn.args) == 2
+        and cn.args[1].head == "UseRCl"
+        and len(cn.args[1].args) == 3
+        and cn.args[1].args[2].head == "RelVP"
+        and len(cn.args[1].args[2].args) == 2
+        and cn.args[1].args[2].args[0].head == "IdRP"
+    ):
+        base_cn = cn.args[0]
+        inner_vp = cn.args[1].args[2].args[1]
+        base_name = camel_name(_leaf_words(base_cn))
+        vp_name = _scope_name(inner_vp)
+        return f"(fun x => {base_name} x ∧ {vp_name} x)", [base_name, vp_name]
+    name = camel_name(_leaf_words(cn))
+    return name, [name]
 
 
 @dataclass
@@ -426,12 +503,27 @@ def translate_cl(t) -> Translation:
 
     quant, cn = _resolve_subject(subject)
 
-    restrictor_name = camel_name(_leaf_words(cn))
+    # Bare-plural + relative-clause subjects ("leading tenors that are
+    # excellent are indispensable", problem 13) are a genuine ambiguity
+    # this translator can't resolve from syntax alone: `DetQuant IndefArt
+    # NumPl` is GF's own encoding for an article-less bare plural, used
+    # both for real existentials ("tenors are singing") and for FraCaS's
+    # own "characterizing generic construed as universal" idiom - which
+    # is what this specific problem needs (`every_mp`'s own `Every (fun
+    # x => leadingTenor x ∧ excellent x) indispensable`, not `Some`).
+    # Narrowly overridden here (not a blanket "bare plural = Every" rule,
+    # which would be wrong for a genuine existential bare plural) for
+    # exactly the shape that's actually confirmed to need it: a
+    # RelCN-restricted bare plural.
+    if quant == "Some" and cn.head == "RelCN":
+        quant = "Every"
+
+    restrictor_expr, restrictor_preds = _restrictor_expr(cn)
     scope_name = _scope_name(vp)
 
     return Translation(
-        lean_prop=f"{quant} {restrictor_name} {scope_name}",
-        free_predicates=[restrictor_name, scope_name],
+        lean_prop=f"{quant} {restrictor_expr} {scope_name}",
+        free_predicates=[*restrictor_preds, scope_name],
     )
 
 
@@ -518,6 +610,48 @@ if __name__ == "__main__":
             "(CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
             "(DetCN (DetQuant DefArt NumPl) (AdjCN (PositA leading_A) (UseN tenor_N)))) "
             "(UseComp (CompNP (UsePN pavarotti_PN)))"
+        ),
+        "fracas_013 (premise 2)": (
+            "PredVP (DetCN (DetQuant IndefArt NumPl) "
+            "(RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) "
+            "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP (PositA excellent_A))))))) "
+            "(UseComp (CompAP (PositA indispensable_A)))"
+        ),
+        "fracas_021 (premise 1)": (
+            "PredVP "
+            "(AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+            "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N))))) "
+            "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+            "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))"
+        ),
+        "fracas_018 (premise 1)": (
+            "PredVP (DetCN every_Det (UseN european_N)) "
+            "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+            "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))"
+        ),
+        "fracas_018 (premise 2)": (
+            "PredVP (DetCN every_Det (UseN european_N)) (UseComp (CompCN (UseN person_N)))"
+        ),
+        "fracas_018 (premise 3)": (
+            "PredVP (DetCN every_Det (RelCN (UseN person_N) "
+            "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP "
+            "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+            "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN))))))))) "
+            "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) "
+            "(PrepNP within_Prep (UsePN europe_PN))))"
+        ),
+        "fracas_021 (premise 2)": (
+            "PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+            "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))) "
+            "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (UseN individual_N))))"
+        ),
+        "fracas_021 (premise 3)": (
+            "PredVP (DetCN every_Det (RelCN (UseN individual_N) "
+            "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP "
+            "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+            "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN))))))))) "
+            "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) "
+            "(PrepNP within_Prep (UsePN europe_PN))))"
         ),
     }
     for label, tree_text in examples.items():

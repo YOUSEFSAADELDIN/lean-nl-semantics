@@ -265,3 +265,63 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- `win_V2 = mkV2 (IrregEng.win_V)` already had the correct irregular
 -- conjugation the whole time, via IrregEng's dedicated
 -- `win_V = irregDuplV "win" "won" "won"`.
+--
+-- FraCaS problems 18-21 ("three-premise universal transitivity",
+-- GQ.lean's every_trans shape) complete the bucket problem 21's own
+-- premise 1 started - and every word they need (european_N, person_N,
+-- individual_N, travel_V, within_Prep, free_A) already exists in
+-- DictEngAbs/DictEng with exactly the recipe wanted, checked directly
+-- the same way the dictionary-integration pass above did - a whole new
+-- mechanism bucket with zero new hand-declared fun/lin rules, a first.
+-- Premise 3's own construction ("every person that has the right to
+-- live in Europe can travel freely within Europe" - IdRP's own
+-- linearization is "that", not "who", matching problem 13's own
+-- "leading tenors that are excellent") reuses problem 13's
+-- already-extended relative-clause machinery (RelCN/UseRCl/RelVP/IdRP)
+-- and problem 21 premise 1's own "have the right to live in Europe" VP
+-- verbatim, adding only `can_VV` (Structural, already free) and
+-- `PositAdvAdj free_A` for "freely" - safe here (unlike cheap_A's own
+-- idiom above) since "free" -> "freely" genuinely is the regular -ly
+-- derivation this combinator performs:
+--   linearize PredVP (DetCN every_Det (UseN european_N))
+--     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))
+--   => "every European has the right to live in Europe"
+--   linearize PredVP (DetCN every_Det (UseN european_N)) (UseComp (CompCN (UseN person_N)))
+--   => "every European is a person"
+--   linearize PredVP
+--     (DetCN every_Det (RelCN (UseN person_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "every person that has the right to live in Europe can travel freely within Europe"
+--   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N)))
+--     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))
+--   => "all Europeans have the right to live in Europe"
+--   linearize PredVP (DetCN each_Det (UseN european_N))
+--     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))
+--   => "each European has the right to live in Europe"
+--
+-- Problem 21's remaining premises 2/3 (premise 1 was already confirmed
+-- above): premise 2 mirrors problem 3's own "all Italian men" shape,
+-- just with the restrictor itself PP-modified (PredetNP all_Predet
+-- wrapping an AdvNP, not a bare DetCN); premise 3 mirrors 18's own
+-- premise 3, with individual_N (DictEngAbs, already available) in
+-- place of person_N:
+--   linearize PredVP
+--     (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N))))))
+--     (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (UseN individual_N))))
+--   => "all residents of member states are individuals"
+--   linearize PredVP
+--     (DetCN every_Det (RelCN (UseN individual_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "every individual that has the right to live in Europe can travel freely within Europe"
+--
+-- translate.py needed two real extensions to keep up with these (not
+-- just new example trees): a relative-clause-modified restrictor
+-- ("person that has the right...") now translates to a CONJUNCTION of
+-- two predicates (`fun x => person x ∧ right x`), matching GQ.lean's
+-- own every_trans/every_mp hypotheses exactly, not one fused name; and
+-- a definite subject NP (bare or PP-modified, "the residents of member
+-- states") now resolves to `Every`, matching how fracas_005/fracas_021
+-- already treat a definite-plural-subject premise. Both were latent
+-- gaps in translate.py, not regressions from this bucket's own work -
+-- problem 13's own relative clause was confirmed via CI long before
+-- this, just never previously fed through translate.py at all.
