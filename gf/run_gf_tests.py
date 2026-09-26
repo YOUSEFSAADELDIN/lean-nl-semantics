@@ -116,7 +116,7 @@ CHECKS = [
         "(RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) "
         "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP (PositA excellent_A))))))) "
         "(UseComp (CompAP (PositA indispensable_A)))",
-        "leading tenors who are excellent are indispensable",
+        "leading tenors that are excellent are indispensable",
     ),
     (
         # Re-testing the UttS/tense hypothesis: NOTES.md previously found

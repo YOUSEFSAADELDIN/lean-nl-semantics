@@ -174,11 +174,18 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- FraCaS problem 13's second premise ("Leading tenors who are excellent
 -- are indispensable."): the first relative clause. RelCN/UseRCl (Noun/
 -- Sentence, already extended) plus RelVP/IdRP (Relative, newly
--- extended) build "who are excellent" as a CN modifier. The subject is
--- a bare plural (DetQuant IndefArt NumPl, no article - same mechanism
--- as problem 3's "all"). "leading" is a plain adjective, not derived
--- from lead_V via VerbCN (stale, doesn't exist - see gf/NOTES.md):
+-- extended) build the relative clause as a CN modifier. IdRP ("the
+-- default/unmarked relative pronoun") realizes as "that" in English,
+-- not "who" - a real, current, cross-language-generic choice (its own
+-- source comment: "since 5/6/2016 default for IdRP"), not a bug - same
+-- category of harmless divergence as "wins" vs "won". The subject is a
+-- bare plural (DetQuant IndefArt NumPl, no article - same mechanism as
+-- problem 3's "all"). "leading" is a plain adjective, not derived from
+-- lead_V via VerbCN (stale, doesn't exist - see gf/NOTES.md). This was
+-- also the sentence that surfaced the real TenseX gap below ("[RelCN]"
+-- placeholder output before that fix, since UseRCl's own TTAnt/PPos was
+-- affected the exact same way UseCl's was):
 --   linearize PredVP
 --     (DetCN (DetQuant IndefArt NumPl) (RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP (PositA excellent_A)))))))
 --     (UseComp (CompAP (PositA indispensable_A)))
---   => "leading tenors who are excellent are indispensable"
+--   => "leading tenors that are excellent are indispensable"
