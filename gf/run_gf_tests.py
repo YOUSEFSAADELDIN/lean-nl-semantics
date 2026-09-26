@@ -196,13 +196,15 @@ TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 # conjugation actually differs correctly, not just TPres's already-
 # confirmed path. Picked as pilots (rather than converting every
 # sentence's tense outright) precisely because this is genuinely new
-# ground - past/future have never been checked via CI before. This
-# pilot is what FIRST caught the "winned" bug - but switching problem
-# 33 from the self-declared ComplV2/predV to the genuine RGL
-# ComplSlash/SlashV2a combinator did NOT fix it (still "winned"), so
-# the fault isn't in VP-building after all. win_v_tense_diagnostic
-# below narrows it further: same `mkV "win" "won"` call, tested
-# through a bare V (UseV) with no V2/ComplSlash/ComplV2 involved.
+# ground - past/future have never been checked via CI before.
+#
+# This pilot is what caught win_V2's own latent bug: `mkV2 "win"`
+# derives a fully regular verb, so TPast originally gave "winned". A
+# temporary bare-V diagnostic (since removed) proved the fault was in
+# `mkV` itself, not V2-wrapping or VP-building - see FraCaSLogicEng.gf's
+# own comment on win_V2 for the full elimination story. Fixed via
+# `mkV "win" "won" "won"` (the 3-argument form, all principal parts
+# explicit).
 _FRACAS_033_TREE = (
     "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
     "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
@@ -218,12 +220,6 @@ PILOT_TENSE_CHECKS = [
         "fracas_033_future_pilot",
         f"linearize UttS (UseCl (TTAnt TFut ASimul) PPos ({_FRACAS_033_TREE}))",
         "an Irishman will win a Nobel prize",
-    ),
-    (
-        "win_v_tense_diagnostic",
-        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos "
-        "(PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) (UseV winDiag_V)))",
-        "an Irishman won",
     ),
 ]
 

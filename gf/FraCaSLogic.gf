@@ -33,18 +33,19 @@
 -- `ComplV2 : V2 -> NP -> VP`, copied from Backward.gf/BackwardEng.gf's
 -- own recipe (`insertObj (\_ => v.c2 ++ np.s ! NPAcc) (predV v)`,
 -- needed because Backward.gf has the exact same "not part of Setup.sh's
--- build output" problem DictEngAbs did). That self-declared combinator
--- turned out to have its own real bug: under `TPast`, it produced "won"
--- -> "winned" (the past-tense pilot in run_gf_tests.py caught this) -
--- `predV`/`insertObj` from ResEng apparently don't thread a V's own
--- irregular preterite through correctly, even though present tense
--- ("wins") came out right. Since `ComplSlash (SlashV2a v2) np` (Verb,
--- already extended - the SAME combinator problems 15/16/21 already use
--- for their own transitive objects) is a genuine RGL combinator that's
--- already proven correct under full tense-wrapping, problem 33 was
--- switched to it instead and the self-declared `ComplV2`/`predV` hack
--- was deleted outright - no sentence needs it anymore, and it was
--- wrong.
+-- build output" problem DictEngAbs did). The past-tense pilot in
+-- run_gf_tests.py caught a real bug here - under `TPast`, "won" came
+-- out "winned" - and `ComplV2`/`predV` was the first, entirely
+-- reasonable suspect. It turned out NOT to be the cause: swapping in
+-- `ComplSlash (SlashV2a v2) np` instead (Verb, already extended - the
+-- same combinator problems 15/16/21 already use for their own
+-- transitive objects, and proven correct under full tense-wrapping)
+-- made no difference - still "winned". The real cause was win_V2's own
+-- `mkV` call (see FraCaSLogicEng.gf's comment on win_V2 for the full
+-- elimination story). `ComplSlash`/`SlashV2a` was kept anyway once the
+-- real fix landed - it's a genuine RGL combinator doing the same job
+-- the self-declared `ComplV2`/`predV` hack was for, so there was no
+-- reason to keep the hack around once nothing needed it.
 --
 -- each_Det (problems 4, 18-20 etc: "each Italian tenor"/"each
 -- European") is declared directly below rather than extending
@@ -133,18 +134,6 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
       member_N, state_N, resident_N, right_N : N ;
     win_V2, take_V2, contribute_V2 : V2 ;
     live_V, come_V : V ;
-    -- winDiag_V : V is a temporary diagnostic, not a real FraCaS
-    -- sentence - see run_gf_tests.py's win_v_tense_diagnostic. The
-    -- ComplSlash/SlashV2a switch for problem 33 (see the comment above)
-    -- did NOT fix the TPast "winned" bug, meaning the fault isn't in
-    -- ComplV2/predV/insertObj after all. Testing `mkV "win" "won"`
-    -- through a bare V (UseV), with no V2/ComplSlash/ComplV2 involved
-    -- at all, confirmed it's mkV's own 2-argument form at fault: still
-    -- "winned" even with no V2/VP-building in the picture whatsoever.
-    -- Now testing the 3-argument form instead, `mkV "win" "won" "won"`
-    -- (infinitive, preterite, past-participle, all explicit) - see
-    -- FraCaSLogicEng.gf's own updated comment on win_V2.
-    winDiag_V : V ;
     europe_PN, pavarotti_PN : PN ;
     of_Prep : Prep ;
     CompoundCN : CN -> CN -> CN ;
