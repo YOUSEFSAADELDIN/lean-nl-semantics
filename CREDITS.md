@@ -44,6 +44,13 @@ repository, so their licenses don't affect this project's own:
   companion GF treebank. Consulted for how a GF-to-proof-assistant
   pipeline can be structured (relevant to the GF integration work
   ahead); no `.v`, `.hs`, `.gf`, or `.pl` files from either were copied.
+  `gf-rgl`'s own bundled copy of this same treebank data
+  (`src/english/treebank.txt`, not part of this repo) is used the same
+  reference-only way during Phase 3 grammar work: it's read to identify
+  which RGL functions a target sentence needs and to cross-check a
+  design, but every tree actually committed to `gf/FraCaSLogic*.gf` is
+  independently written using the RGL's own LGPL/BSD public API, never
+  copied from it verbatim.
 - Grammatical Framework itself (`www.grammaticalframework.org`,
   `gf-core`, `gf-rgl`) and related tooling (Informath, GFLean,
   ProofBridge, Mathesis) — background reading for the GF integration
