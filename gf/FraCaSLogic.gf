@@ -22,16 +22,20 @@
 -- (MorphoEng, opened directly - NOT inherited from StructuralEng just
 -- because StructuralEng happens to use it internally).
 --
--- Backward (a plain, RGL-labeled-obsolete-but-supported module, not the
--- risky Syntax/SyntaxEng-style interface bundling) is extended for
--- ComplV2 : V2 -> NP -> VP - the plain transitive-verb VP constructor,
--- needed for the first subject-verb-object sentence shape (problem 33,
--- "An Irishman won a Nobel prize.").
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Backward ** {
+-- ComplV2 : V2 -> NP -> VP (the plain transitive-verb VP constructor,
+-- needed for the first subject-verb-object sentence shape, problem 33
+-- "An Irishman won a Nobel prize.") is declared directly below rather
+-- than extending Backward (where the RGL itself puts it) - Backward.gf
+-- has the exact same problem DictEngAbs did: it isn't part of
+-- Setup.sh's build output either (same "File X.gf does not exist"
+-- error, confirmed the same way). Its real recipe is copied from
+-- gf-rgl/src/english/BackwardEng.gf instead - see gf/NOTES.md.
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
   fun
     most_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A : A ;
     man_N, tenor_N, irishman_N, nobelPrize_N : N ;
     win_V2 : V2 ;
+    ComplV2 : V2 -> NP -> VP ;
 }

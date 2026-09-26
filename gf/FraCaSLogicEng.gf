@@ -1,6 +1,6 @@
 concrete FraCaSLogicEng of FraCaSLogic =
-  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, BackwardEng
-  ** open ParadigmsEng, MorphoEng in {
+  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng
+  ** open ParadigmsEng, MorphoEng, ResEng in {
   lin
     most_Det = mkDeterminer plural "most" ;
     really_AdA = mkAdA "really" ;
@@ -13,6 +13,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     irishman_N = mkN "Irishman" "Irishmen" ;
     nobelPrize_N = mkN "Nobel prize" ;
     win_V2 = mkV2 "win" ;
+    ComplV2 v np = insertObj (\_ => v.c2 ++ np.s ! Acc) (predV v) ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -61,9 +62,9 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- YET CONFIRMED: the first subject-verb-object sentence shape (every
 -- prior one was copula/control-verb - "is"/"are"/"wants to be"). The
 -- object is itself a full determiner-quantified NP, same as the
--- subject, built from the plain transitive-VP constructor ComplV2 (in
--- Backward/BackwardEng - see gf/FraCaSLogic.gf's own comment on why
--- that module, not Verb, has it). IndefArt (from Noun, already in
+-- subject, built from the plain transitive-VP constructor ComplV2 -
+-- self-declared above (see gf/FraCaSLogic.gf's own comment on why, not
+-- extended from Backward/BackwardEng). IndefArt (from Noun, already in
 -- scope) is the a/an quantifier; the RGL picks "a" vs "an" for us
 -- automatically based on the following word. Note this project's
 -- target category Cl is tenseless (see the file-top comment), so the

@@ -135,6 +135,25 @@ own abstract module collides with it (`cannot unify ... in module
 Structural with ... in module <ours>`). Reuse the existing one; only
 declare genuinely new content words (`italian_A`, `tenor_N`, etc.).
 
+## Not every RGL module Setup.sh's build is missing is *just* the dictionary
+
+`Backward.gf`/`BackwardEng.gf` (the module with `ComplV2`, the plain
+transitive-verb VP constructor) hit the exact same "File X.gf does not
+exist" error `DictEngAbs` did, confirming this isn't a one-off special
+case about the dictionary specifically - `Setup.sh`'s build output is
+missing more than one module the gf-rgl *source* tree has. **When a
+needed function's home module fails to load with "File X.gf does not
+exist," don't assume it's unbuildable - just self-declare that function
+too**, the same recipe as below: find its real linearization in the
+source clone (`grep` the function name in the relevant `src/english/*.gf`
+file), and copy the right-hand side directly, opening whatever resource
+module(s) that recipe itself depends on (same as `mkDeterminer` below).
+`ComplV2`'s real recipe (from `BackwardEng.gf`) is
+`insertObj (\_ => v.c2 ++ np.s ! Acc) (predV v)`, needing `insertObj`
+and `predV` from `ResEng` (a resource module, `open`ed directly - same
+"open it yourself, don't rely on inheriting it" situation as
+`mkDeterminer`/`MorphoEng` below).
+
 ## `DictEngAbs`/`DictEng` (the general dictionary) aren't in `Setup.sh`'s build output
 
 `Setup.sh`'s default build (see above) does **not** produce
