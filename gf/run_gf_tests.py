@@ -105,7 +105,7 @@ CHECKS = [
     (
         "fracas_016",
         "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
-        "(NumNumeral (num (pot0as1 (pot0 n2))))))) (UseN tenor_N)) "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2))))))))) (UseN tenor_N)) "
         "(AdvVP (ComplSlash (SlashV2a contribute_V2) (DetCN (DetQuant (PossPron they_Pron) NumPl) (UseN fee_N))) "
         "(PrepNP to_Prep (MassNP (UseN charity_N))))",
         "at most two tenors contribute their fees to charity",
