@@ -24,9 +24,17 @@ semantics) library, for comparing the two approaches.
   project's CN-as-type semantics to `linglib`'s CN-as-predicate
   semantics over a shared entity domain, built as its own separate Lake
   package so it can't affect the main library's build.
-- **Not yet started**: a Grammatical Framework (GF) grammar to parse
-  English (and eventually other languages GF supports) directly into
-  these Lean terms, rather than each sentence being hand-formalized.
+- **GF integration** (`gf/`, in progress): a Grammatical Framework
+  grammar and a Python translator, aimed at producing these Lean terms
+  from parsed English (and eventually other languages GF supports)
+  rather than each sentence being hand-formalized. The toolchain and a
+  first sentence shape (a determiner-quantified subject predicated of a
+  verb phrase — covers FraCaS problems like 2 and 7) are proven working
+  end to end: GF itself doesn't run in this repo's own CI sandbox, so
+  the grammar side was built and confirmed on a separate machine — see
+  `gf/NOTES.md` for the full setup and every real gotcha hit along the
+  way, and `gf/translate.py` for the (tested, working) Lean-term
+  translator built on top of it.
 
 ## Layout
 
@@ -113,14 +121,24 @@ consistency check, not a blind-prediction accuracy score.
   sections.
 - **linglib bridge** — done. A separate Lake package connecting this
   project's CN-as-type semantics to linglib's CN-as-predicate semantics.
-- **GF integration** (next up) — a Grammatical Framework grammar that
-  parses natural language sentences directly into the Lean terms this
-  project already proves things about, rather than each sentence being
-  hand-formalized. GF's resource grammar library covers many languages
-  under one abstract syntax, so the intent is for this to not be
-  English-only over time: a language-agnostic abstract syntax plus a
-  translator into Lean, with per-language concrete syntax added
-  incrementally.
+- **GF integration** (in progress, `gf/`) — a Grammatical Framework
+  grammar producing the Lean terms this project already proves things
+  about, rather than each sentence being hand-formalized. The toolchain
+  and translator are proven working end to end for a first sentence
+  shape (see `gf/NOTES.md`/`gf/translate.py`); free parsing against
+  GF's own full English grammar turned out not to be usable for this —
+  it's built to be maximally permissive and produces an effectively
+  unbounded number of alternate readings for even a simple sentence —
+  so sentences are hand-built as GF abstract trees and checked against
+  the target English via `linearize`, the same way FraCoq's own
+  FraCaS-treebank was built. GF's resource grammar library covers many
+  languages under one abstract syntax, so the intent is still for this
+  to not be English-only over time: the abstract syntax and the
+  Lean-term translator are both language-agnostic already, with
+  per-language concrete syntax to be added incrementally. Next: cover
+  more sentence shapes (negation, relative clauses, more of Section 1's
+  quantifiers), then wire the translator's output into real `Problem`
+  proof obligations rather than standalone propositions.
 - **LLM-assisted fallback** — for sentences outside the grammar's
   coverage, an LLM-based formalization path checked against the
   grammar's own output where both exist.
