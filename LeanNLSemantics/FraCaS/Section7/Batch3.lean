@@ -141,14 +141,17 @@ end P288
 /-! ## Problem 289: achievements are near-instantaneous -/
 
 section P289
+variable (discoveryDuration : Nat)
 
 /-- "Discovered a new species in two hours" bounds *when* the
 (near-instantaneous) discovery happened, but doesn't mean two hours
 were *spent* discovering it — the achievement/accomplishment contrast
-with 284's "in two hours" reading. -/
-theorem fracas_289_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
-
-theorem fracas_289_dir2 : True ∧ True := ⟨trivial, trivial⟩
+with 284's "in two hours" reading. Unlike several of this section's
+other aktionsart contrasts, FraCaS's own gold answer here is a clean
+`.no`, not `.unknown`: an achievement's near-zero duration (an assumed
+connecting fact, `discoveryDuration = 0`) directly refutes "spent two
+hours discovering". -/
+theorem fracas_289 : discoveryDuration = 0 → discoveryDuration ≠ 2 := by omega
 
 end P289
 
