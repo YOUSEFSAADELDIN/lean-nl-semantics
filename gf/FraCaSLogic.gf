@@ -196,7 +196,20 @@ abstract FraCaSLogic =
     everything_NP, everywhere_Adv, except_Prep, for_Prep, from_Prep, have_V2,
     he_Pron, here_Adv, how8many_IDet, how_IAdv, i_Pron, if_Subj, in_Prep,
     irishman_N, it_Pron, many_Det, much_Det, must_VV, no_Quant, nobody_NP,
-    nothing_NP, on_Prep, only_Predet, or_Conj, quite_Adv, she_Pron, so_AdA,
+    nothing_NP, on_Prep, only_Predet, or_Conj,
+    -- person_N joins irishman_N here as a second word excluded and
+    -- hand-declared instead of taken from the dictionary as-is - found
+    -- the same way irishman_N was (a real CI failure, not a
+    -- precautionary check): DictEng's own `person_N = mkN masculine
+    -- (mkN "person" "persons")` regularly pluralizes to "persons", but
+    -- problems 26-28's own bare-plural premises ("all Europeans are
+    -- people") need the actual irregular plural "people" - a real,
+    -- separate dictionary entry (`people_N = mkN "people" (variants
+    -- {"people"; "peoples"})`), not a second form of `person_N` at all,
+    -- so there's no single already-existing word with the right
+    -- sg/pl pair to source from.
+    person_N,
+    quite_Adv, she_Pron, so_AdA,
     somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
     there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
     under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP, whatSg_IP, when_IAdv,
@@ -228,7 +241,7 @@ abstract FraCaSLogic =
     -- Left free via the extends line instead, same as every other
     -- DictEngAbs collision above.
     cheap_Adv : Adv ;
-    irishman_N, nobelPrize_N : N ;
+    irishman_N, nobelPrize_N, person_N : N ;
     pavarotti_PN : PN ;
     CompoundCN : CN -> CN -> CN ;
     -- aLotOf_Det : Det ("a lot of", problems 30-32's "spends a lot of

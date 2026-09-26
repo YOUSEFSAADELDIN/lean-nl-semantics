@@ -1,11 +1,11 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
   TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng,
-  -- Same 75-name exclusion as FraCaSLogic.gf's own extends line (kept
-  -- in sync with it - see that file's comment for the full story: only
-  -- irishman_N is still excluded from this grammar's own 31 collisions
-  -- - the rest now come from DictEng - plus the 74 against
-  -- StructuralEng's own closed-class words).
+  -- Same exclusion as FraCaSLogic.gf's own extends line (kept in sync
+  -- with it - see that file's comment for the full story: irishman_N
+  -- and person_N are the only two words still excluded from this
+  -- grammar's own 31 original collisions - the rest come from DictEng -
+  -- plus the 74 against StructuralEng's own closed-class words).
   DictEng - [
     above_Prep, after_Prep, all_Predet, almost_AdA, almost_AdN,
     although_Subj, always_AdV, and_Conj, at_least_AdN, because_Subj,
@@ -14,7 +14,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     everything_NP, everywhere_Adv, except_Prep, for_Prep, from_Prep, have_V2,
     he_Pron, here_Adv, how8many_IDet, how_IAdv, i_Pron, if_Subj, in_Prep,
     irishman_N, it_Pron, many_Det, much_Det, must_VV, no_Quant, nobody_NP,
-    nothing_NP, on_Prep, only_Predet, or_Conj, quite_Adv, she_Pron, so_AdA,
+    nothing_NP, on_Prep, only_Predet, or_Conj, person_N, quite_Adv, she_Pron, so_AdA,
     somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
     there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
     under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP, whatSg_IP, when_IAdv,
@@ -41,6 +41,11 @@ concrete FraCaSLogicEng of FraCaSLogic =
     -- Irishman" capitalized).
     irishman_N = mkN "Irishman" "Irishmen" ;
     nobelPrize_N = mkN "Nobel prize" ;
+    -- person_N is the second word kept hand-declared alongside
+    -- irishman_N (see FraCaSLogic.gf's comment on why): DictEng's own
+    -- version regularly pluralizes to "persons", but this project's
+    -- confirmed premises need the actual irregular plural "people".
+    person_N = mkN "person" "people" ;
     pavarotti_PN = mkPN "Pavarotti" ;
     CompoundCN a b = {s = \\n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g} ;
     aLotOf_Det = mkDeterminer singular "a lot of" ;
