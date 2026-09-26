@@ -24,3 +24,8 @@ import LeanNLSemantics.FraCaS.Section2.Batch2
 import LeanNLSemantics.FraCaS.Section3.Anaphora
 import LeanNLSemantics.FraCaS.Section3.Batch1
 import LeanNLSemantics.FraCaS.Section3.Batch2
+import LeanNLSemantics.FraCaS.Section4.Ellipsis
+import LeanNLSemantics.FraCaS.Section4.Batch1
+import LeanNLSemantics.FraCaS.Section4.Batch2
+import LeanNLSemantics.FraCaS.Section4.Batch3
+import LeanNLSemantics.FraCaS.Section4.Batch4
