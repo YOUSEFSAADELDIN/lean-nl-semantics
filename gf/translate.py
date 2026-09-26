@@ -235,11 +235,8 @@ def translate_tree_text(text: str, *, domain: str = "A") -> str:
 
 
 if __name__ == "__main__":
-    # fracas_002 and fracas_007 are confirmed end-to-end via `linearize`
-    # (gf/FraCaSLogicEng.gf / gf/NOTES.md). fracas_006 is designed and
-    # grep-verified against the RGL source the same way those two were,
-    # but not yet round-tripped through `linearize` on the real
-    # toolchain - see gf/FraCaSLogicEng.gf's own comment on it.
+    # All four are confirmed end-to-end via `linearize` on the real
+    # toolchain (gf/FraCaSLogicEng.gf / gf/NOTES.md).
     examples = {
         "fracas_002 (premise)": (
             "PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -249,12 +246,12 @@ if __name__ == "__main__":
             "PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA swedish_A)))"
         ),
-        "fracas_006 (premise, not yet linearize-confirmed)": (
-            "PredVP (DetCN (DetQuant no_Quant NumSg) "
+        "fracas_006 (premise)": (
+            "PredVP (DetCN (DetQuant no_Quant NumPl) "
             "(AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA modest_A)))"
         ),
-        "fracas_010 (premise, not yet linearize-confirmed)": (
+        "fracas_010 (premise)": (
             "PredVP (DetCN most_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA italian_A)))"
         ),
