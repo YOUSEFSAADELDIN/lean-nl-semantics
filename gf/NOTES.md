@@ -2,12 +2,21 @@
 
 This records how the GF toolchain was actually gotten working, and every
 real gotcha hit along the way, so the next round of grammar-writing
-doesn't have to rediscover any of it. GF itself doesn't run in the cloud
-sandbox this project's Lean/CI work happens in (no Haskell toolchain,
-and `grammaticalframework.org` is blocked by that sandbox's egress
-policy), so all of this was done on a separate machine (Windows 11 via
-WSL2) and relayed back — see `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf`
-for the actual proven-working grammar this produced.
+doesn't have to rediscover any of it. Everything through the first five
+confirmed sentence shapes was done by hand on a separate machine
+(Windows 11 via WSL2) and relayed back, because the interactive Claude
+Code *sandbox* this project's day-to-day work happens in has no Haskell
+toolchain and blocks the domains needed to install one (`grammaticalframework.org`,
+`get.haskellstack.org`, Hackage's mirror fallback domains) — see below
+for how that was diagnosed. **GitHub Actions CI is a different story**:
+its runners have normal, unrestricted internet access, so `.github/workflows/build.yml`'s
+`build-gf` job builds the whole GF toolchain from source and runs
+`gf/run_gf_tests.py`'s automated `linearize` checks on every push -
+proven green end to end (cold-cache run: ~9.5 minutes total, dominated
+by building `gf-core`/`gf-rgl` from source; a cache hit skips almost all
+of that). New sentence shapes should be pushed and checked against this
+job first now, rather than relayed through a separate machine by hand -
+see `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for the grammar itself.
 
 ## Toolchain install (Windows 11 / WSL2)
 
