@@ -23,28 +23,44 @@
 -- grammar needs was originally declared here by hand instead, same as
 -- really_AdA always was.
 --
--- DICTIONARY INTEGRATION PILOT: the win_V2 bug-hunt below (three CI
+-- DICTIONARY INTEGRATION: the win_V2 bug-hunt below (three CI
 -- round-trips to get `mkV "win" "won" "won"`'s arity right) motivated
 -- actually measuring whether extending DictEngAbs/DictEng is worth it
 -- instead of hand-declaring everything - see .github/workflows/build.yml's
 -- own "Build DictEng" step and gf/NOTES.md for the measured build-time
--- cost. Checking every one of this grammar's ~33 hand-declared words
--- against DictEngAbs found 31 *already there*, same name, same type
--- (most_Det, italian_A, man_N, win_V2, come_V, europe_PN, ...). As a
--- pilot, DictEngAbs/DictEng are now extended, with 30 of those 31
--- collisions excluded on the extends line below (kept hand-declared,
--- unchanged) - only win_V2 is let through, now coming from the
--- dictionary instead of a hand-declared recipe. DictEng's own
--- `win_V2 = mkV2 (IrregEng.win_V)` (built from IrregEng's dedicated
--- irregular-verb table, `irregDuplV "win" "won" "won"`) is exactly the
+-- cost (~10 seconds to compile the whole ~65k-line dictionary, paid
+-- once and cached - far cheaper than assumed). Checking every one of
+-- this grammar's ~33 hand-declared words against DictEngAbs found 31
+-- *already there*, same name, same type. Piloted on win_V2 alone
+-- first (DictEng's own `win_V2 = mkV2 (IrregEng.win_V)`, built from
+-- IrregEng's dedicated irregular-verb table, was exactly the
 -- correctly-conjugated entry the hand-declared version took three
--- attempts to get right. most_Det's own linearization was originally
--- copied directly from DictEngAbs's real recipe this same way (checked
--- against gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"`
--- - see gf/NOTES.md for where mkDeterminer itself actually needs to
--- come from (MorphoEng, opened directly - NOT inherited from
--- StructuralEng just because StructuralEng happens to use it
--- internally).
+-- attempts to get right) - then, once that held up, extended to the
+-- rest, after actually comparing each one's real recipe (checked
+-- against gf-rgl/src/english/DictEng.gf) to ours rather than assuming
+-- they'd match:
+--   - Most were functionally identical for what this grammar actually
+--     exercises (differences like `compoundA`-wrapping or explicit
+--     comparative forms only affect comparison/anaphora, never tested
+--     here - most_Det's own `mkDeterminer plural "most"` was always
+--     exactly this, going back to before this grammar even declared
+--     it by hand - see gf/NOTES.md for where mkDeterminer itself needs
+--     to come from, MorphoEng, opened directly).
+--   - take_V2/come_V were ALSO latently broken the exact same way
+--     win_V2 was (`mkV2 "take"`/`mkV "come"`, fully regular derivation
+--     for verbs that are genuinely irregular - "took"/"came" - just
+--     never exercised by a past-tense check before now). Swapping
+--     fixed both proactively.
+--   - irishman_N is the one word kept hand-declared: DictEng's own
+--     `mkN masculine (mkN "irishman" "irishmen")` is lowercase, but
+--     problem 33's confirmed sentence needs the capitalized "an
+--     Irishman" - swapping it would silently break that check.
+-- Net result: of the 31 collisions against this grammar's own words,
+-- only irishman_N is still excluded on the extends line below -
+-- combined with 74 more against Structural specifically (its own
+-- closed-class words: pronouns, prepositions, conjunctions,
+-- every_Det/many_Det/etc., which DictEngAbs's general coverage happens
+-- to duplicate), that's 75 excluded overall.
 --
 -- Problem 33 ("An Irishman won a Nobel prize.", the first plain
 -- subject-verb-object sentence) originally used a self-declared
@@ -66,14 +82,18 @@
 -- reason to keep the hack around once nothing needed it.
 --
 -- each_Det (problems 4, 18-20 etc: "each Italian tenor"/"each
--- European") is declared directly below rather than extending
--- ExtraEngAbs (where the RGL puts it) - that module lives in
--- src/english/, not src/abstract/, meaning it's an English-specific
--- "abstract" module despite the name, not genuinely cross-language.
--- Depending on it would tie this project's abstract syntax to English
--- specifically, contradicting the multi-language goal in the README.
--- Its real recipe (checked against gf-rgl/src/english/ExtraEng.gf) is
--- the trivial `mkDeterminer Sg "each"` - see gf/NOTES.md's section on
+-- European") is NOT declared by hand below - it's one of the 30 words
+-- now sourced from DictEngAbs (see the dictionary-integration comment
+-- above), same as both_Det/neither_Det/most_Det. It was never in
+-- ExtraEngAbs (where the RGL's own treebank puts it) - that module
+-- lives in src/english/, not src/abstract/, meaning it's an
+-- English-specific "abstract" module despite the name, not genuinely
+-- cross-language; depending on it would tie this project's abstract
+-- syntax to English specifically, contradicting the multi-language
+-- goal in the README. Its real recipe (checked against
+-- gf-rgl/src/english/ExtraEng.gf, back when it was still hand-declared
+-- here) was the trivial `mkDeterminer Sg "each"` - DictEngAbs's own
+-- copy uses the exact same recipe - see gf/NOTES.md's section on
 -- gf-rgl's own treebank for how this and several other mechanisms
 -- below were found: it ships pre-built, validated trees for most of
 -- FraCaS Section 1 already.
@@ -90,14 +110,16 @@
 --
 -- many_Det/few_Det are ALREADY free via Structural (checked directly
 -- against src/abstract/Structural.gf, not just the concrete side) -
--- not declared here. several_Det/both_Det/neither_Det are DictEng-only
--- (same story as most_Det - real recipes copied from
--- gf-rgl/src/english/DictEng.gf). "a few" (treebank's own `a8few_Det` -
--- the `8` is the RGL's own convention for a space inside a multi-word
--- identifier, same as `how8many_IDet` - is ALSO stale, absent from
--- current source) is declared here as `aFew_Det` instead, since no
--- real function for it exists to copy a recipe from - just the
--- obvious, generic `mkDeterminer plural "a few"`.
+-- not declared here. both_Det/neither_Det are two more of the 30 words
+-- now sourced from DictEngAbs (same story as most_Det/each_Det).
+-- several_Det stays hand-declared below (not one of the 31 collisions
+-- - DictEngAbs simply has no entry for it under this name). "a few"
+-- (treebank's own `a8few_Det` - the `8` is the RGL's own convention
+-- for a space inside a multi-word identifier, same as `how8many_IDet`
+-- - is ALSO stale, absent from current source, and not in DictEngAbs
+-- either) stays hand-declared as `aFew_Det` too, since no real
+-- function for it exists to copy a recipe from - just the obvious,
+-- generic `mkDeterminer plural "a few"`.
 -- Numeral quantifiers (problem 15: "At least three tenors...") use
 -- Structural's already-free at_least_AdN/at_most_AdN (real, current -
 -- unlike all_Det/a8few_Det, these checked out fine) wrapping a numeral
@@ -143,47 +165,51 @@
 -- instead" pattern as most_Det/of_Prep/etc. above.
 abstract FraCaSLogic =
   Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase,
-  -- DictEngAbs turned out to collide with TWO different sources, not
-  -- just this grammar's own hand-declared words: 30 of them (checked
-  -- directly), PLUS 74 more against Structural specifically (its own
-  -- closed-class words - pronouns, prepositions, conjunctions,
-  -- every_Det/many_Det/etc. - which DictEngAbs's general coverage
-  -- happens to duplicate). All 104 are excluded here (kept exactly as
-  -- they already were, via Structural or this grammar's own fun block
-  -- below) - only win_V2 is deliberately let through, so it now
-  -- resolves to DictEngAbs's own `win_V2 : V2` instead of a
-  -- hand-declared one.
+  -- Extended the dictionary swap (originally piloted on win_V2 alone)
+  -- to the rest of the 30 collisions checked directly against this
+  -- grammar's own words, after comparing each one's real DictEng
+  -- recipe against ours: most turned out functionally identical for
+  -- what this grammar actually exercises (differences like
+  -- `compoundA`-wrapping or explicit comparative forms only affect
+  -- comparison/anaphora, never tested here - and the existing 34
+  -- exact-match CI checks would catch it if that were wrong). Two real
+  -- differences found, handled deliberately:
+  --   - take_V2/come_V were ALSO latently broken here the exact same
+  --     way win_V2 was (`mkV2 "take"`/`mkV "come"`, a fully regular
+  --     derivation for verbs that are genuinely irregular - "took"/
+  --     "came", never actually exercised by a past-tense check before
+  --     now) - swapping to DictEng's own `mkV2 (IrregEng.take_V)`/
+  --     `IrregEng.come_V` fixes both proactively, not just win_V2.
+  --   - irishman_N is the one word kept hand-declared and excluded:
+  --     DictEng's own `mkN masculine (mkN "irishman" "irishmen")` is
+  --     lowercase, but problem 33's confirmed sentence needs the
+  --     capitalized "an Irishman" - swapping it would silently break
+  --     that check's exact string match.
+  -- So of the 31 total collisions against this grammar's own words,
+  -- only irishman_N is still excluded - combined with the 74 against
+  -- Structural, that's 75 excluded overall (down from 104).
   DictEngAbs - [
     above_Prep, after_Prep, all_Predet, almost_AdA, almost_AdN,
     although_Subj, always_AdV, and_Conj, at_least_AdN, because_Subj,
-    before_Prep, behind_Prep, between_Prep, both7and_DConj, both_Det,
-    british_A, but_PConj, can_VV, charity_N, cheap_A, come_V, concert_N,
-    contribute_V2, during_Prep, each_Det, either7or_DConj, europe_PN,
-    every_Det, everybody_NP, everything_NP, everywhere_Adv, excellent_A,
-    except_Prep, fee_N, for_Prep, from_Prep, german_A, great_A, have_V2,
+    before_Prep, behind_Prep, between_Prep, both7and_DConj, but_PConj,
+    can_VV, during_Prep, either7or_DConj, every_Det, everybody_NP,
+    everything_NP, everywhere_Adv, except_Prep, for_Prep, from_Prep, have_V2,
     he_Pron, here_Adv, how8many_IDet, how_IAdv, i_Pron, if_Subj, in_Prep,
-    indispensable_A, irishman_N, it_Pron, italian_A, live_V, man_N, many_Det,
-    member_N, modest_A, most_Det, much_Det, must_VV, neither_Det, no_Quant,
-    nobody_NP, nothing_NP, of_Prep, on_Prep, only_Predet, or_Conj, part_N,
-    quite_Adv, resident_N, right_N, she_Pron, so_AdA, somebody_NP,
-    something_NP, somewhere_Adv, state_N, swedish_A, take_V2, tenor_N,
-    that_Quant, that_Subj, there_Adv, they_Pron, this_Quant, through_Prep,
-    to_Prep, too_AdA, under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP,
-    whatSg_IP, when_IAdv, when_Subj, where_IAdv, which_IQuant, whoPl_IP,
-    whoSg_IP, why_IAdv, with_Prep, without_Prep, youPl_Pron, youSg_Pron
+    irishman_N, it_Pron, many_Det, much_Det, must_VV, no_Quant, nobody_NP,
+    nothing_NP, on_Prep, only_Predet, or_Conj, quite_Adv, she_Pron, so_AdA,
+    somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
+    there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
+    under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP, whatSg_IP, when_IAdv,
+    when_Subj, where_IAdv, which_IQuant, whoPl_IP, whoSg_IP, why_IAdv,
+    with_Prep, without_Prep, youPl_Pron, youSg_Pron
   ]
   ** {
   fun
-    most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
+    several_Det, aFew_Det : Det ;
     really_AdA : AdA ;
-    italian_A, great_A, swedish_A, modest_A, german_A, british_A,
-      leading_A, excellent_A, indispensable_A, cheap_A : A ;
+    leading_A : A ;
     cheap_Adv : Adv ;
-    man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N,
-      member_N, state_N, resident_N, right_N : N ;
-    take_V2, contribute_V2 : V2 ;
-    live_V, come_V : V ;
-    europe_PN, pavarotti_PN : PN ;
-    of_Prep : Prep ;
+    irishman_N, nobelPrize_N : N ;
+    pavarotti_PN : PN ;
     CompoundCN : CN -> CN -> CN ;
 }

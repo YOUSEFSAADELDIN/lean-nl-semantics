@@ -1,27 +1,25 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
   TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng,
-  -- Same 104-name exclusion as FraCaSLogic.gf's own extends line (kept
-  -- in sync with it - see that file's comment for the full story: 30
-  -- against this grammar's own words, 74 more against StructuralEng's).
+  -- Same 75-name exclusion as FraCaSLogic.gf's own extends line (kept
+  -- in sync with it - see that file's comment for the full story: only
+  -- irishman_N is still excluded from this grammar's own 31 collisions
+  -- - the rest now come from DictEng - plus the 74 against
+  -- StructuralEng's own closed-class words).
   DictEng - [
     above_Prep, after_Prep, all_Predet, almost_AdA, almost_AdN,
     although_Subj, always_AdV, and_Conj, at_least_AdN, because_Subj,
-    before_Prep, behind_Prep, between_Prep, both7and_DConj, both_Det,
-    british_A, but_PConj, can_VV, charity_N, cheap_A, come_V, concert_N,
-    contribute_V2, during_Prep, each_Det, either7or_DConj, europe_PN,
-    every_Det, everybody_NP, everything_NP, everywhere_Adv, excellent_A,
-    except_Prep, fee_N, for_Prep, from_Prep, german_A, great_A, have_V2,
+    before_Prep, behind_Prep, between_Prep, both7and_DConj, but_PConj,
+    can_VV, during_Prep, either7or_DConj, every_Det, everybody_NP,
+    everything_NP, everywhere_Adv, except_Prep, for_Prep, from_Prep, have_V2,
     he_Pron, here_Adv, how8many_IDet, how_IAdv, i_Pron, if_Subj, in_Prep,
-    indispensable_A, irishman_N, it_Pron, italian_A, live_V, man_N, many_Det,
-    member_N, modest_A, most_Det, much_Det, must_VV, neither_Det, no_Quant,
-    nobody_NP, nothing_NP, of_Prep, on_Prep, only_Predet, or_Conj, part_N,
-    quite_Adv, resident_N, right_N, she_Pron, so_AdA, somebody_NP,
-    something_NP, somewhere_Adv, state_N, swedish_A, take_V2, tenor_N,
-    that_Quant, that_Subj, there_Adv, they_Pron, this_Quant, through_Prep,
-    to_Prep, too_AdA, under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP,
-    whatSg_IP, when_IAdv, when_Subj, where_IAdv, which_IQuant, whoPl_IP,
-    whoSg_IP, why_IAdv, with_Prep, without_Prep, youPl_Pron, youSg_Pron
+    irishman_N, it_Pron, many_Det, much_Det, must_VV, no_Quant, nobody_NP,
+    nothing_NP, on_Prep, only_Predet, or_Conj, quite_Adv, she_Pron, so_AdA,
+    somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
+    there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
+    under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP, whatSg_IP, when_IAdv,
+    when_Subj, where_IAdv, which_IQuant, whoPl_IP, whoSg_IP, why_IAdv,
+    with_Prep, without_Prep, youPl_Pron, youSg_Pron
   ]
   ** open ParadigmsEng, MorphoEng, ResEng, Prelude in {
   lin
@@ -31,43 +29,18 @@ concrete FraCaSLogicEng of FraCaSLogic =
     -- redefine PPos/PNeg itself); copied that recipe directly.
     PPos = {s = []; p = CPos} ;
     PNeg = {s = []; p = CNeg True} ;
-    most_Det = mkDeterminer plural "most" ;
-    each_Det = mkDeterminer singular "each" ;
     several_Det = mkDeterminer plural "several" ;
-    both_Det = mkDeterminer plural "both" ;
-    neither_Det = mkDeterminer singular "neither" ;
     aFew_Det = mkDeterminer plural "a few" ;
     really_AdA = mkAdA "really" ;
-    italian_A = mkA "Italian" ;
-    great_A = mkA "great" ;
-    swedish_A = mkA "Swedish" ;
-    modest_A = mkA "modest" ;
-    german_A = mkA "German" ;
-    british_A = mkA "British" ;
     leading_A = mkA "leading" ;
-    excellent_A = mkA "excellent" ;
-    indispensable_A = mkA "indispensable" ;
-    cheap_A = mkA "cheap" ;
     cheap_Adv = mkAdv "cheap" ;
-    man_N = mkN "man" "men" ;
-    tenor_N = mkN "tenor" ;
+    -- irishman_N is the one word of the original 30 kept hand-declared
+    -- (see FraCaSLogic.gf's comment on why: DictEng's own version is
+    -- lowercase, but this project's confirmed sentence needs "an
+    -- Irishman" capitalized).
     irishman_N = mkN "Irishman" "Irishmen" ;
     nobelPrize_N = mkN "Nobel prize" ;
-    part_N = mkN "part" ;
-    concert_N = mkN "concert" ;
-    fee_N = mkN "fee" ;
-    charity_N = mkN "charity" ;
-    member_N = mkN "member" ;
-    state_N = mkN "state" ;
-    resident_N = mkN "resident" ;
-    right_N = mkN "right" ;
-    take_V2 = mkV2 "take" ;
-    contribute_V2 = mkV2 "contribute" ;
-    live_V = mkV "live" ;
-    come_V = mkV "come" ;
-    europe_PN = mkPN "Europe" ;
     pavarotti_PN = mkPN "Pavarotti" ;
-    of_Prep = mkPrep "of" ;
     CompoundCN a b = {s = \\n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g} ;
 }
 
