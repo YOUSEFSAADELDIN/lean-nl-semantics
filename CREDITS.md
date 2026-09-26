@@ -114,12 +114,14 @@ below change.
   `nlp.stanford.edu` host is unreachable from this project's sandbox; full
   provenance in `FraCaS/Data/SOURCE.md`. Transcribed into `Problem` values
   (`FraCaS/Types.lean`, `FraCaS/Data/Problems.lean`) — 342 of 346 (4 have
-  an empty hypothesis in the source and are skipped). **Section 1 (all 80
-  problems) is formalized and proved** in `FraCaS/Section1/` (`GQ.lean` +
-  `Batch1.lean`–`Batch5.lean`), each theorem proved against its
-  `Problem.answer`; see the README's Phase 2 section for the two
-  documented divergences from FraCaS's own gold answers. Sections 2–9 are
-  still English strings only.
+  an empty hypothesis in the source and are skipped). **All nine
+  sections (all 342 formalizable problems) are formalized and proved**:
+  `FraCaS/Section1/` (`GQ.lean` + `Batch1.lean`–`Batch5.lean`, 80
+  problems) through `FraCaS/Section9/` (`Attitudes.lean` + `Batch1.lean`,
+  13 problems, the final section), each theorem proved against its
+  `Problem.answer`; see the README's Phase 2 section for the per-section
+  breakdown and the documented divergences from FraCaS's own gold
+  answers (Section 1's problems 56/61/62/77/78, Section 7's 256/257).
 
 ## GF and autoformalization tooling (background, not yet integrated)
 

@@ -189,36 +189,65 @@ for history; `MTT.v` is now the thing to actually port from.
   proving or refuting each one is a per-sentence formalization effort,
   not a mechanical step.
 
-  **Section 1 (Generalized Quantifiers, all 80 problems) is done** —
-  `FraCaS/Section1/GQ.lean` (a two-predicate restrictor/scope quantifier
-  encoding, `Every`/`Some`/`No`/`Most`/`AtLeast`/`AtMost`, distinct from
-  `MTT/Quantifiers.lean`'s CN-typed quantifiers since Section 1 tests
-  determiner inference patterns, not CN subtyping) plus five
-  `Batch*.lean` files (`fracas_001`–`fracas_080`, one theorem/countermodel
-  pair per problem, proved against `Problem.answer`). `.yes` problems
-  prove `premises → hypothesis`; `.no` problems prove `premises →
-  ¬hypothesis`; `.unknown`/`.undef` problems get a concrete two-direction
-  countermodel (a model where the premises hold and the hypothesis does,
-  another where they hold and it doesn't) — the constructive form of
-  "attempt both directions, neither succeeds" this project settled on,
-  since Lean has no general decision procedure for natural-language
-  entailment to actually run in both directions. Two documented,
-  deliberate divergences from FraCaS's own gold answers (problem 56, and
-  61/62/77/78): this project's simplified treatment of "many"/"several"/
-  "a few" as a plain `Some` and of "both"/"neither" as a plain
-  `Every`/`No` (no proportional or exactly-two-elements reading) proves
-  things FraCaS's own answer hedges or reads differently — flagged in
-  each theorem's doc comment rather than silently mismatched. What's
-  next: Sections 2–9 (plurals, anaphora, ellipsis, adjectives,
-  comparatives, temporal, verbs, attitudes) need substantially more of
-  `MTT.v`'s machinery (and new machinery `MTT.v` doesn't have at all —
-  plurals/anaphora/ellipsis aren't in Chatzikyriakidis & Luo's own scope)
-  before they're tractable the same way. Report YES/NO/UNK accuracy
-  per-section as sections complete. Nobody has done this for all 346 in
-  any proof assistant — FraCoq's published 83%/81% (5 sections, then a
-  temporal subset) is the closest prior result and a sanity baseline, not
-  a target to match exactly, since the underlying semantics differ
-  (types vs. predicates).
+  **All nine sections, all 342 formalizable problems, are done.** Each
+  problem is its own Lean theorem, proved against its `Problem.answer`;
+  `.yes` problems prove `premises → hypothesis`, `.no` problems prove
+  `premises → ¬hypothesis`, and `.unknown`/`.undef` problems get a
+  concrete two-direction countermodel (a model where the premises hold
+  and the hypothesis does, another where they hold and it doesn't) — the
+  constructive form of "attempt both directions, neither succeeds" this
+  project settled on, since Lean has no general decision procedure for
+  natural-language entailment to actually run in both directions.
+  - **Section 1 (Generalized Quantifiers, 80 problems)** —
+    `FraCaS/Section1/GQ.lean` (a two-predicate restrictor/scope
+    quantifier encoding, `Every`/`Some`/`No`/`Most`/`AtLeast`/`AtMost`,
+    distinct from `MTT/Quantifiers.lean`'s CN-typed quantifiers since
+    this section tests determiner inference patterns, not CN
+    subtyping) plus five `Batch*.lean` files.
+  - **Section 2 (Plurals, 33 problems)** — `Section2/Plurals.lean` adds
+    `Exactly`/cardinality lemmas over Section 1's `GQ.lean`.
+  - **Section 3 (Anaphora, 28 problems)** — `Section3/Anaphora.lean`
+    adds `Fintype`-cardinality helpers for definite-plural/anaphoric
+    reference.
+  - **Section 4 (Ellipsis, 55 problems)** — `Section4/Ellipsis.lean` is
+    pure documentation; genuinely ambiguous elliptical readings each get
+    their own stipulated-reading theorem.
+  - **Section 5 (Adjectives, 23 problems)** — `Section5/Adjectives.lean`
+    reuses `MTT/Adjectives.lean`'s intersective/subsective/privative
+    concepts directly over individual predications.
+  - **Section 6 (Comparatives, 31 problems)** — `Section6/Comparatives.lean`
+    formalizes cardinal comparatives as real `Nat` arithmetic (`omega`)
+    rather than an assumed relation, plus quantified comparative
+    standards reusing `Every`/`Some`.
+  - **Section 7 (Temporal Reference, 71 of 75 problems — 276/305/309/310
+    are degenerate, no question/hypothesis in the source)** —
+    `Section7/Temporal.lean` plus five batches; the largest section,
+    turning on Aktionsart (state/activity/accomplishment/achievement)
+    distinctions for "since"/"for"/"in N hours" and event-ordering
+    chains, closed with real interval/timestamp arithmetic.
+  - **Section 8 (Verbs, 8 problems)** — `Section8/Verbs.lean`: the
+    imperfective paradox (perfective vs. progressive aspect) and
+    plural-subject/collective-predicate inferences.
+  - **Section 9 (Attitudes, 13 problems, the final section)** —
+    `Section9/Attitudes.lean`: factive vs. non-factive attitude verbs,
+    implicative vs. non-implicative control verbs, and perception-verb
+    (`see`) factivity/extensionality vs. its opacity to merely-inferred
+    material.
+
+  A handful of documented, deliberate divergences from FraCaS's own gold
+  answers are flagged in the relevant theorem's doc comment rather than
+  silently mismatched — e.g. Section 1's problem 56 and 61/62/77/78
+  (this project's simplified treatment of "many"/"several"/"a few" as a
+  plain `Some` and of "both"/"neither" as a plain `Every`/`No`, no
+  proportional or exactly-two-elements reading), and Section 7's
+  256/257 (FraCaS's *own* corpus gives two different gold answers to the
+  same construction — both readings are formalized here rather than
+  picking one silently). Nobody has done this for all 346 in any proof
+  assistant — FraCoq's published 83%/81% (5 sections, then a temporal
+  subset) is the closest prior result and a sanity baseline, not a
+  target matched exactly, since the underlying semantics differ (types
+  vs. predicates). What's next: Phase 2b (the linglib bridge), Phase 3
+  (GF integration), Phase 4 (LLM fallback) below.
 - **Phase 2b — the other actual novel contribution: a linglib bridge.**
   `MTT/LinglibBridge.lean` already sketches the connection; atlas has no
   equivalent of linglib (an independent, large, actively-maintained
