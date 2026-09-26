@@ -128,7 +128,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/gf-libs
-          key: gf-rgl-${{ runner.os }}-${{ env.GF_RGL_TAG }}
+          # "-dict1" suffix (not just GF_RGL_TAG): this key's own cached
+          # contents changed shape (now includes DictEngAbs/DictEng too)
+          # without the tag itself changing, so the key needs its own
+          # bump too - otherwise a same-tag cache from before this pilot
+          # would cache-HIT and skip rebuilding, silently missing the
+          # newly-added DictEngAbs/DictEng.gfo the grammar now needs.
+          key: gf-rgl-${{ runner.os }}-${{ env.GF_RGL_TAG }}-dict1
 
       - name: Build gf-rgl
         if: steps.cache-rgl.outputs.cache-hit != 'true'
