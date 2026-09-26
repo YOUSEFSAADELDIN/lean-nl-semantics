@@ -16,6 +16,16 @@ satisfied by a *different* check's output (the original bug this file
 had), the session's output is split on the `FraCaSLogic> ` prompt
 marker into one segment per command, in order, and each check is only
 compared against its own segment.
+
+`CHECKS` (the list `main()` actually runs) is assembled from three
+parts: `BASE_CHECKS` (each FraCaS sentence as this project's default
+bare-`Cl` tree), `TENSE_RECONFIRMATIONS` (every one of those same
+sentences again, generated automatically by wrapping the same tree in
+`UttS (UseCl (TTAnt TPres ASimul) PPos (...))` - confirming tense-
+wrapping doesn't break any of them), and `PILOT_TENSE_CHECKS` (two new,
+hand-written checks - `TPast`/`TFut` in place of `TPres` - piloting
+past/future tense specifically, since only present tense had ever been
+confirmed via CI before).
 """
 
 from __future__ import annotations
@@ -30,7 +40,15 @@ PROMPT = "FraCaSLogic> "
 
 # Keep in sync with gf/FraCaSLogicEng.gf's own confirmed-commands
 # comments and gf/translate.py's examples.
-CHECKS = [
+#
+# Every entry below is a bare `Cl` (tenseless clause) - this project's
+# deliberate default target category (see gf/FraCaSLogic.gf's file-top
+# comment and NOTES.md's "SOLVED: UseCl/tense support" section). Each
+# one is reconfirmed below under full `UttS (UseCl (TTAnt TPres ASimul)
+# PPos ...)` tense-wrapping too (TENSE_RECONFIRMATIONS), so a future
+# switch to full `S`/`Utt` for any of these sentences is known in
+# advance not to hit a blank-linearization surprise.
+BASE_CHECKS = [
     (
         "fracas_002",
         "linearize PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -119,20 +137,6 @@ CHECKS = [
         "leading tenors that are excellent are indispensable",
     ),
     (
-        # Re-testing the UttS/tense hypothesis: NOTES.md previously found
-        # this blank and concluded it was a genuine RGL limitation. New
-        # hypothesis: our grammar extends the *abstract* Tense module but
-        # never its concrete pairing TenseX (concrete TenseX of Tense =
-        # CommonX ** ... - genuinely cross-language, not English-specific),
-        # so PPos/TTAnt may never have been properly filled in. Testing
-        # with TenseX now added to the concrete extends.
-        "uttS_tense_retest",
-        "linearize UttS (UseCl (TTAnt TPres ASimul) PPos "
-        "(PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
-        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))))",
-        "every Italian man wants to be a great tenor",
-    ),
-    (
         "fracas_021_premise1",
         "linearize PredVP "
         "(AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
@@ -156,6 +160,54 @@ CHECKS = [
         "one of the leading tenors is Pavarotti",
     ),
 ]
+
+
+def _tense_reconfirm(label: str, cmd: str, expected: str):
+    """Wraps an already-confirmed bare-`Cl` check's own tree in `UttS
+    (UseCl (TTAnt TPres ASimul) PPos (...))`, expecting the exact same
+    English string - a tense-wrapped sentence should say the same thing
+    a bare Cl already said, just via a different category. Building
+    this from BASE_CHECKS's own command strings (rather than retyping
+    all 16 trees a second time) keeps the two forever in sync."""
+    prefix = "linearize "
+    assert cmd.startswith(prefix), cmd
+    tree = cmd[len(prefix):]
+    return (
+        f"{label}_tense_reconfirm",
+        f"linearize UttS (UseCl (TTAnt TPres ASimul) PPos ({tree}))",
+        expected,
+    )
+
+
+TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
+
+# Pilot past/future tense checks: NOTES.md's tense fix was only ever
+# confirmed for TPres before now. "wins"/"won"/"will win" (fracas_033's
+# ComplV2 tree - a plain transitive main verb, no auxiliary/control verb
+# involved) is a clean, simple test of whether TPast/TFut's own verb
+# conjugation actually differs correctly, not just TPres's already-
+# confirmed path. Picked as pilots (rather than converting every
+# sentence's tense outright) precisely because this is genuinely new
+# ground - past/future have never been checked via CI before.
+_FRACAS_033_TREE = (
+    "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+    "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
+)
+
+PILOT_TENSE_CHECKS = [
+    (
+        "fracas_033_past_pilot",
+        f"linearize UttS (UseCl (TTAnt TPast ASimul) PPos ({_FRACAS_033_TREE}))",
+        "an Irishman won a Nobel prize",
+    ),
+    (
+        "fracas_033_future_pilot",
+        f"linearize UttS (UseCl (TTAnt TFut ASimul) PPos ({_FRACAS_033_TREE}))",
+        "an Irishman will win a Nobel prize",
+    ),
+]
+
+CHECKS = BASE_CHECKS + TENSE_RECONFIRMATIONS + PILOT_TENSE_CHECKS
 
 
 def main() -> int:
