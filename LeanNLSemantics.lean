@@ -35,3 +35,9 @@ import LeanNLSemantics.FraCaS.Section5.Batch2
 import LeanNLSemantics.FraCaS.Section6.Comparatives
 import LeanNLSemantics.FraCaS.Section6.Batch1
 import LeanNLSemantics.FraCaS.Section6.Batch2
+import LeanNLSemantics.FraCaS.Section7.Temporal
+import LeanNLSemantics.FraCaS.Section7.Batch1
+import LeanNLSemantics.FraCaS.Section7.Batch2
+import LeanNLSemantics.FraCaS.Section7.Batch3
+import LeanNLSemantics.FraCaS.Section7.Batch4
+import LeanNLSemantics.FraCaS.Section7.Batch5
