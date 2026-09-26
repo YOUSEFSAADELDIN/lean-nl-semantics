@@ -1,7 +1,14 @@
 concrete FraCaSLogicEng of FraCaSLogic =
-  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng, TenseX, PhraseEng
+  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
+  TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng
   ** open ParadigmsEng, MorphoEng, ResEng in {
   lin
+    -- PPos/PNeg excluded from TenseX above (real conflict: TenseX's own
+    -- CAdv/CommonX shape doesn't unify with CatEng's) - GrammarEng.gf
+    -- solves this the exact same way (extend TenseX minus these five,
+    -- redefine PPos/PNeg itself); copied that recipe directly.
+    PPos = {s = []; p = CPos} ;
+    PNeg = {s = []; p = CNeg True} ;
     most_Det = mkDeterminer plural "most" ;
     each_Det = mkDeterminer singular "each" ;
     several_Det = mkDeterminer plural "several" ;
