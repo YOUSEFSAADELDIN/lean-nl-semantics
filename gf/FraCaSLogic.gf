@@ -143,20 +143,34 @@
 -- instead" pattern as most_Det/of_Prep/etc. above.
 abstract FraCaSLogic =
   Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase,
-  -- Every one of these 30 is a pre-existing hand-declared word below,
-  -- kept as-is (excluded so DictEngAbs's own copy doesn't collide with
-  -- it) - of 31 total name collisions found between this grammar's own
-  -- words and DictEngAbs, only win_V2 is deliberately NOT excluded, so
-  -- it now resolves to DictEngAbs's own `win_V2 : V2` instead of the
+  -- DictEngAbs turned out to collide with TWO different sources, not
+  -- just this grammar's own hand-declared words: 30 of them (checked
+  -- directly), PLUS 74 more against Structural specifically (its own
+  -- closed-class words - pronouns, prepositions, conjunctions,
+  -- every_Det/many_Det/etc. - which DictEngAbs's general coverage
+  -- happens to duplicate). All 104 are excluded here (kept exactly as
+  -- they already were, via Structural or this grammar's own fun block
+  -- below) - only win_V2 is deliberately let through, so it now
+  -- resolves to DictEngAbs's own `win_V2 : V2` instead of a
   -- hand-declared one.
   DictEngAbs - [
-    most_Det, each_Det, both_Det, neither_Det,
-    italian_A, great_A, swedish_A, modest_A, german_A, british_A,
-      excellent_A, indispensable_A, cheap_A,
-    man_N, tenor_N, irishman_N, part_N, concert_N, fee_N, charity_N,
-      member_N, state_N, resident_N, right_N,
-    take_V2, contribute_V2, live_V, come_V,
-    europe_PN, of_Prep
+    above_Prep, after_Prep, all_Predet, almost_AdA, almost_AdN,
+    although_Subj, always_AdV, and_Conj, at_least_AdN, because_Subj,
+    before_Prep, behind_Prep, between_Prep, both7and_DConj, both_Det,
+    british_A, but_PConj, can_VV, charity_N, cheap_A, come_V, concert_N,
+    contribute_V2, during_Prep, each_Det, either7or_DConj, europe_PN,
+    every_Det, everybody_NP, everything_NP, everywhere_Adv, excellent_A,
+    except_Prep, fee_N, for_Prep, from_Prep, german_A, great_A, have_V2,
+    he_Pron, here_Adv, how8many_IDet, how_IAdv, i_Pron, if_Subj, in_Prep,
+    indispensable_A, irishman_N, it_Pron, italian_A, live_V, man_N, many_Det,
+    member_N, modest_A, most_Det, much_Det, must_VV, neither_Det, no_Quant,
+    nobody_NP, nothing_NP, of_Prep, on_Prep, only_Predet, or_Conj, part_N,
+    quite_Adv, resident_N, right_N, she_Pron, so_AdA, somebody_NP,
+    something_NP, somewhere_Adv, state_N, swedish_A, take_V2, tenor_N,
+    that_Quant, that_Subj, there_Adv, they_Pron, this_Quant, through_Prep,
+    to_Prep, too_AdA, under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP,
+    whatSg_IP, when_IAdv, when_Subj, where_IAdv, which_IQuant, whoPl_IP,
+    whoSg_IP, why_IAdv, with_Prep, without_Prep, youPl_Pron, youSg_Pron
   ]
   ** {
   fun
