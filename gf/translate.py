@@ -122,7 +122,9 @@ def parse_tree(text: str):
 
 # Suffixes this grammar's own lexical funs use (gf/FraCaSLogic.gf) plus
 # the handful of Structural words already reused directly (want_VV).
-_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V")
+# _AdA is a degree word ("really", "very") - content-bearing enough to
+# fold into the predicate name, unlike a bare quantifier/number marker.
+_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA")
 
 
 def _is_leaf_lexical(name: str) -> bool:
@@ -153,16 +155,38 @@ def camel_name(words: list[str]) -> str:
 # 3. The translator proper.
 # ---------------------------------------------------------------------
 
+# Determiners that are directly Det-typed (a bare *_Det constant sits
+# straight in DetCN's first argument).
 _QUANTIFIER_BY_DET = {
     "every_Det": "Every",
     "someSg_Det": "Some",
     "somePl_Det": "Some",
     "most_Det": "Most",
-    # "no" is Quant-typed (no_Quant), not Det-typed, in this grammar's
-    # confirmed-working vocabulary so far - see gf/NOTES.md. Add once a
-    # `no`-quantified sentence has actually been round-tripped through
-    # `linearize`.
 }
+
+# Determiners that are Quant-typed instead (no_Quant, this_Quant, ...):
+# DetCN's first argument is then `DetQuant <quant> <num>` (mkDet's own
+# bare-Quant desugaring, gf-rgl's Constructors.gf), not a bare *_Det.
+_QUANTIFIER_BY_QUANT = {
+    "no_Quant": "No",
+}
+
+
+def _resolve_quantifier(det) -> str:
+    if det.head in _QUANTIFIER_BY_DET and not det.args:
+        return _QUANTIFIER_BY_DET[det.head]
+    if det.head == "DetQuant" and len(det.args) == 2:
+        quant, _num = det.args
+        if quant.head in _QUANTIFIER_BY_QUANT:
+            return _QUANTIFIER_BY_QUANT[quant.head]
+        raise NotImplementedError(
+            f"quantifier {quant.head!r} has no known Lean mapping yet "
+            "(see _QUANTIFIER_BY_QUANT)"
+        )
+    raise NotImplementedError(
+        f"determiner shape {det.head!r} has no known Lean quantifier mapping yet "
+        "(see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)"
+    )
 
 
 @dataclass
@@ -187,12 +211,7 @@ def translate_cl(t) -> Translation:
             f"got subject head={subject.head!r}"
         )
     det, cn = subject.args
-    if det.head not in _QUANTIFIER_BY_DET:
-        raise NotImplementedError(
-            f"determiner {det.head!r} has no known Lean quantifier mapping yet "
-            "(see _QUANTIFIER_BY_DET)"
-        )
-    quant = _QUANTIFIER_BY_DET[det.head]
+    quant = _resolve_quantifier(det)
 
     restrictor_name = camel_name(_leaf_words(cn))
     scope_name = camel_name(_leaf_words(vp))
@@ -216,8 +235,11 @@ def translate_tree_text(text: str, *, domain: str = "A") -> str:
 
 
 if __name__ == "__main__":
-    # The two sentences confirmed end-to-end via `linearize` in
-    # gf/FraCaSLogicEng.gf / gf/NOTES.md - FraCaS problems 2 and 7.
+    # fracas_002 and fracas_007 are confirmed end-to-end via `linearize`
+    # (gf/FraCaSLogicEng.gf / gf/NOTES.md). fracas_006 is designed and
+    # grep-verified against the RGL source the same way those two were,
+    # but not yet round-tripped through `linearize` on the real
+    # toolchain - see gf/FraCaSLogicEng.gf's own comment on it.
     examples = {
         "fracas_002 (premise)": (
             "PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -226,6 +248,11 @@ if __name__ == "__main__":
         "fracas_007 (premise)": (
             "PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA swedish_A)))"
+        ),
+        "fracas_006 (premise, not yet linearize-confirmed)": (
+            "PredVP (DetCN (DetQuant no_Quant NumSg) "
+            "(AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N))) "
+            "(UseComp (CompAP (PositA modest_A)))"
         ),
     }
     for label, tree_text in examples.items():

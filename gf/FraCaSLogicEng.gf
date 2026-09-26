@@ -5,8 +5,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
     italian_A = mkA "Italian" ;
     great_A   = mkA "great" ;
     swedish_A = mkA "Swedish" ;
+    modest_A  = mkA "modest" ;
     man_N     = mkN "man" ;
     tenor_N   = mkN "tenor" ;
+    really_AdA = mkAdA "really" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -23,3 +25,16 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --   linearize PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N)))
 --                     (UseComp (CompAP (PositA swedish_A)))
 --   => "some great tenors are Swedish"
+--
+-- FraCaS problem 6's premise ("No really great tenors are modest."),
+-- NOT YET CONFIRMED (needs a linearize round-trip on the actual
+-- toolchain - see the follow-up message asking for this): "no" is
+-- Quant-typed, not Det-typed, so the subject is DetCN wrapping
+-- `DetQuant no_Quant NumSg` (both from Noun, already in scope) rather
+-- than a bare *_Det constant, and "really great" is a degree-modified
+-- adjective, AdAP really_AdA (PositA great_A) : AP (from Adjective,
+-- also already in scope), fed to AdjCN just like a plain PositA AP is:
+--   linearize PredVP
+--     (DetCN (DetQuant no_Quant NumSg) (AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N)))
+--     (UseComp (CompAP (PositA modest_A)))
+--   expected: "no really great tenors are modest"

@@ -9,8 +9,9 @@
 -- in the Lean suite), not something to bake into the target category.
 abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
   fun
-    italian_A, great_A, swedish_A : A ;
+    italian_A, great_A, swedish_A, modest_A : A ;
     man_N, tenor_N : N ;
+    really_AdA : AdA ;
     -- want_VV is NOT declared here - it already exists in Structural
     -- (a builtin structural word); redeclaring it is a name collision.
 }
