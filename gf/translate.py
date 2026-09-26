@@ -686,6 +686,68 @@ if __name__ == "__main__":
             "(ComplSlash (SlashV2a win_V2) (AdvNP (DetCN (DetQuant DefArt NumSg) (UseN nobelPrize_N)) "
             "(PrepNP for_Prep (MassNP (UseN literature_N)))))"
         ),
+        # Problems 22/28/30/32 (the four adjunct-dropping-under-negation
+        # countermodels, same shape as problem 12) are deliberately NOT
+        # here either, for the same reason as fracas_012 above - checked
+        # directly against Batch2.lean/Batch3.lean: all four are
+        # countermodel/independence proofs over abstract Bool/Fin-indexed
+        # models, not named-predicate Props this translator could produce.
+        "fracas_023 (premise)": (
+            "PredVP (DetCN somePl_Det (UseN delegate_N)) "
+            "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N))) "
+            "(PrepNP on_Prep (MassNP (UseN time_N))))"
+        ),
+        "fracas_024 (premise)": (
+            "PredVP (DetCN many_Det (UseN delegate_N)) "
+            "(ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl) "
+            "(AdjCN (PositA interesting_A) (UseN result_N))) (PrepNP from_Prep "
+            "(DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))"
+        ),
+        "fracas_025 (premise)": (
+            "PredVP (DetCN several_Det (UseN delegate_N)) "
+            "(ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2) "
+            "(PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) "
+            "(AdjCN (PositA major_A) (AdjCN (PositA national_A) (UseN newspaper_N)))))))"
+        ),
+        "fracas_026 (premise 1)": (
+            "PredVP (DetCN most_Det (UseN european_N)) "
+            "(UseComp (CompAP (AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN)))))"
+        ),
+        "fracas_026 (premise 2)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N))) "
+            "(UseComp (CompCN (UseN person_N)))"
+        ),
+        "fracas_026 (premise 3)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N) "
+            "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP "
+            "(AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN)))))))))) "
+            "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) "
+            "(PrepNP within_Prep (UsePN europe_PN))))"
+        ),
+        "fracas_027 (premise 1)": (
+            "PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+            "(UseComp (CompAdv (PrepNP from_Prep (UsePN sweden_PN))))"
+        ),
+        "fracas_027 (premise 2)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "
+            "(CompoundCN (UseN committee_N) (UseN member_N)))) (UseComp (CompCN (UseN person_N)))"
+        ),
+        "fracas_027 (premise 3)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N) "
+            "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAdv "
+            "(PrepNP from_Prep (UsePN sweden_PN))))))))) "
+            "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))"
+        ),
+        "fracas_029 (premise)": (
+            "PredVP (DetCN both_Det (UseN commissioner_N)) "
+            "(UseComp (CompCN (AdjCN (PositA leading_A) (UseN businessman_N))))"
+        ),
+        "fracas_031 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+            "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN commissioner_N)) "
+            "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) "
+            "(PrepNP at_Prep (MassNP (UseN home_N))))"
+        ),
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

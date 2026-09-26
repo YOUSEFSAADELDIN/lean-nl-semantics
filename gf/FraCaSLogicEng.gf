@@ -1,11 +1,11 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
   TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng,
-  -- Same 75-name exclusion as FraCaSLogic.gf's own extends line (kept
-  -- in sync with it - see that file's comment for the full story: only
-  -- irishman_N is still excluded from this grammar's own 31 collisions
-  -- - the rest now come from DictEng - plus the 74 against
-  -- StructuralEng's own closed-class words).
+  -- Same exclusion as FraCaSLogic.gf's own extends line (kept in sync
+  -- with it - see that file's comment for the full story: irishman_N
+  -- and person_N are the only two words still excluded from this
+  -- grammar's own 31 original collisions - the rest come from DictEng -
+  -- plus the 74 against StructuralEng's own closed-class words).
   DictEng - [
     above_Prep, after_Prep, all_Predet, almost_AdA, almost_AdN,
     although_Subj, always_AdV, and_Conj, at_least_AdN, because_Subj,
@@ -14,7 +14,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     everything_NP, everywhere_Adv, except_Prep, for_Prep, from_Prep, have_V2,
     he_Pron, here_Adv, how8many_IDet, how_IAdv, i_Pron, if_Subj, in_Prep,
     irishman_N, it_Pron, many_Det, much_Det, must_VV, no_Quant, nobody_NP,
-    nothing_NP, on_Prep, only_Predet, or_Conj, quite_Adv, she_Pron, so_AdA,
+    nothing_NP, on_Prep, only_Predet, or_Conj, person_N, quite_Adv, she_Pron, so_AdA,
     somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
     there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
     under_Prep, very_AdA, want_VV, we_Pron, whatPl_IP, whatSg_IP, when_IAdv,
@@ -41,8 +41,16 @@ concrete FraCaSLogicEng of FraCaSLogic =
     -- Irishman" capitalized).
     irishman_N = mkN "Irishman" "Irishmen" ;
     nobelPrize_N = mkN "Nobel prize" ;
+    -- person_N is the second word kept hand-declared alongside
+    -- irishman_N (see FraCaSLogic.gf's comment on why): DictEng's own
+    -- version regularly pluralizes to "persons", but this project's
+    -- confirmed premises need the actual irregular plural "people".
+    person_N = mkN "person" "people" ;
     pavarotti_PN = mkPN "Pavarotti" ;
     CompoundCN a b = {s = \\n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g} ;
+    aLotOf_Det = mkDeterminer singular "a lot of" ;
+    scandinavia_PN = mkPN "Scandinavia" ;
+    southernEurope_PN = mkPN "southern Europe" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -361,3 +369,131 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- the source text) - the GF sentence above is still confirmed via
 -- run_gf_tests.py independently, only the Lean cross-check doesn't
 -- apply to this one problem.
+--
+-- FraCaS problems 22-31 (Batch2.lean's "delegate"/"commissioner"
+-- subsection) plus problem 32 (Batch3.lean, sharing the same AtMost
+-- pattern as 31's converse): every word these ten problems need except
+-- aLotOf_Det/scandinavia_PN/southernEurope_PN (self-declared above -
+-- see FraCaSLogic.gf's own comment on why) already exists in
+-- DictEngAbs/DictEng, checked directly the same way as every other
+-- bucket: delegate_N, finish_V2, report_N, survey_N, obtain_V2,
+-- interesting_A, result_N, get_V2, publish_V2, major_A, national_A,
+-- newspaper_N, european_N, resident_A, person_N, committee_N, member_N,
+-- sweden_PN, portugal_PN, commissioner_N, businessman_N, spend_V2,
+-- time_N, home_N, at_Prep.
+--
+-- Problems 22/28/30/32 are the four adjunct-dropping-under-negation
+-- countermodels (same `.unknown` shape as problem 12) - both premise
+-- and hypothesis are confirmed via run_gf_tests.py (unlike problem 12,
+-- premise and hypothesis genuinely differ here), neither fed through
+-- translate.py, same reasoning as problem 12 above.
+--
+-- Problem 25's "got the results published in major national
+-- newspapers" is this bucket's one genuinely new VP shape - `PPartNP :
+-- NP -> V2 -> NP` ("the man seen") postmodifies "the results" with
+-- publish_V2's own past participle, `AdvNP` attaches "in major national
+-- newspapers" to that whole modified NP, and `get_V2` takes the result
+-- as a plain direct object: a real, compositional reading of the
+-- causative-passive ("get X published"), not a self-declared shortcut.
+--
+-- Problem 29's "used to be" is normalized to plain present tense
+-- ("are"), same as every other BASE_CHECKS entry (problem 1's "became"
+-- -> "becomes", problem 17/33's "won" -> "wins") - fracas_029's own
+-- Lean proof (`every_mono_scope`) doesn't encode any temporal structure
+-- either, so a meaning-bearing scope predicate is all it needs, and
+-- this sidesteps a real complication for no benefit: DictEng's own
+-- "used to" verb (`use_VV = mkVV (mkV "use")`) is a regular, freely-
+-- conjugated VV, not the actual frozen, only-ever-past "used to" idiom,
+-- so wrapping it in this project's default present-tense Cl would have
+-- produced the wrong, ungrammatical "use to be" rather than the idiom.
+--
+-- Premises 26/27/28's own third premise ("all people who are resident
+-- in Europe .../ from Sweden .../ from Portugal ...") first tried
+-- `PredetNP all_Predet (RelCN ...)` directly - genuinely wrong, not
+-- just untested: `PredetNP : Predet -> NP -> NP` takes a full NP, not a
+-- bare CN, exactly like premises 2's own `PredetNP all_Predet (DetCN
+-- (DetQuant IndefArt NumPl) (UseN european_N))` already does - caught
+-- by translate.py's own `_det_and_restrictor` raising `NotImplementedError`
+-- (got head='RelCN') the first time this was run locally, before ever
+-- reaching CI. Fixed by wrapping the RelCN in the same bare-plural
+-- `DetCN (DetQuant IndefArt NumPl) (...)` premise 2 already needs for
+-- exactly this "no article, predeterminer alone carries the meaning"
+-- reason.
+--   linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N))
+--     (AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))
+--       (PrepNP on_Prep (MassNP (UseN time_N))))
+--   => "no delegate finishes the report on time"
+--   linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N))
+--     (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))
+--   => "no delegate finishes the report"
+--   linearize PredVP (DetCN somePl_Det (UseN delegate_N))
+--     (AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))
+--       (PrepNP on_Prep (MassNP (UseN time_N))))
+--   => "some delegates finish the survey on time"
+--   linearize PredVP (DetCN somePl_Det (UseN delegate_N))
+--     (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))
+--   => "some delegates finish the survey"
+--   linearize PredVP (DetCN many_Det (UseN delegate_N))
+--     (ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl)
+--       (AdjCN (PositA interesting_A) (UseN result_N))) (PrepNP from_Prep (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))
+--   => "many delegates obtain interesting results from the survey"
+--   linearize PredVP (DetCN many_Det (UseN delegate_N))
+--     (ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN result_N))
+--       (PrepNP from_Prep (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))
+--   => "many delegates obtain results from the survey"
+--   linearize PredVP (DetCN several_Det (UseN delegate_N))
+--     (ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2)
+--       (PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) (AdjCN (PositA national_A) (UseN newspaper_N)))))))
+--   => "several delegates get the results published in major national newspapers"
+--   linearize PredVP (DetCN several_Det (UseN delegate_N))
+--     (ComplSlash (SlashV2a get_V2) (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2))
+--   => "several delegates get the results published"
+--   linearize PredVP (DetCN most_Det (UseN european_N))
+--     (UseComp (CompAP (AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN)))))
+--   => "most Europeans are resident in Europe"
+--   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N)))
+--     (UseComp (CompCN (UseN person_N)))
+--   => "all Europeans are people"
+--   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N)
+--     (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP
+--       (AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN)))))))))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "all people that are resident in Europe can travel freely within Europe"
+--   linearize PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N)))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN sweden_PN))))
+--   => "a few committee members are from Sweden"
+--   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN committee_N) (UseN member_N))))
+--     (UseComp (CompCN (UseN person_N)))
+--   => "all committee members are people"
+--   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N)
+--     (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAdv
+--       (PrepNP from_Prep (UsePN sweden_PN))))))))))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))
+--   => "all people that are from Sweden are from Scandinavia"
+--   linearize PredVP (DetCN few_Det (CompoundCN (UseN committee_N) (UseN member_N)))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN portugal_PN))))
+--   => "few committee members are from Portugal"
+--   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N)
+--     (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAdv
+--       (PrepNP from_Prep (UsePN portugal_PN))))))))))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN southernEurope_PN))))
+--   => "all people that are from Portugal are from southern Europe"
+--   linearize PredVP (DetCN both_Det (UseN commissioner_N))
+--     (UseComp (CompCN (AdjCN (PositA leading_A) (UseN businessman_N))))
+--   => "both commissioners are leading businessmen"
+--   linearize PredVP (DetCN both_Det (UseN commissioner_N)) (UseComp (CompCN (UseN businessman_N)))
+--   => "both commissioners are businessmen"
+--   linearize PredVP (DetCN neither_Det (UseN commissioner_N))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "neither commissioner spends a lot of time at home"
+--   linearize PredVP (DetCN neither_Det (UseN commissioner_N))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "neither commissioner spends time at home"
+--   linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3)))))))))
+--       (UseN commissioner_N))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "at least three commissioners spend a lot of time at home"
+--   linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN (NumNumeral (num (pot2as3 (pot1as2 pot110)))))))
+--       (UseN commissioner_N))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "at most ten commissioners spend a lot of time at home"

@@ -324,6 +324,216 @@ BASE_CHECKS += [
     ),
 ]
 
+# Problems 22-31 ("the delegate/commissioner subsection", Batch2.lean) -
+# continuing the dictionary-first pattern: every word these need except
+# aLotOf_Det/scandinavia_PN/southernEurope_PN (see FraCaSLogic.gf's own
+# comment on why those three are self-declared) already exists in
+# DictEngAbs/DictEng, checked directly the same way as every other
+# bucket: delegate_N, finish_V2, report_N, survey_N, obtain_V2,
+# interesting_A, result_N, get_V2, publish_V2, major_A, national_A,
+# newspaper_N, european_N, resident_A, person_N, committee_N, member_N,
+# sweden_PN, portugal_PN, commissioner_N, businessman_N, spend_V2,
+# time_N, home_N. Every sentence below is normalized to present tense,
+# same as every other BASE_CHECKS entry (problem 1's "became" -> "becomes",
+# problem 17/33's "won" -> "wins") - the original FraCaS text's own past
+# tense carries no logical difference GQ.lean's tenseless Props would
+# ever need to preserve, including problem 29's "used to be": that's
+# genuinely a habitual-past idiom, not just narrative past tense, but
+# fracas_029's own Lean proof (every_mono_scope) doesn't encode any
+# temporal structure either - it just needs *a* meaning-bearing scope
+# predicate - so "are leading businessmen" is adequate here too, and
+# avoids a real complication for no benefit: DictEng's own "used to" verb
+# (`use_VV = mkVV (mkV "use")`) is a regular, freely-conjugated VV, not
+# the actual frozen, only-ever-past "used to" idiom, so wrapping it in
+# this project's default present-tense Cl would have produced the wrong,
+# ungrammatical "use to be" rather than the idiom - sidestepped entirely
+# by not needing "used to" at all.
+#
+# Problem 25's "got the results published in major national newspapers"
+# is this bucket's one genuinely new VP shape: `PPartNP : NP -> V2 -> NP`
+# ("the man seen") postmodifies "the results" with publish_V2's own past
+# participle, `AdvNP` then attaches "in major national newspapers" to
+# that whole modified NP, and `get_V2` takes the result as a plain direct
+# object - a real, compositional reading of the causative-passive
+# ("get X published"), not a self-declared shortcut.
+#
+# Problems 22/28/30/32 are the four adjunct-dropping-under-negation
+# countermodels (same `.unknown` shape as problem 12) - both premise and
+# hypothesis sentences are still confirmed via run_gf_tests.py (the two
+# differ, unlike problem 12's single sentence), just not fed through
+# translate.py (see gf/translate.py's own comment on why).
+BASE_CHECKS += [
+    (
+        "fracas_022_premise",
+        "linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "no delegate finishes the report on time",
+    ),
+    (
+        "fracas_022_hypothesis",
+        "linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))",
+        "no delegate finishes the report",
+    ),
+    (
+        "fracas_023_premise",
+        "linearize PredVP (DetCN somePl_Det (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some delegates finish the survey on time",
+    ),
+    (
+        "fracas_023_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))",
+        "some delegates finish the survey",
+    ),
+    (
+        "fracas_024_premise",
+        "linearize PredVP (DetCN many_Det (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl) "
+        "(AdjCN (PositA interesting_A) (UseN result_N))) (PrepNP from_Prep "
+        "(DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))",
+        "many delegates obtain interesting results from the survey",
+    ),
+    (
+        "fracas_024_hypothesis",
+        "linearize PredVP (DetCN many_Det (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN result_N)) "
+        "(PrepNP from_Prep (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))",
+        "many delegates obtain results from the survey",
+    ),
+    (
+        "fracas_025_premise",
+        "linearize PredVP (DetCN several_Det (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2) "
+        "(PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) "
+        "(AdjCN (PositA major_A) (AdjCN (PositA national_A) (UseN newspaper_N)))))))",
+        "several delegates get the results published in major national newspapers",
+    ),
+    (
+        "fracas_025_hypothesis",
+        "linearize PredVP (DetCN several_Det (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a get_V2) (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2))",
+        "several delegates get the results published",
+    ),
+    (
+        "fracas_026_premise1",
+        "linearize PredVP (DetCN most_Det (UseN european_N)) "
+        "(UseComp (CompAP (AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN)))))",
+        "most Europeans are resident in Europe",
+    ),
+    (
+        "fracas_026_premise2",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N))) "
+        "(UseComp (CompCN (UseN person_N)))",
+        "all Europeans are people",
+    ),
+    (
+        "fracas_026_premise3",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP "
+        "(AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN)))))))))) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "all people that are resident in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_027_premise1",
+        "linearize PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN sweden_PN))))",
+        "a few committee members are from Sweden",
+    ),
+    (
+        "fracas_027_premise2",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "
+        "(CompoundCN (UseN committee_N) (UseN member_N)))) (UseComp (CompCN (UseN person_N)))",
+        "all committee members are people",
+    ),
+    (
+        "fracas_027_premise3",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAdv "
+        "(PrepNP from_Prep (UsePN sweden_PN))))))))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "all people that are from Sweden are from Scandinavia",
+    ),
+    (
+        "fracas_028_premise1",
+        "linearize PredVP (DetCN few_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN portugal_PN))))",
+        "few committee members are from Portugal",
+    ),
+    (
+        "fracas_028_premise2",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "
+        "(CompoundCN (UseN committee_N) (UseN member_N)))) (UseComp (CompCN (UseN person_N)))",
+        "all committee members are people",
+    ),
+    (
+        "fracas_028_premise3",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN person_N) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAdv "
+        "(PrepNP from_Prep (UsePN portugal_PN))))))))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN southernEurope_PN))))",
+        "all people that are from Portugal are from southern Europe",
+    ),
+    (
+        "fracas_029_premise",
+        "linearize PredVP (DetCN both_Det (UseN commissioner_N)) "
+        "(UseComp (CompCN (AdjCN (PositA leading_A) (UseN businessman_N))))",
+        "both commissioners are leading businessmen",
+    ),
+    (
+        "fracas_029_hypothesis",
+        "linearize PredVP (DetCN both_Det (UseN commissioner_N)) (UseComp (CompCN (UseN businessman_N)))",
+        "both commissioners are businessmen",
+    ),
+    (
+        "fracas_030_premise",
+        "linearize PredVP (DetCN neither_Det (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) "
+        "(PrepNP at_Prep (MassNP (UseN home_N))))",
+        "neither commissioner spends a lot of time at home",
+    ),
+    (
+        "fracas_030_hypothesis",
+        "linearize PredVP (DetCN neither_Det (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "neither commissioner spends time at home",
+    ),
+    (
+        "fracas_031_premise",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) "
+        "(PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at least three commissioners spend a lot of time at home",
+    ),
+    (
+        "fracas_031_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at least three commissioners spend time at home",
+    ),
+    (
+        "fracas_032_premise",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 pot110))))))) (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) "
+        "(PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at most ten commissioners spend a lot of time at home",
+    ),
+    (
+        "fracas_032_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 pot110))))))) (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at most ten commissioners spend time at home",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
