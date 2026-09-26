@@ -171,6 +171,20 @@ abstract FraCaSLogic =
   -- contract"), never needed in Section 1 (every subject there was a
   -- single quantified NP, not a list of proper nouns).
   Conjunction,
+  -- Extend is Section 2 Batch2's own first new requirement: GenNP
+  -- (NP -> Quant, "this man's") gives a REAL prenominal genitive -
+  -- problem 99's "the system's performance" - unlike worlds_Det above
+  -- (Section 1 problem 1's "the world's greatest tenor"), which had to
+  -- be self-declared as a fixed string because no such combinator was
+  -- found at the time. Checked directly this time (gf-rgl/src/abstract/
+  -- Extend.gf, gf-rgl/src/english/ExtendEng.gf) before repeating that
+  -- same self-declaration: GenNP genuinely exists and is a real
+  -- cross-language module (every language has its own ExtendXxx.gf,
+  -- same as Numeral/Adverb/Relative above), so it's extended normally
+  -- rather than hand-copied. (worlds_Det itself is left as-is, not
+  -- retrofitted onto GenNP, since it already works and retrofitting
+  -- risks reopening an already-closed Section 1 check for no benefit.)
+  Extend,
   -- Extended the dictionary swap (originally piloted on win_V2 alone)
   -- to the rest of the 30 collisions checked directly against this
   -- grammar's own words, after comparing each one's real DictEng
@@ -314,4 +328,35 @@ abstract FraCaSLogic =
     -- at_most_AdN (both already free, same AdNum-wrapping mechanism) -
     -- checked directly, no dictionary entry under this name.
     exactly_AdN : AdN ;
+    -- Section 2 Batch2 (problems 98-113):
+    -- bug32985_PN ("Bug # 32-985 is a known software fault") - FraCaS's
+    -- own invented bug-tracker id, obviously not in any dictionary.
+    bug32985_PN : PN ;
+    -- known_A ("a known software fault") - genuine dictionary gap,
+    -- checked directly, same pattern as labour_A/noted_A above.
+    known_A : A ;
+    -- apcomManager_N ("an APCOM manager", problems 103/104) is FraCaS's
+    -- own fictional company name fused directly onto "manager" as ONE
+    -- lexical item (mkN "APCOM manager" "APCOM managers"), the same
+    -- move as northAmerican_A above, rather than trying to compound a
+    -- self-declared "APCOM" proper noun with manager_N via CompoundCN -
+    -- CompoundCN's own recipe always renders its first part in
+    -- singular-nominative (see this file's own comment on CompoundCN
+    -- above), which is irrelevant for an invariant acronym like "APCOM"
+    -- but adds a moving part for no benefit; fusing it as a single noun
+    -- also matches Batch2.lean's own fused `apcomManager` variable name.
+    apcomManager_N : N ;
+    -- likely_AdV ("Smith is likely to make a poor stock-market trader",
+    -- problem 101) is used as a preverbal manner adverb via Verb's own
+    -- AdVVP ("Smith likely makes...") rather than attempting the real
+    -- "NP is likely to VP" raising-adjective construction, which this
+    -- grammar has no combinator for (Extend's own PredVPS/VPI family
+    -- handles VV-controlled infinitives, not A-controlled ones) -
+    -- a documented simplification, the same spirit as this problem's own
+    -- Lean formalization already simplifying the generic to a plain
+    -- universal (see Batch2.lean's comment on fracas_101). Declared as
+    -- its own fixed AdV string rather than derived from likely_A via
+    -- PositAdvAdj, same "don't trust an unpinned RGL derivation, self-
+    -- declare the literal string instead" reasoning as cheap_Adv above.
+    likely_AdV : AdV ;
 }

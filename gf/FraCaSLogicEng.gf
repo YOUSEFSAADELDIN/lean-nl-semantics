@@ -1,6 +1,6 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
-  TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng, ConjunctionEng,
+  TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng, ConjunctionEng, ExtendEng,
   -- Same exclusion as FraCaSLogic.gf's own extends line (kept in sync
   -- with it - see that file's comment for the full story: irishman_N,
   -- person_N, and mp_N are the only three words still excluded from
@@ -61,6 +61,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
     labour_A = mkA "Labour" ;
     noted_A = mkA "noted" ;
     exactly_AdN = mkAdN "exactly" ;
+    bug32985_PN = mkPN "Bug # 32-985" ;
+    known_A = mkA "known" ;
+    apcomManager_N = mkN "APCOM manager" "APCOM managers" ;
+    likely_AdV = mkAdV "likely" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -757,3 +761,77 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- theorems (87) or countermodels (88) whose own premise doesn't fit a
 -- single quantified clause either - see translate.py's own comment on
 -- both. 89/90/92/96/97 are added.
+--
+-- FraCaS Section 2 Batch2, problems 98-113 (Section2/Batch2.lean) -
+-- the rest of Section 2: a bare-plural existential vs. a named
+-- instance (98), quasi-universal bare plurals instantiated at a named
+-- individual (99/100), generics simplified to a "likely" universal
+-- (101/102), a universal plus a stronger unconnected predicate
+-- (103/104), exact-cardinality vs. No/Some (105-110), and named-
+-- individual cumulative/distributive "and" (111-113).
+--
+-- One genuinely new module this batch needed: Extend, for GenNP
+-- (NP -> Quant, "this man's") - a REAL prenominal genitive, confirmed
+-- directly against gf-rgl/src/abstract/Extend.gf and its English
+-- instantiation ExtendEng.gf before extending it (same "genuine
+-- cross-language module -> extend normally" policy as Numeral/Adverb/
+-- Relative/Conjunction above). This gives problem 99/100's "the
+-- system's performance" a real genitive rather than repeating Section
+-- 1 problem 1's worlds_Det self-declared-string workaround, which had
+-- concluded (wrongly, it turns out - this batch found the real
+-- combinator on a second, more thorough search) that no such
+-- combinator existed at all.
+--
+-- New self-declared words (all checked directly against DictEngAbs/
+-- DictEng first, same discipline as every earlier batch - see
+-- FraCaSLogic.gf's own comments for why each isn't sourced from the
+-- dictionary): bug32985_PN, known_A, apcomManager_N, likely_AdV.
+-- Every other word this batch needed (software_N, fault_N, system_N,
+-- failure_N, client_N, demonstration_N, performance_N, impress_V2,
+-- university_N, graduate_N, poor_A, stock_N, market_N, trader_N,
+-- make_V2, company_N, car_N, accountant_N, attend_V2, meeting_N,
+-- contract_N, another_Quant, also_AdV, most_Det, somePl_Det,
+-- someSg_Det, only_Predet, by8means_Prep, pot01) already exists in
+-- DictEngAbs/Structural.
+--
+-- gf-rgl's own English FraCaS treebank (src/english/treebank.txt, part
+-- of the pinned gf-rgl checkout, not something this project wrote) was
+-- an unexpected find this batch: it independently parses several of
+-- these exact FraCaS sentences already, which both confirmed several
+-- word/combinator choices before this project's own toolchain had to
+-- (GenNP's own existence among them) and caught that "just one
+-- accountant" parses through only_Predet (lin "only", not "just") in
+-- this RGL's own standard analysis - not a one-off guess.
+--
+-- Two more documented near-misses, both accepted as the closest
+-- buildable rendering: CompoundCN's own plain-concatenation recipe
+-- can't produce FraCaS's hyphenated "stock-market" ("stock market",
+-- space, is what's actually achievable); and 101's hypothesis ("Smith
+-- is likely to make...") is a genuine raising construction (an
+-- adjective controlling an infinitival complement) this grammar has no
+-- combinator for, paraphrased instead as "Smith likely makes..." via
+-- Verb's own AdVVP (a plain preverbal adverb) - matching this
+-- problem's own Lean formalization, which already simplifies the
+-- generic to a plain "likely" universal (see Batch2.lean's comment on
+-- fracas_101).
+--
+-- 104's hypothesis ("Jones has more than one company car") is skipped
+-- entirely, not built at all: "more than one" has no established
+-- determiner here, and this sentence is never fed to translate.py
+-- either way (104 is a countermodel).
+--
+-- translate.py gained one new piece of general architecture this
+-- batch, not just new example trees:
+-- _try_translate_named_individual_fact, handling a bare named-
+-- individual fact ("Smith was a client...", "Jones is an APCOM
+-- manager...") - the instantiate-a-universal-at-a-named-individual
+-- half of an argument whose universal premise was already reachable.
+-- Added (not deferred) for 99 and 103, which both need exactly this.
+-- Not added for 98 (countermodel), 100/101/102 (the same bare-plural/
+-- generic quasi-universal ambiguity translate_cl already can't resolve
+-- from syntax alone, documented on translate_cl itself), 104
+-- (countermodel), 105-110 (need Section2.Plurals' own Exactly
+-- quantifier, same deferral as 85/86), or 111-113 (named-individual
+-- cumulative/distributive "and", a different shape entirely, same
+-- reason as 81-86) - see translate.py's own comment for the full
+-- per-problem breakdown.

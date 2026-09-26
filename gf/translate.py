@@ -523,6 +523,54 @@ def _try_translate_partitive_identity(subject, vp):
     )
 
 
+def _try_translate_named_individual_fact(subject, vp):
+    """Handles a bare 'ProperNoun is/was a CN' or 'ProperNoun VERB-PHRASE'
+    fact about a single named individual - e.g. fracas_099's "Smith was
+    a client at the demonstration" and "Smith was impressed by the
+    system's performance", or fracas_103's "Jones is an APCOM manager"
+    and "Jones has a company car". This is the instantiate-a-universal-
+    at-a-named-individual half of a FraCaS argument whose universal
+    premise translate_cl already reaches via _resolve_subject/PredetNP
+    - a genuinely different, much simpler shape than
+    _try_translate_partitive_identity above (no partitive count
+    involved: the fact directly names its own subject, so the only
+    question is which predicate name it's a fact about).
+
+    A copula 'is/was a CN' predicate reuses _restrictor_expr's own
+    CN-naming (so "a client at the demonstration" fuses to the same
+    name a corresponding "every client at the demonstration ..."
+    premise would use); any other VP reuses _scope_name, the same way
+    translate_cl's own scope predicate already does below. Neither
+    name is required to match the hand-written Lean proof's own
+    variable name exactly (see this module's docstring) - only to be
+    the SAME name across a premise/hypothesis pair translated from the
+    same English words, which both paths already guarantee."""
+    if subject.head != "UsePN" or len(subject.args) != 1:
+        return None
+    individual_name = camel_name(_leaf_words(subject))
+    if (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompNP"
+        and len(vp.args[0].args) == 1
+        and vp.args[0].args[0].head == "DetCN"
+        and len(vp.args[0].args[0].args) == 2
+    ):
+        cn = vp.args[0].args[0].args[1]
+        pred_expr, preds = _restrictor_expr(cn)
+        return Translation(
+            lean_prop=f"{pred_expr} {individual_name}",
+            free_predicates=preds,
+            free_individuals=[individual_name],
+        )
+    scope_name = _scope_name(vp)
+    return Translation(
+        lean_prop=f"{scope_name} {individual_name}",
+        free_predicates=[scope_name],
+        free_individuals=[individual_name],
+    )
+
+
 def translate_cl(t) -> Translation:
     if t.head != "PredVP" or len(t.args) != 2:
         raise NotImplementedError(
@@ -533,6 +581,10 @@ def translate_cl(t) -> Translation:
     inverted = _try_translate_partitive_identity(subject, vp)
     if inverted is not None:
         return inverted
+
+    named_fact = _try_translate_named_individual_fact(subject, vp)
+    if named_fact is not None:
+        return named_fact
 
     quant, cn = _resolve_subject(subject)
 
@@ -956,6 +1008,46 @@ if __name__ == "__main__":
         "fracas_097 (premise)": (
             "PredVP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN software_N) (UseN fault_N))) "
             "(AdvVP (PassV2 blame_V2) (PrepNP for_Prep (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN system_N) (UseN failure_N)))))"
+        ),
+        # FraCaS Section 2 Batch2 (problems 98-113, Section2/Batch2.lean).
+        # 99 and 103 are both "Every RESTRICTOR SCOPE" premises
+        # instantiated at a named individual - the exact shape
+        # _try_translate_named_individual_fact above was added for.
+        # Everything else in this bucket is deliberately NOT here: 98 is
+        # a countermodel; 100/101/102 are the bare-plural/generic
+        # quasi-universal ambiguity translate_cl already can't resolve
+        # from syntax alone (same reason as problem 13's RelCN case,
+        # documented in translate_cl's own comment); 104 is a
+        # countermodel; 105-110 need Section2.Plurals' own `Exactly`
+        # quantifier, not built here (same deferral as 85/86); 111-113
+        # are named-individual cumulative/distributive "and" facts, a
+        # different shape entirely (same "not this translator's shape"
+        # reason as 81-86). Every sentence's own GF tree is still
+        # confirmed independently via run_gf_tests.py regardless.
+        "fracas_099 (premise1)": (
+            "PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN client_N)) "
+            "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN demonstration_N))))) "
+            "(AdvVP (PassV2 impress_V2) (PrepNP by8means_Prep (DetCN (DetQuant "
+            "(GenNP (DetCN (DetQuant DefArt NumSg) (UseN system_N))) NumSg) (UseN performance_N))))"
+        ),
+        "fracas_099 (premise2)": (
+            "PredVP (UsePN smith_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+            "(AdvCN (UseN client_N) (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN demonstration_N)))))))"
+        ),
+        "fracas_099 (hypothesis)": (
+            "PredVP (UsePN smith_PN) (AdvVP (PassV2 impress_V2) (PrepNP by8means_Prep "
+            "(DetCN (DetQuant (GenNP (DetCN (DetQuant DefArt NumSg) (UseN system_N))) NumSg) (UseN performance_N))))"
+        ),
+        "fracas_103 (premise1)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN apcomManager_N))) "
+            "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN company_N) (UseN car_N))))"
+        ),
+        "fracas_103 (premise2)": (
+            "PredVP (UsePN jones_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN apcomManager_N))))"
+        ),
+        "fracas_103 (hypothesis)": (
+            "PredVP (UsePN jones_PN) (ComplSlash (SlashV2a have_V2) "
+            "(DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN company_N) (UseN car_N))))"
         ),
     }
     for label, tree_text in examples.items():

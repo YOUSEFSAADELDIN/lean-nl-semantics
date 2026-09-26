@@ -1044,6 +1044,252 @@ BASE_CHECKS += [
     ),
 ]
 
+# Section 2 Batch2, problems 98-113 (Section2/Batch2.lean). Unlike
+# Batch1's checks above, most of these need an explicit past (or
+# future, for 102) tense wrapper - `UttS (UseCl (TTAnt TPast ASimul)
+# PPos (...))` - rather than the bare `linearize PredVP ...` form:
+# a bare PredVP's own default rendering is present tense (confirmed
+# throughout Batch1), but nearly every Batch2 sentence is itself past
+# tense ("were blamed", "was a client", "signed"), so leaving it bare
+# would silently check the wrong tense. Copied verbatim, this doubles
+# as this batch's own `TENSE_RECONFIRMATIONS` coverage isn't needed
+# for these entries specifically, so they're written pre-wrapped
+# instead of relying on the auto-wrapper (which assumes a bare Cl,
+# same reasoning as _FRACAS_084_HYPOTHESIS_CHECK below).
+#
+# New words this batch needed (all cross-checked directly against
+# gf-rgl's DictEngAbs/DictEng first, same discipline as every earlier
+# batch): bug32985_PN, known_A, apcomManager_N, likely_AdV (all
+# self-declared - see FraCaSLogic.gf's own comments for why each one
+# isn't sourced from the dictionary). Every other word (software_N,
+# fault_N, system_N, failure_N, client_N, demonstration_N,
+# performance_N, impress_V2, university_N, graduate_N, poor_A,
+# stock_N, market_N, trader_N, make_V2, company_N, car_N, have_V2,
+# accountant_N, attend_V2, meeting_N, contract_N, sign_V2,
+# another_Quant, also_AdV, most_Det, somePl_Det, someSg_Det,
+# only_Predet) already exists in DictEngAbs/Structural, checked the
+# same way as every earlier bucket.
+#
+# GenNP (Extend module, newly extended - see FraCaSLogic.gf's own
+# comment on why) gives problem 99/100's "the system's performance" a
+# REAL prenominal genitive, unlike worlds_Det's self-declared-string
+# workaround back in Section 1 problem 1.
+#
+# Two confirmed, documented near-misses from the real toolchain (not
+# just this file's own guesses), both accepted as the closest buildable
+# rendering rather than chased further:
+#   - only_Predet's own fixed lin is "only", not "just" - FraCaS's own
+#     "Just one accountant attended the meeting" (105/106/107/108)
+#     comes out "only one accountant attended the meeting" here.
+#     Confirmed directly against gf-rgl's own English FraCaS treebank
+#     (src/english/treebank.txt), which independently parses this exact
+#     FraCaS sentence to the same only_Predet tree - so this isn't a
+#     one-off guess, it's this RGL's own standard analysis of "just
+#     one" as a scalar-focus determiner, spelled "only".
+#   - CompoundCN's own recipe (plain concatenation, no hyphen
+#     insertion) can't produce FraCaS's hyphenated "stock-market" -
+#     "stock market" (space, no hyphen) is what's actually achievable,
+#     same spirit as the ancient_A/"ancient Greeks" lowercase
+#     acceptance in Batch1.
+#
+# 101's hypothesis ("Smith is likely to make a poor stock-market
+# trader") is a genuine raising construction (an adjective controlling
+# an infinitival complement) this grammar has no combinator for -
+# paraphrased instead as "Smith likely makes..." via Verb's own AdVVP
+# (a plain preverbal adverb), matching this problem's own Lean
+# formalization already simplifying the generic to a plain "likely"
+# universal (see Batch2.lean's comment on fracas_101).
+#
+# 104's hypothesis ("Jones has more than one company car") is skipped
+# entirely: "more than one" has no established determiner in this
+# grammar, this sentence is never fed to translate.py either way (104
+# is a countermodel), and the closest paraphrase available
+# (at_least_AdN wrapping "two", i.e. "at least two company cars")
+# changes the surface wording enough not to be worth it for a sentence
+# this low-value.
+BASE_CHECKS += [
+    (
+        "fracas_098_premise2",
+        "linearize PredVP (UsePN bug32985_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+        "(AdjCN (PositA known_A) (CompoundCN (UseN software_N) (UseN fault_N))))))",
+        "Bug # 32-985 is a known software fault",
+    ),
+    (
+        "fracas_101_premise1",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN university_N) (UseN graduate_N))) "
+        "(ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA poor_A) "
+        "(CompoundCN (CompoundCN (UseN stock_N) (UseN market_N)) (UseN trader_N)))))",
+        "university graduates make poor stock market traders",
+    ),
+    (
+        "fracas_101_premise2",
+        "linearize PredVP (UsePN smith_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+        "(CompoundCN (UseN university_N) (UseN graduate_N)))))",
+        "Smith is a university graduate",
+    ),
+    (
+        "fracas_101_hypothesis",
+        "linearize PredVP (UsePN smith_PN) (AdVVP likely_AdV (ComplSlash (SlashV2a make_V2) "
+        "(DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA poor_A) "
+        "(CompoundCN (CompoundCN (UseN stock_N) (UseN market_N)) (UseN trader_N))))))",
+        "Smith likely makes a poor stock market trader",
+    ),
+    (
+        "fracas_103_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN apcomManager_N))) "
+        "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN company_N) (UseN car_N))))",
+        "all APCOM managers have company cars",
+    ),
+    (
+        "fracas_103_premise2",
+        "linearize PredVP (UsePN jones_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN apcomManager_N))))",
+        "Jones is an APCOM manager",
+    ),
+    (
+        "fracas_103_hypothesis",
+        "linearize PredVP (UsePN jones_PN) (ComplSlash (SlashV2a have_V2) "
+        "(DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN company_N) (UseN car_N))))",
+        "Jones has a company car",
+    ),
+]
+
+# The rest of Batch2's sentences are themselves past (or future, for
+# 102) tense, so their own trees are ALREADY `UttS (UseCl (TTAnt
+# TPast/TFut ASimul) PPos (...))`-wrapped rather than a bare Cl -
+# feeding one of these into `_tense_reconfirm` (which assumes every
+# BASE_CHECKS entry is a bare Cl it can wrap in its own UseCl) would
+# produce the same genuine "Couldn't match expected type Cl" build
+# error _FRACAS_084_HYPOTHESIS_CHECK below was first written to avoid.
+# Kept as their own standalone list instead, same reasoning.
+_SECTION2_BATCH2_TENSED_CHECKS = [
+    (
+        "fracas_098_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant IndefArt NumPl) "
+        "(CompoundCN (UseN software_N) (UseN fault_N))) (AdvVP (PassV2 blame_V2) (PrepNP for_Prep "
+        "(DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN system_N) (UseN failure_N)))))))",
+        "software faults were blamed for the system failure",
+    ),
+    (
+        "fracas_098_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bug32985_PN) (AdvVP (PassV2 blame_V2) "
+        "(PrepNP for_Prep (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN system_N) (UseN failure_N)))))))",
+        "Bug # 32-985 was blamed for the system failure",
+    ),
+    (
+        "fracas_099_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP all_Predet (AdvNP "
+        "(DetCN (DetQuant IndefArt NumPl) (UseN client_N)) (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) "
+        "(UseN demonstration_N))))) (AdvVP (PassV2 impress_V2) (PrepNP by8means_Prep (DetCN (DetQuant "
+        "(GenNP (DetCN (DetQuant DefArt NumSg) (UseN system_N))) NumSg) (UseN performance_N))))))",
+        "all clients at the demonstration were impressed by the system's performance",
+    ),
+    (
+        "fracas_099_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseComp (CompNP "
+        "(DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN client_N) (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) "
+        "(UseN demonstration_N)))))))))",
+        "Smith was a client at the demonstration",
+    ),
+    (
+        "fracas_099_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (PassV2 impress_V2) "
+        "(PrepNP by8means_Prep (DetCN (DetQuant (GenNP (DetCN (DetQuant DefArt NumSg) (UseN system_N))) NumSg) "
+        "(UseN performance_N))))))",
+        "Smith was impressed by the system's performance",
+    ),
+    (
+        "fracas_100_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (AdvNP (DetCN (DetQuant IndefArt NumPl) "
+        "(UseN client_N)) (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN demonstration_N)))) "
+        "(AdvVP (PassV2 impress_V2) (PrepNP by8means_Prep (DetCN (DetQuant (GenNP (DetCN (DetQuant DefArt NumSg) "
+        "(UseN system_N))) NumSg) (UseN performance_N))))))",
+        "clients at the demonstration were impressed by the system's performance",
+    ),
+    (
+        "fracas_100_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN most_Det (AdvCN (UseN client_N) "
+        "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN demonstration_N))))) (AdvVP (PassV2 impress_V2) "
+        "(PrepNP by8means_Prep (DetCN (DetQuant (GenNP (DetCN (DetQuant DefArt NumSg) (UseN system_N))) NumSg) "
+        "(UseN performance_N))))))",
+        "most clients at the demonstration were impressed by the system's performance",
+    ),
+    (
+        "fracas_102_hypothesis",
+        "linearize UttS (UseCl (TTAnt TFut ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a make_V2) "
+        "(DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA poor_A) "
+        "(CompoundCN (CompoundCN (UseN stock_N) (UseN market_N)) (UseN trader_N)))))))",
+        "Smith will make a poor stock market trader",
+    ),
+    (
+        "fracas_105_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP only_Predet "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "only one accountant attended the meeting",
+    ),
+    (
+        "fracas_105_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant no_Quant NumPl) (UseN accountant_N)) "
+        "(ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "no accountants attended the meeting",
+    ),
+    (
+        "fracas_106_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant no_Quant NumSg) (UseN accountant_N)) "
+        "(ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "no accountant attended the meeting",
+    ),
+    (
+        "fracas_107_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN somePl_Det (UseN accountant_N)) "
+        "(ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "some accountants attended the meeting",
+    ),
+    (
+        "fracas_108_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN someSg_Det (UseN accountant_N)) "
+        "(ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "some accountant attended the meeting",
+    ),
+    (
+        "fracas_111_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a sign_V2) "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN contract_N)))))",
+        "Smith signed one contract",
+    ),
+    (
+        "fracas_111_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) "
+        "(DetCN (DetQuant another_Quant NumSg) (UseN contract_N)))))",
+        "Jones signed another contract",
+    ),
+    (
+        "fracas_111_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN jones_PN))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 "
+        "(pot0as1 (pot0 n2)))))))) (UseN contract_N)))))",
+        "Smith and Jones signed two contracts",
+    ),
+    (
+        "fracas_112_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a sign_V2) "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2)))))))) (UseN contract_N)))))",
+        "Smith signed two contracts",
+    ),
+    (
+        "fracas_112_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2)))))))) (UseN contract_N)))))",
+        "Jones signed two contracts",
+    ),
+    (
+        "fracas_113_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdVVP also_AdV "
+        "(ComplSlash (SlashV2a sign_V2) (UsePron they_Pron)))))",
+        "Jones also signed them",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -1104,7 +1350,13 @@ _FRACAS_084_HYPOTHESIS_CHECK = [
     ),
 ]
 
-CHECKS = BASE_CHECKS + TENSE_RECONFIRMATIONS + PILOT_TENSE_CHECKS + _FRACAS_084_HYPOTHESIS_CHECK
+CHECKS = (
+    BASE_CHECKS
+    + TENSE_RECONFIRMATIONS
+    + PILOT_TENSE_CHECKS
+    + _FRACAS_084_HYPOTHESIS_CHECK
+    + _SECTION2_BATCH2_TENSED_CHECKS
+)
 
 
 def main() -> int:
