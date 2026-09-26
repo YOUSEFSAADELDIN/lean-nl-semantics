@@ -1,3 +1,5 @@
+import Mathlib
+
 /-!
 # FraCaS Section 5 (Adjectives) — approach
 
