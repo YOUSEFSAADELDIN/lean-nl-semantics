@@ -1,7 +1,7 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng,
   TenseX - [Pol, PPos, PNeg, SC, CAdv], PhraseEng
-  ** open ParadigmsEng, MorphoEng, ResEng in {
+  ** open ParadigmsEng, MorphoEng, ResEng, Prelude in {
   lin
     -- PPos/PNeg excluded from TenseX above (real conflict: TenseX's own
     -- CAdv/CommonX shape doesn't unify with CatEng's) - GrammarEng.gf
