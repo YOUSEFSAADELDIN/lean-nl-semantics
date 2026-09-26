@@ -95,7 +95,7 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
       leading_A, excellent_A, indispensable_A : A ;
     man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N,
       member_N, state_N, resident_N, right_N : N ;
-    win_V2, take_V2, contribute_V2, have_V2 : V2 ;
+    win_V2, take_V2, contribute_V2 : V2 ;
     live_V : V ;
     europe_PN : PN ;
     ComplV2 : V2 -> NP -> VP ;
