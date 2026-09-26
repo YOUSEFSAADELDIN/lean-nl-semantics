@@ -653,6 +653,39 @@ if __name__ == "__main__":
             "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) "
             "(PrepNP within_Prep (UsePN europe_PN))))"
         ),
+        "fracas_001 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN italian_N)) "
+            "(ComplSlash (SlashV2a become_V2) (DetCN worlds_Det (AdjCN (PositA greatest_A) (UseN tenor_N))))"
+        ),
+        "fracas_005 (premise)": (
+            "PredVP (DetCN (DetQuant DefArt NumPl) (AdjCN (AdAP really_AdA (PositA ambitious_A)) (UseN tenor_N))) "
+            "(UseComp (CompAP (PositA italian_A)))"
+        ),
+        "fracas_011 (premise 1)": (
+            "PredVP (DetCN aFew_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+            "(ComplSlash (SlashV2a sing_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))"
+        ),
+        "fracas_011 (premise 2)": (
+            "PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+            "(ComplSlash (SlashV2a like_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))"
+        ),
+        # fracas_012 ("Few great tenors are poor.") is deliberately NOT
+        # here: `few_Det` has no entry in `_QUANTIFIER_BY_DET` at all,
+        # and shouldn't get one. Checked against Batch1.lean directly -
+        # problem 12 isn't formalized as a named-predicate `Prop` this
+        # translator could produce in the first place; it's a
+        # countermodel/independence proof over abstract `Bool`-indexed
+        # models (`AtMost 2 (fun _ : Bool => True) (fun _ : Bool =>
+        # False)`, "few" being genuinely bound-less in the source text -
+        # the "2" is the proof author's own arbitrary countermodel
+        # parameter, not something derivable from "few" itself). The GF
+        # sentence is still confirmed via run_gf_tests.py independently
+        # - only the Lean cross-check doesn't apply here.
+        "fracas_017 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+            "(ComplSlash (SlashV2a win_V2) (AdvNP (DetCN (DetQuant DefArt NumSg) (UseN nobelPrize_N)) "
+            "(PrepNP for_Prep (MassNP (UseN literature_N)))))"
+        ),
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

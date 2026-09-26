@@ -206,8 +206,30 @@ abstract FraCaSLogic =
   ** {
   fun
     several_Det, aFew_Det : Det ;
+    -- worlds_Det : Det ("the world's", problem 1's "the world's greatest
+    -- tenor") is self-declared rather than built from a real combinator:
+    -- RGL's only possessive-NP mechanism, PossNP : CN -> NP -> NP, is a
+    -- "CN of NP" paraphrase (`cn.s ++ "of" ++ np.s ! NPNomPoss`, checked
+    -- directly against gf-rgl/src/english/NounEng.gf), not the
+    -- prenominal 's-genitive FraCaS's own text uses, and there's no
+    -- general `NP -> Quant` combinator (only `PossPron : Pron -> Quant`,
+    -- pronouns only) to build "the world's" as a determiner from "the
+    -- world" the normal way. Same "self-declare the literal string"
+    -- pattern as most_Det/of_Prep/etc.
+    worlds_Det : Det ;
     really_AdA : AdA ;
     leading_A : A ;
+    -- greatest_A : A is the same pragmatic call as worlds_Det - RGL's
+    -- real superlative mechanism (`OrdSuperl : A -> Ord`) only attaches
+    -- via `DetQuantOrd : Quant -> Num -> Ord -> Det`, which needs a real
+    -- Quant for the *article* slot, not a full possessive-NP-derived
+    -- determiner like worlds_Det - so it can't compose with the "the
+    -- world's" phrase above at all. Declared as its own fixed-string A
+    -- instead (`mkA "greatest"`), used exactly like any other PositA
+    -- adjective in this grammar - a deliberate simplification since
+    -- problem 1 is a trivial same-claim restatement, not a test of
+    -- superlative morphology.
+    greatest_A : A ;
     cheap_Adv : Adv ;
     irishman_N, nobelPrize_N : N ;
     pavarotti_PN : PN ;

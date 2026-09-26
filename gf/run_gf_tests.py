@@ -276,6 +276,54 @@ def _tense_reconfirm(label: str, cmd: str, expected: str):
     )
 
 
+# Remaining Batch1.lean problems (1, 5, 11, 12, 17) - the rest of
+# FraCaS Section 1's first "batch" (2-4/6-10/13-16/18-21/33 already
+# done). Every word these need except "the world's"/"greatest"
+# (problem 1 - see FraCaSLogic.gf's own comment on why those two are
+# self-declared) already exists in DictEngAbs/DictEng, checked
+# directly the same way as every other bucket since the dictionary
+# integration: italian_N, ambitious_A, sing_V2, popular_A, music_N,
+# like_V2, poor_A, literature_N. few_Det (problem 12) is Structural's
+# own, already free (same as many_Det).
+BASE_CHECKS += [
+    (
+        "fracas_001_premise",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN italian_N)) "
+        "(ComplSlash (SlashV2a become_V2) (DetCN worlds_Det (AdjCN (PositA greatest_A) (UseN tenor_N))))",
+        "an Italian becomes the world's greatest tenor",
+    ),
+    (
+        "fracas_005_premise",
+        "linearize PredVP (DetCN (DetQuant DefArt NumPl) (AdjCN (AdAP really_AdA (PositA ambitious_A)) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA italian_A)))",
+        "the really ambitious tenors are Italian",
+    ),
+    (
+        "fracas_011_premise1",
+        "linearize PredVP (DetCN aFew_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(ComplSlash (SlashV2a sing_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))",
+        "a few great tenors sing popular music",
+    ),
+    (
+        "fracas_011_premise2",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(ComplSlash (SlashV2a like_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))",
+        "some great tenors like popular music",
+    ),
+    (
+        "fracas_012_premise",
+        "linearize PredVP (DetCN few_Det (AdjCN (PositA great_A) (UseN tenor_N))) (UseComp (CompAP (PositA poor_A)))",
+        "few great tenors are poor",
+    ),
+    (
+        "fracas_017_premise",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+        "(ComplSlash (SlashV2a win_V2) (AdvNP (DetCN (DetQuant DefArt NumSg) (UseN nobelPrize_N)) "
+        "(PrepNP for_Prep (MassNP (UseN literature_N)))))",
+        "an Irishman wins the Nobel prize for literature",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
