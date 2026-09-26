@@ -159,6 +159,7 @@ def camel_name(words: list[str]) -> str:
 # straight in DetCN's first argument).
 _QUANTIFIER_BY_DET = {
     "every_Det": "Every",
+    "each_Det": "Every",
     "someSg_Det": "Some",
     "somePl_Det": "Some",
     "most_Det": "Most",
@@ -167,8 +168,12 @@ _QUANTIFIER_BY_DET = {
 # Determiners that are Quant-typed instead (no_Quant, this_Quant, ...):
 # DetCN's first argument is then `DetQuant <quant> <num>` (mkDet's own
 # bare-Quant desugaring, gf-rgl's Constructors.gf), not a bare *_Det.
+# IndefArt ("a"/"an") is treated as existential, matching how this
+# project's own Lean `Some` already covers "a/an/some/many/..." (see
+# LeanNLSemantics/FraCaS/Section1/GQ.lean's doc comment on `Some`).
 _QUANTIFIER_BY_QUANT = {
     "no_Quant": "No",
+    "IndefArt": "Some",
 }
 
 
@@ -189,6 +194,45 @@ def _resolve_quantifier(det) -> str:
     )
 
 
+# Predeterminers (PredetNP predet np - "all Italian men", not a *_Det
+# itself): the wrapped NP's own Det is semantically vacuous (a bare
+# plural, `DetQuant IndefArt NumPl`, chosen only because English needs
+# *some* Det slot filled with something that realizes as no article -
+# see gf/FraCaSLogic.gf's own comment on this), so the predeterminer
+# alone decides the quantifier, same as this project's Lean `Every`
+# already treats "all" as "every" (LeanNLSemantics/FraCaS/Section1/GQ.lean).
+_QUANTIFIER_BY_PREDET = {
+    "all_Predet": "Every",
+}
+
+
+def _resolve_subject(subject):
+    """Returns (quantifier, restrictor_cn_tree) for a Cl's subject NP,
+    handling both `DetCN det cn` and `PredetNP predet (DetCN _ cn)`."""
+    if subject.head == "DetCN" and len(subject.args) == 2:
+        det, cn = subject.args
+        return _resolve_quantifier(det), cn
+    if subject.head == "PredetNP" and len(subject.args) == 2:
+        predet, np = subject.args
+        if predet.head not in _QUANTIFIER_BY_PREDET:
+            raise NotImplementedError(
+                f"predeterminer {predet.head!r} has no known Lean mapping yet "
+                "(see _QUANTIFIER_BY_PREDET)"
+            )
+        if np.head != "DetCN" or len(np.args) != 2:
+            raise NotImplementedError(
+                "PredetNP's own NP is only handled as a bare DetCN so far, "
+                f"got head={np.head!r}"
+            )
+        _det, cn = np.args
+        return _QUANTIFIER_BY_PREDET[predet.head], cn
+    raise NotImplementedError(
+        "only a determiner-quantified subject (DetCN det cn) or a "
+        "predeterminer-quantified one (PredetNP predet (DetCN _ cn)) is "
+        f"handled so far, got subject head={subject.head!r}"
+    )
+
+
 @dataclass
 class Translation:
     """One sentence's translation: the Lean Prop it denotes, plus the
@@ -205,13 +249,7 @@ def translate_cl(t) -> Translation:
             f"only 'PredVP (DetCN det cn) vp' is handled so far, got head={t.head!r}"
         )
     subject, vp = t.args
-    if subject.head != "DetCN" or len(subject.args) != 2:
-        raise NotImplementedError(
-            "only a determiner-quantified subject (DetCN det cn) is handled so far, "
-            f"got subject head={subject.head!r}"
-        )
-    det, cn = subject.args
-    quant = _resolve_quantifier(det)
+    quant, cn = _resolve_subject(subject)
 
     restrictor_name = camel_name(_leaf_words(cn))
     scope_name = camel_name(_leaf_words(vp))
@@ -235,11 +273,13 @@ def translate_tree_text(text: str, *, domain: str = "A") -> str:
 
 
 if __name__ == "__main__":
-    # fracas_002 and fracas_007 are confirmed end-to-end via `linearize`
-    # (gf/FraCaSLogicEng.gf / gf/NOTES.md). fracas_006 is designed and
-    # grep-verified against the RGL source the same way those two were,
-    # but not yet round-tripped through `linearize` on the real
-    # toolchain - see gf/FraCaSLogicEng.gf's own comment on it.
+    # All five are confirmed end-to-end via `linearize` on the real
+    # toolchain (gf/FraCaSLogicEng.gf / gf/NOTES.md). fracas_033 is also
+    # the first VP shape this translator has been fed that isn't
+    # copula/control-verb: the ComplV2 tree's object NP flattens into
+    # the scope predicate's name exactly like every other VP-internal
+    # structure does, so no new code path was needed here, just the
+    # IndefArt quantifier mapping above.
     examples = {
         "fracas_002 (premise)": (
             "PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -249,14 +289,28 @@ if __name__ == "__main__":
             "PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA swedish_A)))"
         ),
-        "fracas_006 (premise, not yet linearize-confirmed)": (
-            "PredVP (DetCN (DetQuant no_Quant NumSg) "
+        "fracas_006 (premise)": (
+            "PredVP (DetCN (DetQuant no_Quant NumPl) "
             "(AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA modest_A)))"
         ),
-        "fracas_010 (premise, not yet linearize-confirmed)": (
+        "fracas_010 (premise)": (
             "PredVP (DetCN most_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA italian_A)))"
+        ),
+        "fracas_033 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+            "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
+        ),
+        "fracas_003 (premise)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "
+            "(AdjCN (PositA italian_A) (UseN man_N)))) "
+            "(ComplVV want_VV (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+            "(AdjCN (PositA great_A) (UseN tenor_N))))))"
+        ),
+        "fracas_004 (premise 1)": (
+            "PredVP (DetCN each_Det (AdjCN (PositA italian_A) (UseN tenor_N))) "
+            "(ComplVV want_VV (UseComp (CompAP (PositA great_A))))"
         ),
     }
     for label, tree_text in examples.items():

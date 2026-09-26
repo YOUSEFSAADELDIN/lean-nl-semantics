@@ -2,12 +2,21 @@
 
 This records how the GF toolchain was actually gotten working, and every
 real gotcha hit along the way, so the next round of grammar-writing
-doesn't have to rediscover any of it. GF itself doesn't run in the cloud
-sandbox this project's Lean/CI work happens in (no Haskell toolchain,
-and `grammaticalframework.org` is blocked by that sandbox's egress
-policy), so all of this was done on a separate machine (Windows 11 via
-WSL2) and relayed back — see `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf`
-for the actual proven-working grammar this produced.
+doesn't have to rediscover any of it. Everything through the first five
+confirmed sentence shapes was done by hand on a separate machine
+(Windows 11 via WSL2) and relayed back, because this project's usual
+day-to-day development environment has no Haskell toolchain and blocks
+the domains needed to install one (`grammaticalframework.org`,
+`get.haskellstack.org`, Hackage's mirror fallback domains) — see below
+for how that was diagnosed. **GitHub Actions CI is a different story**:
+its runners have normal, unrestricted internet access, so `.github/workflows/build.yml`'s
+`build-gf` job builds the whole GF toolchain from source and runs
+`gf/run_gf_tests.py`'s automated `linearize` checks on every push -
+proven green end to end (cold-cache run: ~9.5 minutes total, dominated
+by building `gf-core`/`gf-rgl` from source; a cache hit skips almost all
+of that). New sentence shapes should be pushed and checked against this
+job first now, rather than relayed through a separate machine by hand -
+see `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for the grammar itself.
 
 ## Toolchain install (Windows 11 / WSL2)
 
@@ -135,6 +144,42 @@ own abstract module collides with it (`cannot unify ... in module
 Structural with ... in module <ours>`). Reuse the existing one; only
 declare genuinely new content words (`italian_A`, `tenor_N`, etc.).
 
+## Not every RGL module Setup.sh's build is missing is *just* the dictionary
+
+`Backward.gf`/`BackwardEng.gf` (the module with `ComplV2`, the plain
+transitive-verb VP constructor) hit the exact same "File X.gf does not
+exist" error `DictEngAbs` did, confirming this isn't a one-off special
+case about the dictionary specifically - `Setup.sh`'s build output is
+missing more than one module the gf-rgl *source* tree has. **When a
+needed function's home module fails to load with "File X.gf does not
+exist," don't assume it's unbuildable - just self-declare that function
+too**, the same recipe as below: find its real linearization in the
+source clone (`grep` the function name in the relevant `src/english/*.gf`
+file), and copy the right-hand side directly, opening whatever resource
+module(s) that recipe itself depends on (same as `mkDeterminer` below).
+`ComplV2`'s real recipe (from `BackwardEng.gf`) is
+`insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v)`, needing `insertObj`
+and `predV` from `ResEng` (a resource module, `open`ed directly - same
+"open it yourself, don't rely on inheriting it" situation as
+`mkDeterminer`/`MorphoEng` below).
+
+**But don't trust an "obsolete" module's recipe verbatim either.**
+`BackwardEng.gf` literally opens with the comment "a repository of
+obsolete constructs, needed for backward compatibility" (dated
+2008-04-19) - and it's not just old, it's actually stale against the
+*current* RGL API: its own source writes `np.s ! Acc`, but `ResEng.gf`'s
+real `NPCase` type (`NCase Case | NPAcc | NPNomPoss`) has no bare `Acc`
+constructor at all, only `NPAcc` - the accusative case constructor was
+evidently renamed at some point since 2008 and `Backward.gf` was never
+updated to match. `gf -make` catches this immediately and clearly
+("constant not found: Acc"), which is plausibly *why* it's excluded
+from `Setup.sh`'s build output in the first place, not an arbitrary
+omission like `DictEngAbs`. Moral: when copying a recipe out of a
+module the RGL itself flags as obsolete, expect it may not compile
+verbatim against the current API - check any param/constructor names it
+uses (`grep` their real current definition, as always) rather than
+assuming a same-repo cross-reference is automatically still accurate.
+
 ## `DictEngAbs`/`DictEng` (the general dictionary) aren't in `Setup.sh`'s build output
 
 `Setup.sh`'s default build (see above) does **not** produce
@@ -150,9 +195,36 @@ word that DictEng already has a recipe for (e.g. `most_Det`), the fix is
 to copy that recipe, not the dependency: `grep` the word's own `lin` rule
 directly out of `gf-rgl/src/english/DictEng.gf` (the source clone, not
 the built libs) and reuse the same right-hand side. `most_Det`'s real
-recipe is `mkDeterminer plural "most"` - and `mkDeterminer` itself is
-already in scope via `StructuralEng` (it's what `someSg_Det`/`somePl_Det`
-are built from there too), so this adds no new dependency.
+recipe is `mkDeterminer plural "most"`.
+
+**Watch out: a module using an oper internally doesn't re-export it.**
+`someSg_Det`/`somePl_Det` in `StructuralEng.gf` are themselves built from
+`mkDeterminer`, but that's `StructuralEng`'s own private
+`open MorphoEng in {...}` at work - a module that merely `extends`
+`StructuralEng` (as this project's own concrete syntax does) does NOT
+inherit that opening. Confirmed by a real compile error: `constant not
+found: mkDeterminer` even with `StructuralEng` (and `ParadigmsEng`,
+which provides the *other* smart constructors this grammar uses - `mkA`,
+`mkN`, `mkAdA` - fine) already in scope. `mkDeterminer` is declared in
+`MorphoEng` specifically (`grep -rn "mkDeterminer :" ~/gf-rgl/src/english/`
+finds it there, not in `Constructors.gf` or `ParadigmsEng.gf`), so the
+fix is to `open` `MorphoEng` directly ourselves alongside `ParadigmsEng`,
+not to rely on it being pulled in transitively through `StructuralEng`.
+
+## Two different lambda syntaxes: `\x -> e` vs `\\x => e`
+
+Copying a recipe out of RGL source verbatim and dropping a backslash
+produces a real, confusing compile error: `Unexpected token '=>'.
+Expected one of: '->'`. GF has two lambda forms, not one - `\x -> e`
+builds a plain function (arrow type `A -> B`), while `\\x => e` (double
+backslash) builds a *table* (finite function over a param type, e.g.
+`Agr => Str`). `ComplV2`'s recipe (`insertObj (\\_ => v.c2 ++ np.s !
+Acc) (predV v)`) needs the double-backslash form because `insertObj`'s
+first argument is table-typed (`(Agr => Str) -> VP -> VP`) - `insertObj`
+itself is defined with the plain single-backslash form (`\obj,vp -> ...`)
+since it's an ordinary two-argument function. When copying a recipe,
+match the backslash count exactly as printed - it's not a stylistic
+choice or a typo in the source, it's meaningful syntax.
 
 ## `mk*` sugar only works inside compiled source files
 
@@ -214,6 +286,52 @@ This is actually a fine fit, not just a workaround: tense/aspect is
 already treated as separate information from the core proposition
 elsewhere in this project (see the FraCaS Section 7 Lean proofs), so a
 tenseless clause is close to the right semantic unit anyway.
+
+**Re-tested and re-confirmed, not just assumed.** gf-rgl's own treebank
+(`src/english/treebank.txt`) always wraps `UseCl`'s result in
+`UttS : S -> Utt` before linearizing, never linearizing a bare `S`
+directly - raising a real hypothesis that the missing `UttS` wrapping,
+not a genuine RGL bug, was the actual cause of the blank output, and
+that tense support might not be blocked after all. Directly tested via
+the `build-gf` CI job (see the automated-checks section above for the
+two testing bugs hit getting a *trustworthy* answer): `linearize UttS
+(UseCl (TTAnt TPres ASimul) PPos (...))` still produces blank output,
+confirmed with correct per-command output isolation. The hypothesis was
+wrong - this is a genuine RGL behavior (in this version, for this
+category), not a missing wrapper, and `Cl` remains this project's
+target category.
+
+## Automating `linearize` checks: a shared session is required, but needs correct per-command splitting
+
+Two real bugs in `gf/run_gf_tests.py`'s test methodology, found in
+sequence:
+
+1. **First version**: ran every check's `linearize` command in one
+   shared `gf` stdin session, then checked each check's expected string
+   against the *whole* session's captured output. This produced a false
+   positive: a diagnostic check for whether wrapping `UseCl`'s result in
+   `UttS` fixes the blank-output problem below appeared to pass, because
+   its expected substring ("wants to be a great tenor") had already
+   appeared in an *earlier, unrelated* check's own result further up the
+   same transcript - the diagnostic's own command actually still
+   produced blank output. A substring check against a shared
+   multi-command transcript is not evidence that *that specific
+   command* produced the expected output, only that the string appeared
+   *somewhere*.
+2. **"Fix" that was itself broken**: running each check as its own
+   separate, short-lived `gf` process (one `linearize` command, then
+   `quit`, per invocation) - the obvious-looking fix for bug 1 - made
+   *every single check* produce blank output, not just the diagnostic
+   one. This is a startup/piping race specific to that lone-command-
+   then-quit pattern (the process exits before `gf`'s own output
+   finishes), not a real result; the batched shared-session approach is
+   actually the reliable one.
+
+**The real fix**: keep the shared session (proven reliable), but split
+its captured output on the `FraCaSLogic> ` prompt marker into one
+segment per command, in the order the commands were sent, and check
+each expected string only against its own corresponding segment. This
+gets correct per-command isolation without the piping race.
 
 ## How to debug a "why is this blank / why doesn't this work" problem here
 

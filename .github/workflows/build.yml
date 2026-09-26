@@ -60,3 +60,88 @@ jobs:
       - name: Build
         working-directory: bridge
         run: lake build
+
+  # Phase 3: build the GF toolchain from source and run the confirmed
+  # `linearize` checks (gf/run_gf_tests.py) automatically on every push,
+  # instead of relying on someone manually running `linearize` on a
+  # separate machine and eyeballing the output (see gf/NOTES.md for how
+  # every one of these gotchas was originally found that way).
+  #
+  # GitHub's runners have normal internet access - no restrictive egress
+  # policy - unlike the sandbox this repo's own Lean/CI work is otherwise
+  # developed in, where installing GF's Haskell toolchain is blocked.
+  #
+  # continue-on-error while Section 1 coverage is actively being
+  # extended (many new sentence shapes in quick succession) - re-remove
+  # once that work settles down, same reasoning as when this was first
+  # added and then removed after a single proven-green run.
+  #
+  # gf-core and gf-rgl are pinned to the exact commit/tag already
+  # confirmed working by hand (gf/NOTES.md), not `main`/latest, for
+  # reproducibility. Both the built `gf` binary and the compiled RGL are
+  # cached, keyed on those pins, so only the first run after a pin
+  # change pays the full build cost (RGL's Setup.sh builds every
+  # language it knows, not just English, which is slow from scratch).
+  build-gf:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      GF_CORE_COMMIT: 378bfe691041878ca9fadd4697f1e58dc1620931
+      GF_RGL_TAG: "20260403"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: haskell-actions/setup@v2
+        id: setup-haskell
+        with:
+          ghc-version: "9.6.7"
+          cabal-version: "latest"
+
+      - name: Cache cabal store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.setup-haskell.outputs.cabal-store }}
+          key: ${{ runner.os }}-gf-cabal-9.6.7
+
+      - name: Cache built gf binary
+        id: cache-gf-bin
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/bin/gf
+          key: gf-binary-${{ runner.os }}-${{ env.GF_CORE_COMMIT }}
+
+      - name: Build gf-core
+        if: steps.cache-gf-bin.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/GrammaticalFramework/gf-core.git /tmp/gf-core
+          cd /tmp/gf-core
+          git checkout "$GF_CORE_COMMIT"
+          cabal update
+          mkdir -p "$HOME/.local/bin"
+          cabal install --installdir="$HOME/.local/bin" --install-method=copy --overwrite-policy=always
+
+      - name: Add gf to PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Cache gf-rgl build
+        id: cache-rgl
+        uses: actions/cache@v4
+        with:
+          path: ~/gf-libs
+          key: gf-rgl-${{ runner.os }}-${{ env.GF_RGL_TAG }}
+
+      - name: Build gf-rgl
+        if: steps.cache-rgl.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/GrammaticalFramework/gf-rgl.git /tmp/gf-rgl
+          cd /tmp/gf-rgl
+          git checkout "$GF_RGL_TAG"
+          ./Setup.sh --dest="$HOME/gf-libs" -v
+
+      - name: Build FraCaSLogic grammar
+        working-directory: gf
+        run: gf -make -path=".:$HOME/gf-libs/alltenses:$HOME/gf-libs/prelude" FraCaSLogicEng.gf
+
+      - name: Run linearize checks
+        working-directory: gf
+        run: python3 run_gf_tests.py

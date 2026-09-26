@@ -1,8 +1,9 @@
 concrete FraCaSLogicEng of FraCaSLogic =
   CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng
-  ** open ParadigmsEng in {
+  ** open ParadigmsEng, MorphoEng, ResEng in {
   lin
     most_Det = mkDeterminer plural "most" ;
+    each_Det = mkDeterminer singular "each" ;
     really_AdA = mkAdA "really" ;
     italian_A = mkA "Italian" ;
     great_A = mkA "great" ;
@@ -10,6 +11,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
     modest_A = mkA "modest" ;
     man_N = mkN "man" "men" ;
     tenor_N = mkN "tenor" ;
+    irishman_N = mkN "Irishman" "Irishmen" ;
+    nobelPrize_N = mkN "Nobel prize" ;
+    win_V2 = mkV2 "win" ;
+    ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v) ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -27,25 +32,49 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --                     (UseComp (CompAP (PositA swedish_A)))
 --   => "some great tenors are Swedish"
 --
--- FraCaS problem 6's premise ("No really great tenors are modest."),
--- NOT YET CONFIRMED (needs a linearize round-trip on the actual
--- toolchain): "no" is Quant-typed, not Det-typed, so the subject is
--- DetCN wrapping `DetQuant no_Quant NumSg` (both from Noun, already in
--- scope) rather than a bare *_Det constant, and "really great" is a
--- degree-modified adjective, AdAP really_AdA (PositA great_A) : AP
--- (from Adjective, also already in scope), fed to AdjCN just like a
--- plain PositA AP is:
+-- FraCaS problem 6's premise ("No really great tenors are modest."):
+-- "no" is Quant-typed, not Det-typed, so the subject is DetCN wrapping
+-- `DetQuant no_Quant NumPl` (both from Noun, already in scope) rather
+-- than a bare *_Det constant, and "really great" is a degree-modified
+-- adjective, AdAP really_AdA (PositA great_A) : AP (from Adjective,
+-- also already in scope), fed to AdjCN just like a plain PositA AP is.
+-- NumPl, not NumSg: NumSg was tried first and round-tripped to "no
+-- really great tenor is modest" (singular agreement) instead of the
+-- target plural sentence - the quantifier's own Number argument drives
+-- subject-verb agreement, and FraCaS's sentence is plural.
 --   linearize PredVP
---     (DetCN (DetQuant no_Quant NumSg) (AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N)))
+--     (DetCN (DetQuant no_Quant NumPl) (AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N)))
 --     (UseComp (CompAP (PositA modest_A)))
---   expected: "no really great tenors are modest"
+--   => "no really great tenors are modest"
 --
--- FraCaS problem 10's premise ("Most great tenors are Italian."), NOT
--- YET CONFIRMED: most_Det (declared directly above, using DictEng's own
--- recipe - see gf/NOTES.md's "DictEngAbs/DictEng aren't in Setup.sh's
--- build output" section) is a bare Det, so this is the same shape as
--- problem 7 with a different determiner and complement:
+-- FraCaS problem 10's premise ("Most great tenors are Italian."):
+-- most_Det (declared directly above, using DictEng's own recipe - see
+-- gf/NOTES.md's "DictEngAbs/DictEng aren't in Setup.sh's build output"
+-- section) is a bare Det, so this is the same shape as problem 7 with a
+-- different determiner and complement:
 --   linearize PredVP
 --     (DetCN most_Det (AdjCN (PositA great_A) (UseN tenor_N)))
 --     (UseComp (CompAP (PositA italian_A)))
---   expected: "most great tenors are Italian"
+--   => "most great tenors are Italian"
+--
+-- All four of the above are confirmed end-to-end on the real toolchain.
+--
+-- FraCaS problem 33's premise ("An Irishman won a Nobel prize."): the
+-- first subject-verb-object sentence shape (every prior one was
+-- copula/control-verb - "is"/"are"/"wants to be"). The object is
+-- itself a full determiner-quantified NP, same as the subject, built
+-- from the plain transitive-VP constructor ComplV2 - self-declared
+-- above (see gf/FraCaSLogic.gf's own comment on why, not extended from
+-- Backward/BackwardEng). IndefArt (from Noun, already in scope) is the
+-- a/an quantifier; the RGL picks "a" vs "an" for us automatically based
+-- on the following word. Note this project's target category Cl is
+-- tenseless (see the file-top comment), so the confirmed output
+-- correctly comes out present tense ("wins"), not an exact string
+-- match to FraCaS's own past-tense wording ("won") - that's a
+-- deliberate, already-established limitation, not a bug here:
+--   linearize PredVP
+--     (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N))
+--     (ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))
+--   => "an Irishman wins a Nobel prize"
+--
+-- Confirmed end-to-end on the real toolchain.

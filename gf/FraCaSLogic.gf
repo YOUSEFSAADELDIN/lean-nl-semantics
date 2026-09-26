@@ -17,13 +17,48 @@
 -- and determiner it needs is declared here instead, same as
 -- really_AdA always was. most_Det's own linearization is copied
 -- directly from DictEngAbs's real recipe (checked against
--- gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"` -
--- mkDeterminer itself is already in scope via StructuralEng (which
--- uses it for someSg_Det/somePl_Det/etc.), not a new dependency.
+-- gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"` - see
+-- gf/NOTES.md for where mkDeterminer itself actually needs to come from
+-- (MorphoEng, opened directly - NOT inherited from StructuralEng just
+-- because StructuralEng happens to use it internally).
+--
+-- ComplV2 : V2 -> NP -> VP (the plain transitive-verb VP constructor,
+-- needed for the first subject-verb-object sentence shape, problem 33
+-- "An Irishman won a Nobel prize.") is declared directly below rather
+-- than extending Backward (where the RGL itself puts it) - Backward.gf
+-- has the exact same problem DictEngAbs did: it isn't part of
+-- Setup.sh's build output either (same "File X.gf does not exist"
+-- error, confirmed the same way). Its real recipe is copied from
+-- gf-rgl/src/english/BackwardEng.gf instead - see gf/NOTES.md.
+--
+-- each_Det (problems 4, 18-20 etc: "each Italian tenor"/"each
+-- European") is declared directly below rather than extending
+-- ExtraEngAbs (where the RGL puts it) - that module lives in
+-- src/english/, not src/abstract/, meaning it's an English-specific
+-- "abstract" module despite the name, not genuinely cross-language.
+-- Depending on it would tie this project's abstract syntax to English
+-- specifically, contradicting the multi-language goal in the README.
+-- Its real recipe (checked against gf-rgl/src/english/ExtraEng.gf) is
+-- the trivial `mkDeterminer Sg "each"` - see gf/NOTES.md's section on
+-- gf-rgl's own treebank for how this and several other mechanisms
+-- below were found: it ships pre-built, validated trees for most of
+-- FraCaS Section 1 already.
+--
+-- "all" (problems 3, 19, etc: "All Italian men want...") is NOT a Det
+-- at all in the current RGL (the treebank's own `all_Det` is stale -
+-- confirmed absent from the current source, same situation as
+-- Backward's `Acc`/`NPAcc`). The real, current mechanism is
+-- `PredetNP all_Predet np` (`all_Predet` already free via Structural,
+-- `PredetNP` already free via Noun) applied to a *bare* plural NP -
+-- `DetCN (DetQuant IndefArt NumPl) cn`, which realizes with no article
+-- at all (`IndefArt`'s own linearization is the empty string for
+-- plural - see gf/NOTES.md/NounEng.gf) - not `DetCN all_Det cn`.
 abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
   fun
-    most_Det : Det ;
+    most_Det, each_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A : A ;
-    man_N, tenor_N : N ;
+    man_N, tenor_N, irishman_N, nobelPrize_N : N ;
+    win_V2 : V2 ;
+    ComplV2 : V2 -> NP -> VP ;
 }
