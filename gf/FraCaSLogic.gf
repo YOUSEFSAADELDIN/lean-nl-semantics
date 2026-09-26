@@ -264,4 +264,22 @@ abstract FraCaSLogic =
     -- their own fixed-string proper nouns instead, same pattern as
     -- pavarotti_PN.
     scandinavia_PN, southernEurope_PN : PN ;
+    -- atLeastAFew_Det : Det (problem 43's converse hypothesis, "at
+    -- least a few committee members are from Sweden") - "at least"
+    -- normally combines with a numeral Card via Numeral's own AdNum
+    -- (problem 15's "at least three"), but "a few" is a Det, not a
+    -- Card/Numeral, so there's no real combinator to build "at least a
+    -- few" from aFew_Det the normal way. Self-declared as its own fixed
+    -- string instead, same pattern as aLotOf_Det/worlds_Det/etc. Only
+    -- needed for this one GF sentence - problem 43 itself is a
+    -- countermodel (Batch3.lean's fracas_043_dir1/dir2), so this never
+    -- needs a translate.py quantifier mapping.
+    atLeastAFew_Det : Det ;
+    -- northAmerican_A : A (problems 50-52's "a resident of the North
+    -- American continent") - DictEngAbs has american_A but no compound
+    -- demonym for "North American" specifically, and adjective-adjective
+    -- compounding ("north" + "american") isn't a real RGL mechanism
+    -- (AdjCN combines an AP with a CN, not two APs) - self-declared as
+    -- its own fixed string instead, same pattern as worlds_Det/etc.
+    northAmerican_A : A ;
 }

@@ -534,6 +534,257 @@ BASE_CHECKS += [
     ),
 ]
 
+# Problems 34-45 (Batch3.lean's "converse" subsection, continuing 32/33
+# already done) - almost every sentence here already exists verbatim as
+# a confirmed check under an earlier problem's label (34-36's own
+# premises 2/3 = 18's; 34/35/36's hypotheses = 18/19/20's own premise 1;
+# 39/40/41 are exactly 23/24/25's premise/hypothesis pairs, swapped;
+# 42's premises 2/3 = 26's; 43's premises 2/3 = 27's; 44's premises 2/3
+# = 28's; 45 = 29's premise/hypothesis pair, swapped) - not re-added
+# under a new label here, since that would just re-run an identical
+# `linearize` command for no new information; only the genuinely new
+# sentences below get their own check. anywhere_Adv (problem 37's "the
+# right to live ANYWHERE in Europe", unlike 18-21/34-36's plain "in
+# Europe") is free via DictEngAbs, not self-declared - checked directly,
+# same as every other word here.
+_HAVE_RIGHT_ANYWHERE_VP = _balanced(
+    "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+    "(AdvCN (SentCN (UseN right_N) (EmbedVP (AdvVP (UseV live_V) anywhere_Adv))) "
+    "(PrepNP in_Prep (UsePN europe_PN)))))",
+    "_HAVE_RIGHT_ANYWHERE_VP",
+)
+_RESIDENTS_OF_MEMBER_STATES_NP = _balanced(
+    "(AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+    "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))",
+    "_RESIDENTS_OF_MEMBER_STATES_NP",
+)
+
+BASE_CHECKS += [
+    (
+        "fracas_034_premise1",
+        f"linearize PredVP (DetCN every_Det (UseN european_N)) {_CAN_TRAVEL_FREELY_VP}",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_035_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N))) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "all Europeans can travel freely within Europe",
+    ),
+    (
+        "fracas_036_premise1",
+        f"linearize PredVP (DetCN each_Det (UseN european_N)) {_CAN_TRAVEL_FREELY_VP}",
+        "each European can travel freely within Europe",
+    ),
+    (
+        "fracas_037_premise1",
+        f"linearize PredVP {_RESIDENTS_OF_MEMBER_STATES_NP} {_CAN_TRAVEL_FREELY_VP}",
+        "the residents of member states can travel freely within Europe",
+    ),
+    (
+        "fracas_037_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'individual_N').replace(_HAVE_RIGHT_VP, _HAVE_RIGHT_ANYWHERE_VP)} "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "every individual that has the right to live anywhere in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_037_hypothesis",
+        f"linearize PredVP {_RESIDENTS_OF_MEMBER_STATES_NP} {_HAVE_RIGHT_ANYWHERE_VP}",
+        "the residents of member states have the right to live anywhere in Europe",
+    ),
+    (
+        "fracas_038_premise",
+        "linearize PredVP (DetCN someSg_Det (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some delegate finishes the report on time",
+    ),
+    (
+        "fracas_042_premise1",
+        f"linearize PredVP (DetCN most_Det (UseN european_N)) {_CAN_TRAVEL_FREELY_VP}",
+        "most Europeans can travel freely within Europe",
+    ),
+    (
+        "fracas_043_premise1",
+        "linearize PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "a few committee members are from Scandinavia",
+    ),
+    (
+        "fracas_043_hypothesis",
+        "linearize PredVP (DetCN atLeastAFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN sweden_PN))))",
+        "at least a few committee members are from Sweden",
+    ),
+    (
+        "fracas_044_premise1",
+        "linearize PredVP (DetCN few_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN southernEurope_PN))))",
+        "few committee members are from southern Europe",
+    ),
+    # fracas_044's own hypothesis ("There are few committee members from
+    # Portugal.") is deliberately NOT here: it's a genuine "there are"
+    # existential construction, a different clause shape from every
+    # other check in this file (a plain predicative "NP is/are Comp"),
+    # and out of scope for this batch - same principled omission as
+    # problem 28's identical-shaped hypothesis one bucket ago. Doesn't
+    # affect the Lean cross-check either way: translate.py only ever
+    # feeds a chain theorem's PREMISES through, never its conclusion.
+]
+
+# Problems 46-59 (Batch4.lean) - mostly new vocabulary/subsections
+# rather than one theme. Every word needed except northAmerican_A (see
+# FraCaSLogic.gf's own comment on why) already exists in DictEngAbs,
+# checked directly the same way as every other bucket: swedeMasc_N,
+# canadian_A, continent_N, western_A, country_N, irish_A, british_A,
+# portuguese_A, female_A. As with problems 34-45, many of these
+# sentences already exist verbatim as a confirmed check under an
+# earlier problem's own label (47's premise/hypothesis pair = 31's
+# hypothesis/premise, swapped; 48's premise/hypothesis pair = 32's
+# hypothesis/premise, swapped; 54's hypothesis = 38's premise; 55/56/57's
+# hypotheses = 23/24/25's premises; 58's hypothesis = 42's premise 1) -
+# not re-added under a new label. Only the genuinely new sentences get
+# their own check below.
+_RESIDENT_OF_NAC_CN = _balanced(
+    "(AdvCN (UseN resident_N) (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) "
+    "(AdjCN (PositA northAmerican_A) (UseN continent_N)))))",
+    "_RESIDENT_OF_NAC_CN",
+)
+_CANADIAN_RESIDENT_CN = "(AdjCN (PositA canadian_A) (UseN resident_N))"
+_WESTERN_COUNTRY_CN = "(AdjCN (PositA western_A) (UseN country_N))"
+_MAJOR_WESTERN_COUNTRY_CN = f"(AdjCN (PositA major_A) {_WESTERN_COUNTRY_CN})"
+
+BASE_CHECKS += [
+    (
+        "fracas_046_hypothesis",
+        "linearize PredVP (CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(DetCN (DetQuant DefArt NumPl) (UseN commissioner_N))) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "one of the commissioners spends a lot of time at home",
+    ),
+    (
+        "fracas_049_premise1",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN swedeMasc_N)) "
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "a Swede wins a Nobel prize",
+    ),
+    (
+        "fracas_049_premise2",
+        "linearize PredVP (DetCN every_Det (UseN swedeMasc_N)) (UseComp (CompCN (UseN scandinavian_N)))",
+        "every Swede is a Scandinavian",
+    ),
+    (
+        "fracas_050_premise1",
+        f"linearize PredVP (DetCN every_Det {_CANADIAN_RESIDENT_CN}) {_CAN_TRAVEL_FREELY_VP}",
+        "every Canadian resident can travel freely within Europe",
+    ),
+    (
+        "fracas_050_premise2",
+        f"linearize PredVP (DetCN every_Det {_CANADIAN_RESIDENT_CN}) "
+        f"(UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) {_RESIDENT_OF_NAC_CN})))",
+        "every Canadian resident is a resident of the North American continent",
+    ),
+    (
+        "fracas_050_hypothesis",
+        f"linearize PredVP (DetCN every_Det {_RESIDENT_OF_NAC_CN}) {_CAN_TRAVEL_FREELY_VP}",
+        "every resident of the North American continent can travel freely within Europe",
+    ),
+    (
+        "fracas_051_premise1",
+        f"linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) {_CANADIAN_RESIDENT_CN})) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "all Canadian residents can travel freely within Europe",
+    ),
+    (
+        "fracas_051_hypothesis",
+        f"linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) {_RESIDENT_OF_NAC_CN})) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "all residents of the North American continent can travel freely within Europe",
+    ),
+    (
+        "fracas_052_premise1",
+        f"linearize PredVP (DetCN each_Det {_CANADIAN_RESIDENT_CN}) {_CAN_TRAVEL_FREELY_VP}",
+        "each Canadian resident can travel freely within Europe",
+    ),
+    (
+        "fracas_052_hypothesis",
+        f"linearize PredVP (DetCN each_Det {_RESIDENT_OF_NAC_CN}) {_CAN_TRAVEL_FREELY_VP}",
+        "each resident of the North American continent can travel freely within Europe",
+    ),
+    (
+        "fracas_053_premise1",
+        "linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+        f"(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) {_MAJOR_WESTERN_COUNTRY_CN}))) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "the residents of major Western countries can travel freely within Europe",
+    ),
+    (
+        "fracas_053_premise2",
+        "linearize PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        f"(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) {_MAJOR_WESTERN_COUNTRY_CN})))) "
+        "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdvCN (UseN resident_N) "
+        f"(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) {_WESTERN_COUNTRY_CN}))))))",
+        "all residents of major Western countries are residents of Western countries",
+    ),
+    (
+        "fracas_053_hypothesis",
+        "linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+        f"(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) {_WESTERN_COUNTRY_CN}))) "
+        f"{_HAVE_RIGHT_VP}",
+        "the residents of Western countries have the right to live in Europe",
+    ),
+    (
+        "fracas_054_premise",
+        "linearize PredVP (DetCN (DetQuant no_Quant NumSg) (AdjCN (PositA scandinavian_A) (UseN delegate_N))) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "no Scandinavian delegate finishes the report on time",
+    ),
+    (
+        "fracas_055_premise",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA irish_A) (UseN delegate_N))) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some Irish delegates finish the survey on time",
+    ),
+    (
+        "fracas_056_premise",
+        "linearize PredVP (DetCN many_Det (AdjCN (PositA british_A) (UseN delegate_N))) "
+        "(ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl) "
+        "(AdjCN (PositA interesting_A) (UseN result_N))) (PrepNP from_Prep "
+        "(DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))",
+        "many British delegates obtain interesting results from the survey",
+    ),
+    (
+        "fracas_057_premise",
+        "linearize PredVP (DetCN several_Det (AdjCN (PositA portuguese_A) (UseN delegate_N))) "
+        "(ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2) "
+        "(PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) "
+        "(AdjCN (PositA major_A) (AdjCN (PositA national_A) (UseN newspaper_N)))))))",
+        "several Portuguese delegates get the results published in major national newspapers",
+    ),
+    (
+        "fracas_058_premise",
+        "linearize PredVP (DetCN most_Det (RelCN (UseN european_N) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP "
+        "(AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN))))))))) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "most Europeans that are resident in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_059_premise",
+        "linearize PredVP (DetCN aFew_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N)))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "a few female committee members are from Scandinavia",
+    ),
+    (
+        "fracas_059_hypothesis",
+        "linearize PredVP (DetCN atLeastAFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "at least a few committee members are from Scandinavia",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
