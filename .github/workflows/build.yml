@@ -70,8 +70,6 @@ jobs:
   # GitHub's runners have normal internet access - no restrictive egress
   # policy - unlike the sandbox this repo's own Lean/CI work is otherwise
   # developed in, where installing GF's Haskell toolchain is blocked.
-  # This job is new and unproven, so `continue-on-error` at the job
-  # level, same as build-linglib-bridge, until it's shown reliably green.
   #
   # gf-core and gf-rgl are pinned to the exact commit/tag already
   # confirmed working by hand (gf/NOTES.md), not `main`/latest, for
@@ -81,7 +79,6 @@ jobs:
   # language it knows, not just English, which is slow from scratch).
   build-gf:
     runs-on: ubuntu-latest
-    continue-on-error: true
     env:
       GF_CORE_COMMIT: 378bfe691041878ca9fadd4697f1e58dc1620931
       GF_RGL_TAG: "20260403"

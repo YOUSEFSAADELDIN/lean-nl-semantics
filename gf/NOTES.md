@@ -4,9 +4,9 @@ This records how the GF toolchain was actually gotten working, and every
 real gotcha hit along the way, so the next round of grammar-writing
 doesn't have to rediscover any of it. Everything through the first five
 confirmed sentence shapes was done by hand on a separate machine
-(Windows 11 via WSL2) and relayed back, because the interactive Claude
-Code *sandbox* this project's day-to-day work happens in has no Haskell
-toolchain and blocks the domains needed to install one (`grammaticalframework.org`,
+(Windows 11 via WSL2) and relayed back, because this project's usual
+day-to-day development environment has no Haskell toolchain and blocks
+the domains needed to install one (`grammaticalframework.org`,
 `get.haskellstack.org`, Hackage's mirror fallback domains) — see below
 for how that was diagnosed. **GitHub Actions CI is a different story**:
 its runners have normal, unrestricted internet access, so `.github/workflows/build.yml`'s
