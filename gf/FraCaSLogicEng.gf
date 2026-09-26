@@ -51,6 +51,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     aLotOf_Det = mkDeterminer singular "a lot of" ;
     scandinavia_PN = mkPN "Scandinavia" ;
     southernEurope_PN = mkPN "southern Europe" ;
+    atLeastAFew_Det = mkDeterminer plural "at least a few" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -497,3 +498,62 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --       (UseN commissioner_N))
 --     (AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
 --   => "at most ten commissioners spend a lot of time at home"
+--
+-- FraCaS problems 34-45 (Batch3.lean's "converse" subsection, continuing
+-- 32/33 already done): almost every sentence here already exists
+-- verbatim as a confirmed check under an earlier problem's own label -
+-- see run_gf_tests.py's own comment on exactly which ones and why they
+-- aren't duplicated - so only the genuinely new sentences get their own
+-- `linearize` example here too. anywhere_Adv (problem 37's "the right
+-- to live ANYWHERE in Europe", unlike 18-21/34-36's plain "in Europe")
+-- and atLeastAFew_Det (problem 43's "at least a few", self-declared -
+-- see FraCaSLogic.gf's own comment on why) are the only two new pieces
+-- of vocabulary this bucket needs.
+--   linearize PredVP (DetCN every_Det (UseN european_N))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "every European can travel freely within Europe"
+--   linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N)))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "all Europeans can travel freely within Europe"
+--   linearize PredVP (DetCN each_Det (UseN european_N))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "each European can travel freely within Europe"
+--   linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N))
+--       (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "the residents of member states can travel freely within Europe"
+--   linearize PredVP (DetCN every_Det (RelCN (UseN individual_N)
+--       (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a have_V2)
+--         (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N)
+--           (EmbedVP (AdvVP (UseV live_V) anywhere_Adv))) (PrepNP in_Prep (UsePN europe_PN))))))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "every individual that has the right to live anywhere in Europe can travel freely within Europe"
+--   linearize PredVP (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N))
+--       (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))
+--     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg)
+--       (AdvCN (SentCN (UseN right_N) (EmbedVP (AdvVP (UseV live_V) anywhere_Adv))) (PrepNP in_Prep (UsePN europe_PN)))))
+--   => "the residents of member states have the right to live anywhere in Europe"
+--   linearize PredVP (DetCN someSg_Det (UseN delegate_N))
+--     (AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))
+--       (PrepNP on_Prep (MassNP (UseN time_N))))
+--   => "some delegate finishes the report on time"
+--   linearize PredVP (DetCN most_Det (UseN european_N))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "most Europeans can travel freely within Europe"
+--   linearize PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N)))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))
+--   => "a few committee members are from Scandinavia"
+--   linearize PredVP (DetCN atLeastAFew_Det (CompoundCN (UseN committee_N) (UseN member_N)))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN sweden_PN))))
+--   => "at least a few committee members are from Sweden"
+--   linearize PredVP (DetCN few_Det (CompoundCN (UseN committee_N) (UseN member_N)))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN southernEurope_PN))))
+--   => "few committee members are from southern Europe"
+--
+-- Not added to translate.py: problems 34-37/39-43/45 are all
+-- countermodel/independence proofs (checked directly against
+-- Batch3.lean), same reasoning as problem 12. Problem 44 is a real
+-- theorem but generic over any bound `n` (stronger than FraCaS's own
+-- "few" needs), so "few_Det" still has no single Lean quantifier to
+-- map to here either - see translate.py's own comment on why all three
+-- of its premises are excluded together, not just the first.

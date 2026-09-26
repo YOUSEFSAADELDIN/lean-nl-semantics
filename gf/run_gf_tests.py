@@ -534,6 +534,104 @@ BASE_CHECKS += [
     ),
 ]
 
+# Problems 34-45 (Batch3.lean's "converse" subsection, continuing 32/33
+# already done) - almost every sentence here already exists verbatim as
+# a confirmed check under an earlier problem's label (34-36's own
+# premises 2/3 = 18's; 34/35/36's hypotheses = 18/19/20's own premise 1;
+# 39/40/41 are exactly 23/24/25's premise/hypothesis pairs, swapped;
+# 42's premises 2/3 = 26's; 43's premises 2/3 = 27's; 44's premises 2/3
+# = 28's; 45 = 29's premise/hypothesis pair, swapped) - not re-added
+# under a new label here, since that would just re-run an identical
+# `linearize` command for no new information; only the genuinely new
+# sentences below get their own check. anywhere_Adv (problem 37's "the
+# right to live ANYWHERE in Europe", unlike 18-21/34-36's plain "in
+# Europe") is free via DictEngAbs, not self-declared - checked directly,
+# same as every other word here.
+_HAVE_RIGHT_ANYWHERE_VP = _balanced(
+    "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+    "(AdvCN (SentCN (UseN right_N) (EmbedVP (AdvVP (UseV live_V) anywhere_Adv))) "
+    "(PrepNP in_Prep (UsePN europe_PN)))))",
+    "_HAVE_RIGHT_ANYWHERE_VP",
+)
+_RESIDENTS_OF_MEMBER_STATES_NP = _balanced(
+    "(AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+    "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))",
+    "_RESIDENTS_OF_MEMBER_STATES_NP",
+)
+
+BASE_CHECKS += [
+    (
+        "fracas_034_premise1",
+        f"linearize PredVP (DetCN every_Det (UseN european_N)) {_CAN_TRAVEL_FREELY_VP}",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_035_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN european_N))) "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "all Europeans can travel freely within Europe",
+    ),
+    (
+        "fracas_036_premise1",
+        f"linearize PredVP (DetCN each_Det (UseN european_N)) {_CAN_TRAVEL_FREELY_VP}",
+        "each European can travel freely within Europe",
+    ),
+    (
+        "fracas_037_premise1",
+        f"linearize PredVP {_RESIDENTS_OF_MEMBER_STATES_NP} {_CAN_TRAVEL_FREELY_VP}",
+        "the residents of member states can travel freely within Europe",
+    ),
+    (
+        "fracas_037_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'individual_N').replace(_HAVE_RIGHT_VP, _HAVE_RIGHT_ANYWHERE_VP)} "
+        f"{_CAN_TRAVEL_FREELY_VP}",
+        "every individual that has the right to live anywhere in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_037_hypothesis",
+        f"linearize PredVP {_RESIDENTS_OF_MEMBER_STATES_NP} {_HAVE_RIGHT_ANYWHERE_VP}",
+        "the residents of member states have the right to live anywhere in Europe",
+    ),
+    (
+        "fracas_038_premise",
+        "linearize PredVP (DetCN someSg_Det (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some delegate finishes the report on time",
+    ),
+    (
+        "fracas_042_premise1",
+        f"linearize PredVP (DetCN most_Det (UseN european_N)) {_CAN_TRAVEL_FREELY_VP}",
+        "most Europeans can travel freely within Europe",
+    ),
+    (
+        "fracas_043_premise1",
+        "linearize PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "a few committee members are from Scandinavia",
+    ),
+    (
+        "fracas_043_hypothesis",
+        "linearize PredVP (DetCN atLeastAFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN sweden_PN))))",
+        "at least a few committee members are from Sweden",
+    ),
+    (
+        "fracas_044_premise1",
+        "linearize PredVP (DetCN few_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN southernEurope_PN))))",
+        "few committee members are from southern Europe",
+    ),
+    # fracas_044's own hypothesis ("There are few committee members from
+    # Portugal.") is deliberately NOT here: it's a genuine "there are"
+    # existential construction, a different clause shape from every
+    # other check in this file (a plain predicative "NP is/are Comp"),
+    # and out of scope for this batch - same principled omission as
+    # problem 28's identical-shaped hypothesis one bucket ago. Doesn't
+    # affect the Lean cross-check either way: translate.py only ever
+    # feeds a chain theorem's PREMISES through, never its conclusion.
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever

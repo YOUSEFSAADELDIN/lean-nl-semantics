@@ -748,6 +748,29 @@ if __name__ == "__main__":
             "(AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) "
             "(PrepNP at_Prep (MassNP (UseN home_N))))"
         ),
+        # Problems 34-37/39-43/45 (Batch3.lean's "converse" subsection)
+        # are deliberately NOT here, for the same reason as fracas_012/
+        # fracas_022 above: checked directly against Batch3.lean, all of
+        # them are countermodel/independence proofs over abstract Bool/
+        # Fin-indexed models, not named-predicate Props this translator
+        # could produce. Only problems 38 and 44 are real theorems.
+        "fracas_038 (premise)": (
+            "PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+            "(ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))"
+        ),
+        # fracas_044 (all three premises, plus its "there are few..."
+        # hypothesis) is deliberately NOT here either, despite being a
+        # real theorem (not a countermodel): its own Lean statement is
+        # `AtMost n committee southernEurope → ... → AtMost n committee
+        # portugal`, generic over *any* `n` - deliberately stronger than
+        # FraCaS's own vague "few" needs (see Batch3.lean's own comment
+        # on why) - so there is no single Lean quantifier "few_Det"
+        # could map to in the first place, the same reason problem 12's
+        # own premise isn't here. Premises 2/3 alone (`all_Predet`-headed,
+        # unaffected by this) would translate fine in isolation, but
+        # leaving premise 1 out would misrepresent the chain as
+        # complete when it structurally isn't - all three are confirmed
+        # via run_gf_tests.py instead, independent of this translator.
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")
