@@ -5,11 +5,17 @@ grammar change gets checked automatically instead of relying on someone
 manually running `linearize` and eyeballing the output, as every one of
 these five sentences originally was (see gf/NOTES.md).
 
-Each check runs `gf` as its own separate process (one `linearize`
-command per invocation, not all batched into one shared stdin session)
-specifically so one check's expected string can never accidentally be
-satisfied by a *different* check's output further up the same session
-transcript - a real bug this file's first version had (see NOTES.md).
+All checks run as one batch in a single shared `gf` session (feeding
+every `linearize` command over stdin at once) - a version of this file
+that instead ran each check as its own separate, short-lived `gf`
+process found every single check producing blank output, a startup/
+piping race specific to that lone-command-then-quit pattern, not a real
+result (see NOTES.md). The shared-session approach is what's actually
+reliable. To still keep one check's expected string from ever being
+satisfied by a *different* check's output (the original bug this file
+had), the session's output is split on the `FraCaSLogic> ` prompt
+marker into one segment per command, in order, and each check is only
+compared against its own segment.
 """
 
 from __future__ import annotations
@@ -20,6 +26,7 @@ import sys
 
 GF_LIB_PATH = os.environ.get("GF_LIB_PATH", os.path.expanduser("~/gf-libs"))
 PATH_ARG = f"-path=.:{GF_LIB_PATH}/alltenses:{GF_LIB_PATH}/prelude"
+PROMPT = "FraCaSLogic> "
 
 # Keep in sync with gf/FraCaSLogicEng.gf's own confirmed-commands
 # comments and gf/translate.py's examples.
@@ -61,13 +68,7 @@ CHECKS = [
         # project's target category is the tenseless `Cl`. This checks
         # whether wrapping in UttS (as gf-rgl's own treebank always does,
         # never linearizing a bare S directly) was the actual missing step
-        # all along, rather than a genuine RGL limitation. A previous
-        # version of this file falsely reported this passing - it batched
-        # all checks into one shared gf session and checked the expected
-        # string against the *whole* session's output, so this diagnostic's
-        # blank result was masked by "wants to be a great tenor" already
-        # appearing in fracas_002's own, separate result further up the
-        # same transcript. Isolated per-process now.
+        # all along, rather than a genuine RGL limitation.
         "uttS_diagnostic",
         "linearize UttS (UseCl (TTAnt TPres ASimul) PPos "
         "(PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -77,18 +78,6 @@ CHECKS = [
 ]
 
 
-def run_gf_command(gf_dir: str, pgf: str, command: str) -> str:
-    result = subprocess.run(
-        ["gf", PATH_ARG, pgf],
-        input=command + "\nquit\n",
-        capture_output=True,
-        text=True,
-        cwd=gf_dir,
-        timeout=60,
-    )
-    return result.stdout
-
-
 def main() -> int:
     gf_dir = os.path.dirname(os.path.abspath(__file__))
     pgf = os.path.join(gf_dir, "FraCaSLogic.pgf")
@@ -96,17 +85,40 @@ def main() -> int:
         print(f"error: {pgf} not found - did the gf -make step run first?", file=sys.stderr)
         return 1
 
+    script = "\n".join(cmd for _, cmd, _ in CHECKS) + "\nquit\n"
+    result = subprocess.run(
+        ["gf", PATH_ARG, pgf],
+        input=script,
+        capture_output=True,
+        text=True,
+        cwd=gf_dir,
+        timeout=60,
+    )
+    print(result.stdout)
+    if result.stderr:
+        print(result.stderr, file=sys.stderr)
+
+    segments = result.stdout.split(PROMPT)
+    # segments[0]: startup banner, before any command's result.
+    # segments[1 .. len(CHECKS)]: each command's own result, in order.
+    if len(segments) < len(CHECKS) + 1:
+        print(
+            f"error: expected at least {len(CHECKS) + 1} '{PROMPT}'-delimited "
+            f"segments, got {len(segments)} - gf output shape changed unexpectedly",
+            file=sys.stderr,
+        )
+        return 1
+
     failures = []
-    for label, command, expected in CHECKS:
-        output = run_gf_command(gf_dir, pgf, command)
-        print(f"-- {label}\n{output}")
-        if expected not in output:
-            failures.append((label, expected, output))
+    for idx, (label, _cmd, expected) in enumerate(CHECKS):
+        segment = segments[idx + 1]
+        if expected not in segment:
+            failures.append((label, expected, segment))
 
     if failures:
         print("FAILED checks:", file=sys.stderr)
-        for label, expected, output in failures:
-            print(f"  {label}: expected {expected!r} not found in gf output:\n{output}", file=sys.stderr)
+        for label, expected, segment in failures:
+            print(f"  {label}: expected {expected!r} not found in its own segment: {segment!r}", file=sys.stderr)
         return 1
 
     print(f"All {len(CHECKS)} linearize checks passed.")

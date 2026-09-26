@@ -287,22 +287,37 @@ already treated as separate information from the core proposition
 elsewhere in this project (see the FraCaS Section 7 Lean proofs), so a
 tenseless clause is close to the right semantic unit anyway.
 
-## A batched-session automated check can silently pass on the wrong evidence
+## Automating `linearize` checks: a shared session is required, but needs correct per-command splitting
 
-`gf/run_gf_tests.py`'s first version ran every check's `linearize`
-command in one shared `gf` stdin session, then checked each check's
-expected string against the *whole* session's captured output. This
-produced a real false positive: a diagnostic check for whether wrapping
-`UseCl`'s result in `UttS` fixes the blank-output problem below appeared
-to pass, because its expected substring ("wants to be a great tenor")
-had already appeared in an *earlier, unrelated* check's own result
-further up the same transcript - the diagnostic's own command actually
-still produced blank output, same as ever. Fixed by running each check
-as its own separate `gf` process (one `linearize` command per
-invocation), so one check's output can never contaminate another's.
-Lesson: a substring check against a shared multi-command transcript is
-not evidence that *that specific command* produced the expected output
-- only that the string appeared *somewhere*.
+Two real bugs in `gf/run_gf_tests.py`'s test methodology, found in
+sequence:
+
+1. **First version**: ran every check's `linearize` command in one
+   shared `gf` stdin session, then checked each check's expected string
+   against the *whole* session's captured output. This produced a false
+   positive: a diagnostic check for whether wrapping `UseCl`'s result in
+   `UttS` fixes the blank-output problem below appeared to pass, because
+   its expected substring ("wants to be a great tenor") had already
+   appeared in an *earlier, unrelated* check's own result further up the
+   same transcript - the diagnostic's own command actually still
+   produced blank output. A substring check against a shared
+   multi-command transcript is not evidence that *that specific
+   command* produced the expected output, only that the string appeared
+   *somewhere*.
+2. **"Fix" that was itself broken**: running each check as its own
+   separate, short-lived `gf` process (one `linearize` command, then
+   `quit`, per invocation) - the obvious-looking fix for bug 1 - made
+   *every single check* produce blank output, not just the diagnostic
+   one. This is a startup/piping race specific to that lone-command-
+   then-quit pattern (the process exits before `gf`'s own output
+   finishes), not a real result; the batched shared-session approach is
+   actually the reliable one.
+
+**The real fix**: keep the shared session (proven reliable), but split
+its captured output on the `FraCaSLogic> ` prompt marker into one
+segment per command, in the order the commands were sent, and check
+each expected string only against its own corresponding segment. This
+gets correct per-command isolation without the piping race.
 
 ## How to debug a "why is this blank / why doesn't this work" problem here
 
