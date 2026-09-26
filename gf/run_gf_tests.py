@@ -118,6 +118,20 @@ CHECKS = [
         "(UseComp (CompAP (PositA indispensable_A)))",
         "leading tenors who are excellent are indispensable",
     ),
+    (
+        # Re-testing the UttS/tense hypothesis: NOTES.md previously found
+        # this blank and concluded it was a genuine RGL limitation. New
+        # hypothesis: our grammar extends the *abstract* Tense module but
+        # never its concrete pairing TenseX (concrete TenseX of Tense =
+        # CommonX ** ... - genuinely cross-language, not English-specific),
+        # so PPos/TTAnt may never have been properly filled in. Testing
+        # with TenseX now added to the concrete extends.
+        "uttS_tense_retest",
+        "linearize UttS (UseCl (TTAnt TPres ASimul) PPos "
+        "(PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))))",
+        "every Italian man wants to be a great tenor",
+    ),
 ]
 
 

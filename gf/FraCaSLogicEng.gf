@@ -1,5 +1,5 @@
 concrete FraCaSLogicEng of FraCaSLogic =
-  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng
+  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng, TenseX, PhraseEng
   ** open ParadigmsEng, MorphoEng, ResEng in {
   lin
     most_Det = mkDeterminer plural "most" ;

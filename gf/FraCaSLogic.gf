@@ -80,7 +80,7 @@
 -- adjective (mkA "leading"), not derived from lead_V via VerbCN - same
 -- stale-function substitution as problem 13's premise 1 needed
 -- (VerbCN doesn't exist in current RGL at all, see gf/NOTES.md).
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative ** {
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase ** {
   fun
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
