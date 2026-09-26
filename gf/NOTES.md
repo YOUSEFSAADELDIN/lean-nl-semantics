@@ -287,6 +287,23 @@ already treated as separate information from the core proposition
 elsewhere in this project (see the FraCaS Section 7 Lean proofs), so a
 tenseless clause is close to the right semantic unit anyway.
 
+## A batched-session automated check can silently pass on the wrong evidence
+
+`gf/run_gf_tests.py`'s first version ran every check's `linearize`
+command in one shared `gf` stdin session, then checked each check's
+expected string against the *whole* session's captured output. This
+produced a real false positive: a diagnostic check for whether wrapping
+`UseCl`'s result in `UttS` fixes the blank-output problem below appeared
+to pass, because its expected substring ("wants to be a great tenor")
+had already appeared in an *earlier, unrelated* check's own result
+further up the same transcript - the diagnostic's own command actually
+still produced blank output, same as ever. Fixed by running each check
+as its own separate `gf` process (one `linearize` command per
+invocation), so one check's output can never contaminate another's.
+Lesson: a substring check against a shared multi-command transcript is
+not evidence that *that specific command* produced the expected output
+- only that the string appeared *somewhere*.
+
 ## How to debug a "why is this blank / why doesn't this work" problem here
 
 The pattern that actually worked, every time: **linearize the smallest

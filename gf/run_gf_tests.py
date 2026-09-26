@@ -5,11 +5,11 @@ grammar change gets checked automatically instead of relying on someone
 manually running `linearize` and eyeballing the output, as every one of
 these five sentences originally was (see gf/NOTES.md).
 
-Feeds every confirmed sentence's `linearize` command to the `gf` shell
-over stdin in one batch, then checks the expected English string
-appears somewhere in its output - a substring check, not exact-output
-matching, since gf's banner/prompt/timing text around each result isn't
-part of what these tests are actually checking.
+Each check runs `gf` as its own separate process (one `linearize`
+command per invocation, not all batched into one shared stdin session)
+specifically so one check's expected string can never accidentally be
+satisfied by a *different* check's output further up the same session
+transcript - a real bug this file's first version had (see NOTES.md).
 """
 
 from __future__ import annotations
@@ -58,12 +58,16 @@ CHECKS = [
     (
         # Diagnostic, not yet relied on: NOTES.md documents that linearizing
         # a bare `S` (via UseCl directly) produced empty output, so this
-        # project's target category is the tenseless `Cl`. But the RGL's
-        # own treebank (src/english/treebank.txt) always wraps UseCl's
-        # result in UttS before linearizing, never linearizing a bare S
-        # directly - this checks whether that was the actual missing step
-        # all along (i.e. tense support may not be blocked after all),
-        # rather than a genuine RGL limitation.
+        # project's target category is the tenseless `Cl`. This checks
+        # whether wrapping in UttS (as gf-rgl's own treebank always does,
+        # never linearizing a bare S directly) was the actual missing step
+        # all along, rather than a genuine RGL limitation. A previous
+        # version of this file falsely reported this passing - it batched
+        # all checks into one shared gf session and checked the expected
+        # string against the *whole* session's output, so this diagnostic's
+        # blank result was masked by "wants to be a great tenor" already
+        # appearing in fracas_002's own, separate result further up the
+        # same transcript. Isolated per-process now.
         "uttS_diagnostic",
         "linearize UttS (UseCl (TTAnt TPres ASimul) PPos "
         "(PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -73,6 +77,18 @@ CHECKS = [
 ]
 
 
+def run_gf_command(gf_dir: str, pgf: str, command: str) -> str:
+    result = subprocess.run(
+        ["gf", PATH_ARG, pgf],
+        input=command + "\nquit\n",
+        capture_output=True,
+        text=True,
+        cwd=gf_dir,
+        timeout=60,
+    )
+    return result.stdout
+
+
 def main() -> int:
     gf_dir = os.path.dirname(os.path.abspath(__file__))
     pgf = os.path.join(gf_dir, "FraCaSLogic.pgf")
@@ -80,29 +96,17 @@ def main() -> int:
         print(f"error: {pgf} not found - did the gf -make step run first?", file=sys.stderr)
         return 1
 
-    script = "\n".join(cmd for _, cmd, _ in CHECKS) + "\nquit\n"
-    result = subprocess.run(
-        ["gf", PATH_ARG, pgf],
-        input=script,
-        capture_output=True,
-        text=True,
-        cwd=gf_dir,
-        timeout=60,
-    )
-    print(result.stdout)
-    if result.stderr:
-        print(result.stderr, file=sys.stderr)
-
-    failures = [
-        (label, expected)
-        for label, _cmd, expected in CHECKS
-        if expected not in result.stdout
-    ]
+    failures = []
+    for label, command, expected in CHECKS:
+        output = run_gf_command(gf_dir, pgf, command)
+        print(f"-- {label}\n{output}")
+        if expected not in output:
+            failures.append((label, expected, output))
 
     if failures:
         print("FAILED checks:", file=sys.stderr)
-        for label, expected in failures:
-            print(f"  {label}: expected {expected!r} not found in gf output", file=sys.stderr)
+        for label, expected, output in failures:
+            print(f"  {label}: expected {expected!r} not found in gf output:\n{output}", file=sys.stderr)
         return 1
 
     print(f"All {len(CHECKS)} linearize checks passed.")
