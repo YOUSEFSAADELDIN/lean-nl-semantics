@@ -287,6 +287,20 @@ already treated as separate information from the core proposition
 elsewhere in this project (see the FraCaS Section 7 Lean proofs), so a
 tenseless clause is close to the right semantic unit anyway.
 
+**Re-tested and re-confirmed, not just assumed.** gf-rgl's own treebank
+(`src/english/treebank.txt`) always wraps `UseCl`'s result in
+`UttS : S -> Utt` before linearizing, never linearizing a bare `S`
+directly - raising a real hypothesis that the missing `UttS` wrapping,
+not a genuine RGL bug, was the actual cause of the blank output, and
+that tense support might not be blocked after all. Directly tested via
+the `build-gf` CI job (see the automated-checks section above for the
+two testing bugs hit getting a *trustworthy* answer): `linearize UttS
+(UseCl (TTAnt TPres ASimul) PPos (...))` still produces blank output,
+confirmed with correct per-command output isolation. The hypothesis was
+wrong - this is a genuine RGL behavior (in this version, for this
+category), not a missing wrapper, and `Cl` remains this project's
+target category.
+
 ## Automating `linearize` checks: a shared session is required, but needs correct per-command splitting
 
 Two real bugs in `gf/run_gf_tests.py`'s test methodology, found in
