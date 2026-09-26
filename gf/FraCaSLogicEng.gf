@@ -1,13 +1,7 @@
 concrete FraCaSLogicEng of FraCaSLogic =
-  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng
+  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, DictEng
   ** open ParadigmsEng in {
   lin
-    italian_A = mkA "Italian" ;
-    great_A   = mkA "great" ;
-    swedish_A = mkA "Swedish" ;
-    modest_A  = mkA "modest" ;
-    man_N     = mkN "man" ;
-    tenor_N   = mkN "tenor" ;
     really_AdA = mkAdA "really" ;
 }
 
@@ -28,13 +22,22 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --
 -- FraCaS problem 6's premise ("No really great tenors are modest."),
 -- NOT YET CONFIRMED (needs a linearize round-trip on the actual
--- toolchain - see the follow-up message asking for this): "no" is
--- Quant-typed, not Det-typed, so the subject is DetCN wrapping
--- `DetQuant no_Quant NumSg` (both from Noun, already in scope) rather
--- than a bare *_Det constant, and "really great" is a degree-modified
--- adjective, AdAP really_AdA (PositA great_A) : AP (from Adjective,
--- also already in scope), fed to AdjCN just like a plain PositA AP is:
+-- toolchain): "no" is Quant-typed, not Det-typed, so the subject is
+-- DetCN wrapping `DetQuant no_Quant NumSg` (both from Noun, already in
+-- scope) rather than a bare *_Det constant, and "really great" is a
+-- degree-modified adjective, AdAP really_AdA (PositA great_A) : AP
+-- (from Adjective, also already in scope), fed to AdjCN just like a
+-- plain PositA AP is:
 --   linearize PredVP
 --     (DetCN (DetQuant no_Quant NumSg) (AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N)))
 --     (UseComp (CompAP (PositA modest_A)))
 --   expected: "no really great tenors are modest"
+--
+-- FraCaS problem 10's premise ("Most great tenors are Italian."), NOT
+-- YET CONFIRMED: most_Det (from DictEngAbs/DictEng, freshly extended
+-- with this round) is a bare Det, so this is the same shape as problem
+-- 7 with a different determiner and complement:
+--   linearize PredVP
+--     (DetCN most_Det (AdjCN (PositA great_A) (UseN tenor_N)))
+--     (UseComp (CompAP (PositA italian_A)))
+--   expected: "most great tenors are Italian"

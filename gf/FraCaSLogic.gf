@@ -7,11 +7,17 @@
 -- also the right semantic unit for this project's purposes: tense is
 -- separate information from the core proposition (cf. FraCaS Section 7
 -- in the Lean suite), not something to bake into the target category.
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
+--
+-- DictEngAbs (RGL's general dictionary) is extended for two reasons:
+-- it's where most_Det (and, eventually, each_Det/neither_Det/...) live,
+-- and it turns out to already declare every ordinary content word this
+-- grammar needs (italian_A, great_A, swedish_A, man_N, tenor_N,
+-- modest_A - checked directly against the RGL source) under the exact
+-- names this project had already independently chosen for them. So
+-- none of those are declared here anymore - redeclaring a word DictEngAbs
+-- already has is the same collision want_VV hit with Structural.
+-- really_AdA is the one genuinely new item (not in DictEngAbs).
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, DictEngAbs ** {
   fun
-    italian_A, great_A, swedish_A, modest_A : A ;
-    man_N, tenor_N : N ;
     really_AdA : AdA ;
-    -- want_VV is NOT declared here - it already exists in Structural
-    -- (a builtin structural word); redeclaring it is a name collision.
 }

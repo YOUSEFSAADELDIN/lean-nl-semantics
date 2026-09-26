@@ -254,6 +254,10 @@ if __name__ == "__main__":
             "(AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA modest_A)))"
         ),
+        "fracas_010 (premise, not yet linearize-confirmed)": (
+            "PredVP (DetCN most_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+            "(UseComp (CompAP (PositA italian_A)))"
+        ),
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")
