@@ -264,6 +264,16 @@ def _decode_sub10(t) -> int:
 def _decode_sub100(t) -> int:
     if t.head == "pot0as1" and len(t.args) == 1:
         return _decode_sub10(t.args[0])
+    # pot110/pot111 are Numeral.gf's own dedicated "10"/"11" constants
+    # (not built from a digit coercion the way 2-9 are) - problem 48's
+    # "at most ten commissioners" is the first tree fed through this
+    # translator that actually uses one (problem 32's identical "ten"
+    # tree was never translated at all, since problem 32 itself is a
+    # countermodel - see this file's own comment on why).
+    if t.head == "pot110" and not t.args:
+        return 10
+    if t.head == "pot111" and not t.args:
+        return 11
     raise NotImplementedError(f"unrecognized Sub100 numeral shape: {t.head!r}")
 
 
@@ -771,6 +781,49 @@ if __name__ == "__main__":
         # leaving premise 1 out would misrepresent the chain as
         # complete when it structurally isn't - all three are confirmed
         # via run_gf_tests.py instead, independent of this translator.
+        #
+        # Problems 47/50-54/58 (Batch4.lean) are countermodels, same
+        # reasoning as above - not here either. 46/48/49/55/56/57/59 are
+        # real theorems, added below (46's own premise reuses fracas_030's
+        # own hypothesis tree verbatim, and 48's reuses fracas_032's own
+        # hypothesis tree - see run_gf_tests.py's own comment on both).
+        "fracas_046 (premise)": (
+            "PredVP (DetCN neither_Det (UseN commissioner_N)) "
+            "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))"
+        ),
+        "fracas_048 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
+            "(NumNumeral (num (pot2as3 (pot1as2 pot110))))))) (UseN commissioner_N)) "
+            "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))"
+        ),
+        "fracas_049 (premise 1)": (
+            "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN swedeMasc_N)) "
+            "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
+        ),
+        "fracas_049 (premise 2)": (
+            "PredVP (DetCN every_Det (UseN swedeMasc_N)) (UseComp (CompCN (UseN scandinavian_N)))"
+        ),
+        "fracas_055 (premise)": (
+            "PredVP (DetCN somePl_Det (AdjCN (PositA irish_A) (UseN delegate_N))) "
+            "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N))) "
+            "(PrepNP on_Prep (MassNP (UseN time_N))))"
+        ),
+        "fracas_056 (premise)": (
+            "PredVP (DetCN many_Det (AdjCN (PositA british_A) (UseN delegate_N))) "
+            "(ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl) "
+            "(AdjCN (PositA interesting_A) (UseN result_N))) (PrepNP from_Prep "
+            "(DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))"
+        ),
+        "fracas_057 (premise)": (
+            "PredVP (DetCN several_Det (AdjCN (PositA portuguese_A) (UseN delegate_N))) "
+            "(ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2) "
+            "(PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) "
+            "(AdjCN (PositA major_A) (AdjCN (PositA national_A) (UseN newspaper_N)))))))"
+        ),
+        "fracas_059 (premise)": (
+            "PredVP (DetCN aFew_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N)))) "
+            "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))"
+        ),
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

@@ -275,4 +275,11 @@ abstract FraCaSLogic =
     -- countermodel (Batch3.lean's fracas_043_dir1/dir2), so this never
     -- needs a translate.py quantifier mapping.
     atLeastAFew_Det : Det ;
+    -- northAmerican_A : A (problems 50-52's "a resident of the North
+    -- American continent") - DictEngAbs has american_A but no compound
+    -- demonym for "North American" specifically, and adjective-adjective
+    -- compounding ("north" + "american") isn't a real RGL mechanism
+    -- (AdjCN combines an AP with a CN, not two APs) - self-declared as
+    -- its own fixed string instead, same pattern as worlds_Det/etc.
+    northAmerican_A : A ;
 }

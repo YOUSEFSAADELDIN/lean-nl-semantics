@@ -52,6 +52,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     scandinavia_PN = mkPN "Scandinavia" ;
     southernEurope_PN = mkPN "southern Europe" ;
     atLeastAFew_Det = mkDeterminer plural "at least a few" ;
+    northAmerican_A = mkA "North American" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -557,3 +558,79 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- "few" needs), so "few_Det" still has no single Lean quantifier to
 -- map to here either - see translate.py's own comment on why all three
 -- of its premises are excluded together, not just the first.
+--
+-- FraCaS problems 46-59 (Batch4.lean): every word needed except
+-- northAmerican_A (self-declared above - see FraCaSLogic.gf's own
+-- comment on why) already exists in DictEngAbs, checked directly the
+-- same way as every other bucket: swedeMasc_N, canadian_A, continent_N,
+-- western_A, country_N, irish_A, british_A, portuguese_A, female_A.
+-- As with problems 34-45, several of these sentences already exist
+-- verbatim as a confirmed check under an earlier problem's own label
+-- (47's premise/hypothesis pair = 31's hypothesis/premise, swapped;
+-- 48's premise/hypothesis pair = 32's hypothesis/premise, swapped;
+-- 54's hypothesis = 38's premise; 55/56/57's hypotheses = 23/24/25's
+-- premises; 58's hypothesis = 42's premise 1) - not re-added under a
+-- new label here (see run_gf_tests.py's own comment for the reuse map).
+--
+-- western_A capitalizes to "Western" (DictEngAbs's own recipe, not a
+-- self-declared string this project chose) - caught locally, before
+-- ever reaching CI, by actually building the toolchain in this sandbox
+-- and running run_gf_tests.py against it (see gf/NOTES.md's own history
+-- of this kind of casing surprise: `irishman_N`'s capitalized
+-- "Irishman" was the first one, caught by CI instead, back when a local
+-- check wasn't available yet).
+--
+-- translate.py's own numeral decoder needed a real fix here too:
+-- problem 48's "at most ten commissioners" is the first tree fed
+-- through it that uses `pot110` (Numeral.gf's own dedicated "10"
+-- constant, not built from a digit coercion the way 2-9 are) - problem
+-- 32's identical "ten" tree was never decoded before, since problem 32
+-- itself is a countermodel and never got a translate.py entry at all.
+-- Fixed by teaching `_decode_sub100` about `pot110`/`pot111` directly.
+--   linearize PredVP (CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01)))))))
+--       (DetCN (DetQuant DefArt NumPl) (UseN commissioner_N)))
+--     (AdvVP (ComplSlash (SlashV2a spend_V2) (DetCN aLotOf_Det (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))
+--   => "one of the commissioners spends a lot of time at home"
+--   linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN swedeMasc_N))
+--     (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))
+--   => "a Swede wins a Nobel prize"
+--   linearize PredVP (DetCN every_Det (UseN swedeMasc_N)) (UseComp (CompCN (UseN scandinavian_N)))
+--   => "every Swede is a Scandinavian"
+--   linearize PredVP (DetCN every_Det (AdjCN (PositA canadian_A) (UseN resident_N)))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "every Canadian resident can travel freely within Europe"
+--   linearize PredVP (DetCN every_Det (AdjCN (PositA canadian_A) (UseN resident_N)))
+--     (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN resident_N)
+--       (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) (AdjCN (PositA northAmerican_A) (UseN continent_N))))))))
+--   => "every Canadian resident is a resident of the North American continent"
+--   linearize PredVP (DetCN every_Det (AdvCN (UseN resident_N)
+--       (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) (AdjCN (PositA northAmerican_A) (UseN continent_N))))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "every resident of the North American continent can travel freely within Europe"
+--   linearize PredVP (DetCN (DetQuant no_Quant NumSg) (AdjCN (PositA scandinavian_A) (UseN delegate_N)))
+--     (AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))
+--       (PrepNP on_Prep (MassNP (UseN time_N))))
+--   => "no Scandinavian delegate finishes the report on time"
+--   linearize PredVP (DetCN somePl_Det (AdjCN (PositA irish_A) (UseN delegate_N)))
+--     (AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))
+--       (PrepNP on_Prep (MassNP (UseN time_N))))
+--   => "some Irish delegates finish the survey on time"
+--   linearize PredVP (DetCN many_Det (AdjCN (PositA british_A) (UseN delegate_N)))
+--     (ComplSlash (SlashV2a obtain_V2) (AdvNP (DetCN (DetQuant IndefArt NumPl)
+--       (AdjCN (PositA interesting_A) (UseN result_N))) (PrepNP from_Prep (DetCN (DetQuant DefArt NumSg) (UseN survey_N)))))
+--   => "many British delegates obtain interesting results from the survey"
+--   linearize PredVP (DetCN several_Det (AdjCN (PositA portuguese_A) (UseN delegate_N)))
+--     (ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2)
+--       (PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) (AdjCN (PositA national_A) (UseN newspaper_N)))))))
+--   => "several Portuguese delegates get the results published in major national newspapers"
+--   linearize PredVP (DetCN most_Det (RelCN (UseN european_N)
+--       (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP
+--         (AdvAP (PositA resident_A) (PrepNP in_Prep (UsePN europe_PN)))))))))
+--     (ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))
+--   => "most Europeans that are resident in Europe can travel freely within Europe"
+--   linearize PredVP (DetCN aFew_Det (AdjCN (PositA female_A) (CompoundCN (UseN committee_N) (UseN member_N))))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))
+--   => "a few female committee members are from Scandinavia"
+--   linearize PredVP (DetCN atLeastAFew_Det (CompoundCN (UseN committee_N) (UseN member_N)))
+--     (UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))
+--   => "at least a few committee members are from Scandinavia"
