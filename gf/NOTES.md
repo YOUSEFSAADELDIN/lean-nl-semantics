@@ -135,6 +135,25 @@ own abstract module collides with it (`cannot unify ... in module
 Structural with ... in module <ours>`). Reuse the existing one; only
 declare genuinely new content words (`italian_A`, `tenor_N`, etc.).
 
+## `DictEngAbs`/`DictEng` (the general dictionary) aren't in `Setup.sh`'s build output
+
+`Setup.sh`'s default build (see above) does **not** produce
+`DictEngAbs.gfo`/`DictEng.gfo` anywhere under `--dest` - confirmed with
+`find ~/gf-libs -iname 'DictEngAbs*'` returning nothing, even though the
+module exists in the `gf-rgl` *source* tree (`src/english/DictEngAbs.gf`,
+`src/english/DictEng.gf`). It's the RGL's ~30k-line general dictionary
+and is a separate, heavier build step Setup.sh doesn't run by default.
+**Don't extend `DictEngAbs`/`DictEng`** - declare every content word and
+determiner this project needs directly in `FraCaSLogic.gf`/
+`FraCaSLogicEng.gf` instead, the same way `really_AdA` always was. For a
+word that DictEng already has a recipe for (e.g. `most_Det`), the fix is
+to copy that recipe, not the dependency: `grep` the word's own `lin` rule
+directly out of `gf-rgl/src/english/DictEng.gf` (the source clone, not
+the built libs) and reuse the same right-hand side. `most_Det`'s real
+recipe is `mkDeterminer plural "most"` - and `mkDeterminer` itself is
+already in scope via `StructuralEng` (it's what `someSg_Det`/`somePl_Det`
+are built from there too), so this adds no new dependency.
+
 ## `mk*` sugar only works inside compiled source files
 
 The `mk*` "smart constructor" family (`mkS`, `mkCl`, `mkNP`, `mkCN`,
