@@ -137,10 +137,13 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
     -- sentence - see run_gf_tests.py's win_v_tense_diagnostic. The
     -- ComplSlash/SlashV2a switch for problem 33 (see the comment above)
     -- did NOT fix the TPast "winned" bug, meaning the fault isn't in
-    -- ComplV2/predV/insertObj after all - it has to be either mkV's own
-    -- 2-argument form or mkV2's V-wrapping. This isolates which, by
-    -- testing the exact same `mkV "win" "won"` call through a bare V
-    -- (UseV), with no V2/ComplSlash/ComplV2 involved at all.
+    -- ComplV2/predV/insertObj after all. Testing `mkV "win" "won"`
+    -- through a bare V (UseV), with no V2/ComplSlash/ComplV2 involved
+    -- at all, confirmed it's mkV's own 2-argument form at fault: still
+    -- "winned" even with no V2/VP-building in the picture whatsoever.
+    -- Now testing the 3-argument form instead, `mkV "win" "won" "won"`
+    -- (infinitive, preterite, past-participle, all explicit) - see
+    -- FraCaSLogicEng.gf's own updated comment on win_V2.
     winDiag_V : V ;
     europe_PN, pavarotti_PN : PN ;
     of_Prep : Prep ;

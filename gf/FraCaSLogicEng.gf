@@ -39,12 +39,12 @@ concrete FraCaSLogicEng of FraCaSLogic =
     state_N = mkN "state" ;
     resident_N = mkN "resident" ;
     right_N = mkN "right" ;
-    win_V2 = mkV2 (mkV "win" "won") ;
+    win_V2 = mkV2 (mkV "win" "won" "won") ;
     take_V2 = mkV2 "take" ;
     contribute_V2 = mkV2 "contribute" ;
     live_V = mkV "live" ;
     come_V = mkV "come" ;
-    winDiag_V = mkV "win" "won" ;
+    winDiag_V = mkV "win" "won" "won" ;
     europe_PN = mkPN "Europe" ;
     pavarotti_PN = mkPN "Pavarotti" ;
     of_Prep = mkPrep "of" ;
@@ -251,8 +251,14 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- tense-reconfirmation pass's past-tense pilot (this one DID fail the
 -- original substring check, since "winned" doesn't contain "won"):
 -- `mkV2 "win"` derives a fully regular verb, so `TPast` gave "winned"
--- instead of the irregular "won". Fixed via `mkV2 (mkV "win" "won")` -
--- ParadigmsEng's two-argument mkV takes the infinitive plus the
--- irregular preterite/past-participle form explicitly; 3rd-singular
--- present ("wins") and the present participle ("winning") are still
--- regular, so still derived automatically.
+-- instead of the irregular "won". This took THREE attempts to actually
+-- fix, each ruled out by CI (see FraCaSLogic.gf's winDiag_V comment for
+-- the full elimination): `mkV2 (mkV "win" "won")` (guessing the 2-arg
+-- mkV meant infinitive+preterite) did NOT fix it - still "winned",
+-- proven (via winDiag_V, a bare V bypassing V2/ComplSlash entirely) to
+-- be `mkV`'s own fault, not V2-wrapping or VP-building. The working fix
+-- is the 3-argument form, `mkV "win" "won" "won"` (infinitive,
+-- preterite, past-participle, all explicit - "win"'s preterite and
+-- past-participle happen to coincide). 3rd-singular present ("wins")
+-- and the present participle ("winning") are still regular, so still
+-- derived automatically.
