@@ -91,24 +91,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: haskell-actions/setup@v2
-        id: setup-haskell
-        with:
-          ghc-version: "9.6.7"
-          cabal-version: "latest"
-
-      - name: Cache cabal store
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.setup-haskell.outputs.cabal-store }}
-          key: ${{ runner.os }}-gf-cabal-9.6.7
-
+      # Checked before haskell-actions/setup@v2 (not after, the original
+      # order): that setup step costs ~2 minutes on its own even when
+      # its own output (a GHC/cabal toolchain) ends up unused, because
+      # the gf binary this job actually needs is already cache-hit and
+      # "Build gf-core" below skips accordingly. Moving the cache check
+      # first lets both the Haskell setup and the cabal-store cache
+      # restore be skipped too on that same common case, cutting this
+      # job to well under a minute instead of ~3.
       - name: Cache built gf binary
         id: cache-gf-bin
         uses: actions/cache@v4
         with:
           path: ~/.local/bin/gf
           key: gf-binary-${{ runner.os }}-${{ env.GF_CORE_COMMIT }}
+
+      - uses: haskell-actions/setup@v2
+        id: setup-haskell
+        if: steps.cache-gf-bin.outputs.cache-hit != 'true'
+        with:
+          ghc-version: "9.6.7"
+          cabal-version: "latest"
+
+      - name: Cache cabal store
+        if: steps.cache-gf-bin.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.setup-haskell.outputs.cabal-store }}
+          key: ${{ runner.os }}-gf-cabal-9.6.7
 
       - name: Build gf-core
         if: steps.cache-gf-bin.outputs.cache-hit != 'true'
