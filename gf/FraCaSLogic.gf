@@ -219,17 +219,14 @@ abstract FraCaSLogic =
     worlds_Det : Det ;
     really_AdA : AdA ;
     leading_A : A ;
-    -- greatest_A : A is the same pragmatic call as worlds_Det - RGL's
-    -- real superlative mechanism (`OrdSuperl : A -> Ord`) only attaches
-    -- via `DetQuantOrd : Quant -> Num -> Ord -> Det`, which needs a real
-    -- Quant for the *article* slot, not a full possessive-NP-derived
-    -- determiner like worlds_Det - so it can't compose with the "the
-    -- world's" phrase above at all. Declared as its own fixed-string A
-    -- instead (`mkA "greatest"`), used exactly like any other PositA
-    -- adjective in this grammar - a deliberate simplification since
-    -- problem 1 is a trivial same-claim restatement, not a test of
-    -- superlative morphology.
-    greatest_A : A ;
+    -- greatest_A is NOT declared here despite looking like the same kind
+    -- of "self-declare the literal string" call as worlds_Det above: it
+    -- already exists in DictEngAbs (`fun greatest_A : A;`, same
+    -- `mkA "greatest"` recipe) - confirmed directly against
+    -- gf-rgl/src/english/{DictEngAbs,DictEng}.gf, and the hard way first,
+    -- via a genuine "cannot unify" CI failure from declaring it here too.
+    -- Left free via the extends line instead, same as every other
+    -- DictEngAbs collision above.
     cheap_Adv : Adv ;
     irishman_N, nobelPrize_N : N ;
     pavarotti_PN : PN ;

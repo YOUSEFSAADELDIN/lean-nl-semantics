@@ -34,7 +34,6 @@ concrete FraCaSLogicEng of FraCaSLogic =
     worlds_Det = mkDeterminer singular "the world's" ;
     really_AdA = mkAdA "really" ;
     leading_A = mkA "leading" ;
-    greatest_A = mkA "greatest" ;
     cheap_Adv = mkAdv "cheap" ;
     -- irishman_N is the one word of the original 30 kept hand-declared
     -- (see FraCaSLogic.gf's comment on why: DictEng's own version is
@@ -330,9 +329,11 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --
 -- FraCaS problems 1, 5, 11, 12, 17 complete Batch1.lean's own problem
 -- range (1-21, all now confirmed here) - every word they need except
--- "the world's"/"greatest" (problem 1, self-declared above - see
--- FraCaSLogic.gf's own comment on why) already exists in
--- DictEngAbs/DictEng: italian_N, ambitious_A, sing_V2, popular_A,
+-- "the world's" (problem 1, self-declared above - see FraCaSLogic.gf's
+-- own comment on why) already exists in DictEngAbs/DictEng, including
+-- "greatest" itself (greatest_A - a needless duplicate was first tried
+-- here too and caught by a genuine CI "cannot unify" failure, see
+-- FraCaSLogic.gf's comment): italian_N, ambitious_A, sing_V2, popular_A,
 -- music_N, like_V2, poor_A, literature_N. few_Det (problem 12) is
 -- Structural's own, already free (same as many_Det):
 --   linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN italian_N))
