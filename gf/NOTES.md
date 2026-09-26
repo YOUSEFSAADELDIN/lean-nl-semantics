@@ -149,10 +149,27 @@ source clone (`grep` the function name in the relevant `src/english/*.gf`
 file), and copy the right-hand side directly, opening whatever resource
 module(s) that recipe itself depends on (same as `mkDeterminer` below).
 `ComplV2`'s real recipe (from `BackwardEng.gf`) is
-`insertObj (\_ => v.c2 ++ np.s ! Acc) (predV v)`, needing `insertObj`
+`insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v)`, needing `insertObj`
 and `predV` from `ResEng` (a resource module, `open`ed directly - same
 "open it yourself, don't rely on inheriting it" situation as
 `mkDeterminer`/`MorphoEng` below).
+
+**But don't trust an "obsolete" module's recipe verbatim either.**
+`BackwardEng.gf` literally opens with the comment "a repository of
+obsolete constructs, needed for backward compatibility" (dated
+2008-04-19) - and it's not just old, it's actually stale against the
+*current* RGL API: its own source writes `np.s ! Acc`, but `ResEng.gf`'s
+real `NPCase` type (`NCase Case | NPAcc | NPNomPoss`) has no bare `Acc`
+constructor at all, only `NPAcc` - the accusative case constructor was
+evidently renamed at some point since 2008 and `Backward.gf` was never
+updated to match. `gf -make` catches this immediately and clearly
+("constant not found: Acc"), which is plausibly *why* it's excluded
+from `Setup.sh`'s build output in the first place, not an arbitrary
+omission like `DictEngAbs`. Moral: when copying a recipe out of a
+module the RGL itself flags as obsolete, expect it may not compile
+verbatim against the current API - check any param/constructor names it
+uses (`grep` their real current definition, as always) rather than
+assuming a same-repo cross-reference is automatically still accurate.
 
 ## `DictEngAbs`/`DictEng` (the general dictionary) aren't in `Setup.sh`'s build output
 
