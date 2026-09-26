@@ -1,8 +1,15 @@
 concrete FraCaSLogicEng of FraCaSLogic =
-  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, DictEng
+  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng
   ** open ParadigmsEng in {
   lin
+    most_Det = mkDeterminer plural "most" ;
     really_AdA = mkAdA "really" ;
+    italian_A = mkA "Italian" ;
+    great_A = mkA "great" ;
+    swedish_A = mkA "Swedish" ;
+    modest_A = mkA "modest" ;
+    man_N = mkN "man" "men" ;
+    tenor_N = mkN "tenor" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -34,9 +41,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --   expected: "no really great tenors are modest"
 --
 -- FraCaS problem 10's premise ("Most great tenors are Italian."), NOT
--- YET CONFIRMED: most_Det (from DictEngAbs/DictEng, freshly extended
--- with this round) is a bare Det, so this is the same shape as problem
--- 7 with a different determiner and complement:
+-- YET CONFIRMED: most_Det (declared directly above, using DictEng's own
+-- recipe - see gf/NOTES.md's "DictEngAbs/DictEng aren't in Setup.sh's
+-- build output" section) is a bare Det, so this is the same shape as
+-- problem 7 with a different determiner and complement:
 --   linearize PredVP
 --     (DetCN most_Det (AdjCN (PositA great_A) (UseN tenor_N)))
 --     (UseComp (CompAP (PositA italian_A)))

@@ -8,16 +8,22 @@
 -- separate information from the core proposition (cf. FraCaS Section 7
 -- in the Lean suite), not something to bake into the target category.
 --
--- DictEngAbs (RGL's general dictionary) is extended for two reasons:
--- it's where most_Det (and, eventually, each_Det/neither_Det/...) live,
--- and it turns out to already declare every ordinary content word this
--- grammar needs (italian_A, great_A, swedish_A, man_N, tenor_N,
--- modest_A - checked directly against the RGL source) under the exact
--- names this project had already independently chosen for them. So
--- none of those are declared here anymore - redeclaring a word DictEngAbs
--- already has is the same collision want_VV hit with Structural.
--- really_AdA is the one genuinely new item (not in DictEngAbs).
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, DictEngAbs ** {
+-- DictEngAbs/DictEng (RGL's general dictionary) turned out NOT to be
+-- part of Setup.sh's default build output at all (confirmed: `find
+-- ~/gf-libs -iname 'DictEngAbs*'` finds nothing anywhere under the
+-- built libs directory, even though the module exists in the gf-rgl
+-- *source* tree) - it's a separate, much heavier build step Setup.sh
+-- doesn't run. So this grammar doesn't extend it; every content word
+-- and determiner it needs is declared here instead, same as
+-- really_AdA always was. most_Det's own linearization is copied
+-- directly from DictEngAbs's real recipe (checked against
+-- gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"` -
+-- mkDeterminer itself is already in scope via StructuralEng (which
+-- uses it for someSg_Det/somePl_Det/etc.), not a new dependency.
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
   fun
+    most_Det : Det ;
     really_AdA : AdA ;
+    italian_A, great_A, swedish_A, modest_A : A ;
+    man_N, tenor_N : N ;
 }
