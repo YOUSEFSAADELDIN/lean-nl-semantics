@@ -33,10 +33,18 @@ concrete FraCaSLogicEng of FraCaSLogic =
     concert_N = mkN "concert" ;
     fee_N = mkN "fee" ;
     charity_N = mkN "charity" ;
+    member_N = mkN "member" ;
+    state_N = mkN "state" ;
+    resident_N = mkN "resident" ;
+    right_N = mkN "right" ;
     win_V2 = mkV2 "win" ;
     take_V2 = mkV2 "take" ;
     contribute_V2 = mkV2 "contribute" ;
+    have_V2 = mkV2 (IrregEng.have_V) ;
+    live_V = mkV "live" ;
+    europe_PN = mkPN "Europe" ;
     ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v) ;
+    CompoundCN a b = {s = \\n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g} ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -189,3 +197,19 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --     (DetCN (DetQuant IndefArt NumPl) (RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP (PositA excellent_A)))))))
 --     (UseComp (CompAP (PositA indispensable_A)))
 --   => "leading tenors that are excellent are indispensable"
+--
+-- FraCaS problem 21's first premise ("The residents of member states
+-- have the right to live in Europe."): a definite plural subject
+-- modified by a PP (AdvNP+PrepNP, "of member states"), and a
+-- complex complement noun ("the right to live in Europe" - SentCN
+-- attaches an infinitival SC, built via EmbedVP, to a CN; another
+-- PrepNP attaches the locative PP). CompoundCN ("member states") is
+-- self-declared above (see gf/FraCaSLogic.gf's own comment, not
+-- extended from ExtraEngAbs). have_V2 uses IrregEng.have_V directly
+-- (qualified access to a module not otherwise opened - the same
+-- pattern BackwardEng.gf itself uses for win_V) since "have" is
+-- genuinely irregular ("has", not "haves"):
+--   linearize PredVP
+--     (AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))
+--     (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))
+--   => "the residents of member states have the right to live in Europe"

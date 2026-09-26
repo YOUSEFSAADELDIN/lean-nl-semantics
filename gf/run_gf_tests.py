@@ -132,6 +132,15 @@ CHECKS = [
         "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))))",
         "every Italian man wants to be a great tenor",
     ),
+    (
+        "fracas_021_premise1",
+        "linearize PredVP "
+        "(AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N))))) "
+        "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+        "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))",
+        "the residents of member states have the right to live in Europe",
+    ),
 ]
 
 

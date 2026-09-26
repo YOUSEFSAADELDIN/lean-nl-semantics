@@ -80,13 +80,24 @@
 -- adjective (mkA "leading"), not derived from lead_V via VerbCN - same
 -- stale-function substitution as problem 13's premise 1 needed
 -- (VerbCN doesn't exist in current RGL at all, see gf/NOTES.md).
+-- CompoundCN : CN -> CN -> CN ("member states" = member_N + state_N) is
+-- declared directly below rather than extending ExtraEngAbs, same
+-- reasoning as each_Det (English-specific "abstract" module - see
+-- above). Its real recipe (gf-rgl/src/english/ExtraEng.gf) is
+-- `{s = \n,c => a.s ! Sg ! Nom ++ b.s ! n ! c ; g = b.g}` - the first
+-- noun always singular-nominative ("member"), the second inflected for
+-- whatever number/case is asked of the whole compound.
 abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase ** {
   fun
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A, german_A, british_A,
       leading_A, excellent_A, indispensable_A : A ;
-    man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N : N ;
-    win_V2, take_V2, contribute_V2 : V2 ;
+    man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N,
+      member_N, state_N, resident_N, right_N : N ;
+    win_V2, take_V2, contribute_V2, have_V2 : V2 ;
+    live_V : V ;
+    europe_PN : PN ;
     ComplV2 : V2 -> NP -> VP ;
+    CompoundCN : CN -> CN -> CN ;
 }
