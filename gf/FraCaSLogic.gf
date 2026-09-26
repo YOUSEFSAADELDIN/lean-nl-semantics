@@ -231,4 +231,24 @@ abstract FraCaSLogic =
     irishman_N, nobelPrize_N : N ;
     pavarotti_PN : PN ;
     CompoundCN : CN -> CN -> CN ;
+    -- aLotOf_Det : Det ("a lot of", problems 30-32's "spends a lot of
+    -- time at home") is the same "self-declare the literal string" call
+    -- as most_Det/several_Det/aFew_Det/worlds_Det above: Noun's own
+    -- quantity combinators (PartNP, QuantityNP) don't cover a bare
+    -- informal-quantity idiom like this, and DictEngAbs has no entry
+    -- under this name either (checked directly, same as every other
+    -- word below). Used with a singular Num slot, same as most_Det/
+    -- worlds_Det, since it combines with the mass noun "time".
+    aLotOf_Det : Det ;
+    -- scandinavia_PN, southernEurope_PN : PN (problems 27/28's "from
+    -- Scandinavia"/"from southern Europe") - DictEngAbs has
+    -- scandinavian_A/scandinavian_N (the adjective/demonym) but no
+    -- proper noun for the region itself, and "southern Europe" isn't in
+    -- the dictionary as any kind of word at all (unlike the countries
+    -- Sweden/Portugal, which are). Adjective-modifying a `PN` isn't a
+    -- real RGL mechanism (AdjCN only takes a common noun `CN`, and
+    -- "Europe" is a proper noun, not a common one) - self-declared as
+    -- their own fixed-string proper nouns instead, same pattern as
+    -- pavarotti_PN.
+    scandinavia_PN, southernEurope_PN : PN ;
 }
