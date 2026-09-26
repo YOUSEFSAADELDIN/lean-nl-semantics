@@ -128,7 +128,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/gf-libs
-          key: gf-rgl-${{ runner.os }}-${{ env.GF_RGL_TAG }}
+          # "-dict1" suffix (not just GF_RGL_TAG): this key's own cached
+          # contents changed shape (now includes DictEngAbs/DictEng too)
+          # without the tag itself changing, so the key needs its own
+          # bump too - otherwise a same-tag cache from before this pilot
+          # would cache-HIT and skip rebuilding, silently missing the
+          # newly-added DictEngAbs/DictEng.gfo the grammar now needs.
+          key: gf-rgl-${{ runner.os }}-${{ env.GF_RGL_TAG }}-dict1
 
       - name: Build gf-rgl
         if: steps.cache-rgl.outputs.cache-hit != 'true'
@@ -137,6 +143,22 @@ jobs:
           cd /tmp/gf-rgl
           git checkout "$GF_RGL_TAG"
           ./Setup.sh --dest="$HOME/gf-libs" -v
+
+      # DictEngAbs/DictEng (the RGL's ~30k-line general English dictionary,
+      # see gf/NOTES.md) is deliberately NOT part of Setup.sh's own build
+      # output (its module-name glob only looks for AllEng/TryEng/etc.-
+      # shaped files, never DictEng). Compiled here instead, straight into
+      # the same ~/gf-libs/alltenses Setup.sh already populated, so it's
+      # covered by the exact same cache-hit guard/key above and is only
+      # ever paid for once. `time` reports the real cost in the log - see
+      # gf/NOTES.md for the measured result and the pilot this supports.
+      - name: Build DictEng (dictionary integration pilot)
+        if: steps.cache-rgl.outputs.cache-hit != 'true'
+        run: |
+          cd /tmp/gf-rgl
+          time gf --batch --quiet --gf-lib-path="$HOME/gf-libs" \
+            --no-pmcfg --gfo-dir="$HOME/gf-libs/alltenses" \
+            src/english/DictEngAbs.gf src/english/DictEng.gf
 
       - name: Build FraCaSLogic grammar
         working-directory: gf

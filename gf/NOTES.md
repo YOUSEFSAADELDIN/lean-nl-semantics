@@ -274,32 +274,66 @@ parsing only becomes viable with either a much more restricted grammar
 or serious ambiguity-ranking/pruning, neither of which this project has
 built.
 
-## `UseCl` (bare `Cl` → `S`) silently produces empty output; use `Cl` directly
+## SOLVED: `UseCl`/tense support - the missing piece was `TenseX`, not a real RGL bug
+
+**This was wrong for a long time and is now fixed - full story below,
+including two dead ends, because both are instructive.**
 
 `linearize (PredVP np vp)` (category `Cl`) reliably produces the fully
 correct, correctly-conjugated English string. Wrapping the exact same
 clause with `UseCl (TTAnt TPres ASimul) PPos (...)` to get an `S`
-compiles and type-checks fine but **linearizes to an empty string**,
-for reasons not tracked down further (not worth the time — see below).
-**Workaround: use `Cl`, not `S`, as this project's target category.**
-This is actually a fine fit, not just a workaround: tense/aspect is
-already treated as separate information from the core proposition
-elsewhere in this project (see the FraCaS Section 7 Lean proofs), so a
-tenseless clause is close to the right semantic unit anyway.
+compiled fine but **linearized to an empty string**. This was first
+taken as a genuine RGL limitation and worked around by using `Cl`,
+never `S`, as this project's target category (tense/aspect being
+separate information from the core proposition elsewhere in this
+project - the FraCaS Section 7 Lean proofs - made this a defensible
+design choice regardless, not just a workaround).
 
-**Re-tested and re-confirmed, not just assumed.** gf-rgl's own treebank
-(`src/english/treebank.txt`) always wraps `UseCl`'s result in
+**Dead end 1**: gf-rgl's own treebank always wraps `UseCl`'s result in
 `UttS : S -> Utt` before linearizing, never linearizing a bare `S`
-directly - raising a real hypothesis that the missing `UttS` wrapping,
-not a genuine RGL bug, was the actual cause of the blank output, and
-that tense support might not be blocked after all. Directly tested via
-the `build-gf` CI job (see the automated-checks section above for the
-two testing bugs hit getting a *trustworthy* answer): `linearize UttS
-(UseCl (TTAnt TPres ASimul) PPos (...))` still produces blank output,
-confirmed with correct per-command output isolation. The hypothesis was
-wrong - this is a genuine RGL behavior (in this version, for this
-category), not a missing wrapper, and `Cl` remains this project's
-target category.
+directly. Hypothesis: the missing `UttS` wrapping was the actual cause.
+Tested via CI (after fixing two real bugs in the *test methodology
+itself* - a batched-session check that let one command's output
+satisfy a different command's expected string, then a "fix" that ran
+each check as its own process and broke *every* check via a
+startup/piping race - both documented above under "Automating
+`linearize` checks"). Once the test methodology was actually
+trustworthy: `linearize UttS (UseCl (TTAnt TPres ASimul) PPos (...))`
+still produced blank output. Hypothesis rejected.
+
+**The real fix**: our grammar extends the *abstract* `Tense` module
+(giving `TTAnt`/`PPos`/etc. as valid syntax that compiles) but never
+extended any *concrete* pairing for it. `TenseX` (`concrete TenseX of
+Tense = CommonX ** open (R = ParamX) in {...}`, in `src/common/`) is
+that pairing - genuinely cross-language, not English-specific. Traced
+through `gf-rgl/src/english/GrammarEng.gf` (the RGL's own full-coverage
+aggregate grammar, which every prior working example - including the
+treebank and the `vps2.gftest` regression test that first proved
+tensed linearization genuinely works in this RGL version at all -
+ultimately builds on) to find this. Extending with plain `TenseX`
+alone doesn't work either, for a real, separate reason: its own `CAdv`
+shape doesn't unify with `CatEng`'s (a genuine conflict) - confirmed
+because `GrammarEng.gf` itself works around the exact same conflict,
+by extending `TenseX - [Pol, PPos, PNeg, SC, CAdv]` (excluding those
+five) and redefining `PPos`/`PNeg` itself:
+```
+PPos = {s = []; p = CPos} ;
+PNeg = {s = []; p = CNeg True} ;
+```
+Copied that recipe verbatim (it's RGL's own generic conflict-resolution
+pattern, not FraCaS-specific content - same non-issue as the numeral
+encoding). One more gap: `True`/`False` need `Prelude` opened
+(`SentenceEng.gf` itself already does this, we hadn't).
+
+**Result, confirmed via CI with the corrected per-command-isolated test
+methodology**: `linearize UttS (UseCl (TTAnt TPres ASimul) PPos (PredVP
+... want to be a great tenor ...))` → `"every Italian man wants to be a
+great tenor"` - genuine, correct, non-blank output. Tense support is
+real. Whether to switch this project's target category from `Cl` to
+full `S`/`Utt` (now that it's possible) or keep `Cl` as the default and
+use `S` only where a sentence's tense actually matters is a design
+choice to make deliberately, not a hard technical wall anymore - the
+wall is gone.
 
 ## Automating `linearize` checks: a shared session is required, but needs correct per-command splitting
 

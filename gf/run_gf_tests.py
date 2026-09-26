@@ -16,6 +16,24 @@ satisfied by a *different* check's output (the original bug this file
 had), the session's output is split on the `FraCaSLogic> ` prompt
 marker into one segment per command, in order, and each check is only
 compared against its own segment.
+
+Each segment's own expected string is checked by *exact* match against
+the linearized output's first line, not a substring check - a
+substring check let a real bug through silently for a while ("comes
+cheap" is a prefix of the wrong output "comes cheaply", so it kept
+"passing"; see FraCaSLogicEng.gf's own comment on that bug and its
+fix), caught only once the tense-reconfirmation pass below made it
+worth actually reading the full session output closely.
+
+`CHECKS` (the list `main()` actually runs) is assembled from three
+parts: `BASE_CHECKS` (each FraCaS sentence as this project's default
+bare-`Cl` tree), `TENSE_RECONFIRMATIONS` (every one of those same
+sentences again, generated automatically by wrapping the same tree in
+`UttS (UseCl (TTAnt TPres ASimul) PPos (...))` - confirming tense-
+wrapping doesn't break any of them), and `PILOT_TENSE_CHECKS` (two new,
+hand-written checks - `TPast`/`TFut` in place of `TPres` - piloting
+past/future tense specifically, since only present tense had ever been
+confirmed via CI before).
 """
 
 from __future__ import annotations
@@ -30,7 +48,15 @@ PROMPT = "FraCaSLogic> "
 
 # Keep in sync with gf/FraCaSLogicEng.gf's own confirmed-commands
 # comments and gf/translate.py's examples.
-CHECKS = [
+#
+# Every entry below is a bare `Cl` (tenseless clause) - this project's
+# deliberate default target category (see gf/FraCaSLogic.gf's file-top
+# comment and NOTES.md's "SOLVED: UseCl/tense support" section). Each
+# one is reconfirmed below under full `UttS (UseCl (TTAnt TPres ASimul)
+# PPos ...)` tense-wrapping too (TENSE_RECONFIRMATIONS), so a future
+# switch to full `S`/`Utt` for any of these sentences is known in
+# advance not to hit a blank-linearization surprise.
+BASE_CHECKS = [
     (
         "fracas_002",
         "linearize PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -59,7 +85,7 @@ CHECKS = [
     (
         "fracas_033",
         "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
-        "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
         "an Irishman wins a Nobel prize",
     ),
     (
@@ -82,7 +108,122 @@ CHECKS = [
         "(UseComp (CompAP (PositA great_A)))",
         "some Italian tenors are great",
     ),
+    (
+        "fracas_008",
+        "linearize PredVP (DetCN many_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA german_A)))",
+        "many great tenors are German",
+    ),
+    (
+        "fracas_009",
+        "linearize PredVP (DetCN several_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA british_A)))",
+        "several great tenors are British",
+    ),
+    (
+        "fracas_015",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN tenor_N)) "
+        "(ComplSlash (SlashV2a take_V2) (AdvNP (MassNP (UseN part_N)) "
+        "(PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))",
+        "at least three tenors take part in the concert",
+    ),
+    (
+        "fracas_016",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2))))))))) (UseN tenor_N)) "
+        "(AdvVP (ComplSlash (SlashV2a contribute_V2) (DetCN (DetQuant (PossPron they_Pron) NumPl) (UseN fee_N))) "
+        "(PrepNP to_Prep (MassNP (UseN charity_N))))",
+        "at most two tenors contribute their fees to charity",
+    ),
+    (
+        "fracas_013_premise2",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumPl) "
+        "(RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP (PositA excellent_A))))))) "
+        "(UseComp (CompAP (PositA indispensable_A)))",
+        "leading tenors that are excellent are indispensable",
+    ),
+    (
+        "fracas_021_premise1",
+        "linearize PredVP "
+        "(AdvNP (DetCN (DetQuant DefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N))))) "
+        "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant DefArt NumSg) "
+        "(AdvCN (SentCN (UseN right_N) (EmbedVP (UseV live_V))) (PrepNP in_Prep (UsePN europe_PN)))))",
+        "the residents of member states have the right to live in Europe",
+    ),
+    (
+        "fracas_014_premise1",
+        "linearize PredVP (DetCN neither_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
+        "(AdvVP (UseV come_V) cheap_Adv)",
+        "neither leading tenor comes cheap",
+    ),
+    (
+        "fracas_014_premise2",
+        "linearize PredVP "
+        "(CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(DetCN (DetQuant DefArt NumPl) (AdjCN (PositA leading_A) (UseN tenor_N)))) "
+        "(UseComp (CompNP (UsePN pavarotti_PN)))",
+        "one of the leading tenors is Pavarotti",
+    ),
 ]
+
+
+def _tense_reconfirm(label: str, cmd: str, expected: str):
+    """Wraps an already-confirmed bare-`Cl` check's own tree in `UttS
+    (UseCl (TTAnt TPres ASimul) PPos (...))`, expecting the exact same
+    English string - a tense-wrapped sentence should say the same thing
+    a bare Cl already said, just via a different category. Building
+    this from BASE_CHECKS's own command strings (rather than retyping
+    all 16 trees a second time) keeps the two forever in sync."""
+    prefix = "linearize "
+    assert cmd.startswith(prefix), cmd
+    tree = cmd[len(prefix):]
+    return (
+        f"{label}_tense_reconfirm",
+        f"linearize UttS (UseCl (TTAnt TPres ASimul) PPos ({tree}))",
+        expected,
+    )
+
+
+TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
+
+# Pilot past/future tense checks: NOTES.md's tense fix was only ever
+# confirmed for TPres before now. "wins"/"won"/"will win" (fracas_033's
+# tree - a plain transitive main verb, no auxiliary/control verb
+# involved) is a clean, simple test of whether TPast/TFut's own verb
+# conjugation actually differs correctly, not just TPres's already-
+# confirmed path. Picked as pilots (rather than converting every
+# sentence's tense outright) precisely because this is genuinely new
+# ground - past/future have never been checked via CI before.
+#
+# This pilot is what caught win_V2's own latent bug: `mkV2 "win"`
+# derives a fully regular verb, so TPast originally gave "winned". A
+# temporary bare-V diagnostic (since removed) proved the fault was in
+# `mkV` itself, not V2-wrapping or VP-building - see FraCaSLogicEng.gf's
+# own comment on win_V2 for the full elimination story. Fixed via
+# `mkV "win" "won" "won"` (the 3-argument form, all principal parts
+# explicit).
+_FRACAS_033_TREE = (
+    "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+    "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
+)
+
+PILOT_TENSE_CHECKS = [
+    (
+        "fracas_033_past_pilot",
+        f"linearize UttS (UseCl (TTAnt TPast ASimul) PPos ({_FRACAS_033_TREE}))",
+        "an Irishman won a Nobel prize",
+    ),
+    (
+        "fracas_033_future_pilot",
+        f"linearize UttS (UseCl (TTAnt TFut ASimul) PPos ({_FRACAS_033_TREE}))",
+        "an Irishman will win a Nobel prize",
+    ),
+]
+
+CHECKS = BASE_CHECKS + TENSE_RECONFIRMATIONS + PILOT_TENSE_CHECKS
 
 
 def main() -> int:
@@ -119,13 +260,22 @@ def main() -> int:
     failures = []
     for idx, (label, _cmd, expected) in enumerate(CHECKS):
         segment = segments[idx + 1]
-        if expected not in segment:
-            failures.append((label, expected, segment))
+        # Exact match on the linearized output's own first line - NOT a
+        # substring check (`expected in segment`, this file's original
+        # approach) - a real bug slipped through that way: "neither
+        # leading tenor comes cheap" is a *prefix* of the wrong output
+        # "neither leading tenor comes cheaply", so the substring check
+        # kept "passing" against the wrong string for as long as that
+        # bug existed (see FraCaSLogicEng.gf's own comment on it).
+        stripped = segment.strip()
+        actual = stripped.splitlines()[0].strip() if stripped else ""
+        if actual != expected:
+            failures.append((label, expected, actual))
 
     if failures:
         print("FAILED checks:", file=sys.stderr)
-        for label, expected, segment in failures:
-            print(f"  {label}: expected {expected!r} not found in its own segment: {segment!r}", file=sys.stderr)
+        for label, expected, actual in failures:
+            print(f"  {label}: expected {expected!r}, got {actual!r}", file=sys.stderr)
         return 1
 
     print(f"All {len(CHECKS)} linearize checks passed.")
