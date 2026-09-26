@@ -110,6 +110,14 @@ CHECKS = [
         "(PrepNP to_Prep (MassNP (UseN charity_N))))",
         "at most two tenors contribute their fees to charity",
     ),
+    (
+        "fracas_013_premise2",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumPl) "
+        "(RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP (PositA excellent_A))))))) "
+        "(UseComp (CompAP (PositA indispensable_A)))",
+        "leading tenors who are excellent are indispensable",
+    ),
 ]
 
 

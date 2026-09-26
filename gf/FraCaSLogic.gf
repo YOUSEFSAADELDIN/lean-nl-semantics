@@ -74,11 +74,18 @@
 -- Adverb is extended for PrepNP ("in the concert") - a very
 -- high-leverage addition, used 81 times across the treebank's Section
 -- 1 sentences alone.
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb ** {
+-- Relative is extended for RelVP/IdRP (problem 13: "leading tenors who
+-- are excellent"). RelCN and UseRCl (the other two relative-clause
+-- pieces) are already free via Noun/Sentence. "leading" is a plain
+-- adjective (mkA "leading"), not derived from lead_V via VerbCN - same
+-- stale-function substitution as problem 13's premise 1 needed
+-- (VerbCN doesn't exist in current RGL at all, see gf/NOTES.md).
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative ** {
   fun
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
-    italian_A, great_A, swedish_A, modest_A, german_A, british_A : A ;
+    italian_A, great_A, swedish_A, modest_A, german_A, british_A,
+      leading_A, excellent_A, indispensable_A : A ;
     man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N : N ;
     win_V2, take_V2, contribute_V2 : V2 ;
     ComplV2 : V2 -> NP -> VP ;

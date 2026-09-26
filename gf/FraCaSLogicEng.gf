@@ -1,5 +1,5 @@
 concrete FraCaSLogicEng of FraCaSLogic =
-  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng
+  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng, RelativeEng
   ** open ParadigmsEng, MorphoEng, ResEng in {
   lin
     most_Det = mkDeterminer plural "most" ;
@@ -15,6 +15,9 @@ concrete FraCaSLogicEng of FraCaSLogic =
     modest_A = mkA "modest" ;
     german_A = mkA "German" ;
     british_A = mkA "British" ;
+    leading_A = mkA "leading" ;
+    excellent_A = mkA "excellent" ;
+    indispensable_A = mkA "indispensable" ;
     man_N = mkN "man" "men" ;
     tenor_N = mkN "tenor" ;
     irishman_N = mkN "Irishman" "Irishmen" ;
@@ -157,6 +160,18 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- Noun/Structural) build "their". AdvVP (Verb, already extended)
 -- attaches the PrepNP adjunct to the VP rather than the object NP:
 --   linearize PredVP
---     (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN (NumNumeral (num (pot0as1 (pot0 n2))))))) (UseN tenor_N))
+--     (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2))))))))) (UseN tenor_N))
 --     (AdvVP (ComplSlash (SlashV2a contribute_V2) (DetCN (DetQuant (PossPron they_Pron) NumPl) (UseN fee_N))) (PrepNP to_Prep (MassNP (UseN charity_N))))
 --   => "at most two tenors contribute their fees to charity"
+--
+-- FraCaS problem 13's second premise ("Leading tenors who are excellent
+-- are indispensable."): the first relative clause. RelCN/UseRCl (Noun/
+-- Sentence, already extended) plus RelVP/IdRP (Relative, newly
+-- extended) build "who are excellent" as a CN modifier. The subject is
+-- a bare plural (DetQuant IndefArt NumPl, no article - same mechanism
+-- as problem 3's "all"). "leading" is a plain adjective, not derived
+-- from lead_V via VerbCN (stale, doesn't exist - see gf/NOTES.md):
+--   linearize PredVP
+--     (DetCN (DetQuant IndefArt NumPl) (RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (UseComp (CompAP (PositA excellent_A)))))))
+--     (UseComp (CompAP (PositA indispensable_A)))
+--   => "leading tenors who are excellent are indispensable"
