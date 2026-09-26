@@ -133,6 +133,15 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
       member_N, state_N, resident_N, right_N : N ;
     win_V2, take_V2, contribute_V2 : V2 ;
     live_V, come_V : V ;
+    -- winDiag_V : V is a temporary diagnostic, not a real FraCaS
+    -- sentence - see run_gf_tests.py's win_v_tense_diagnostic. The
+    -- ComplSlash/SlashV2a switch for problem 33 (see the comment above)
+    -- did NOT fix the TPast "winned" bug, meaning the fault isn't in
+    -- ComplV2/predV/insertObj after all - it has to be either mkV's own
+    -- 2-argument form or mkV2's V-wrapping. This isolates which, by
+    -- testing the exact same `mkV "win" "won"` call through a bare V
+    -- (UseV), with no V2/ComplSlash/ComplV2 involved at all.
+    winDiag_V : V ;
     europe_PN, pavarotti_PN : PN ;
     of_Prep : Prep ;
     CompoundCN : CN -> CN -> CN ;

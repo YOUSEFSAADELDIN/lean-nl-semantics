@@ -44,6 +44,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     contribute_V2 = mkV2 "contribute" ;
     live_V = mkV "live" ;
     come_V = mkV "come" ;
+    winDiag_V = mkV "win" "won" ;
     europe_PN = mkPN "Europe" ;
     pavarotti_PN = mkPN "Pavarotti" ;
     of_Prep = mkPrep "of" ;
