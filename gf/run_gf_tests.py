@@ -94,6 +94,14 @@ CHECKS = [
         "(UseComp (CompAP (PositA british_A)))",
         "several great tenors are British",
     ),
+    (
+        "fracas_015",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN tenor_N)) "
+        "(ComplSlash (SlashV2a take_V2) (AdvNP (MassNP (UseN part_N)) "
+        "(PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))",
+        "at least three tenors take part in the concert",
+    ),
 ]
 
 

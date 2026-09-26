@@ -64,12 +64,22 @@
 -- current source) is declared here as `aFew_Det` instead, since no
 -- real function for it exists to copy a recipe from - just the
 -- obvious, generic `mkDeterminer plural "a few"`.
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
+-- Numeral quantifiers (problem 15: "At least three tenors...") use
+-- Structural's already-free at_least_AdN/at_most_AdN (real, current -
+-- unlike all_Det/a8few_Det, these checked out fine) wrapping a numeral
+-- built from Noun's NumCard/NumNumeral/AdNum and Numeral's own digit
+-- constants (n2..n9) and positional coercions (pot0/pot0as1/...) -
+-- Numeral is a genuine cross-language abstract module (src/abstract/,
+-- not English-specific like ExtraEngAbs was), so extended normally.
+-- Adverb is extended for PrepNP ("in the concert") - a very
+-- high-leverage addition, used 81 times across the treebank's Section
+-- 1 sentences alone.
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb ** {
   fun
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A, german_A, british_A : A ;
-    man_N, tenor_N, irishman_N, nobelPrize_N : N ;
-    win_V2 : V2 ;
+    man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N : N ;
+    win_V2, take_V2 : V2 ;
     ComplV2 : V2 -> NP -> VP ;
 }

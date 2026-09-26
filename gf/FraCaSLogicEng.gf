@@ -1,5 +1,5 @@
 concrete FraCaSLogicEng of FraCaSLogic =
-  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng
+  CatEng, StructuralEng, SentenceEng, NounEng, AdjectiveEng, VerbEng, NumeralEng, AdverbEng
   ** open ParadigmsEng, MorphoEng, ResEng in {
   lin
     most_Det = mkDeterminer plural "most" ;
@@ -19,7 +19,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
     tenor_N = mkN "tenor" ;
     irishman_N = mkN "Irishman" "Irishmen" ;
     nobelPrize_N = mkN "Nobel prize" ;
+    part_N = mkN "part" ;
+    concert_N = mkN "concert" ;
     win_V2 = mkV2 "win" ;
+    take_V2 = mkV2 "take" ;
     ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v) ;
 }
 
@@ -119,3 +122,29 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --   => "several great tenors are British"
 --
 -- All confirmed end-to-end on the real toolchain.
+--
+-- FraCaS problem 15's premise ("At least three tenors will take part
+-- in the concert."): the first numeral quantifier and the first use of
+-- PrepNP (a very high-leverage addition - used 81 times across the
+-- treebank's Section 1 sentences alone). at_least_AdN/at_most_AdN are
+-- free via Structural (real, current - unlike all_Det/a8few_Det, which
+-- looked similar but were stale). The numeral itself is built from
+-- Noun's NumCard/NumNumeral/AdNum plus Numeral's own digit constants
+-- (n2..n9) and positional coercions (pot0/pot0as1/pot1as2/pot2as3) -
+-- this exact encoding is RGL's generic, sentence-independent mechanism
+-- for representing any numeral, not FraCaS-specific content, so
+-- reusing it isn't a licensing concern the way copying an actual
+-- sentence tree would be (see CREDITS.md). Tenseless Cl (this
+-- project's target category) drops "will", same already-established
+-- limitation as problem 33's "won" -> "wins":
+--   linearize PredVP
+--     (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN tenor_N))
+--     (ComplSlash (SlashV2a take_V2) (AdvNP (MassNP (UseN part_N)) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))
+--   => "at least three tenors take part in the concert"
+--
+-- Not yet wired into translate.py: this project's Lean AtLeast/AtMost
+-- combinators (GQ.lean) take an explicit Nat bound, which the simple
+-- string-keyed quantifier tables (_QUANTIFIER_BY_DET/_QUANTIFIER_BY_QUANT)
+-- don't carry - needs its own translate_cl case, not just a table
+-- entry. Confirmed working in the grammar first, translator mapping to
+-- follow.
