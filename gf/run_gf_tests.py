@@ -17,6 +17,14 @@ had), the session's output is split on the `FraCaSLogic> ` prompt
 marker into one segment per command, in order, and each check is only
 compared against its own segment.
 
+Each segment's own expected string is checked by *exact* match against
+the linearized output's first line, not a substring check - a
+substring check let a real bug through silently for a while ("comes
+cheap" is a prefix of the wrong output "comes cheaply", so it kept
+"passing"; see FraCaSLogicEng.gf's own comment on that bug and its
+fix), caught only once the tense-reconfirmation pass below made it
+worth actually reading the full session output closely.
+
 `CHECKS` (the list `main()` actually runs) is assembled from three
 parts: `BASE_CHECKS` (each FraCaS sentence as this project's default
 bare-`Cl` tree), `TENSE_RECONFIRMATIONS` (every one of those same
@@ -148,7 +156,7 @@ BASE_CHECKS = [
     (
         "fracas_014_premise1",
         "linearize PredVP (DetCN neither_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
-        "(AdvVP (UseV come_V) (PositAdvAdj cheap_A))",
+        "(AdvVP (UseV come_V) cheap_Adv)",
         "neither leading tenor comes cheap",
     ),
     (
@@ -244,13 +252,22 @@ def main() -> int:
     failures = []
     for idx, (label, _cmd, expected) in enumerate(CHECKS):
         segment = segments[idx + 1]
-        if expected not in segment:
-            failures.append((label, expected, segment))
+        # Exact match on the linearized output's own first line - NOT a
+        # substring check (`expected in segment`, this file's original
+        # approach) - a real bug slipped through that way: "neither
+        # leading tenor comes cheap" is a *prefix* of the wrong output
+        # "neither leading tenor comes cheaply", so the substring check
+        # kept "passing" against the wrong string for as long as that
+        # bug existed (see FraCaSLogicEng.gf's own comment on it).
+        stripped = segment.strip()
+        actual = stripped.splitlines()[0].strip() if stripped else ""
+        if actual != expected:
+            failures.append((label, expected, actual))
 
     if failures:
         print("FAILED checks:", file=sys.stderr)
-        for label, expected, segment in failures:
-            print(f"  {label}: expected {expected!r} not found in its own segment: {segment!r}", file=sys.stderr)
+        for label, expected, actual in failures:
+            print(f"  {label}: expected {expected!r}, got {actual!r}", file=sys.stderr)
         return 1
 
     print(f"All {len(CHECKS)} linearize checks passed.")

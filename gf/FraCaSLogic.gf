@@ -98,12 +98,28 @@
 -- all ("of" is hardcoded directly inside PossNP/PartNP's own concrete
 -- definitions rather than exposed as a reusable Prep) - self-declared
 -- via the generic `mkPrep "of"`.
+--
+-- cheap_Adv : Adv ("Neither leading tenor comes cheap.") is declared
+-- separately from cheap_A - NOT built from it via Adverb's own
+-- PositAdvAdj (A -> Adv), despite that being exactly the combinator
+-- this idiom looks like it wants. The systematic tense-reconfirmation
+-- pass (gf/run_gf_tests.py) caught this the hard way: at the current
+-- pinned gf-rgl tag, `PositAdvAdj cheap_A` linearizes to "cheaply", the
+-- regular derived manner-adverb form, not the flat "cheap" this idiom
+-- needs - a real, silent bug that predates the tense work (the CI
+-- check's own substring match let "comes cheap" pass even against
+-- "comes cheaply", since the former is a prefix of the latter; fixed
+-- alongside this, see run_gf_tests.py). Self-declared instead via the
+-- generic `mkAdv "cheap"`, same "don't trust an RGL derivation whose
+-- exact behavior isn't pinned down, self-declare the literal string
+-- instead" pattern as most_Det/of_Prep/etc. above.
 abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase ** {
   fun
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A, german_A, british_A,
       leading_A, excellent_A, indispensable_A, cheap_A : A ;
+    cheap_Adv : Adv ;
     man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N,
       member_N, state_N, resident_N, right_N : N ;
     win_V2, take_V2, contribute_V2 : V2 ;

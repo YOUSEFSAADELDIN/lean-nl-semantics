@@ -154,7 +154,7 @@ def parse_tree(text: str):
 # unlike every other suffix here - it names a free *individual*, not a
 # free *predicate*; see _try_translate_partitive_identity below for the
 # one place that distinction actually matters.
-_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN")
+_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN", "_Adv")
 
 
 def _is_leaf_lexical(name: str) -> bool:
@@ -345,8 +345,8 @@ def _resolve_subject(subject):
 def _scope_name(vp) -> str:
     """Most VPs name their scope predicate from all of their own lexical
     content (matching e.g. `wantsGreatTenor`). "comes cheap" (`AdvVP
-    (UseV come_V) (PositAdvAdj cheap_A)`) is a linking-verb idiom where
-    "come" contributes no separate meaning of its own - the existing
+    (UseV come_V) cheap_Adv`) is a linking-verb idiom where "come"
+    contributes no separate meaning of its own - the existing
     hand-written proof (`fracas_014`, Batch1.lean) already treats this
     as bare `cheap`, not a fused `comeCheap`, so this is special-cased
     to match it rather than generalized (e.g. "runs fast" is NOT
@@ -511,7 +511,7 @@ if __name__ == "__main__":
         ),
         "fracas_014 (premise 1)": (
             "PredVP (DetCN neither_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
-            "(AdvVP (UseV come_V) (PositAdvAdj cheap_A))"
+            "(AdvVP (UseV come_V) cheap_Adv)"
         ),
         "fracas_014 (premise 2)": (
             "PredVP "

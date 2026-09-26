@@ -26,6 +26,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     excellent_A = mkA "excellent" ;
     indispensable_A = mkA "indispensable" ;
     cheap_A = mkA "cheap" ;
+    cheap_Adv = mkAdv "cheap" ;
     man_N = mkN "man" "men" ;
     tenor_N = mkN "tenor" ;
     irishman_N = mkN "Irishman" "Irishmen" ;
@@ -38,7 +39,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     state_N = mkN "state" ;
     resident_N = mkN "resident" ;
     right_N = mkN "right" ;
-    win_V2 = mkV2 "win" ;
+    win_V2 = mkV2 (mkV "win" "won") ;
     take_V2 = mkV2 "take" ;
     contribute_V2 = mkV2 "contribute" ;
     live_V = mkV "live" ;
@@ -219,15 +220,35 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- FraCaS problem 14's premises ("Neither leading tenor comes cheap."/
 -- "One of the leading tenors is Pavarotti."): "comes cheap" is not the
 -- copula (UseComp is specifically "be") - it's an intransitive verb
--- plus an adjective used adverbially (PositAdvAdj, Adverb, already
--- extended - same function "can travel freely" already used). The
--- partitive "one of the X" is CountNP : Det -> NP -> NP ("three of
--- them" - Noun, already extended) with "one" built the same numeral
--- way as problems 15/16, using pot01 (Numeral's own dedicated constant
--- for 1, since Digit only covers 2..9):
---   linearize PredVP (DetCN neither_Det (AdjCN (PositA leading_A) (UseN tenor_N))) (AdvVP (UseV come_V) (PositAdvAdj cheap_A))
+-- plus an adjective used adverbially. This was ORIGINALLY built with
+-- Adverb's own `PositAdvAdj cheap_A`, which looks exactly right for
+-- this idiom - but at the current pinned gf-rgl tag it actually
+-- linearizes to "cheaply" (the regular derived manner-adverb form),
+-- not the flat "cheap" the idiom needs. This went unnoticed at first
+-- because the original CI check used a substring match ("comes cheap"
+-- is a prefix of "comes cheaply", so the check kept "passing"); caught
+-- once the tense-reconfirmation pass switched to an exact-line match
+-- (see run_gf_tests.py). Fixed by self-declaring `cheap_Adv : Adv =
+-- mkAdv "cheap"` instead - bypassing PositAdvAdj's derivation entirely,
+-- same "don't trust it, self-declare the literal string" pattern as
+-- most_Det/of_Prep/etc. above. The partitive "one of the X" is
+-- CountNP : Det -> NP -> NP ("three of them" - Noun, already extended)
+-- with "one" built the same numeral way as problems 15/16, using pot01
+-- (Numeral's own dedicated constant for 1, since Digit only covers
+-- 2..9):
+--   linearize PredVP (DetCN neither_Det (AdjCN (PositA leading_A) (UseN tenor_N))) (AdvVP (UseV come_V) cheap_Adv)
 --   => "neither leading tenor comes cheap"
 --   linearize PredVP
 --     (CountNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (DetCN (DetQuant DefArt NumPl) (AdjCN (PositA leading_A) (UseN tenor_N))))
 --     (UseComp (CompNP (UsePN pavarotti_PN)))
 --   => "one of the leading tenors is Pavarotti"
+--
+-- Problem 33's win_V2 had a matching latent bug, caught by the same
+-- tense-reconfirmation pass's past-tense pilot (this one DID fail the
+-- original substring check, since "winned" doesn't contain "won"):
+-- `mkV2 "win"` derives a fully regular verb, so `TPast` gave "winned"
+-- instead of the irregular "won". Fixed via `mkV2 (mkV "win" "won")` -
+-- ParadigmsEng's two-argument mkV takes the infinitive plus the
+-- irregular preterite/past-participle form explicitly; 3rd-singular
+-- present ("wins") and the present participle ("winning") are still
+-- regular, so still derived automatically.
