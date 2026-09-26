@@ -31,6 +31,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     PNeg = {s = []; p = CNeg True} ;
     several_Det = mkDeterminer plural "several" ;
     aFew_Det = mkDeterminer plural "a few" ;
+    worlds_Det = mkDeterminer singular "the world's" ;
     really_AdA = mkAdA "really" ;
     leading_A = mkA "leading" ;
     cheap_Adv = mkAdv "cheap" ;
@@ -325,3 +326,38 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- gaps in translate.py, not regressions from this bucket's own work -
 -- problem 13's own relative clause was confirmed via CI long before
 -- this, just never previously fed through translate.py at all.
+--
+-- FraCaS problems 1, 5, 11, 12, 17 complete Batch1.lean's own problem
+-- range (1-21, all now confirmed here) - every word they need except
+-- "the world's" (problem 1, self-declared above - see FraCaSLogic.gf's
+-- own comment on why) already exists in DictEngAbs/DictEng, including
+-- "greatest" itself (greatest_A - a needless duplicate was first tried
+-- here too and caught by a genuine CI "cannot unify" failure, see
+-- FraCaSLogic.gf's comment): italian_N, ambitious_A, sing_V2, popular_A,
+-- music_N, like_V2, poor_A, literature_N. few_Det (problem 12) is
+-- Structural's own, already free (same as many_Det):
+--   linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN italian_N))
+--     (ComplSlash (SlashV2a become_V2) (DetCN worlds_Det (AdjCN (PositA greatest_A) (UseN tenor_N))))
+--   => "an Italian becomes the world's greatest tenor"
+--   linearize PredVP (DetCN (DetQuant DefArt NumPl) (AdjCN (AdAP really_AdA (PositA ambitious_A)) (UseN tenor_N)))
+--     (UseComp (CompAP (PositA italian_A)))
+--   => "the really ambitious tenors are Italian"
+--   linearize PredVP (DetCN aFew_Det (AdjCN (PositA great_A) (UseN tenor_N)))
+--     (ComplSlash (SlashV2a sing_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))
+--   => "a few great tenors sing popular music"
+--   linearize PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N)))
+--     (ComplSlash (SlashV2a like_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))
+--   => "some great tenors like popular music"
+--   linearize PredVP (DetCN few_Det (AdjCN (PositA great_A) (UseN tenor_N))) (UseComp (CompAP (PositA poor_A)))
+--   => "few great tenors are poor"
+--   linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N))
+--     (ComplSlash (SlashV2a win_V2) (AdvNP (DetCN (DetQuant DefArt NumSg) (UseN nobelPrize_N)) (PrepNP for_Prep (MassNP (UseN literature_N)))))
+--   => "an Irishman wins the Nobel prize for literature"
+--
+-- Not added to translate.py: problem 12 isn't formalized there as a
+-- named-predicate Prop at all (Batch1.lean's own `fracas_012_dir1`/
+-- `fracas_012_dir2` are a countermodel/independence proof over
+-- abstract Bool-indexed models, "few" being genuinely bound-less in
+-- the source text) - the GF sentence above is still confirmed via
+-- run_gf_tests.py independently, only the Lean cross-check doesn't
+-- apply to this one problem.

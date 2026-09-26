@@ -206,8 +206,27 @@ abstract FraCaSLogic =
   ** {
   fun
     several_Det, aFew_Det : Det ;
+    -- worlds_Det : Det ("the world's", problem 1's "the world's greatest
+    -- tenor") is self-declared rather than built from a real combinator:
+    -- RGL's only possessive-NP mechanism, PossNP : CN -> NP -> NP, is a
+    -- "CN of NP" paraphrase (`cn.s ++ "of" ++ np.s ! NPNomPoss`, checked
+    -- directly against gf-rgl/src/english/NounEng.gf), not the
+    -- prenominal 's-genitive FraCaS's own text uses, and there's no
+    -- general `NP -> Quant` combinator (only `PossPron : Pron -> Quant`,
+    -- pronouns only) to build "the world's" as a determiner from "the
+    -- world" the normal way. Same "self-declare the literal string"
+    -- pattern as most_Det/of_Prep/etc.
+    worlds_Det : Det ;
     really_AdA : AdA ;
     leading_A : A ;
+    -- greatest_A is NOT declared here despite looking like the same kind
+    -- of "self-declare the literal string" call as worlds_Det above: it
+    -- already exists in DictEngAbs (`fun greatest_A : A;`, same
+    -- `mkA "greatest"` recipe) - confirmed directly against
+    -- gf-rgl/src/english/{DictEngAbs,DictEng}.gf, and the hard way first,
+    -- via a genuine "cannot unify" CI failure from declaring it here too.
+    -- Left free via the extends line instead, same as every other
+    -- DictEngAbs collision above.
     cheap_Adv : Adv ;
     irishman_N, nobelPrize_N : N ;
     pavarotti_PN : PN ;
