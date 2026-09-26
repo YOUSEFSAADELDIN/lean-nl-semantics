@@ -101,10 +101,11 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- Backward/BackwardEng). IndefArt (from Noun, already in scope) is the
 -- a/an quantifier; the RGL picks "a" vs "an" for us automatically based
 -- on the following word. Note this project's target category Cl is
--- tenseless (see the file-top comment), so the confirmed output
--- correctly comes out present tense ("wins"), not an exact string
--- match to FraCaS's own past-tense wording ("won") - that's a
--- deliberate, already-established limitation, not a bug here:
+-- tenseless by choice (see the file-top comment - tense support is
+-- fully available now, just not used by default), so the confirmed
+-- output correctly comes out present tense ("wins"), not an exact
+-- string match to FraCaS's own past-tense wording ("won") - that's the
+-- deliberate default, not a limitation we're stuck with:
 --   linearize PredVP
 --     (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N))
 --     (ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))

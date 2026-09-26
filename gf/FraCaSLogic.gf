@@ -1,12 +1,18 @@
 -- Phase 3 proof-of-concept grammar. See gf/NOTES.md for the full story
 -- of how this shape was arrived at (the modules it needs to extend and
--- why, the Syntax/SyntaxEng bug it avoids, the Cl-vs-S issue).
+-- why, the Syntax/SyntaxEng bug it avoids, the TenseX fix).
 --
--- Target category is `Cl` (clause), not `S` (sentence) - see NOTES.md's
--- "UseCl silently produces empty output" section. A tenseless clause is
--- also the right semantic unit for this project's purposes: tense is
--- separate information from the core proposition (cf. FraCaS Section 7
--- in the Lean suite), not something to bake into the target category.
+-- Target category is `Cl` (clause), not `S`/`Utt` (sentence/utterance)
+-- - by deliberate choice, not technical necessity: tense support is
+-- fully available now (see NOTES.md's "SOLVED: UseCl/tense support"
+-- section - it was a missing module extension on our side, not a real
+-- RGL limitation, as first assumed). `Cl` is kept as the default target
+-- because a tenseless clause is the right semantic unit for this
+-- project's purposes regardless: tense is separate information from
+-- the core proposition (cf. FraCaS Section 7 in the Lean suite), not
+-- something to bake into every sentence's target category. Nothing
+-- stops a future sentence from using full `S`/`Utt` where its tense
+-- specifically matters - see NOTES.md for the working recipe.
 --
 -- DictEngAbs/DictEng (RGL's general dictionary) turned out NOT to be
 -- part of Setup.sh's default build output at all (confirmed: `find
