@@ -1,0 +1,13 @@
+name = "lean_nl_semantics"
+defaultTargets = ["LeanNLSemantics"]
+
+# Mathlib supplies the automation (`tauto`, `aesop`, `norm_cast`,
+# `push_cast`) used by MTT/Tactic and by the FraCaS proof harness.
+# Tracking `main` rather than a pinned rev: run `lake update` after
+# cloning to resolve a Mathlib commit compatible with `lean-toolchain`.
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+
+[[lean_lib]]
+name = "LeanNLSemantics"

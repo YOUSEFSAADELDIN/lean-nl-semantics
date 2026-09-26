@@ -1,0 +1,62 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # No lake-manifest.json is committed (nothing here has ever
+      # actually resolved the Mathlib dependency), so `lake build` alone
+      # fails with "No lake-manifest.json found" — `lake update` writes
+      # it first. Once one exists, commit it so future runs are pinned
+      # to a fixed Mathlib revision instead of re-resolving `main` every time.
+      - name: Resolve dependencies
+        run: lake update
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Build
+        run: lake build
+
+  # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
+  # package with its own manifest, so a version conflict between this
+  # repo's (unpinned, tracking `main`) Mathlib and linglib's own pinned
+  # Mathlib commit can only ever affect *this* job, never the `build` job
+  # above — the two never share a lake-manifest.json or resolution.
+  # `continue-on-error` at the job level, not just the step level, so a
+  # failure here never flips the workflow run's overall conclusion.
+  build-linglib-bridge:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies
+        working-directory: bridge
+        run: lake update
+
+      - name: Fetch Mathlib cache
+        working-directory: bridge
+        run: lake exe cache get
+
+      - name: Build
+        working-directory: bridge
+        run: lake build
