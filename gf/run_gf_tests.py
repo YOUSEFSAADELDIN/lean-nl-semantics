@@ -82,6 +82,18 @@ CHECKS = [
         "(UseComp (CompAP (PositA great_A)))",
         "some Italian tenors are great",
     ),
+    (
+        "fracas_008",
+        "linearize PredVP (DetCN many_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA german_A)))",
+        "many great tenors are German",
+    ),
+    (
+        "fracas_009",
+        "linearize PredVP (DetCN several_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA british_A)))",
+        "several great tenors are British",
+    ),
 ]
 
 

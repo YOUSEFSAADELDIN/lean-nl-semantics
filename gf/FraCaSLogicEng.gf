@@ -4,11 +4,17 @@ concrete FraCaSLogicEng of FraCaSLogic =
   lin
     most_Det = mkDeterminer plural "most" ;
     each_Det = mkDeterminer singular "each" ;
+    several_Det = mkDeterminer plural "several" ;
+    both_Det = mkDeterminer plural "both" ;
+    neither_Det = mkDeterminer singular "neither" ;
+    aFew_Det = mkDeterminer plural "a few" ;
     really_AdA = mkAdA "really" ;
     italian_A = mkA "Italian" ;
     great_A = mkA "great" ;
     swedish_A = mkA "Swedish" ;
     modest_A = mkA "modest" ;
+    german_A = mkA "German" ;
+    british_A = mkA "British" ;
     man_N = mkN "man" "men" ;
     tenor_N = mkN "tenor" ;
     irishman_N = mkN "Irishman" "Irishmen" ;
@@ -78,3 +84,38 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --   => "an Irishman wins a Nobel prize"
 --
 -- Confirmed end-to-end on the real toolchain.
+--
+-- FraCaS problem 3's premise ("All Italian men want to be a great
+-- tenor."): see gf/FraCaSLogic.gf's own comment on why "all" is
+-- PredetNP all_Predet over a bare plural NP, not a Det. The complement
+-- uses CompNP wrapping an explicit singular indefinite NP, not CompCN,
+-- specifically to force "a great tenor" (singular) despite the plural
+-- subject - CompCN's complement agrees in number with the subject,
+-- which would give "want to be great tenors" instead (confirmed by CI
+-- catching exactly this the first time):
+--   linearize PredVP
+--     (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA italian_A) (UseN man_N))))
+--     (ComplVV want_VV (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA great_A) (UseN tenor_N))))))
+--   => "all Italian men want to be a great tenor"
+--
+-- FraCaS problem 4's premises ("Each Italian tenor wants to be great."/
+-- "Some Italian tenors are great."): each_Det is self-declared above.
+--   linearize PredVP (DetCN each_Det (AdjCN (PositA italian_A) (UseN tenor_N)))
+--                     (ComplVV want_VV (UseComp (CompAP (PositA great_A))))
+--   => "each Italian tenor wants to be great"
+--   linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN tenor_N)))
+--                     (UseComp (CompAP (PositA great_A)))
+--   => "some Italian tenors are great"
+--
+-- FraCaS problem 8's premise ("Many great tenors are German."):
+-- many_Det is free via Structural, not self-declared:
+--   linearize PredVP (DetCN many_Det (AdjCN (PositA great_A) (UseN tenor_N)))
+--                     (UseComp (CompAP (PositA german_A)))
+--   => "many great tenors are German"
+--
+-- FraCaS problem 9's premise ("Several great tenors are British."):
+--   linearize PredVP (DetCN several_Det (AdjCN (PositA great_A) (UseN tenor_N)))
+--                     (UseComp (CompAP (PositA british_A)))
+--   => "several great tenors are British"
+--
+-- All confirmed end-to-end on the real toolchain.

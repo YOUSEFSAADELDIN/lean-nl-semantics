@@ -53,11 +53,22 @@
 -- `DetCN (DetQuant IndefArt NumPl) cn`, which realizes with no article
 -- at all (`IndefArt`'s own linearization is the empty string for
 -- plural - see gf/NOTES.md/NounEng.gf) - not `DetCN all_Det cn`.
+--
+-- many_Det/few_Det are ALREADY free via Structural (checked directly
+-- against src/abstract/Structural.gf, not just the concrete side) -
+-- not declared here. several_Det/both_Det/neither_Det are DictEng-only
+-- (same story as most_Det - real recipes copied from
+-- gf-rgl/src/english/DictEng.gf). "a few" (treebank's own `a8few_Det` -
+-- the `8` is the RGL's own convention for a space inside a multi-word
+-- identifier, same as `how8many_IDet` - is ALSO stale, absent from
+-- current source) is declared here as `aFew_Det` instead, since no
+-- real function for it exists to copy a recipe from - just the
+-- obvious, generic `mkDeterminer plural "a few"`.
 abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
   fun
-    most_Det, each_Det : Det ;
+    most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
-    italian_A, great_A, swedish_A, modest_A : A ;
+    italian_A, great_A, swedish_A, modest_A, german_A, british_A : A ;
     man_N, tenor_N, irishman_N, nobelPrize_N : N ;
     win_V2 : V2 ;
     ComplV2 : V2 -> NP -> VP ;

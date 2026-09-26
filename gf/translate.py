@@ -160,9 +160,14 @@ def camel_name(words: list[str]) -> str:
 _QUANTIFIER_BY_DET = {
     "every_Det": "Every",
     "each_Det": "Every",
+    "both_Det": "Every",  # "both" treated as "every" restricted to two - GQ.lean
     "someSg_Det": "Some",
     "somePl_Det": "Some",
+    "many_Det": "Some",
+    "several_Det": "Some",
+    "aFew_Det": "Some",
     "most_Det": "Most",
+    "neither_Det": "No",  # "neither" treated as "no" restricted to two - GQ.lean
 }
 
 # Determiners that are Quant-typed instead (no_Quant, this_Quant, ...):
@@ -311,6 +316,14 @@ if __name__ == "__main__":
         "fracas_004 (premise 1)": (
             "PredVP (DetCN each_Det (AdjCN (PositA italian_A) (UseN tenor_N))) "
             "(ComplVV want_VV (UseComp (CompAP (PositA great_A))))"
+        ),
+        "fracas_008 (premise)": (
+            "PredVP (DetCN many_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+            "(UseComp (CompAP (PositA german_A)))"
+        ),
+        "fracas_009 (premise)": (
+            "PredVP (DetCN several_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+            "(UseComp (CompAP (PositA british_A)))"
         ),
     }
     for label, tree_text in examples.items():
