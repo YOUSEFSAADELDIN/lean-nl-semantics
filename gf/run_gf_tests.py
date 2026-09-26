@@ -102,6 +102,14 @@ CHECKS = [
         "(PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))",
         "at least three tenors take part in the concert",
     ),
+    (
+        "fracas_016",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN "
+        "(NumNumeral (num (pot0as1 (pot0 n2))))))) (UseN tenor_N)) "
+        "(AdvVP (ComplSlash (SlashV2a contribute_V2) (DetCN (DetQuant (PossPron they_Pron) NumPl) (UseN fee_N))) "
+        "(PrepNP to_Prep (MassNP (UseN charity_N))))",
+        "at most two tenors contribute their fees to charity",
+    ),
 ]
 
 

@@ -21,8 +21,11 @@ concrete FraCaSLogicEng of FraCaSLogic =
     nobelPrize_N = mkN "Nobel prize" ;
     part_N = mkN "part" ;
     concert_N = mkN "concert" ;
+    fee_N = mkN "fee" ;
+    charity_N = mkN "charity" ;
     win_V2 = mkV2 "win" ;
     take_V2 = mkV2 "take" ;
+    contribute_V2 = mkV2 "contribute" ;
     ComplV2 v np = insertObj (\\_ => v.c2 ++ np.s ! NPAcc) (predV v) ;
 }
 
@@ -148,3 +151,12 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- don't carry - needs its own translate_cl case, not just a table
 -- entry. Confirmed working in the grammar first, translator mapping to
 -- follow.
+--
+-- FraCaS problem 16's premise ("At most two tenors will contribute
+-- their fees to charity."): PossPron/they_Pron (both free via
+-- Noun/Structural) build "their". AdvVP (Verb, already extended)
+-- attaches the PrepNP adjunct to the VP rather than the object NP:
+--   linearize PredVP
+--     (DetCN (DetQuant IndefArt (NumCard (AdNum at_most_AdN (NumNumeral (num (pot0as1 (pot0 n2))))))) (UseN tenor_N))
+--     (AdvVP (ComplSlash (SlashV2a contribute_V2) (DetCN (DetQuant (PossPron they_Pron) NumPl) (UseN fee_N))) (PrepNP to_Prep (MassNP (UseN charity_N))))
+--   => "at most two tenors contribute their fees to charity"

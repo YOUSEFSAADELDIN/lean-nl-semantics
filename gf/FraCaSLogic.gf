@@ -79,7 +79,7 @@ abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, 
     most_Det, each_Det, several_Det, both_Det, neither_Det, aFew_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A, german_A, british_A : A ;
-    man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N : N ;
-    win_V2, take_V2 : V2 ;
+    man_N, tenor_N, irishman_N, nobelPrize_N, part_N, concert_N, fee_N, charity_N : N ;
+    win_V2, take_V2, contribute_V2 : V2 ;
     ComplV2 : V2 -> NP -> VP ;
 }
