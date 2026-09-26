@@ -3,6 +3,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
   ** open ParadigmsEng, MorphoEng, ResEng in {
   lin
     most_Det = mkDeterminer plural "most" ;
+    each_Det = mkDeterminer singular "each" ;
     really_AdA = mkAdA "really" ;
     italian_A = mkA "Italian" ;
     great_A = mkA "great" ;

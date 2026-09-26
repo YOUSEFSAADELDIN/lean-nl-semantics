@@ -30,9 +30,32 @@
 -- Setup.sh's build output either (same "File X.gf does not exist"
 -- error, confirmed the same way). Its real recipe is copied from
 -- gf-rgl/src/english/BackwardEng.gf instead - see gf/NOTES.md.
+--
+-- each_Det (problems 4, 18-20 etc: "each Italian tenor"/"each
+-- European") is declared directly below rather than extending
+-- ExtraEngAbs (where the RGL puts it) - that module lives in
+-- src/english/, not src/abstract/, meaning it's an English-specific
+-- "abstract" module despite the name, not genuinely cross-language.
+-- Depending on it would tie this project's abstract syntax to English
+-- specifically, contradicting the multi-language goal in the README.
+-- Its real recipe (checked against gf-rgl/src/english/ExtraEng.gf) is
+-- the trivial `mkDeterminer Sg "each"` - see gf/NOTES.md's section on
+-- gf-rgl's own treebank for how this and several other mechanisms
+-- below were found: it ships pre-built, validated trees for most of
+-- FraCaS Section 1 already.
+--
+-- "all" (problems 3, 19, etc: "All Italian men want...") is NOT a Det
+-- at all in the current RGL (the treebank's own `all_Det` is stale -
+-- confirmed absent from the current source, same situation as
+-- Backward's `Acc`/`NPAcc`). The real, current mechanism is
+-- `PredetNP all_Predet np` (`all_Predet` already free via Structural,
+-- `PredetNP` already free via Noun) applied to a *bare* plural NP -
+-- `DetCN (DetQuant IndefArt NumPl) cn`, which realizes with no article
+-- at all (`IndefArt`'s own linearization is the empty string for
+-- plural - see gf/NOTES.md/NounEng.gf) - not `DetCN all_Det cn`.
 abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
   fun
-    most_Det : Det ;
+    most_Det, each_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A : A ;
     man_N, tenor_N, irishman_N, nobelPrize_N : N ;

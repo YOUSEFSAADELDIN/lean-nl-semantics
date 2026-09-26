@@ -62,6 +62,25 @@ CHECKS = [
         "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
         "an Irishman wins a Nobel prize",
     ),
+    (
+        "fracas_003",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "
+        "(AdjCN (PositA italian_A) (UseN man_N)))) "
+        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "all Italian men want to be a great tenor",
+    ),
+    (
+        "fracas_004_premise1",
+        "linearize PredVP (DetCN each_Det (AdjCN (PositA italian_A) (UseN tenor_N))) "
+        "(ComplVV want_VV (UseComp (CompAP (PositA great_A))))",
+        "each Italian tenor wants to be great",
+    ),
+    (
+        "fracas_004_premise2",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA great_A)))",
+        "some Italian tenors are great",
+    ),
 ]
 
 
