@@ -66,7 +66,8 @@ CHECKS = [
         "fracas_003",
         "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "
         "(AdjCN (PositA italian_A) (UseN man_N)))) "
-        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "(ComplVV want_VV (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+        "(AdjCN (PositA great_A) (UseN tenor_N))))))",
         "all Italian men want to be a great tenor",
     ),
     (

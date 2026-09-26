@@ -305,7 +305,8 @@ if __name__ == "__main__":
         "fracas_003 (premise)": (
             "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) "
             "(AdjCN (PositA italian_A) (UseN man_N)))) "
-            "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))"
+            "(ComplVV want_VV (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+            "(AdjCN (PositA great_A) (UseN tenor_N))))))"
         ),
         "fracas_004 (premise 1)": (
             "PredVP (DetCN each_Det (AdjCN (PositA italian_A) (UseN tenor_N))) "
