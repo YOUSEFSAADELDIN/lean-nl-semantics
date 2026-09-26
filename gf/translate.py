@@ -167,8 +167,12 @@ _QUANTIFIER_BY_DET = {
 # Determiners that are Quant-typed instead (no_Quant, this_Quant, ...):
 # DetCN's first argument is then `DetQuant <quant> <num>` (mkDet's own
 # bare-Quant desugaring, gf-rgl's Constructors.gf), not a bare *_Det.
+# IndefArt ("a"/"an") is treated as existential, matching how this
+# project's own Lean `Some` already covers "a/an/some/many/..." (see
+# LeanNLSemantics/FraCaS/Section1/GQ.lean's doc comment on `Some`).
 _QUANTIFIER_BY_QUANT = {
     "no_Quant": "No",
+    "IndefArt": "Some",
 }
 
 
@@ -235,8 +239,15 @@ def translate_tree_text(text: str, *, domain: str = "A") -> str:
 
 
 if __name__ == "__main__":
-    # All four are confirmed end-to-end via `linearize` on the real
-    # toolchain (gf/FraCaSLogicEng.gf / gf/NOTES.md).
+    # fracas_002/007/006/010 are confirmed end-to-end via `linearize` on
+    # the real toolchain (gf/FraCaSLogicEng.gf / gf/NOTES.md). fracas_033
+    # is designed the same way but not yet linearize-confirmed - see
+    # gf/FraCaSLogicEng.gf's own comment on it (also the first VP shape
+    # this translator has been fed that isn't copula/control-verb: the
+    # ComplV2 tree's object NP flattens into the scope predicate's name
+    # exactly like every other VP-internal structure does, so no new
+    # code path was needed here, just the IndefArt quantifier mapping
+    # above).
     examples = {
         "fracas_002 (premise)": (
             "PredVP (DetCN every_Det (AdjCN (PositA italian_A) (UseN man_N))) "
@@ -254,6 +265,10 @@ if __name__ == "__main__":
         "fracas_010 (premise)": (
             "PredVP (DetCN most_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
             "(UseComp (CompAP (PositA italian_A)))"
+        ),
+        "fracas_033 (premise, not yet linearize-confirmed)": (
+            "PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+            "(ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))"
         ),
     }
     for label, tree_text in examples.items():

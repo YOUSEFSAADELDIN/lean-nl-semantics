@@ -17,13 +17,21 @@
 -- and determiner it needs is declared here instead, same as
 -- really_AdA always was. most_Det's own linearization is copied
 -- directly from DictEngAbs's real recipe (checked against
--- gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"` -
--- mkDeterminer itself is already in scope via StructuralEng (which
--- uses it for someSg_Det/somePl_Det/etc.), not a new dependency.
-abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb ** {
+-- gf-rgl/src/english/DictEng.gf): `mkDeterminer plural "most"` - see
+-- gf/NOTES.md for where mkDeterminer itself actually needs to come from
+-- (MorphoEng, opened directly - NOT inherited from StructuralEng just
+-- because StructuralEng happens to use it internally).
+--
+-- Backward (a plain, RGL-labeled-obsolete-but-supported module, not the
+-- risky Syntax/SyntaxEng-style interface bundling) is extended for
+-- ComplV2 : V2 -> NP -> VP - the plain transitive-verb VP constructor,
+-- needed for the first subject-verb-object sentence shape (problem 33,
+-- "An Irishman won a Nobel prize.").
+abstract FraCaSLogic = Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Backward ** {
   fun
     most_Det : Det ;
     really_AdA : AdA ;
     italian_A, great_A, swedish_A, modest_A : A ;
-    man_N, tenor_N : N ;
+    man_N, tenor_N, irishman_N, nobelPrize_N : N ;
+    win_V2 : V2 ;
 }
