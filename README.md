@@ -71,14 +71,21 @@ Three shapes were on the table; picked **hybrid** (D):
 
 **Chosen: standalone core (B's rigor) + optional bridge (C's interop),
 never both by default.** `MTT/CN.lean` has zero dependency on linglib —
-the library is a complete, citable artifact on its own. `MTT/LinglibBridge.lean`
-sketches the connection over linglib's actual `E`/`Ty.Domain` (not a
-guess) but isn't in `lakefile.toml` or the umbrella import, so building
-the core never touches linglib. If the project's goal later shifts toward
-"practical tool" or "contribute to linglib" (see the goal note above), the
-bridge file is exactly the seam to build out from — including, per
-linglib's own convention, potentially upstreaming a `Studies/`-style entry
-into linglib itself rather than maintaining a separate dependency.
+the library is a complete, citable artifact on its own. `bridge/LinglibBridge.lean`
+builds the connection over linglib's actual `E`/`Ty.Domain` (not a
+guess, and — since Phase 2b — not just a sketch either: it's a real,
+CI-built Lean file) as a **genuinely separate Lake package**
+(`bridge/lakefile.toml`, its own manifest and `lean-toolchain`, built by
+its own CI job), not a second target in the main package's own
+`lakefile.toml`: a version conflict between the bridge's pinned linglib/
+Mathlib and the main package's own unpinned, `main`-tracking Mathlib
+must never be able to break the main package's build, and two separate
+manifests makes that structurally impossible rather than merely
+unlikely. If the project's goal later shifts toward "practical tool" or
+"contribute to linglib" (see the goal note above), the bridge package is
+exactly the seam to build out from — including, per linglib's own
+convention, potentially upstreaming a `Studies/`-style entry into
+linglib itself rather than maintaining a separate dependency.
 
 ## Layout
 
@@ -93,12 +100,19 @@ LeanNLSemantics/
     Adjectives.lean           -- intersective adjectives via Subtype
     DotTypes.lean             -- copredication (Pustejovsky dot-types)
     Tense.lean                -- event/time skeleton
-    LinglibBridge.lean        -- optional linglib interop; NOT built by default
   Tactic/
     NLI.lean                  -- FraCaS proof automation (skeleton)
   FraCaS/
     Types.lean                -- Problem/Answer representation
-    Data/                     -- (not yet populated -- see below)
+    Data/                     -- fracas.xml + 342 Problem records
+    Section1/ .. Section9/    -- all 342 problems, formalized (Phase 2a)
+bridge/                      -- Phase 2b: linglib bridge, a SEPARATE Lake
+                                package (own lakefile.toml/lean-toolchain),
+                                built by its own CI job, never touching
+                                the main package's dependency resolution
+  lakefile.toml               -- requires linglib (pinned) + reuses
+                                  ../LeanNLSemantics/MTT/CN.lean directly
+  LinglibBridge.lean           -- the actual bridge (Lexicon/CN'/toPredicate)
 CREDITS.md                   -- sources, licenses, what may/may not be copied
 ```
 
@@ -246,13 +260,44 @@ for history; `MTT.v` is now the thing to actually port from.
   assistant — FraCoq's published 83%/81% (5 sections, then a temporal
   subset) is the closest prior result and a sanity baseline, not a
   target matched exactly, since the underlying semantics differ (types
-  vs. predicates). What's next: Phase 2b (the linglib bridge), Phase 3
-  (GF integration), Phase 4 (LLM fallback) below.
+  vs. predicates).
+
+  **Sealed with a mechanical audit, not just claimed:** a script
+  cross-references every `fracas_NNN` theorem's proof shape (a direct
+  `premises → hypothesis`/`premises → ¬hypothesis`, vs. the `_dir1`/
+  `_dir2` countermodel pattern) against its recorded `Problem.answer`
+  for all 342 problems. Full 342/342 coverage; exactly 4 mismatches, all
+  four the documented divergences above (56/77/78/109) and nothing else
+  — the audit also caught one real slip (problem 289 had been given the
+  countermodel/`.unknown` treatment when its gold answer is a clean
+  `.no`; fixed). Net: **338/342 exact gold-answer matches, 4/342
+  documented deliberate divergences, 0 unexplained mismatches.** This
+  is an internal-consistency check (did the proved shape end up
+  matching the recorded answer it was written against), not an
+  independent-prediction accuracy score like FraCoq's — the gold answer
+  was an input to each formalization here, not something predicted
+  blind, so the two numbers aren't measuring the same thing and
+  "338/342 vs. FraCoq's 83%" is not an apples-to-apples comparison.
+
+  What's next: Phase 2b (the linglib bridge), Phase 3 (GF integration),
+  Phase 4 (LLM fallback) below.
 - **Phase 2b — the other actual novel contribution: a linglib bridge.**
-  `MTT/LinglibBridge.lean` already sketches the connection; atlas has no
-  equivalent of linglib (an independent, large, actively-maintained
-  predicate-semantics library) to bridge into, so this is Lean-specific
-  territory regardless of what happens with the FraCaS suite.
+  Done, as a genuinely separate Lake package: `bridge/LinglibBridge.lean`
+  builds `Lexicon`/`CN'`/`CN'.widen`/`CN'.toPredicate` over linglib's
+  actual `Semantics.Composition.Ty.Domain`, plus two `rfl`-checked
+  theorems, not just prose — `CN'.toPredicate`'s output is
+  *definitionally* a term of linglib's own Montagovian CN type at every
+  index type a fragment picks, and (instantiated with `CN.lean`'s own
+  toy `Individual` domain as the lexicon) the bridge's `CN'` and
+  `CN.lean`'s own `CN` are the *same type*, not merely isomorphic. Atlas
+  has no equivalent of linglib (an independent, large,
+  actively-maintained predicate-semantics library) to bridge into, so
+  this is Lean-specific territory regardless of what happens with the
+  FraCaS suite. Kept genuinely optional per the architecture decision
+  above: own `bridge/lakefile.toml`, own CI job
+  (`build-linglib-bridge`, `continue-on-error` at the job level), so a
+  version conflict between the bridge's pinned linglib/Mathlib and the
+  main package's own Mathlib can never touch the main build.
 - **Phase 3 — GF integration:** either a GF concrete syntax linearizing
   directly to Lean source (GFLean's approach) or a Haskell/Python
   PGF-AST-to-Lean translator (FraCoq's `FraToCoq.hs` approach, recommended

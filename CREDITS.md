@@ -100,9 +100,13 @@ below change.
   `Studies/Pustejovsky1995.lean`'s `SemType` (same file also formalizes
   Pustejovsky's *argument-selection* type coercion — a different problem
   from this project's dot-types/copredication, and not duplicated here;
-  see `MTT/DotTypes.lean`). `MTT/LinglibBridge.lean` sketches connecting
-  the two semantics over a shared entity domain; it is optional and not
-  built by default (see that file for why).
+  see `MTT/DotTypes.lean`). **Phase 2b**: `bridge/LinglibBridge.lean`
+  connects the two semantics over a shared entity domain, pinned to
+  linglib commit `8cd728cf2c0386b11ad7057ecac4946dff58a668` (its own
+  docs call it fast-moving) in a genuinely separate Lake package
+  (`bridge/lakefile.toml`, its own manifest/toolchain/CI job) — optional
+  and structurally unable to affect the main package's build; see that
+  file's header for why.
 
 ## Data
 
