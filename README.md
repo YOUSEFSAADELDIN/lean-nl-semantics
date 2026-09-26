@@ -24,17 +24,28 @@ semantics) library, for comparing the two approaches.
   project's CN-as-type semantics to `linglib`'s CN-as-predicate
   semantics over a shared entity domain, built as its own separate Lake
   package so it can't affect the main library's build.
-- **GF integration** (`gf/`, in progress): a Grammatical Framework
-  grammar and a Python translator, aimed at producing these Lean terms
-  from parsed English (and eventually other languages GF supports)
-  rather than each sentence being hand-formalized. The toolchain and a
-  first sentence shape (a determiner-quantified subject predicated of a
-  verb phrase — covers FraCaS problems like 2 and 7) are proven working
-  end to end: GF itself doesn't run in this repo's own CI sandbox, so
-  the grammar side was built and confirmed on a separate machine — see
-  `gf/NOTES.md` for the full setup and every real gotcha hit along the
-  way, and `gf/translate.py` for the (tested, working) Lean-term
-  translator built on top of it.
+- **GF integration** (`gf/`, proof of concept, scope intentionally
+  bounded — see below): a Grammatical Framework grammar and a Python
+  translator producing Lean terms from a hand-built (not freely parsed)
+  English sentence tree. Five sentence shapes covering FraCaS problems
+  2, 6, 7, 10, and 33 are confirmed end to end — GF itself doesn't run
+  in this repo's own CI sandbox, so the grammar side was built and
+  confirmed on a separate machine; see `gf/NOTES.md` for the full setup
+  and every gotcha hit along the way, and `gf/translate.py` for the
+  translator. `LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean` wires
+  one of these (problem 2's first premise) into the real proved
+  theorem: it's not a similarity check, the file typechecks only
+  because the GF-generated proposition is the exact same quantifier
+  combinator applied to the exact same restrictor/scope, in the same
+  order, as the hand-written proof already uses.
+
+  This is deliberately not aimed at general English coverage — FraCaS
+  is a small, closed vocabulary and sentence set, and covering it was
+  always the actual scope. "General natural-language inference" (open
+  vocabulary, world knowledge like car ⊆ vehicle, automated entailment
+  over arbitrary sentences, further languages) is a substantially
+  larger, separate undertaking this project's foundations could
+  eventually feed into, not something the phases below complete.
 
 ## Layout
 
@@ -121,27 +132,33 @@ consistency check, not a blind-prediction accuracy score.
   sections.
 - **linglib bridge** — done. A separate Lake package connecting this
   project's CN-as-type semantics to linglib's CN-as-predicate semantics.
-- **GF integration** (in progress, `gf/`) — a Grammatical Framework
-  grammar producing the Lean terms this project already proves things
-  about, rather than each sentence being hand-formalized. The toolchain
-  and translator are proven working end to end for a first sentence
-  shape (see `gf/NOTES.md`/`gf/translate.py`); free parsing against
-  GF's own full English grammar turned out not to be usable for this —
-  it's built to be maximally permissive and produces an effectively
-  unbounded number of alternate readings for even a simple sentence —
-  so sentences are hand-built as GF abstract trees and checked against
-  the target English via `linearize`, the same way FraCoq's own
-  FraCaS-treebank was built. GF's resource grammar library covers many
-  languages under one abstract syntax, so the intent is still for this
-  to not be English-only over time: the abstract syntax and the
-  Lean-term translator are both language-agnostic already, with
-  per-language concrete syntax to be added incrementally. Next: cover
-  more sentence shapes (negation, relative clauses, more of Section 1's
-  quantifiers), then wire the translator's output into real `Problem`
-  proof obligations rather than standalone propositions.
+- **GF integration** (proof of concept, `gf/`) — a Grammatical
+  Framework grammar producing the Lean terms this project already
+  proves things about, rather than each sentence being hand-formalized.
+  Five sentence shapes are proven working end to end, and one
+  (problem 2's first premise) is wired into its real proved theorem as
+  a genuine mechanical cross-check, not just a standalone proposition
+  — see `gf/NOTES.md`/`gf/translate.py` and
+  `LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean`. Free parsing
+  against GF's own full English grammar turned out not to be usable for
+  this — it's built to be maximally permissive and produces an
+  effectively unbounded number of alternate readings for even a simple
+  sentence — so sentences are hand-built as GF abstract trees and
+  checked against the target English via `linearize`, the same way
+  FraCoq's own FraCaS-treebank was built. This phase's scope was always
+  FraCaS's own closed sentence/vocabulary set, not general English —
+  see the GF integration note above for why. GF's resource grammar
+  library covers many languages under one abstract syntax, so the
+  abstract syntax and translator are language-agnostic already, but
+  further languages aren't a near-term goal.
 - **LLM-assisted fallback** — for sentences outside the grammar's
   coverage, an LLM-based formalization path checked against the
   grammar's own output where both exist.
+- **General natural-language inference** — a substantially larger,
+  separate undertaking (open-vocabulary parsing, world/taxonomic
+  knowledge, automated entailment over arbitrary sentences, more
+  languages) this project's foundations could feed into, not something
+  the phases above complete on their own.
 
 ## License
 

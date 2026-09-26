@@ -14,6 +14,7 @@ import LeanNLSemantics.FraCaS.Types
 import LeanNLSemantics.FraCaS.Data.Problems
 import LeanNLSemantics.FraCaS.Section1.GQ
 import LeanNLSemantics.FraCaS.Section1.Batch1
+import LeanNLSemantics.FraCaS.Section1.GFCrossCheck
 import LeanNLSemantics.FraCaS.Section1.Batch2
 import LeanNLSemantics.FraCaS.Section1.Batch3
 import LeanNLSemantics.FraCaS.Section1.Batch4

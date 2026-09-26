@@ -58,20 +58,22 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --
 -- All four of the above are confirmed end-to-end on the real toolchain.
 --
--- FraCaS problem 33's premise ("An Irishman won a Nobel prize."), NOT
--- YET CONFIRMED: the first subject-verb-object sentence shape (every
--- prior one was copula/control-verb - "is"/"are"/"wants to be"). The
--- object is itself a full determiner-quantified NP, same as the
--- subject, built from the plain transitive-VP constructor ComplV2 -
--- self-declared above (see gf/FraCaSLogic.gf's own comment on why, not
--- extended from Backward/BackwardEng). IndefArt (from Noun, already in
--- scope) is the a/an quantifier; the RGL picks "a" vs "an" for us
--- automatically based on the following word. Note this project's
--- target category Cl is tenseless (see the file-top comment), so the
--- confirmed output is expected to come out present tense ("wins"), not
--- an exact string match to FraCaS's own past-tense wording ("won") -
--- that's a deliberate, already-established limitation, not a bug here:
+-- FraCaS problem 33's premise ("An Irishman won a Nobel prize."): the
+-- first subject-verb-object sentence shape (every prior one was
+-- copula/control-verb - "is"/"are"/"wants to be"). The object is
+-- itself a full determiner-quantified NP, same as the subject, built
+-- from the plain transitive-VP constructor ComplV2 - self-declared
+-- above (see gf/FraCaSLogic.gf's own comment on why, not extended from
+-- Backward/BackwardEng). IndefArt (from Noun, already in scope) is the
+-- a/an quantifier; the RGL picks "a" vs "an" for us automatically based
+-- on the following word. Note this project's target category Cl is
+-- tenseless (see the file-top comment), so the confirmed output
+-- correctly comes out present tense ("wins"), not an exact string
+-- match to FraCaS's own past-tense wording ("won") - that's a
+-- deliberate, already-established limitation, not a bug here:
 --   linearize PredVP
 --     (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N))
 --     (ComplV2 win_V2 (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))
---   expected: "an Irishman wins a Nobel prize"
+--   => "an Irishman wins a Nobel prize"
+--
+-- Confirmed end-to-end on the real toolchain.
