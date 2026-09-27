@@ -2857,6 +2857,143 @@ _SECTION8_TENSED_CHECKS = [
     ),
 ]
 
+# FraCaS Section 9 (Attitudes), problems 334-346 (Section9/Batch1.lean)
+# - the final FraCaS section: factive "knew" vs. non-factive "believed"
+# (334/335), implicative "managed to" vs. non-implicative "tried to"
+# (336/337), literal truth-functional "it is true/false that" (338/339),
+# perception-verb ("see") opacity to inferred material (340/341),
+# factivity (342), and extensionality/distribution (343-346). No new
+# self-declared words at all this section - every word (know_VS,
+# believe_VS, manage_VV, try_VV, true_A, false_A, see_V2V, answer_V2,
+# phone_N, heart_N, beat_V, when_Subj, helen_PN, department_N,
+# secretary_N, copy_N, cross_out_V2, crucial_A, clause_N, make_V2,
+# chairman_N) already exists in DictEngAbs.
+#
+# SentAP (Adjective) + EmbedS (Sentence) - both already extended -
+# cover "it is true/false that S" directly ("good that she is here").
+# SlashV2V (Verb, already extended) covers "saw X do Y" the same way
+# SlashV2/SlashV2a cover plain transitive complements.
+#
+# One genuine, uniform dictionary quirk confirmed directly (not
+# assumed): DictEng's own `see_V2V = mkV2V (IrregEng.see_V) noPrep
+# to_Prep` hardcodes a TO-infinitive marker, so every "saw X [VP]"
+# sentence here comes out "saw X TO [VP]" ("Smith saw Jones to sign the
+# contract") rather than the bare infinitive real perception-verb usage
+# takes ("Smith saw Jones sign the contract") - accepted as the
+# achievable rendering, the same "don't fight a confirmed dictionary
+# quirk" precedent as IdRP's own fixed "that" (Section 3) or only_Predet's
+# own fixed "only" (Section 2).
+#
+# 345/346's own premises (a single "saw" complement conjoining two
+# DIFFERENT embedded subjects - "Jones sign the contract and his
+# secretary make a copy") are paraphrased as two full repeated "Smith
+# saw ..." clauses joined by ConjS, since SlashV2V's own gap is a
+# single NP, not a conjoinable list of (subject, VP) pairs - truth-
+# conditionally identical to FraCaS's own elliptical original. 346's
+# own hypothesis ("Smith either saw ... or saw ...") reuses 346's
+# premise tree directly, matching Lean's own `id` proof exactly.
+#
+# 344's hypothesis ("There is someone whom Helen saw answer the phone")
+# is skipped - the same "relativizing a quantificational pronoun NP"
+# gap as Section 4's 173/174 and Section 7's 308 (this grammar's
+# RelCN-based relatives only relativize CNs, not NPs like "someone").
+#
+# Nothing added to translate.py, same reasoning as Sections 5-8 (the
+# assumed-connecting-fact/factivity content here isn't something the
+# generic CN/VP-fusion translator would do justice to).
+_SECTION9_TENSED_CHECKS = [
+    (
+        "fracas_334_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplVS know_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) in1992_Adv))))))",
+        "Smith knew that ITEL had won the contract in 1992",
+    ),
+    (
+        "fracas_334_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) in1992_Adv)))",
+        "ITEL won the contract in 1992",
+    ),
+    (
+        "fracas_335_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplVS believe_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) in1992_Adv))))))",
+        "Smith believed that ITEL had won the contract in 1992",
+    ),
+    (
+        "fracas_336_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplVV manage_VV (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) in1992_Adv)))",
+        "ITEL managed to win the contract in 1992",
+    ),
+    (
+        "fracas_337_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplVV try_VV (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) in1992_Adv)))",
+        "ITEL tried to win the contract in 1992",
+    ),
+    (
+        "fracas_338_premise",
+        "linearize PredVP (UsePron it_Pron) (UseComp (CompAP (SentAP (PositA true_A) (EmbedS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) in1992_Adv)))))))",
+        "it is true that ITEL won the contract in 1992",
+    ),
+    (
+        "fracas_339_premise",
+        "linearize PredVP (UsePron it_Pron) (UseComp (CompAP (SentAP (PositA false_A) (EmbedS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) in1992_Adv)))))))",
+        "it is false that ITEL won the contract in 1992",
+    ),
+    (
+        "fracas_340_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN))))",
+        "Smith saw Jones to sign the contract",
+    ),
+    (
+        "fracas_340_premise2",
+        "linearize UttS (AdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN heart_N)) (UseV beat_V))))",
+        "if Jones signed the contract his heart beat",
+    ),
+    (
+        "fracas_341_premise2",
+        "linearize UttS (AdvS (SubjS when_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN heart_N)) (UseV beat_V))))",
+        "when Jones signed the contract his heart beat",
+    ),
+    (
+        "fracas_340_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (UseV beat_V)) (DetCN (DetQuant (GenNP (UsePN jones_PN)) NumSg) (UseN heart_N)))))",
+        "Smith saw Jones's heart to beat",
+    ),
+    (
+        "fracas_342_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
+        "Jones signed the contract",
+    ),
+    (
+        "fracas_343_premise2",
+        "linearize PredVP (UsePN jones_PN) (UseComp (CompNP (DetCN (DetQuant DefArt NumSg) (AdvCN (UseN chairman_N) (PrepNP of_Prep (UsePN itel_PN))))))",
+        "Jones is the chairman of ITEL",
+    ),
+    (
+        "fracas_343_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (DetCN (DetQuant DefArt NumSg) (AdvCN (UseN chairman_N) (PrepNP of_Prep (UsePN itel_PN)))))))",
+        "Smith saw the chairman of ITEL to sign the contract",
+    ),
+    (
+        "fracas_344_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN helen_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a answer_V2) (DetCN (DetQuant DefArt NumSg) (UseN phone_N)))) (DetCN (DetQuant DefArt NumSg) (AdvCN (UseN chairman_N) (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) (UseN department_N))))))))",
+        "Helen saw the chairman of the department to answer the phone",
+    ),
+    (
+        "fracas_344_premise2",
+        "linearize PredVP (DetCN (DetQuant DefArt NumSg) (AdvCN (UseN chairman_N) (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) (UseN department_N))))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN person_N))))",
+        "the chairman of the department is a person",
+    ),
+    (
+        "fracas_345_premise",
+        "linearize UttS (ConjS and_Conj (BaseS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumSg) (UseN copy_N)))) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN secretary_N)))))))",
+        "Smith saw Jones to sign the contract and Smith saw his secretary to make a copy",
+    ),
+    (
+        "fracas_346_premise",
+        "linearize UttS (ConjS or_Conj (BaseS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a cross_out_V2) (DetCN (DetQuant DefArt NumSg) (AdjCN (PositA crucial_A) (UseN clause_N))))) (UsePN jones_PN))))))",
+        "Smith saw Jones to sign the contract or Smith saw Jones to cross out the crucial clause",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -2929,6 +3066,7 @@ CHECKS = (
     + _SECTION6_TENSED_CHECKS
     + _SECTION7_TENSED_CHECKS
     + _SECTION8_TENSED_CHECKS
+    + _SECTION9_TENSED_CHECKS
 )
 
 

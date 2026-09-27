@@ -1114,6 +1114,14 @@ if __name__ == "__main__":
         # containment content here isn't captured by generic CN/VP
         # fusion). Every sentence still gets a real GF tree (see
         # run_gf_tests.py's own comment on this section).
+        #
+        # FraCaS Section 9 (Attitudes), problems 334-346 - the final
+        # FraCaS section. Also deliberately NOT added, same reasoning as
+        # Sections 5-8: factivity/implicativity is an assumed connecting
+        # fact this translator's generic fusion doesn't represent.
+        # Every sentence still gets a real GF tree (see run_gf_tests.py's
+        # own comment on this section). This is translate.py's own last
+        # word on all nine FraCaS sections.
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

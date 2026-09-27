@@ -1152,3 +1152,41 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --
 -- This completes FraCaS Section 8 (all 8 problems, 326-333) in the
 -- GF/RGL toolchain.
+--
+-- FraCaS Section 9 (Attitudes), problems 334-346 (Section9/Batch1.lean)
+-- - the FINAL FraCaS section: factive "knew" vs. non-factive "believed"
+-- (334/335), implicative "managed to" vs. non-implicative "tried to"
+-- (336/337), literal truth-functional "it is true/false that"
+-- (338/339), perception-verb ("see") opacity to inferred material
+-- (340/341), factivity (342), and extensionality/distribution
+-- (343-346). No new self-declared words at all this section - every
+-- word already exists in DictEngAbs.
+--
+-- SentAP (Adjective) + EmbedS (Sentence) - both already extended -
+-- cover "it is true/false that S" directly ("good that she is here").
+-- SlashV2V (Verb, already extended) covers "saw X do Y" the same way
+-- SlashV2/SlashV2a cover plain transitive complements.
+--
+-- One genuine, uniform dictionary quirk confirmed directly: DictEng's
+-- own `see_V2V = mkV2V (IrregEng.see_V) noPrep to_Prep` hardcodes a
+-- TO-infinitive marker, so every "saw X [VP]" sentence here comes out
+-- "saw X TO [VP]" rather than the bare infinitive real perception-verb
+-- usage takes - accepted as the achievable rendering, the same "don't
+-- fight a confirmed dictionary quirk" precedent as IdRP's fixed "that"
+-- (Section 3) or only_Predet's fixed "only" (Section 2).
+--
+-- 345/346's own premises (one "saw" complement conjoining two
+-- DIFFERENT embedded subjects) are paraphrased as two full repeated
+-- "Smith saw ..." clauses joined by ConjS, since SlashV2V's own gap is
+-- a single NP, not a conjoinable list. 344's hypothesis ("There is
+-- someone whom Helen saw answer the phone") is skipped - the same
+-- "relativizing a quantificational pronoun NP" gap as Section 4's
+-- 173/174 and Section 7's 308.
+--
+-- Nothing added to translate.py this section either, same reasoning as
+-- Sections 5-8 - see translate.py's own comment, which is also
+-- translate.py's last word on all nine FraCaS sections.
+--
+-- This completes FraCaS Section 9 (all 13 problems, 334-346) in the
+-- GF/RGL toolchain - and with it, every FraCaS section this project
+-- set out to cross-check against real English via GF/RGL.
