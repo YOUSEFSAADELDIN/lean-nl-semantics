@@ -1,4 +1,4 @@
-import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 
 /-!
 # Phase-1 demonstration: `mono_nl` against the fourteen target problems
@@ -46,6 +46,14 @@ lean`'s header for why this is a genuinely different search, not a third
 transfer principle (2-5) and `most_some`'s/`atLeast_some`'s/
 `some_of_exactly`'s positive-cardinality principle (10, 15, 107-110).
 Problems 107-110 share one statement (same pattern as 66-68/18-20).
+
+Problem 123, added for Phase 3 (`Compose.lean`), uses `mono_nl_compose`:
+its real proof composes `exist_nl`'s `mostSome` (deriving `Some
+reportsNeeded sentByItel` from `Most reportsNeeded sentByItel`) with
+`mono_nl`'s own `someMonoScope`, exactly the way `Section3/Batch1.lean`'s
+hand proof does - see `Compose.lean`'s header for why 124, the other
+remaining eligible-but-failed problem, does *not* reduce this way and was
+deliberately left alone.
 -/
 namespace FraCaS.Section1.Monotonicity
 
@@ -256,5 +264,15 @@ theorem fracas_107_via_exist_nl :
     Exactly 1 accountant attended → Some accountant attended := by exist_nl
 
 end P107
+
+section P123
+variable {A : Type*} [Fintype A] (reportsNeeded sentByItel onDesk : A → Prop)
+variable [DecidablePred reportsNeeded] [DecidablePred fun x => reportsNeeded x ∧ sentByItel x]
+
+theorem fracas_123_via_mono_nl_compose :
+    Most reportsNeeded sentByItel → (∀ x, sentByItel x → onDesk x) →
+      Some reportsNeeded onDesk := by mono_nl_compose
+
+end P123
 
 end FraCaS.Section1.Monotonicity

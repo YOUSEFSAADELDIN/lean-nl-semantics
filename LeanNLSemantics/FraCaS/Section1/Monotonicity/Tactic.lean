@@ -46,6 +46,18 @@ and logs the `MonoStep` (and, in the Phase-2 case, the preceding
 `CombineStep`) it actually used, not a separately authored description,
 as an explanatory trace via `logInfo`.
 
+**Phase 3** (`Compose.lean`, a separate file - see its own header) widens
+the search once more, again never how a fact is *used*: it lets the
+"shape" premise itself - the one Phase 1 always required to be a single
+real local hypothesis sharing the goal's own head - come from a fact
+`Existential.lean`'s five `exist_nl` principles can *synthesize* from a
+differently-headed hypothesis instead (`Most`/`AtLeast`/`Exactly`/`Every`
++ witness, all producing a `Some`-headed fact `exist_nl` itself already
+knows how to prove). `searchMonoNl` below is written generically against
+an `extraShapeFacts` pool for exactly this reason, so this file never
+needs to import `Existential.lean` (which already imports this one - a
+reverse import would cycle) to support it.
+
 It fails, loudly (`throwError`, never a silent wrong answer), the moment
 the goal is outside this fragment: an unsupported head (`No`, `Most`, or
 anything else), more than one differing argument, zero differing
@@ -199,155 +211,183 @@ def decomposeConjLambda (e : Expr) : Option (Expr × Expr) :=
     | _ => none
   | _ => none
 
-/-- The Phase-1 monotonicity tactic - see this file's header for the full
+/-- The Phase-1/2/3 monotonicity search, factored out of `elab "mono_nl"`
+so `Compose.lean` can reuse it (see this file's header, "Phase 3") without
+this file importing `Existential.lean` (which already imports this file -
+a reverse import would cycle). `computeExtra` is handed the post-`introAll`
+local context and returns extra candidate "shape" facts - proof term plus
+a display label - to try alongside real local hypotheses; `mono_nl` itself
+passes `fun _ => pure #[]` (Phase 1/2, unchanged behaviour). Returns `true`
+(and assigns `goal`) iff it closed the goal; `false`, never a thrown
+error, otherwise - callers decide whether/how to report failure. -/
+def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.Name)))
+    (goal : MVarId) : MetaM Bool := do
+  let (_introduced, goal) ← introAll goal
+  goal.withContext do
+    -- Raw type, not `whnf` - see `introAll`'s comment: whnf unfolds
+    -- these quantifiers straight past the named-application shape this
+    -- tactic matches on.
+    let goalTy ← goal.getType
+    let goalHead := goalTy.getAppFn
+    let some goalHeadName := goalHead.constName?
+      | throwError "mono_nl: goal is not headed by a named quantifier"
+    let some quant := quantifierHeads.lookup goalHeadName
+      | throwError "mono_nl: unsupported head {goalHeadName} - only Every/Some/AtLeast/AtMost are in the Phase-1 fragment (No/Most are excluded, see Signature.lean)"
+    let goalArgs := goalTy.getAppArgs
+    let some (goalP, goalQ) := extractPQ quant goalArgs
+      | throwError "mono_nl: could not read the restrictor/scope out of the goal"
+    -- `n` for AtLeast/AtMost only; safe via `extractPQ`'s success above,
+    -- which shares its `args.size == 6` guard with `extractN`. Unused
+    -- (and never read) for Every/Some.
+    let n : Expr := (extractN quant goalArgs).getD default
+    let sig := QuantifierSig.table quant
+
+    let lctx ← getLCtx
+    let hyps := lctx.decls.toList.filterMap id
+      |>.filter (fun d => !d.isImplementationDetail)
+
+    -- The "shape" candidates: every real local hypothesis (as before),
+    -- plus whatever `computeExtra` synthesizes (Phase 3 only; empty for
+    -- `mono_nl` itself). `shapeFvarId?` is `some _` only for a real
+    -- hypothesis - it exists purely so the Phase-1 fact-search below can
+    -- still exclude the shape hyp from also supplying the fact hyp,
+    -- exactly as it always did; a synthesized shape has nothing to
+    -- exclude, so it's simply never equal to a real `factDecl.fvarId`.
+    let extra ← computeExtra hyps
+    let shapeCandidates : Array (Expr × Option FVarId × Option Lean.Name) :=
+      (hyps.toArray.map (fun d => (d.toExpr, some d.fvarId, none))) ++
+        (extra.map (fun (e, label) => (e, none, some label)))
+
+    for (shapeExpr, shapeFvarId?, shapeLabel?) in shapeCandidates do
+      -- Same reasoning as `goalTy` above: no `whnf`.
+      let shapeTy ← inferType shapeExpr
+      let some shapeHeadName := shapeTy.getAppFn.constName?
+        | continue
+      if shapeHeadName != goalHeadName then continue
+      let shapeArgs := shapeTy.getAppArgs
+      let some (shapeP, shapeQ) := extractPQ quant shapeArgs
+        | continue
+      -- Same numeral bound on both sides - `atLeast_mono_scope` and
+      -- friends thread one `n` through premise and conclusion, they
+      -- don't relate two different bounds. Matched rather than compared
+      -- via `==`, so this never needs a `BEq Quantifier` instance.
+      match quant with
+      | .atLeast | .atMost =>
+        let some shapeN := extractN quant shapeArgs | continue
+        unless ← isDefEq shapeN n do continue
+      | .every | .some => pure ()
+      let restrictorSame ← isDefEq shapeP goalP
+      let scopeSame ← isDefEq shapeQ goalQ
+      let position? : Option Position :=
+        if restrictorSame && !scopeSame then some .scope
+        else if !restrictorSame && scopeSame then some .restrictor
+        else none
+      let some position := position?
+        | continue
+      let rule := ruleFor quant position
+      let (oldVal, newVal) :=
+        match position with
+        | .scope => (shapeQ, goalQ)
+        | .restrictor => (shapeP, goalP)
+      let pol := match position with | .scope => sig.scope | .restrictor => sig.restrictor
+      let (needFrom, needTo) :=
+        match pol with
+        | .up => (oldVal, newVal)
+        | .down => (newVal, oldVal)
+        | .non => (oldVal, newVal) -- unreachable: no fragment cell is `.non` (Signature.lean)
+      let expectedFactTy ← mkAppM ``FraCaS.Section1.Every #[needFrom, needTo]
+
+      -- Applies `rule`'s real GQ.lean lemma to a candidate `factExpr :
+      -- expectedFactTy`, exactly as Phase 1 always did - `combine` is
+      -- `none` for a real local hypothesis, `some _` when `factExpr` was
+      -- synthesized by the Phase-2 step below. Either way this closure is
+      -- the *only* place any lemma gets applied: Phase 2/3 add new ways
+      -- to find a fact, never a new way to consume one.
+      let tryFact (factExpr : Expr) (factHypName : Lean.Name) (combine : Option CombineStep) :
+          MetaM Bool := do
+        try
+          let lemmaArgs : Array Expr ←
+            match rule with
+            | .everyMonoScope   => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
+            | .everyRestrict    => pure #[goalP, goalQ, shapeP, shapeExpr, factExpr]
+            | .someMonoScope    => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
+            | .someRestrict     => pure #[shapeP, goalQ, goalP, shapeExpr, factExpr]
+            | .atLeastMonoScope => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
+            | .atLeastRestrict  => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
+            | .atMostMonoScope  => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
+            | .atMostRestrict   => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
+          let proof ← mkAppM rule.lemmaName lemmaArgs
+          unless ← isDefEq (← inferType proof) (← goal.getType) do return false
+          let step : MonoStep :=
+            { position, rule
+              factHyp := factHypName
+              substFrom := (← nameOf oldVal)
+              substTo := (← nameOf newVal)
+              shapeSource := shapeLabel? }
+          match combine with
+          | some c => logInfo m!"mono_nl: combine {repr c}"
+          | none => pure ()
+          logInfo m!"mono_nl: {repr step}"
+          goal.assign proof
+          return true
+        catch _ =>
+          return false
+
+      -- Phase 1: a real local hypothesis of the right `Entails` shape.
+      for factDecl in hyps do
+        if some factDecl.fvarId == shapeFvarId? then continue
+        unless ← isDefEq factDecl.type expectedFactTy do continue
+        if ← tryFact factDecl.toExpr factDecl.userName none then return true
+
+      -- Phase 2: no single hypothesis matched. When `needTo` is itself
+      -- written as a conjunction `fun x => A x ∧ B x` (`every_trans`'s
+      -- `S ∧ R`, `every_mp`'s `P ∧ Q`, both checked directly against
+      -- `GQ.lean`), try synthesizing the needed fact instead - combining
+      -- two `Every`-shaped facts that share `needFrom` as their own
+      -- restrictor into one fact about their conjunction, via `GQ.lean`'s
+      -- `entails_and`. `entails_refl needFrom : Every needFrom needFrom`
+      -- is always one available candidate (the fact `every_mp`'s own
+      -- shape needs, since one conjunct there is `needFrom` itself) -
+      -- everything else comes from a real local hypothesis, checked the
+      -- same way `expectedFactTy` itself is. This is the one explicit new
+      -- semantic step Phase 2 adds; `tryFact` above still does all the
+      -- actual proving with it, exactly as it did for a bare hypothesis.
+      if let some (partA, partB) := decomposeConjLambda needTo then
+        let mut candidates : Array (Expr × Expr × Option Lean.Name) := #[]
+        candidates := candidates.push
+          (← mkAppM ``FraCaS.Section1.entails_refl #[needFrom], needFrom, none)
+        for d in hyps do
+          match d.type.getAppFn.constName? with
+          | some dHead =>
+            if dHead == ``FraCaS.Section1.Every then
+              if let some (dP, dQ) := extractPQ .every d.type.getAppArgs then
+                if ← isDefEq dP needFrom then
+                  candidates := candidates.push (d.toExpr, dQ, some d.userName)
+          | none => pure ()
+        for (proof1, q1, name1) in candidates do
+          unless ← isDefEq q1 partA do continue
+          for (proof2, q2, name2) in candidates do
+            unless ← isDefEq q2 partB do continue
+            try
+              let combined ← mkAppM ``FraCaS.Section1.entails_and
+                #[needFrom, partA, partB, proof1, proof2]
+              let combineStep : CombineStep :=
+                { left := name1, right := name2
+                  sharedLeft := (← nameOf needFrom)
+                  leftConjunct := (← nameOf partA)
+                  rightConjunct := (← nameOf partB) }
+              if ← tryFact combined (← nameOf needTo) (some combineStep) then return true
+            catch _ =>
+              continue
+    return false
+
+/-- The Phase-1/2 monotonicity tactic - see this file's header for the full
 algorithm and its validation status. -/
 elab "mono_nl" : tactic => do
   liftMetaTactic1 fun goal => do
-    let (_introduced, goal) ← introAll goal
-    goal.withContext do
-      -- Raw type, not `whnf` - see `introAll`'s comment: whnf unfolds
-      -- these quantifiers straight past the named-application shape this
-      -- tactic matches on.
-      let goalTy ← goal.getType
-      let goalHead := goalTy.getAppFn
-      let some goalHeadName := goalHead.constName?
-        | throwError "mono_nl: goal is not headed by a named quantifier"
-      let some quant := quantifierHeads.lookup goalHeadName
-        | throwError "mono_nl: unsupported head {goalHeadName} - only Every/Some/AtLeast/AtMost are in the Phase-1 fragment (No/Most are excluded, see Signature.lean)"
-      let goalArgs := goalTy.getAppArgs
-      let some (goalP, goalQ) := extractPQ quant goalArgs
-        | throwError "mono_nl: could not read the restrictor/scope out of the goal"
-      -- `n` for AtLeast/AtMost only; safe via `extractPQ`'s success above,
-      -- which shares its `args.size == 6` guard with `extractN`. Unused
-      -- (and never read) for Every/Some.
-      let n : Expr := (extractN quant goalArgs).getD default
-      let sig := QuantifierSig.table quant
-
-      let lctx ← getLCtx
-      let hyps := lctx.decls.toList.filterMap id
-        |>.filter (fun d => !d.isImplementationDetail)
-
-      for shapeDecl in hyps do
-        -- Same reasoning as `goalTy` above: no `whnf`.
-        let shapeTy := shapeDecl.type
-        let some shapeHeadName := shapeTy.getAppFn.constName?
-          | continue
-        if shapeHeadName != goalHeadName then continue
-        let shapeArgs := shapeTy.getAppArgs
-        let some (shapeP, shapeQ) := extractPQ quant shapeArgs
-          | continue
-        -- Same numeral bound on both sides - `atLeast_mono_scope` and
-        -- friends thread one `n` through premise and conclusion, they
-        -- don't relate two different bounds. Matched rather than compared
-        -- via `==`, so this never needs a `BEq Quantifier` instance.
-        match quant with
-        | .atLeast | .atMost =>
-          let some shapeN := extractN quant shapeArgs | continue
-          unless ← isDefEq shapeN n do continue
-        | .every | .some => pure ()
-        let restrictorSame ← isDefEq shapeP goalP
-        let scopeSame ← isDefEq shapeQ goalQ
-        let position? : Option Position :=
-          if restrictorSame && !scopeSame then some .scope
-          else if !restrictorSame && scopeSame then some .restrictor
-          else none
-        let some position := position?
-          | continue
-        let rule := ruleFor quant position
-        let (oldVal, newVal) :=
-          match position with
-          | .scope => (shapeQ, goalQ)
-          | .restrictor => (shapeP, goalP)
-        let pol := match position with | .scope => sig.scope | .restrictor => sig.restrictor
-        let (needFrom, needTo) :=
-          match pol with
-          | .up => (oldVal, newVal)
-          | .down => (newVal, oldVal)
-          | .non => (oldVal, newVal) -- unreachable: no fragment cell is `.non` (Signature.lean)
-        let expectedFactTy ← mkAppM ``FraCaS.Section1.Every #[needFrom, needTo]
-        let shapeExpr := shapeDecl.toExpr
-
-        -- Applies `rule`'s real GQ.lean lemma to a candidate `factExpr :
-        -- expectedFactTy`, exactly as Phase 1 always did - `combine` is
-        -- `none` for a real local hypothesis, `some _` when `factExpr` was
-        -- synthesized by the Phase-2 step below. Either way this closure is
-        -- the *only* place any lemma gets applied: Phase 2 adds a new way
-        -- to find a fact, never a new way to consume one.
-        let tryFact (factExpr : Expr) (factHypName : Lean.Name) (combine : Option CombineStep) :
-            MetaM Bool := do
-          try
-            let lemmaArgs : Array Expr ←
-              match rule with
-              | .everyMonoScope   => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
-              | .everyRestrict    => pure #[goalP, goalQ, shapeP, shapeExpr, factExpr]
-              | .someMonoScope    => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
-              | .someRestrict     => pure #[shapeP, goalQ, goalP, shapeExpr, factExpr]
-              | .atLeastMonoScope => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
-              | .atLeastRestrict  => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
-              | .atMostMonoScope  => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
-              | .atMostRestrict   => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
-            let proof ← mkAppM rule.lemmaName lemmaArgs
-            unless ← isDefEq (← inferType proof) (← goal.getType) do return false
-            let step : MonoStep :=
-              { position, rule
-                factHyp := factHypName
-                substFrom := (← nameOf oldVal)
-                substTo := (← nameOf newVal) }
-            match combine with
-            | some c => logInfo m!"mono_nl: combine {repr c}"
-            | none => pure ()
-            logInfo m!"mono_nl: {repr step}"
-            goal.assign proof
-            return true
-          catch _ =>
-            return false
-
-        -- Phase 1: a real local hypothesis of the right `Entails` shape.
-        for factDecl in hyps do
-          if factDecl.fvarId == shapeDecl.fvarId then continue
-          unless ← isDefEq factDecl.type expectedFactTy do continue
-          if ← tryFact factDecl.toExpr factDecl.userName none then return none
-
-        -- Phase 2: no single hypothesis matched. When `needTo` is itself
-        -- written as a conjunction `fun x => A x ∧ B x` (`every_trans`'s
-        -- `S ∧ R`, `every_mp`'s `P ∧ Q`, both checked directly against
-        -- `GQ.lean`), try synthesizing the needed fact instead - combining
-        -- two `Every`-shaped facts that share `needFrom` as their own
-        -- restrictor into one fact about their conjunction, via `GQ.lean`'s
-        -- `entails_and`. `entails_refl needFrom : Every needFrom needFrom`
-        -- is always one available candidate (the fact `every_mp`'s own
-        -- shape needs, since one conjunct there is `needFrom` itself) -
-        -- everything else comes from a real local hypothesis, checked the
-        -- same way `expectedFactTy` itself is. This is the one explicit new
-        -- semantic step Phase 2 adds; `tryFact` above still does all the
-        -- actual proving with it, exactly as it did for a bare hypothesis.
-        if let some (partA, partB) := decomposeConjLambda needTo then
-          let mut candidates : Array (Expr × Expr × Option Lean.Name) := #[]
-          candidates := candidates.push
-            (← mkAppM ``FraCaS.Section1.entails_refl #[needFrom], needFrom, none)
-          for d in hyps do
-            match d.type.getAppFn.constName? with
-            | some dHead =>
-              if dHead == ``FraCaS.Section1.Every then
-                if let some (dP, dQ) := extractPQ .every d.type.getAppArgs then
-                  if ← isDefEq dP needFrom then
-                    candidates := candidates.push (d.toExpr, dQ, some d.userName)
-            | none => pure ()
-          for (proof1, q1, name1) in candidates do
-            unless ← isDefEq q1 partA do continue
-            for (proof2, q2, name2) in candidates do
-              unless ← isDefEq q2 partB do continue
-              try
-                let combined ← mkAppM ``FraCaS.Section1.entails_and
-                  #[needFrom, partA, partB, proof1, proof2]
-                let combineStep : CombineStep :=
-                  { left := name1, right := name2
-                    sharedLeft := (← nameOf needFrom)
-                    leftConjunct := (← nameOf partA)
-                    rightConjunct := (← nameOf partB) }
-                if ← tryFact combined (← nameOf needTo) (some combineStep) then return none
-              catch _ =>
-                continue
+    if ← searchMonoNl (fun _ => pure #[]) goal then
+      return none
+    else
       throwError "mono_nl: goal is outside the Phase-1/2 monotonicity fragment \
         (no single-position substitution - backed either by a matching \
         Entails fact directly, or by combining two into one via \

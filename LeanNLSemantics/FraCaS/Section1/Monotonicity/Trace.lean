@@ -77,13 +77,23 @@ the two predicate values themselves, read off their declaration's
 problem this fragment has been checked against so far) and a
 pretty-printed stand-in name otherwise. When the fact came from a
 Phase-2 `combine` step rather than a single local hypothesis, `factHyp`
-names the *synthesized* fact (see `CombineStep`), not a real declaration. -/
+names the *synthesized* fact (see `CombineStep`), not a real declaration.
+
+`shapeSource` is `none` for every Phase-1/2 step (the "shape" premise -
+the one sharing the goal's own head, establishing which position differs
+- was a real local hypothesis, as it always was before `Compose.lean`).
+`Compose.lean`'s composition names its source there instead: the shape
+premise itself was synthesized (via one of `Existential.lean`'s five
+principles) rather than found directly, so there is no single real
+declaration to point `factHyp`-style at - the label already says which
+principle and source hypothesis produced it. -/
 structure MonoStep where
-  position  : Position
-  rule      : MonoRule
-  factHyp   : Lean.Name
-  substFrom : Lean.Name
-  substTo   : Lean.Name
+  position     : Position
+  rule         : MonoRule
+  factHyp      : Lean.Name
+  substFrom    : Lean.Name
+  substTo      : Lean.Name
+  shapeSource  : Option Lean.Name := none
   deriving Repr
 
 /-- Phase 2's one new kind of step: joining two `Every`-shaped facts

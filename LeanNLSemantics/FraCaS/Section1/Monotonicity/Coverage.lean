@@ -1,6 +1,7 @@
 import Lean
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 import LeanNLSemantics
 
 /-!
@@ -8,29 +9,22 @@ import LeanNLSemantics
 
 **Validation status**: the corrected four-way split (14 trivial / 40
 proved / 15 eligible-but-failed / 393 outside-fragment, out of 462) is
-CI-confirmed (run 36300667468) for `mono_nl` alone (Phase 1 + 2). This
-version adds `exist_nl` (Category B, `Existential.lean`) as a second
-tactic tried whenever `mono_nl` fails, before a theorem is counted
-eligible-but-failed. One bug found and fixed once the main build finally
-went green end-to-end (`Existential.lean`'s own fix took five attempts
-first): `runTactic`'s local `Lean.Elab.Tactic.run mvar.mvarId! (evalTactic
-...)` call was annotated `MetaM (Except String Unit)`, but
-`Lean.Elab.Tactic.run` returns `TermElabM (List MVarId)` - the identical
-mismatch `Existential.lean`'s `applyWithDecidableSide` hit originally.
-Unlike there, no rewrite was needed: this whole scan already runs inside
-`liftTermElabM do ...` (the command elaborator below), so `TermElabM` was
-already available - `runTactic` just needed its own annotation corrected
-to match, not a different implementation. Re-running the scan against
-this corrected build is what will actually confirm the numbers below.
+CI-confirmed for `mono_nl` alone (Phase 1 + 2). CI run 36308515404 then
+confirmed `mono_nl` + `exist_nl` (Category B) together: 14 trivial, 57
+proved (35 distinct FraCaS problems), 4 eligible but failed, 393
+outside-fragment, out of 468. This version adds `mono_nl_compose`
+(Phase 3, `Compose.lean`) as a third tactic, tried whenever both `mono_nl`
+and `exist_nl` fail, before a theorem is counted eligible-but-failed -
+not yet run.
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella
 import, pulls in all nine sections) whose name's last component starts
 with `fracas_`. For each, in order:
 - **outside the fragment**: the conclusion's head isn't one of
-  `Every`/`Some`/`AtLeast`/`AtMost` at all - `mono_nl` is never attempted,
-  since `Signature.lean`'s table has nothing to say about these
-  regardless of what hypotheses are available. Checked *first*: an
+  `Every`/`Some`/`AtLeast`/`AtMost` at all - none of the three tactics is
+  even attempted, since `Signature.lean`'s table has nothing to say about
+  these regardless of what hypotheses are available. Checked *first*: an
   earlier version of this scan checked `isTrivial` before eligibility and
   found it also caught theorems whose head has nothing to do with this
   fragment at all (an `Iff`/`Eq`/named-individual restatement elsewhere
@@ -41,29 +35,31 @@ with `fracas_`. For each, in order:
 - **trivial**: (checked within what's eligible) the goal is already
   exactly one hypothesis's own type (an `id`-shaped restatement), or one
   conjunct of an `And`-headed hypothesis (a `.1`/`.2`-shaped projection) -
-  not a substitution at all, so not attempted by `mono_nl` and not
-  counted as a monotonicity miss either way. These are the fourteen cases
-  (`fracas_001`, `007`-`009`, `011`, `087`, `090`, `092`, `093`, `096`,
-  `097`, `128`, `149`, `153` - identified by inspection, not hard-coded
-  here) the standing instruction asked not to count as genuine
+  not a substitution at all, so not attempted by any of the three tactics
+  and not counted as a monotonicity miss either way. These are the
+  fourteen cases (`fracas_001`, `007`-`009`, `011`, `087`, `090`, `092`,
+  `093`, `096`, `097`, `128`, `149`, `153` - identified by inspection, not
+  hard-coded here) the standing instruction asked not to count as genuine
   eligible-but-failed monotonicity problems.
-- **eligible but failed**: the head matches, `isTrivial` doesn't, and
-  neither tactic closes it - `mono_nl` (Phase 1's direct-hypothesis
+- **eligible but failed**: the head matches, `isTrivial` doesn't, and none
+  of the three tactics closes it - `mono_nl` (Phase 1's direct-hypothesis
   match, or Phase 2's combine-then-match) tried first, `exist_nl`
   (Category B's existential-import/quantifier-strength family,
-  `Existential.lean`) tried second whenever `mono_nl` fails - grouped by
-  whichever tactic's thrown message is actually informative (see
-  `reasonBucket`'s own comment for why `exist_nl`'s generic "wrong head"
-  rejection never overwrites a real `mono_nl` diagnosis), not a
-  re-guessed classification.
-- **automatically proved**: either tactic closed it - the report doesn't
-  need to distinguish which, since each tactic's own `logInfo` trace
-  already does, per-theorem, in the build log.
+  `Existential.lean`) tried second, `mono_nl_compose` (Phase 3,
+  `Compose.lean`'s composition of the two) tried third - grouped by
+  whichever tactic's thrown message is actually informative (see the
+  `runTactic` chain's own comment for why only the *last* tactic tried is
+  ever worth reading), not a re-guessed classification.
+- **automatically proved**: any of the three closed it - the report
+  doesn't need to distinguish which, since each tactic's own `logInfo`
+  trace already does, per-theorem, in the build log.
 
 Per the standing instruction this reasoner was scoped under, nothing
 here adds a rule *because* some corpus example needs it - the fragment
-scanned is exactly `Signature.lean`/`Trace.lean`'s rule table plus
-Phase 2's one combine step, unchanged by what this scan finds.
+scanned is exactly `Signature.lean`/`Trace.lean`'s rule table, Phase 2's
+one combine step, and Phase 3's one composition (no new rule, no new
+`MonoRule`/`ExistentialRule` - see `Compose.lean`'s header), unchanged by
+what this scan finds.
 -/
 open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Lean.Elab.Command
 
@@ -159,6 +155,8 @@ def reasonBucket (msg : String) : String :=
     "goal's argument shape not recognized (extractPQ arg-count mismatch)"
   else if (msg.splitOn "outside the Category-B fragment").length > 1 then
     "Some-headed, but no stronger-quantifier or Every-plus-witness match (exist_nl)"
+  else if (msg.splitOn "outside the Phase-3 fragment").length > 1 then
+    "no matching Entails fact even after also trying exist_nl-synthesized shape facts (mono_nl_compose)"
   else if (msg.splitOn "tactic left goals open").length > 1 then
     "tactic closed the goal only partially"
   else
@@ -214,15 +212,17 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
       trivial := trivial.push name
       continue
 
-    -- Two independent tactics, tried in turn - `mono_nl` (position
-    -- substitution, Phase 1/2) and `exist_nl` (existential-import/
-    -- quantifier-strength, Category B, `Existential.lean`). Neither
-    -- calls the other; a theorem only needs one of the two shapes to
-    -- close, and `mono_nl`'s own failure message is discarded (not
-    -- reported) whenever `exist_nl` goes on to succeed, so a theorem
-    -- closed by either counts as proved with no "which one" ambiguity
-    -- left over - Tactic.lean's/Existential.lean's own `logInfo` traces
-    -- in the build log already say which.
+    -- Three tactics, tried in turn - `mono_nl` (position substitution,
+    -- Phase 1/2), `exist_nl` (existential-import/quantifier-strength,
+    -- Category B, `Existential.lean`), then `mono_nl_compose` (Phase 3,
+    -- `Compose.lean`: `mono_nl`'s own search, widened to also try
+    -- `exist_nl`-synthesized shape facts). None calls another directly -
+    -- this loop is what composes them - and a theorem only needs one of
+    -- the three shapes to close, with each earlier tactic's own failure
+    -- message discarded (not reported) whenever a later one succeeds, so
+    -- a theorem closed by any of them counts as proved with no "which
+    -- one" ambiguity left over - each tactic's own `logInfo` trace in the
+    -- build log already says which.
     let runTactic (tacticStx : Lean.TSyntax `tactic) : TermElabM (Except String Unit) :=
       try
         let mvar ← mkFreshExprMVar ty (kind := .synthetic)
@@ -236,24 +236,24 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
         let msg ← renderException e
         pure (.error msg)
 
+    -- `exist_nl` rejects any non-`Some`-headed goal immediately, before
+    -- looking at a single hypothesis, and `mono_nl_compose` is `mono_nl`'s
+    -- own search widened (never a quick head-mismatch rejection, since
+    -- every theorem reaching here already passed `isEligible`) - so
+    -- whichever of the three tactics runs *last* always has the most
+    -- complete diagnosis, and the earlier two's messages are discarded
+    -- unread rather than compared, not merely unused by accident.
     let monoOutcome ← runTactic (← `(tactic| mono_nl))
     let outcome : Except String Unit ←
       match monoOutcome with
       | .ok () => pure (.ok ())
-      | .error monoMsg =>
+      | .error _monoMsg =>
         match ← runTactic (← `(tactic| exist_nl)) with
         | .ok () => pure (.ok ())
-        | .error existMsg =>
-          -- `exist_nl` rejects any non-`Some`-headed goal immediately,
-          -- before looking at a single hypothesis - that boilerplate
-          -- message would otherwise overwrite `mono_nl`'s own, more
-          -- specific reason for every Every/AtLeast/AtMost-headed miss.
-          -- Report it only when `exist_nl` actually engaged (the goal
-          -- *was* `Some`-headed) and still came up empty.
-          if (existMsg.splitOn "exist_nl only closes Some-headed goals").length > 1 then
-            pure (.error monoMsg)
-          else
-            pure (.error existMsg)
+        | .error _existMsg =>
+          match ← runTactic (← `(tactic| mono_nl_compose)) with
+          | .ok () => pure (.ok ())
+          | .error composeMsg => pure (.error composeMsg)
 
     match outcome with
     | .ok () => proved := proved.push name
