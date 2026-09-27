@@ -4,21 +4,28 @@ import LeanNLSemantics.FraCaS.Section1.Monotonicity.Trace
 /-!
 # `mono_nl`: the Phase-1 certified monotonicity tactic
 
-**Validation status, read before trusting anything below**: this file was
-written and reasoned through carefully (every lemma name and argument
-order it applies is cross-checked, in the comments below, against the
-real, already-read `GQ.lean` source), but it has **not been compiled or
-run** - this sandbox's egress policy denies `release.lean-lang.org` (403,
-confirmed via the proxy status endpoint, not a fixable client
-misconfiguration the way the GF/`cabal` issue in `gf/NOTES.md` was), so no
-Lean toolchain can be fetched here. Every other claim in this project has
-been backed by a real local build before being written down as fact; this
-one cannot be, yet. GitHub Actions can reach the real toolchain, so the
-first real confirmation of this file is expected to come from CI, the
-same bridging role it played for `build-gf` before a local GF toolchain
-became available (see `.github/workflows/build.yml`'s history). Treat
-this file as "reasoned through, not yet kernel-checked" until a CI run
-(or a session with toolchain access) says otherwise.
+**Validation status**: this sandbox's egress policy denies
+`release.lean-lang.org` (403, confirmed via the proxy status endpoint,
+not a fixable client misconfiguration the way the GF/`cabal` issue in
+`gf/NOTES.md` was), so no Lean toolchain can be fetched here - every
+confirmation of this file has come from CI, the same bridging role it
+played for `build-gf` before a local GF toolchain became available.
+First real CI run: `Polarity.lean`/`Signature.lean`/`Trace.lean`/this
+file's own metaprogramming (`MVarId.intro1`,
+`LocalDecl.isImplementationDetail`, `mkAppM`, `isDefEq`,
+`liftMetaTactic1`, and everything else whose exact API this session
+could only reason about, not compile) all built successfully - only
+`CrossCheck.lean` failed, and only on one precisely diagnosable bug:
+`introAll` and the main search both called `whnf` on the goal/hypothesis
+types before checking their head, which unfolds `Every`/`Some`/
+`AtLeast`/`AtMost` straight through their own definitions - for `Every`
+in particular (whose body is itself a `∀`), this made `introAll`
+over-introduce, consuming the final conclusion's own bound variable as
+if it were one more premise. Fixed by checking the type as elaborated
+rather than its `whnf` throughout - see `introAll`'s own comment for the
+full account. Treat this file as "fixed against one real, CI-reported
+error; awaiting a second CI run to confirm the fix," not fully closed
+yet.
 
 ## What the tactic does
 
@@ -103,9 +110,23 @@ rather than a plural `intros`/named-`intro` helper, to keep this to the
 smallest API surface this session can be confident of without being able
 to compile it - the hypotheses' display names are cosmetic only (the
 trace still identifies the fact hypothesis it used via its real, current
-`userName`, whatever `intro1` happened to pick), never load-bearing. -/
+`userName`, whatever `intro1` happened to pick), never load-bearing.
+
+Deliberately checks `Expr.isForall` on the type *as elaborated*, not its
+`whnf` - CI's first real run caught, in exactly the way this project
+expects a real build to, that `whnf` unfolds `Every`/`Some`/`AtLeast`/
+`AtMost` (all plain `def`s or reducible `abbrev`s) straight through to
+their raw `∀ x, ...`/`Exists`/`Nat.le` bodies. For `Every` in particular
+that raw body is *itself* a Π-type, so a `whnf`-based check kept
+introducing the goal's own bound variable as if it were one more premise
+in the implication chain, rather than stopping at the literal `Every P Q`
+application this tactic is built to recognize. The chain of premises
+this fragment's goals are stated with is already a literal sequence of
+`Expr.forallE` nodes at elaboration time - nothing here needs semantic
+unfolding to see it - so checking the raw type is not just a fix but the
+more correct predicate for what this loop is actually looking for. -/
 partial def introAll (goal : MVarId) : MetaM (Array FVarId × MVarId) := do
-  let ty ← whnf (← goal.getType)
+  let ty ← goal.getType
   if ty.isForall then
     let (fvarId, goal') ← goal.intro1
     let (rest, goalFinal) ← introAll goal'
@@ -155,7 +176,10 @@ elab "mono_nl" : tactic => do
   liftMetaTactic1 fun goal => do
     let (_introduced, goal) ← introAll goal
     goal.withContext do
-      let goalTy ← whnf (← goal.getType)
+      -- Raw type, not `whnf` - see `introAll`'s comment: whnf unfolds
+      -- these quantifiers straight past the named-application shape this
+      -- tactic matches on.
+      let goalTy ← goal.getType
       let goalHead := goalTy.getAppFn
       let some goalHeadName := goalHead.constName?
         | throwError "mono_nl: goal is not headed by a named quantifier"
@@ -175,7 +199,8 @@ elab "mono_nl" : tactic => do
         |>.filter (fun d => !d.isImplementationDetail)
 
       for shapeDecl in hyps do
-        let shapeTy ← whnf shapeDecl.type
+        -- Same reasoning as `goalTy` above: no `whnf`.
+        let shapeTy := shapeDecl.type
         let some shapeHeadName := shapeTy.getAppFn.constName?
           | continue
         if shapeHeadName != goalHeadName then continue
