@@ -65,6 +65,19 @@ concrete FraCaSLogicEng of FraCaSLogic =
     known_A = mkA "known" ;
     apcomManager_N = mkN "APCOM manager" "APCOM managers" ;
     likely_AdV = mkAdV "likely" ;
+    itel_PN = mkPN "ITEL" ;
+    gfi_PN = mkPN "GFI" ;
+    mfi_PN = mkPN "MFI" ;
+    icm_PN = mkPN "ICM" ;
+    r95103_PN = mkPN "R-95-103" ;
+    customer_N = mkN "customer" "customers" ;
+    student_N = mkN "student" "students" ;
+    salesDepartment_N = mkN "sales department" "sales departments" ;
+    payrise_N = mkN "payrise" ;
+    dedicated_A = mkA "dedicated" ;
+    onTuesday_Adv = mkAdv "on Tuesday" ;
+    onWednesday_Adv = mkAdv "on Wednesday" ;
+    missing_A = mkA "missing" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -835,3 +848,60 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- cumulative/distributive "and", a different shape entirely, same
 -- reason as 81-86) - see translate.py's own comment for the full
 -- per-problem breakdown.
+--
+-- FraCaS Section 3 (Anaphora), problems 114-141 (Section3/Batch1.lean,
+-- Section3/Batch2.lean) - pronoun/anaphora resolution. Anaphora.lean's
+-- own header explains why this section doesn't build general
+-- anaphora-resolution machinery in Lean; correspondingly, nothing in
+-- this section is added to translate.py (see translate.py's own
+-- comment), though every sentence still gets a real, independently-
+-- confirmed GF tree, same rigor as every earlier section.
+--
+-- No new module needed this section: PossPron and GenNP (both already
+-- free since Section 2 Batch2's own Extend/Noun extension) cover every
+-- possessive here ("her workstation", "John's colleagues", "its
+-- members", "Smith's desk", "its computers") without further self-
+-- declaration, and Extend's own StrandRelSlash covers the one object-
+-- gap relative clause needed ("computers that GFI owns", problem 133)
+-- the same way IdRP already covers every subject-gap relative clause
+-- since Section 1. ReflVP (Verb, already extended) covers reflexives
+-- directly; Slash2V3 (Verb, already extended) covers 139's ditransitive
+-- "awarded ... a large payrise" by leaving the recipient slot open for
+-- ReflVP to fill reflexively, at the cost of a dative-shifted surface
+-- form. Idiom was tried for ProgrVP ("are missing") and abandoned - a
+-- genuine "unknown identifier CleftAdv" internal error at PMCFG-
+-- generation time at the current pinned gf-rgl tag, caught locally, not
+-- worth debugging for the one construction that needed it; missing_A
+-- self-declared instead (see FraCaSLogic.gf's own comment).
+--
+-- New self-declared words (all checked directly against DictEngAbs/
+-- DictEng first): itel_PN, gfi_PN, mfi_PN, icm_PN, r95103_PN,
+-- customer_N, student_N, salesDepartment_N, payrise_N, dedicated_A,
+-- onTuesday_Adv, onWednesday_Adv, missing_A. mary_PN/john_PN/bill_PN/
+-- bt_PN are NOT self-declared - all four already exist in DictEngAbs
+-- and are left free via the extends line. Every other word this
+-- section needed already exists there too.
+--
+-- IdRP's own fixed lin is "that", not "who", confirmed directly against
+-- the real toolchain - every relative clause in this section reads
+-- "customer that owns...", not "customer who owns...".
+--
+-- Several documented near-misses/simplifications, all accepted as the
+-- closest buildable rendering or a deliberate paraphrase (see
+-- run_gf_tests.py's own comment on this section for the full list):
+-- double-object datives paraphrased as PP-datives (121), a missing "by"
+-- supplied to make problem 122's own premise text grammatical, "all"
+-- dropped from a floating quantifier on a bare pronoun subject (126),
+-- an infinitival purpose clause dropped (136), CompoundCN's own gender-
+-- inheritance recipe giving "itself" rather than "himself" (139), and
+-- ComplVS always inserting "that" (140/141). Problem 137 (a five-
+-- premise proportion problem mixing three-digit numerals, a negative-
+-- polarity "any of its computers", and a partitive-of-remainder "each
+-- of the other 99") is skipped entirely - the numerals alone would
+-- render as space-separated digits via NumDigits (confirmed against
+-- gf-rgl's own "there are 1 0 0 companies" treebank rendering), and the
+-- combination is disproportionate machinery for one problem that was
+-- never going to reach translate.py either way.
+--
+-- This completes FraCaS Section 3 (all 28 problems, 114-141) in the
+-- GF/RGL toolchain.

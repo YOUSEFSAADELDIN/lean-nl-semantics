@@ -359,4 +359,53 @@ abstract FraCaSLogic =
     -- PositAdvAdj, same "don't trust an unpinned RGL derivation, self-
     -- declare the literal string instead" reasoning as cheap_Adv above.
     likely_AdV : AdV ;
+    -- Section 3 (Anaphora), problems 114-141:
+    -- itel_PN, gfi_PN, mfi_PN, icm_PN (FraCaS's own recurring fictional
+    -- companies, same reasoning as smith_PN/jones_PN/anderson_PN
+    -- above) and r95103_PN ("R-95-103", problem 138's own invented
+    -- report id, same reasoning as bug32985_PN) aren't in a
+    -- general-purpose dictionary. mary_PN/john_PN/bill_PN/bt_PN are
+    -- NOT here - all four already exist in DictEngAbs, checked
+    -- directly, and are left free via the extends line.
+    itel_PN, gfi_PN, mfi_PN, icm_PN, r95103_PN : PN ;
+    -- customer_N/student_N: DictEngAbs only has gendered pairs
+    -- (customerMasc_N/customerFem_N, studentMasc_N/studentFem_N), no
+    -- plain gender-neutral form - the same gap person_N/mp_N filled
+    -- above, checked directly the same way.
+    customer_N, student_N : N ;
+    -- salesDepartment_N ("the sales department", problem 132) is
+    -- fused as one lexical item rather than built via CompoundCN:
+    -- CompoundCN's own recipe always forces its first noun into
+    -- singular-nominative (see this file's own comment on CompoundCN
+    -- above), which would wrongly give "sale department" - "sales"
+    -- stays plural in this compound irregularly, so it's self-declared
+    -- as a fixed string instead, same move as apcomManager_N.
+    salesDepartment_N : N ;
+    -- payrise_N ("a large payrise", problem 139) - genuine dictionary
+    -- gap (DictEngAbs only has the separate, un-compounded raise_N/
+    -- rise_N), checked directly.
+    payrise_N : N ;
+    -- dedicated_A ("a dedicated line", problem 131) - genuine
+    -- dictionary gap, checked directly.
+    dedicated_A : A ;
+    -- onTuesday_Adv/onWednesday_Adv (problem 127's "on Tuesday"/"on
+    -- Wednesday") are self-declared as fixed strings rather than built
+    -- from RGL's real Weekday/weekdayPunctualAdv subsystem - that
+    -- subsystem is disproportionate machinery for the one sentence
+    -- that needs it here (never reused elsewhere in this problem, and
+    -- this problem's own premise is a GF-sentence-only check, never
+    -- fed to translate.py), same "self-declare the literal string"
+    -- call as worlds_Det/most_Det/etc. above.
+    onTuesday_Adv, onWednesday_Adv : Adv ;
+    -- missing_A ("two out of ten machines are missing", problems
+    -- 124-126) is self-declared as a plain adjective rather than built
+    -- from miss_V via Idiom's ProgrVP ("be missing") - Idiom turned out
+    -- to be a genuinely broken extend for this grammar at the current
+    -- pinned gf-rgl tag (a real "unknown identifier CleftAdv" error at
+    -- PMCFG-generation time, caught locally before ever reaching CI,
+    -- not assumed), and DictEngAbs has no missing_A of its own either
+    -- (checked directly) - self-declaring the adjective directly
+    -- sidesteps the whole module rather than debugging it, for a
+    -- construction only these three sentences need.
+    missing_A : A ;
 }

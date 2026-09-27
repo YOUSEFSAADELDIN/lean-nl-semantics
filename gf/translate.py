@@ -1049,6 +1049,17 @@ if __name__ == "__main__":
             "PredVP (UsePN jones_PN) (ComplSlash (SlashV2a have_V2) "
             "(DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN company_N) (UseN car_N))))"
         ),
+        # FraCaS Section 3 (Anaphora), problems 114-141: deliberately
+        # NOT added here, none of it. Anaphora.lean's own header explains
+        # why this section doesn't build general anaphora-resolution
+        # machinery in Lean - each pronoun is resolved by hand, per
+        # problem, into presupposition bundles, Skolem functions, or
+        # shared bound variables across sentences - and none of those
+        # shapes is "one quantified Cl" the way this translator's whole
+        # architecture (_resolve_subject/_restrictor_expr/_scope_name)
+        # expects. Every sentence in this section still gets a real,
+        # independently-confirmed GF tree (see run_gf_tests.py's own
+        # comment on this section for the full per-problem breakdown).
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

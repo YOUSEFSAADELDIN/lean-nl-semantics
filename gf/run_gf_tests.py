@@ -1290,6 +1290,374 @@ _SECTION2_BATCH2_TENSED_CHECKS = [
     ),
 ]
 
+# FraCaS Section 3 (Anaphora), problems 114-141 (Section3/Batch1.lean,
+# Section3/Batch2.lean). Anaphora.lean's own header explains why this
+# section doesn't need (and doesn't build) general anaphora-resolution
+# machinery in Lean - each pronoun is resolved by hand, per problem,
+# directly into the formalization. The same principle carries over to
+# translate.py: none of this section's sentences are added there (see
+# translate.py's own comment on why), even though every sentence still
+# gets a real, independently-confirmed GF tree here, same rigor as
+# every earlier section.
+#
+# New words this section needed (all checked directly against
+# DictEngAbs/DictEng first): itel_PN, gfi_PN, mfi_PN, icm_PN,
+# r95103_PN, customer_N, student_N, salesDepartment_N, payrise_N,
+# dedicated_A, onTuesday_Adv, onWednesday_Adv, missing_A (all
+# self-declared - see FraCaSLogic.gf's own comments for why). mary_PN/
+# john_PN/bill_PN/bt_PN are NOT self-declared - all four already exist
+# in DictEngAbs and are left free via the extends line. Every other
+# word (workstation_N, desk_N, meeting_N, report_N, invoice_N,
+# project_N, proposal_N, committee_N, chairman_N, member_N, machine_N,
+# lobby_N, colleague_N, department_N, line_N, computer_N, executive_N,
+# laptop_N, cover_N, page_N, director_N, company_N, use_V2, chair_V2,
+# deliver_V2, appoint_V2, rent_V2, own_V2, maintain_V2, go_V, put_V2,
+# take_V2, bring_V2, sign_V2, hurt_V2, hate_V2, attend_V2, remove_V2,
+# award_V3, say_VS, female_A, large_A, different_A, here_Adv,
+# yesterday_Adv, also_AdV) already exists in DictEngAbs.
+#
+# No new module this time - PossPron and GenNP (both already free from
+# Section 2 Batch2's own Extend/Noun extension) turned out to cover
+# every possessive this section needs ("her workstation", "John's
+# colleagues", "its members", "Smith's desk", "its computers") without
+# any further self-declaration, and Extend's own StrandRelSlash covers
+# the one object-gap relative clause this section needs ("computers
+# that GFI owns", problem 133) the same way IdRP already covered every
+# subject-gap relative clause since Section 1. ReflVP (Verb, already
+# extended) covers reflexives ("hurt himself") directly; Slash2V3
+# (Verb, already extended) covers 139's ditransitive "awarded ... a
+# large payrise" by leaving the recipient slot open for ReflVP to fill
+# reflexively, at the cost of a dative-shifted surface form (see
+# below). Idiom was tried for ProgrVP ("are missing") and abandoned -
+# a genuine "unknown identifier CleftAdv" internal error at
+# PMCFG-generation time at the current pinned gf-rgl tag, caught
+# locally, not worth debugging for the one construction that needed
+# it; missing_A self-declared instead.
+#
+# IdRP's own fixed lin is "that", not "who", confirmed directly - every
+# relative clause below reads "customer that owns..."/"executive that
+# had...", not "who".
+#
+# Five more documented near-misses/simplifications, all accepted as
+# the closest buildable rendering or a deliberate paraphrase (same
+# spirit as every earlier section's own near-misses):
+#   - 121's "delivered them an invoice"/"delivered them a project
+#     proposal" (double-object dative) are paraphrased to the
+#     PP-dative "delivered an invoice/a project proposal to them" -
+#     this grammar has no double-object V2 combinator, and the
+#     PP-dative is truth-conditionally identical; "And she delivered
+#     ..." also drops the leading "And" (a discourse connective with no
+#     truth-conditional content of its own).
+#   - 122's premise ("He is appointed its members", copied verbatim
+#     from Problems.lean) is missing its own "by" - not reproduced
+#     literally (ungrammatical as written); built instead as the
+#     grammatical "He is appointed by its members".
+#   - 126's premise ("They were all here yesterday") drops "all": a
+#     floating quantifier on a bare pronoun subject ("all they") isn't
+#     grammatical via PredetNP's own prenominal-only placement, and
+#     this sentence is a GF-only check (never fed to translate.py), so
+#     "They were here yesterday" is accepted instead.
+#   - 136's premise drops "to take notes" (an infinitival purpose
+#     clause this grammar has no combinator for): "brought it to the
+#     meeting" instead of "brought it to take notes at the meeting".
+#   - 139's "awarded himself a large payrise" comes out "awarded itself
+#     a large payrise": CompoundCN's own gender-inheritance recipe
+#     (`g = b.g`, see this file's comment on CompoundCN) takes
+#     "company director"'s gender from director_N's own dictionary
+#     gender, which isn't masculine, so ReflVP's own reflexive-pronoun
+#     agreement doesn't produce "himself" here. Accepted as the
+#     achievable rendering rather than chasing a gendered variant for
+#     one sentence. Separately, ComplVS's own fixed recipe always
+#     inserts "that" ("said that Bill...", not "said Bill..." exactly
+#     as Problems.lean has it) - the standard, more explicit form,
+#     accepted the same way.
+BASE_CHECKS += [
+    (
+        "fracas_115_hypothesis",
+        "linearize PredVP (UsePN mary_PN) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (UseN workstation_N)))",
+        "Mary has a workstation",
+    ),
+    (
+        "fracas_116_hypothesis",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompAP (PositA female_A)))",
+        "Mary is female",
+    ),
+    (
+        "fracas_117_premise2",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN student_N))))",
+        "Mary is a student",
+    ),
+    (
+        "fracas_122_premise1",
+        "linearize PredVP (DetCN every_Det (UseN committee_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (UseN chairman_N)))",
+        "every committee has a chairman",
+    ),
+    (
+        "fracas_122_premise2",
+        "linearize PredVP (UsePron he_Pron) (AdvVP (PassV2 appoint_V2) (PrepNP by8agent_Prep (DetCN (DetQuant (PossPron it_Pron) NumPl) (UseN member_N))))",
+        "he is appointed by its members",
+    ),
+    (
+        "fracas_122_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN committee_N)) (ComplSlash (SlashV2a have_V2) (AdvNP (PPartNP (DetCN (DetQuant IndefArt NumSg) (UseN chairman_N)) appoint_V2) (PrepNP by8agent_Prep (DetCN (DetQuant IndefArt NumPl) (AdvCN (UseN member_N) (PrepNP of_Prep (DetCN (DetQuant DefArt NumSg) (UseN committee_N))))))))",
+        "every committee has a chairman appointed by members of the committee",
+    ),
+    (
+        "fracas_123_premise2",
+        "linearize PredVP (UsePron they_Pron) (UseComp (CompAdv (PrepNP on_Prep (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN desk_N)))))",
+        "they are on her desk",
+    ),
+    (
+        "fracas_123_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdvCN (UseN report_N) (PrepNP from_Prep (UsePN itel_PN)))) (UseComp (CompAdv (PrepNP on_Prep (DetCN (DetQuant (GenNP (UsePN smith_PN)) NumSg) (UseN desk_N)))))",
+        "some reports from ITEL are on Smith's desk",
+    ),
+    (
+        "fracas_124_premise1",
+        "linearize PredVP (AdvNP (DetNP (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2))))))))) (PrepNP out_of_Prep (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 pot110)))))) (UseN machine_N)))) (UseComp (CompAP (PositA missing_A)))",
+        "two out of ten machines are missing",
+    ),
+    (
+        "fracas_131_premise1",
+        "linearize PredVP (DetCN each_Det (UseN department_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA dedicated_A) (UseN line_N))))",
+        "each department has a dedicated line",
+    ),
+    (
+        "fracas_131_premise2",
+        "linearize PredVP (UsePron they_Pron) (AdvVP (ComplSlash (SlashV2a rent_V2) (UsePron they_Pron)) (PrepNP from_Prep (UsePN bt_PN)))",
+        "they rent them from BT",
+    ),
+    (
+        "fracas_131_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN department_N)) (AdvVP (ComplSlash (SlashV2a rent_V2) (DetCN (DetQuant IndefArt NumSg) (UseN line_N))) (PrepNP from_Prep (UsePN bt_PN)))",
+        "every department rents a line from BT",
+    ),
+    (
+        "fracas_132_premise2",
+        "linearize PredVP (DetCN (DetQuant DefArt NumSg) (UseN salesDepartment_N)) (AdvVP (ComplSlash (SlashV2a rent_V2) (UsePron it_Pron)) (PrepNP from_Prep (UsePN bt_PN)))",
+        "the sales department rents it from BT",
+    ),
+    (
+        "fracas_132_hypothesis",
+        "linearize PredVP (DetCN (DetQuant DefArt NumSg) (UseN salesDepartment_N)) (AdvVP (ComplSlash (SlashV2a rent_V2) (DetCN (DetQuant IndefArt NumSg) (UseN line_N))) (PrepNP from_Prep (UsePN bt_PN)))",
+        "the sales department rents a line from BT",
+    ),
+    (
+        "fracas_133_premise1",
+        "linearize PredVP (UsePN gfi_PN) (ComplSlash (SlashV2a own_V2) (DetCN several_Det (UseN computer_N)))",
+        "GFI owns several computers",
+    ),
+    (
+        "fracas_133_premise2",
+        "linearize PredVP (UsePN itel_PN) (ComplSlash (SlashV2a maintain_V2) (UsePron they_Pron))",
+        "ITEL maintains them",
+    ),
+    (
+        "fracas_133_hypothesis",
+        "linearize PredVP (UsePN itel_PN) (ComplSlash (SlashV2a maintain_V2) (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (RelCN (UseN computer_N) (UseRCl (TTAnt TPres ASimul) PPos (StrandRelSlash IdRP (SlashVP (UsePN gfi_PN) (SlashV2a own_V2))))))))",
+        "ITEL maintains all the computers that GFI owns",
+    ),
+    (
+        "fracas_134_premise1",
+        "linearize PredVP (DetCN every_Det (RelCN (UseN customer_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (UseN computer_N))))))) (ComplSlash (SlashV2a have_V2) (AdvNP (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN service_N) (UseN contract_N))) (PrepNP for_Prep (UsePron it_Pron))))",
+        "every customer that owns a computer has a service contract for it",
+    ),
+    (
+        "fracas_134_premise2",
+        "linearize PredVP (UsePN mfi_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (RelCN (UseN customer_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01)))))))) (UseN computer_N)))))))))",
+        "MFI is a customer that owns exactly one computer",
+    ),
+    (
+        "fracas_135_premise2",
+        "linearize PredVP (UsePN mfi_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (RelCN (UseN customer_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN several_Det (UseN computer_N)))))))))",
+        "MFI is a customer that owns several computers",
+    ),
+    (
+        "fracas_134_hypothesis",
+        "linearize PredVP (UsePN mfi_PN) (AdvVP (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN service_N) (UseN contract_N)))) (PrepNP for_Prep (PredetNP all_Predet (DetCN (DetQuant (PossPron it_Pron) NumPl) (UseN computer_N)))))",
+        "MFI has a service contract for all its computers",
+    ),
+    (
+        "fracas_136_premise2",
+        "linearize PredVP (UsePN smith_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (RelCN (UseN executive_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n5)))))))) (AdjCN (PositA different_A) (CompoundCN (UseN laptop_N) (UseN computer_N)))))))))))",
+        "Smith is an executive that owns five different laptop computers",
+    ),
+    (
+        "fracas_138_premise1",
+        "linearize PredVP (DetCN every_Det (UseN report_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN cover_N) (UseN page_N))))",
+        "every report has a cover page",
+    ),
+    (
+        "fracas_138_premise2",
+        "linearize PredVP (UsePN r95103_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))",
+        "R-95-103 is a report",
+    ),
+]
+
+# The rest of Section 3's sentences are themselves past tense (or, for
+# 124/125's hypotheses, present-perfect - `TTAnt TPres AAnter`, a
+# tense/anteriority combination not used anywhere before this section),
+# or already S-typed (127's ConjS premise) - so, same reasoning as
+# _SECTION2_BATCH2_TENSED_CHECKS above, they're written pre-wrapped and
+# kept out of BASE_CHECKS/_tense_reconfirm entirely.
+_SECTION3_TENSED_CHECKS = [
+    (
+        "fracas_114_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "Mary used her workstation",
+    ),
+    (
+        "fracas_114_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant (GenNP (UsePN mary_PN)) NumSg) (UseN workstation_N)) (PassV2 use_V2)))",
+        "Mary's workstation was used",
+    ),
+    (
+        "fracas_117_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN every_Det (UseN student_N)) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "every student used her workstation",
+    ),
+    (
+        "fracas_119_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant no_Quant NumSg) (UseN student_N)) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "no student used her workstation",
+    ),
+    (
+        "fracas_119_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant IndefArt NumSg) (UseN workstation_N)))))",
+        "Mary used a workstation",
+    ),
+    (
+        "fracas_120_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant IndefArt NumSg) (UseN meeting_N)))))",
+        "Smith attended a meeting",
+    ),
+    (
+        "fracas_120_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron she_Pron) (ComplSlash (SlashV2a chair_V2) (UsePron it_Pron))))",
+        "she chaired it",
+    ),
+    (
+        "fracas_120_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a chair_V2) (DetCN (DetQuant IndefArt NumSg) (UseN meeting_N)))))",
+        "Smith chaired a meeting",
+    ),
+    (
+        "fracas_121_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a deliver_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) (PrepNP to_Prep (UsePN itel_PN)))))",
+        "Smith delivered a report to ITEL",
+    ),
+    (
+        "fracas_121_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron she_Pron) (AdVVP also_AdV (AdvVP (ComplSlash (SlashV2a deliver_V2) (DetCN (DetQuant IndefArt NumSg) (UseN invoice_N))) (PrepNP to_Prep (UsePron they_Pron))))))",
+        "she also delivered an invoice to them",
+    ),
+    (
+        "fracas_121_premise3",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron she_Pron) (AdvVP (ComplSlash (SlashV2a deliver_V2) (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN project_N) (UseN proposal_N)))) (PrepNP to_Prep (UsePron they_Pron)))))",
+        "she delivered a project proposal to them",
+    ),
+    (
+        "fracas_121_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a deliver_V2) (ConjNP and_Conj (ConsNP (DetCN (DetQuant IndefArt NumSg) (UseN report_N)) (BaseNP (DetCN (DetQuant IndefArt NumSg) (UseN invoice_N)) (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN project_N) (UseN proposal_N))))))) (PrepNP to_Prep (UsePN itel_PN)))))",
+        "Smith delivered a report , an invoice and a project proposal to ITEL",
+    ),
+    (
+        "fracas_124_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2)))))))) (UseN machine_N)) (PassV2 remove_V2)))",
+        "two machines have been removed",
+    ),
+    (
+        "fracas_125_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n8)))))))) (UseN machine_N)) (PassV2 remove_V2)))",
+        "eight machines have been removed",
+    ),
+    (
+        "fracas_126_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron they_Pron) (AdvVP (UseComp (CompAdv here_Adv)) yesterday_Adv)))",
+        "they were here yesterday",
+    ),
+    (
+        "fracas_126_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 pot110)))))) (UseN machine_N)) (AdvVP (UseComp (CompAdv here_Adv)) yesterday_Adv)))",
+        "ten machines were here yesterday",
+    ),
+    (
+        "fracas_127_premise1",
+        "linearize UttS (ConjS and_Conj (BaseS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a take_V2) (DetCN (DetQuant IndefArt NumSg) (UseN machine_N))) onTuesday_Adv))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdvVP (ComplSlash (SlashV2a take_V2) (DetCN (DetQuant IndefArt NumSg) (UseN machine_N))) onWednesday_Adv)))))",
+        "Smith took a machine on Tuesday and Jones took a machine on Wednesday",
+    ),
+    (
+        "fracas_127_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron they_Pron) (AdvVP (ComplSlash (SlashV2a put_V2) (UsePron they_Pron)) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN lobby_N))))))",
+        "they put them in the lobby",
+    ),
+    (
+        "fracas_127_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN jones_PN))) (AdvVP (ComplSlash (SlashV2a put_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2)))))))) (UseN machine_N))) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN lobby_N))))))",
+        "Smith and Jones put two machines in the lobby",
+    ),
+    (
+        "fracas_128_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN john_PN) (DetCN (DetQuant (PossPron he_Pron) NumPl) (UseN colleague_N)))) (AdvVP (UseV go_V) (PrepNP to_Prep (DetCN (DetQuant IndefArt NumSg) (UseN meeting_N))))))",
+        "John and his colleagues went to a meeting",
+    ),
+    (
+        "fracas_128_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron they_Pron) (ComplSlash (SlashV2a hate_V2) (UsePron it_Pron))))",
+        "they hated it",
+    ),
+    (
+        "fracas_128_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant (GenNP (UsePN john_PN)) NumPl) (UseN colleague_N)) (ComplSlash (SlashV2a hate_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "John's colleagues hated the meeting",
+    ),
+    (
+        "fracas_129_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a hate_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "John hated the meeting",
+    ),
+    (
+        "fracas_136_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN every_Det (RelCN (UseN executive_N) (UseRCl (TTAnt TPast ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN laptop_N) (UseN computer_N)))))))) (AdvVP (ComplSlash (SlashV2a bring_V2) (UsePron it_Pron)) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N))))))",
+        "every executive that had a laptop computer brought it to the meeting",
+    ),
+    (
+        "fracas_136_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a take_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n5)))))))) (CompoundCN (UseN laptop_N) (UseN computer_N)))) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N))))))",
+        "Smith took five laptop computers to the meeting",
+    ),
+    (
+        "fracas_138_premise3",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN cover_N) (UseN page_N))))))",
+        "Smith signed the cover page",
+    ),
+    (
+        "fracas_138_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (CompoundCN (UseN cover_N) (UseN page_N)) (PrepNP of_Prep (UsePN r95103_PN)))))))",
+        "Smith signed the cover page of R-95-103",
+    ),
+    (
+        "fracas_139_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN company_N) (UseN director_N))) (ReflVP (Slash2V3 award_V3 (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN payrise_N)))))))",
+        "a company director awarded itself a large payrise",
+    ),
+    (
+        "fracas_140_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplVS say_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN bill_PN) (ReflVP (SlashV2a hurt_V2)))))))",
+        "John said that Bill had hurt himself",
+    ),
+    (
+        "fracas_140_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplVS say_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN bill_PN) (PassV2 hurt_V2))))))",
+        "John said that Bill had been hurt",
+    ),
+    (
+        "fracas_141_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP somebody_NP (ComplVS say_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN john_PN) (PassV2 hurt_V2))))))",
+        "somebody said that John had been hurt",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -1356,6 +1724,7 @@ CHECKS = (
     + PILOT_TENSE_CHECKS
     + _FRACAS_084_HYPOTHESIS_CHECK
     + _SECTION2_BATCH2_TENSED_CHECKS
+    + _SECTION3_TENSED_CHECKS
 )
 
 
