@@ -31,7 +31,13 @@ source (three FraCaS problems, one underlying English/logical shape), so
 one cross-check theorem stands for all three rather than being repeated
 three times for no new information - the same "don't re-run an identical
 check under a new label" principle `gf/run_gf_tests.py` documents for its
-own duplicate sentences.
+own duplicate sentences. Problems 18, 19, and 20 are the same situation.
+
+Problems 13 and 18-21, added for Phase 2, exercise the new combine step
+(`Tactic.lean`'s `entails_and`/`entails_refl` search) rather than a
+direct hypothesis match - `mono_nl` reconstructs `every_mp`'s and
+`every_trans`'s own recipe (combine two premises into a conjunction, then
+substitute) without either being named anywhere in `Tactic.lean`.
 -/
 namespace FraCaS.Section1.Monotonicity
 
@@ -153,5 +159,36 @@ theorem fracas_077_via_mono_nl :
       Every femaleCommissioner usedToBeInBusiness := by mono_nl
 
 end P077
+
+section P013
+variable {A : Type*} (leadingTenor excellent indispensable : A → Prop)
+
+theorem fracas_013_via_mono_nl :
+    Every leadingTenor excellent →
+      Every (fun x => leadingTenor x ∧ excellent x) indispensable →
+        Every leadingTenor indispensable := by mono_nl
+
+end P013
+
+section P018
+variable {A : Type*} (european right person travelFreely : A → Prop)
+
+/-- Stands for problems 18, 19, and 20 alike - see this file's header. -/
+theorem fracas_018_via_mono_nl :
+    Every european right → Every european person →
+      Every (fun x => person x ∧ right x) travelFreely →
+        Every european travelFreely := by mono_nl
+
+end P018
+
+section P021
+variable {A : Type*} (residentMemberState right individual travelFreely : A → Prop)
+
+theorem fracas_021_via_mono_nl :
+    Every residentMemberState right → Every residentMemberState individual →
+      Every (fun x => individual x ∧ right x) travelFreely →
+        Every residentMemberState travelFreely := by mono_nl
+
+end P021
 
 end FraCaS.Section1.Monotonicity

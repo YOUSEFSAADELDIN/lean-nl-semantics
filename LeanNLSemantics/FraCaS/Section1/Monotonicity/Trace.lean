@@ -75,7 +75,9 @@ polarity-correct order - see `Tactic.lean`); `substFrom`/`substTo` name
 the two predicate values themselves, read off their declaration's
 `userName` when they are bare local variables (always true for every
 problem this fragment has been checked against so far) and a
-pretty-printed stand-in name otherwise. -/
+pretty-printed stand-in name otherwise. When the fact came from a
+Phase-2 `combine` step rather than a single local hypothesis, `factHyp`
+names the *synthesized* fact (see `CombineStep`), not a real declaration. -/
 structure MonoStep where
   position  : Position
   rule      : MonoRule
@@ -84,15 +86,34 @@ structure MonoStep where
   substTo   : Lean.Name
   deriving Repr
 
-/-- The trace for one theorem: which theorem, and the (here: always
-single) step `mono_nl` used to close it. A list rather than a single
-`MonoStep` because nothing about the format itself is single-step-only -
-`Tactic.lean`'s search procedure is - so a later fragment extension that
-chains rules (e.g. to reach the conjunctive `every_trans` shape) grows
-`MonoTrace.steps`, not this structure. -/
+/-- Phase 2's one new kind of step: joining two `Every`-shaped facts
+sharing a restrictor into a fact about their conjunction, via `GQ.lean`'s
+`entails_and` (or `entails_refl` when one side is the trivial reflexive
+fact, named `none` here since it has no supplying hypothesis of its
+own). Not a `(Quantifier, Position)` substitution itself - `Signature.
+lean`'s table says nothing about conjunction - so kept separate from
+`MonoStep` rather than forced into its shape; a `MonoTrace` carries at
+most one of these, immediately followed by the `MonoStep` that consumes
+the fact it produces. This is the trace-level mirror of the "explicit
+semantic step" `Tactic.lean`'s `combineFacts` performs before ever
+calling into the existing per-quantifier substitution machinery. -/
+structure CombineStep where
+  left          : Option Lean.Name
+  right         : Option Lean.Name
+  sharedLeft    : Lean.Name
+  leftConjunct  : Lean.Name
+  rightConjunct : Lean.Name
+  deriving Repr
+
+/-- The trace for one theorem: which theorem, an optional `combine` step
+(Phase 2 only - `none` for every Phase-1 theorem, unchanged), and the
+single substitution step that closes the goal, consuming either a real
+local hypothesis (Phase 1) or the `combine` step's synthesized fact
+(Phase 2). -/
 structure MonoTrace where
   theoremName : Lean.Name
-  steps       : List MonoStep
+  combine     : Option CombineStep
+  step        : MonoStep
   deriving Repr
 
 end FraCaS.Section1.Monotonicity

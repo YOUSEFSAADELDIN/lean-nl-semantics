@@ -2,7 +2,7 @@ import Lean
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Trace
 
 /-!
-# `mono_nl`: the Phase-1 certified monotonicity tactic
+# `mono_nl`: the certified monotonicity tactic (Phase 1 + Phase 2)
 
 **Validation status**: this sandbox's egress policy denies
 `release.lean-lang.org` (403, confirmed via the proxy status endpoint,
@@ -10,41 +10,50 @@ not a fixable client misconfiguration the way the GF/`cabal` issue in
 `gf/NOTES.md` was), so no Lean toolchain can be fetched here - every
 confirmation of this file has come from CI, the same bridging role it
 played for `build-gf` before a local GF toolchain became available.
-First real CI run: `Polarity.lean`/`Signature.lean`/`Trace.lean`/this
-file's own metaprogramming (`MVarId.intro1`,
-`LocalDecl.isImplementationDetail`, `mkAppM`, `isDefEq`,
-`liftMetaTactic1`, and everything else whose exact API this session
-could only reason about, not compile) all built successfully - only
-`CrossCheck.lean` failed, and only on one precisely diagnosable bug:
-`introAll` and the main search both called `whnf` on the goal/hypothesis
-types before checking their head, which unfolds `Every`/`Some`/
-`AtLeast`/`AtMost` straight through their own definitions - for `Every`
-in particular (whose body is itself a `∀`), this made `introAll`
-over-introduce, consuming the final conclusion's own bound variable as
-if it were one more premise. Fixed by checking the type as elaborated
-rather than its `whnf` throughout - see `introAll`'s own comment for the
-full account. Treat this file as "fixed against one real, CI-reported
-error; awaiting a second CI run to confirm the fix," not fully closed
-yet.
+Phase 1 (everything except the "Phase 2" search below) is confirmed: CI
+found and this file fixed one real bug (`whnf` over-unfolding the goal,
+see `introAll`'s comment) and then ran clean, closing 32 of 459 scanned
+FraCaS theorems with zero eligible-but-failed misses among them. Phase 2
+(the combine step below) has not been through CI yet - awaiting that run
+before treating it the same way.
 
 ## What the tactic does
 
-Closes a goal of the shape `H₁ → H₂ → ... → Concl`, where (after
-`intro`s) `Concl` and exactly one hypothesis `Hshape` share the same head
-quantifier (`Every`/`Some`/`AtLeast`/`AtMost` - see `Signature.lean`) and
-differ in exactly one of their two arguments (`restrictor` xor `scope`),
-and some other hypothesis `Hfact` supplies the `Entails` fact
-(`Signature.lean`'s polarity table) that difference needs. It closes the
-goal by applying the one real `GQ.lean` lemma that shape names - the
-kernel checks *that* lemma's already-proved statement, nothing this
-tactic invents - and logs the `MonoStep` it computed (not a separately
-authored one) as an explanatory trace via `logInfo`.
+**Phase 1** closes a goal of the shape `H₁ → H₂ → ... → Concl`, where
+(after `intro`s) `Concl` and exactly one hypothesis `Hshape` share the
+same head quantifier (`Every`/`Some`/`AtLeast`/`AtMost` - see
+`Signature.lean`) and differ in exactly one of their two arguments
+(`restrictor` xor `scope`), and some other hypothesis `Hfact` directly
+supplies the `Entails` fact (`Signature.lean`'s polarity table) that
+difference needs.
+
+**Phase 2** widens only how that `Entails` fact is found, never how it's
+used: when no single hypothesis supplies it but the needed fact's target
+is itself a conjunction `fun x => A x ∧ B x` (`every_trans`'s `S ∧ R`,
+`every_mp`'s `P ∧ Q` - both checked directly against `GQ.lean`), the
+tactic looks for two `Entails`-shaped facts sharing the same left side
+and *combines* them via `GQ.lean`'s `entails_and` (or `entails_refl` for
+the trivial "P entails P" case `every_mp`'s own shape needs) into exactly
+the fact Phase 1's machinery was already looking for - an explicit
+semantic step, not a name-matched special case for any of the FraCaS
+problems that happen to need it (`decomposeConjLambda` recognizes the
+*shape*, never a specific theorem).
+
+Either way, the tactic closes the goal by applying the one real
+`GQ.lean` lemma the position/polarity table names - the kernel checks
+*that* lemma's already-proved statement, nothing this tactic invents -
+and logs the `MonoStep` (and, in the Phase-2 case, the preceding
+`CombineStep`) it actually used, not a separately authored description,
+as an explanatory trace via `logInfo`.
 
 It fails, loudly (`throwError`, never a silent wrong answer), the moment
-the goal is outside this small fragment: an unsupported head (`No`,
-`Most`, or anything else), more than one differing argument, zero
-differing arguments (a trivial restatement isn't a substitution), or no
-hypothesis of the right `Entails` shape in the right direction. An
+the goal is outside this fragment: an unsupported head (`No`, `Most`, or
+anything else), more than one differing argument, zero differing
+arguments (a trivial restatement isn't a substitution - see
+`Coverage.lean`'s separate `isTrivial` check, which keeps these out of
+the "eligible but failed" count entirely rather than conflating them
+with a genuine monotonicity miss), or no hypothesis - alone or combined -
+of the right `Entails` shape in the right direction. An
 incorrectly-constructed application also fails loudly, at `mkAppM`'s own
 elaboration-time type checking or at this tactic's own defensive
 `isDefEq` check before assigning - never at a silent `sorry`-shaped gap,
@@ -170,6 +179,26 @@ def nameOf (e : Expr) : MetaM Lean.Name := do
   else
     return .mkSimple (toString (← ppExpr e))
 
+/-- Phase 2: decomposes a lambda `fun x => A x ∧ B x` back into its two
+conjuncts `A`, `B` as standalone predicates - purely syntactic (no
+`MetaM` needed), matching exactly the shape every conjunctive restrictor
+in `every_trans`/`every_mp`'s own premises is written in (`GQ.lean`,
+verified directly: `fun x => S x ∧ R x`, `fun x => P x ∧ Q x`). Returns
+`none` for anything else - a bare non-conjunctive predicate, or a
+genuinely `x`-dependent conjunct that isn't simply "some outer predicate
+applied to `x`" - rather than guessing at a shape this fragment doesn't
+target. -/
+def decomposeConjLambda (e : Expr) : Option (Expr × Expr) :=
+  match e with
+  | .lam _ _ body _ =>
+    match body with
+    | .app (.app (.const ``And _) l) r =>
+      match l, r with
+      | .app a (.bvar 0), .app b (.bvar 0) => some (a, b)
+      | _, _ => none
+    | _ => none
+  | _ => none
+
 /-- The Phase-1 monotonicity tactic - see this file's header for the full
 algorithm and its validation status. -/
 elab "mono_nl" : tactic => do
@@ -236,37 +265,93 @@ elab "mono_nl" : tactic => do
           | .down => (newVal, oldVal)
           | .non => (oldVal, newVal) -- unreachable: no fragment cell is `.non` (Signature.lean)
         let expectedFactTy ← mkAppM ``FraCaS.Section1.Every #[needFrom, needTo]
+        let shapeExpr := shapeDecl.toExpr
 
+        -- Applies `rule`'s real GQ.lean lemma to a candidate `factExpr :
+        -- expectedFactTy`, exactly as Phase 1 always did - `combine` is
+        -- `none` for a real local hypothesis, `some _` when `factExpr` was
+        -- synthesized by the Phase-2 step below. Either way this closure is
+        -- the *only* place any lemma gets applied: Phase 2 adds a new way
+        -- to find a fact, never a new way to consume one.
+        let tryFact (factExpr : Expr) (factHypName : Lean.Name) (combine : Option CombineStep) :
+            MetaM Bool := do
+          try
+            let lemmaArgs : Array Expr ←
+              match rule with
+              | .everyMonoScope   => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
+              | .everyRestrict    => pure #[goalP, goalQ, shapeP, shapeExpr, factExpr]
+              | .someMonoScope    => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
+              | .someRestrict     => pure #[shapeP, goalQ, goalP, shapeExpr, factExpr]
+              | .atLeastMonoScope => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
+              | .atLeastRestrict  => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
+              | .atMostMonoScope  => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
+              | .atMostRestrict   => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
+            let proof ← mkAppM rule.lemmaName lemmaArgs
+            unless ← isDefEq (← inferType proof) (← goal.getType) do return false
+            let step : MonoStep :=
+              { position, rule
+                factHyp := factHypName
+                substFrom := (← nameOf oldVal)
+                substTo := (← nameOf newVal) }
+            match combine with
+            | some c => logInfo m!"mono_nl: combine {repr c}"
+            | none => pure ()
+            logInfo m!"mono_nl: {repr step}"
+            goal.assign proof
+            return true
+          catch _ =>
+            return false
+
+        -- Phase 1: a real local hypothesis of the right `Entails` shape.
         for factDecl in hyps do
           if factDecl.fvarId == shapeDecl.fvarId then continue
           unless ← isDefEq factDecl.type expectedFactTy do continue
-          let shapeExpr := shapeDecl.toExpr
-          let factExpr := factDecl.toExpr
-          let lemmaArgs : Array Expr ←
-            match rule with
-            | .everyMonoScope   => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
-            | .everyRestrict    => pure #[goalP, goalQ, shapeP, shapeExpr, factExpr]
-            | .someMonoScope    => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
-            | .someRestrict     => pure #[shapeP, goalQ, goalP, shapeExpr, factExpr]
-            | .atLeastMonoScope => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
-            | .atLeastRestrict  => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
-            | .atMostMonoScope  => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
-            | .atMostRestrict   => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
-          try
-            let proof ← mkAppM rule.lemmaName lemmaArgs
-            unless ← isDefEq (← inferType proof) (← goal.getType) do continue
-            let step : MonoStep :=
-              { position, rule
-                factHyp := factDecl.userName
-                substFrom := (← nameOf oldVal)
-                substTo := (← nameOf newVal) }
-            logInfo m!"mono_nl: {repr step}"
-            goal.assign proof
-            return none
-          catch _ =>
-            continue
-      throwError "mono_nl: goal is outside the Phase-1 monotonicity fragment \
-        (no single-position substitution, backed by a matching Entails fact, \
-        closes it - this is a small sound fragment, not a general prover)"
+          if ← tryFact factDecl.toExpr factDecl.userName none then return none
+
+        -- Phase 2: no single hypothesis matched. When `needTo` is itself
+        -- written as a conjunction `fun x => A x ∧ B x` (`every_trans`'s
+        -- `S ∧ R`, `every_mp`'s `P ∧ Q`, both checked directly against
+        -- `GQ.lean`), try synthesizing the needed fact instead - combining
+        -- two `Every`-shaped facts that share `needFrom` as their own
+        -- restrictor into one fact about their conjunction, via `GQ.lean`'s
+        -- `entails_and`. `entails_refl needFrom : Every needFrom needFrom`
+        -- is always one available candidate (the fact `every_mp`'s own
+        -- shape needs, since one conjunct there is `needFrom` itself) -
+        -- everything else comes from a real local hypothesis, checked the
+        -- same way `expectedFactTy` itself is. This is the one explicit new
+        -- semantic step Phase 2 adds; `tryFact` above still does all the
+        -- actual proving with it, exactly as it did for a bare hypothesis.
+        if let some (partA, partB) := decomposeConjLambda needTo then
+          let mut candidates : Array (Expr × Expr × Option Lean.Name) := #[]
+          candidates := candidates.push
+            (← mkAppM ``FraCaS.Section1.entails_refl #[needFrom], needFrom, none)
+          for d in hyps do
+            match d.type.getAppFn.constName? with
+            | some dHead =>
+              if dHead == ``FraCaS.Section1.Every then
+                if let some (dP, dQ) := extractPQ .every d.type.getAppArgs then
+                  if ← isDefEq dP needFrom then
+                    candidates := candidates.push (d.toExpr, dQ, some d.userName)
+            | none => pure ()
+          for (proof1, q1, name1) in candidates do
+            unless ← isDefEq q1 partA do continue
+            for (proof2, q2, name2) in candidates do
+              unless ← isDefEq q2 partB do continue
+              try
+                let combined ← mkAppM ``FraCaS.Section1.entails_and
+                  #[needFrom, partA, partB, proof1, proof2]
+                let combineStep : CombineStep :=
+                  { left := name1, right := name2
+                    sharedLeft := (← nameOf needFrom)
+                    leftConjunct := (← nameOf partA)
+                    rightConjunct := (← nameOf partB) }
+                if ← tryFact combined (← nameOf needTo) (some combineStep) then return none
+              catch _ =>
+                continue
+      throwError "mono_nl: goal is outside the Phase-1/2 monotonicity fragment \
+        (no single-position substitution - backed either by a matching \
+        Entails fact directly, or by combining two into one via \
+        entails_and/entails_refl - closes it; this is a small sound \
+        fragment, not a general prover)"
 
 end FraCaS.Section1.Monotonicity

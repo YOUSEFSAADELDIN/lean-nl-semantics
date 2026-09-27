@@ -79,6 +79,27 @@ Reusable across many Section 1 problems, the same way `Subtyping.lean`'s
 — most of Section 1's "does the conclusion follow" problems are one of
 these shapes applied to differently-named predicates. -/
 
+/-- Combining two `Every`-shaped facts that share a restrictor into one
+fact about their conjunction — `Every` *is* this file's entailment
+relation (`Monotonicity/Signature.lean`'s file comment), so this is
+exactly "P entails Q, P entails R, therefore P entails Q ∧ R," with no
+reference to any particular quantifier. Every one of `every_trans`/
+`every_mp`/`some_trans`/`atMost_trans` below combines two premises this
+same way before feeding the result into a quantifier-specific rule —
+this lemma is the piece those four proofs share, pulled out so
+`Monotonicity/Tactic.lean`'s Phase-2 extension can apply it directly
+instead of re-deriving it once per rule name. -/
+theorem entails_and {A : Type*} (P Q R : A → Prop) :
+    Every P Q → Every P R → Every P (fun x => Q x ∧ R x) :=
+  fun hq hr x hx => ⟨hq x hx, hr x hx⟩
+
+/-- Every predicate entails itself — the trivial `Every` fact `every_mp`'s
+own shape needs (`Every P Q → Every (P ∧ Q) R → Every P R`: combining this
+with the first premise via `entails_and` gives exactly the `Every P (P ∧
+Q)` fact `every_mp`'s second premise's restrictor names). -/
+theorem entails_refl {A : Type*} (P : A → Prop) : Every P P :=
+  fun _ hx => hx
+
 /-- `Every P Q` plus a witness that `P` holds of something (recovered here
 from a second premise `Some P R`, not assumed outright) gives `Some P Q` —
 problems 2/3/4's "every X wants Y; some X are Z ⊢ some X want Y" shape. -/
