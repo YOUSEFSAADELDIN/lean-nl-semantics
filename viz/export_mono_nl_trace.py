@@ -66,7 +66,15 @@ EXIST_RE = re.compile(
 MONO_RE = re.compile(
     r"mono_nl: \{ position := FraCaS\.Section1\.Monotonicity\.Position\.(\w+), "
     r"rule := FraCaS\.Section1\.Monotonicity\.MonoRule\.(\w+), "
-    r"factHyp := (.*?), substFrom := (.*?), substTo := (.*?), shapeSource := (.*?) \}")
+    r"factHyp := (.*?), substFrom := (.*?), substTo := (.*?), "
+    # Bounded by the literal `, narrow := ` marker rather than a trailing
+    # `\}`: `MonoStep.narrow`'s own value, when `some _`, nests a second
+    # `NarrowStep` record (its own `{...}`) inside this line's text, so a
+    # brace-counting bound would stop at the *inner* `}` instead of the
+    # outer one. `shapeSource`'s own possible values (`none`, or a nested
+    # `Lean.Name` constructor tree) never contain this literal substring,
+    # so the fixed delimiter is exact rather than a heuristic.
+    r"shapeSource := (.*?), narrow := ")
 COMBINE_RE = re.compile(
     r"mono_nl: combine \{ left := (.*?), right := (.*?), sharedLeft := (.*?), "
     r"leftConjunct := (.*?), rightConjunct := (.*?) \}")
@@ -249,18 +257,16 @@ def main() -> None:
 
     summary = {
         "generatedFrom": {
-            "ciRun": 36313846108,
-            "commit": "219ecca095a482f51bfb17d5a5c5482ee0e86884",
-            "note": ("trace/coverage numbers match CI run 36312200141 (commit 8934c04); "
-                     "this run only added the per-theorem 'attempting' log marker used to "
-                     "parse this export, no semantic change"),
+            "ciRun": 36316374524,
+            "commit": "5628f6332d7bb7cdfab5b32e3c6ff0b885adbf6d",
+            "note": "Phase 5 (conditioned narrowing): closes #044, 0 eligible-but-failed remain",
         },
         "trivial": 14,
         "proved": len(proved),
         "distinctProblems": len(distinct),
         "eligibleFailed": len(failed),
         "outsideFragment": 393,
-        "totalScanned": 471,
+        "totalScanned": 472,
     }
     json.dump({"summary": summary, "theorems": theorems}, sys.stdout, indent=2)
     print(file=sys.stderr)

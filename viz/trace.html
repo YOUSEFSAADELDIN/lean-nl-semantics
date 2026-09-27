@@ -176,6 +176,8 @@
   .unsupported-card h3 { font-size: 16px; color: var(--rust); }
   .unsupported-card p { margin: 0; font-size: 14px; color: var(--ink); }
   .unsupported-card .why { font-size: 13.5px; color: var(--ink-muted); }
+  .unsupported-card.closed { background: var(--moss-soft); border-color: color-mix(in srgb, var(--moss) 35%, var(--rule)); }
+  .unsupported-card.closed h3 { color: var(--moss); }
 
   footer { color: var(--ink-faint); font-size: 12.5px; padding-top: 8px; border-top: 1px solid var(--rule); text-align: center; }
   footer a { color: var(--ink-muted); }
@@ -198,8 +200,7 @@
       certified inference shape (a position substitution along a known entailment, an existential-import
       or cardinality step, or a principled composition of the two) and close a goal only by applying an
       already-proved lemma. This page is the trace of that search across every theorem in the FraCaS
-      suite: which ones closed automatically, which rule closed each one, and which single case is still
-      left open.
+      suite: which ones closed automatically, and exactly which rule closed each one.
     </p>
     <div class="stat-row" id="statRow"></div>
   </header>
@@ -234,9 +235,8 @@
 
   <section>
     <div class="section-head">
-      <h2>Still open: problem 44</h2>
-      <p>The one eligible theorem none of the three tactics closes — left unsupported deliberately,
-        not silently missed.</p>
+      <h2 id="closureHeading">Fragment closure status</h2>
+      <p id="closureLede"></p>
     </div>
     <div class="unsupported-card" id="unsupportedCard"></div>
   </section>
@@ -425,21 +425,33 @@
   }));
   applyFilters();
 
-  // ---------- unsupported card ----------
+  // ---------- closure status card ----------
   const unsupportedCard = document.getElementById("unsupportedCard");
+  const closureHeading = document.getElementById("closureHeading");
+  const closureLede = document.getElementById("closureLede");
   const f = failed[0];
   if (f) {
     const p = f.problem || {};
+    closureHeading.textContent = `Still open: problem ${f.problemId}`;
+    closureLede.textContent = "The one eligible theorem none of the three tactics closes — left unsupported deliberately, not silently missed.";
     unsupportedCard.innerHTML = `
       <h3>#${f.problemId} — ${p.hypothesis || f.theorem}</h3>
       ${p.premises ? `<p>${p.premises.join(" ")}</p>` : ""}
-      <p class="why">Its real proof needs an existing rule applied first to reach an intermediate fact,
-        then a second, different lemma to reach the goal from there — a genuine two-step chain the
-        current one-synthesis-one-substitution architecture doesn't support. Left unsupported on
-        purpose, rather than patched with a problem-specific proof, until a general bounded-depth
-        chaining mechanism is deliberately added.</p>`;
+      <p class="why">Left unsupported on purpose, rather than patched with a problem-specific proof,
+        until a general principle covering it is found.</p>`;
   } else {
-    unsupportedCard.remove();
+    closureHeading.textContent = "Every eligible theorem closes";
+    closureLede.textContent = "Zero eligible-but-failed problems remain in the fragment this scan covers.";
+    unsupportedCard.classList.add("closed");
+    unsupportedCard.innerHTML = `
+      <h3>0 eligible but failed, out of ${summary.totalScanned} theorems scanned</h3>
+      <p>Every theorem the scan's own eligibility check calls in scope for this fragment now closes
+        automatically, across five principled rule families — none of them added because one FraCaS
+        example happened to need it (see each family's own file header for its independent grounding).
+        That doesn't mean every FraCaS theorem is covered: ${summary.outsideFragment} are outside this
+        fragment entirely (a different head, like <span class="mono">No</span>/<span class="mono">Most</span>,
+        or no quantifier at all) and ${summary.trivial} are trivial restatements rather than genuine
+        substitution questions.</p>`;
   }
 })();
 </script>

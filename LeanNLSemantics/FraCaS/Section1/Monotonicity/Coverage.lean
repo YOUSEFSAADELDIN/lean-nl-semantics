@@ -17,12 +17,16 @@ so it can't go stale in one copy while another gets updated):
 | (early) | | Phase 1+2 (`mono_nl` alone) | 14 | 40 (25) | 15 | 462 |
 | 36308515404 | 390c6da | + Category B (`exist_nl`) | 14 | 57 (35) | 4 | 468 |
 | 36310612545 | b2da508 | + Phase 3 (`mono_nl_compose`, #123 only) | 14 | 59 (36) | 3 | 469 |
-| 36312200141 | 8934c04 | + Phase 4 (`exactly_atLeast`/`exactly_atMost` for #124, `some_entails_and` for #27) | 14 | 63 (**38**) | 1 | 471 |
+| 36312200141 | 8934c04 | + Phase 4 (`exactly_atLeast`/`exactly_atMost` for #124, `some_entails_and` for #27) | 14 | 63 (38) | 1 | 471 |
+| 36316374524 | 5628f63 | + Phase 5 (`entails_narrow`/`atMost_mono_scope_conditioned` for #044) | 14 | 65 (**39**) | **0** | 472 |
 
-The Phase 4 row is current: the one remaining eligible-but-failed problem
-is `044` (`atMost_trans`), left deliberately unsupported - see
-`Compose.lean`'s header for the precise architectural boundary (a genuine
-two-step rule chain, not a single synthesize-then-substitute step).
+The Phase 5 row is current: **zero** eligible-but-failed problems remain
+- every theorem this scan's own `isEligible`/`isTrivial` split calls
+genuinely eligible now closes automatically, across five principled
+extensions (Phase 1/2's substitution, Category B's existential-
+transfer/positive-cardinality, Phase 3/4's composition, Phase 5's
+conditioned narrowing), none of them a rule invented to fit one FraCaS
+example - see each phase's own file header for its grounding.
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella

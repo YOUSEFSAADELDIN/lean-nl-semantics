@@ -1,16 +1,16 @@
 {
   "summary": {
     "generatedFrom": {
-      "ciRun": 36313846108,
-      "commit": "219ecca095a482f51bfb17d5a5c5482ee0e86884",
-      "note": "trace/coverage numbers match CI run 36312200141 (commit 8934c04); this run only added the per-theorem 'attempting' log marker used to parse this export, no semantic change"
+      "ciRun": 36316374524,
+      "commit": "5628f6332d7bb7cdfab5b32e3c6ff0b885adbf6d",
+      "note": "Phase 5 (conditioned narrowing): closes #044, 0 eligible-but-failed remain"
     },
     "trivial": 14,
-    "proved": 63,
-    "distinctProblems": 38,
-    "eligibleFailed": 1,
+    "proved": 65,
+    "distinctProblems": 39,
+    "eligibleFailed": 0,
     "outsideFragment": 393,
-    "totalScanned": 471
+    "totalScanned": 472
   },
   "theorems": [
     {
@@ -374,8 +374,17 @@
     },
     {
       "theorem": "FraCaS.Section1.fracas_044",
-      "tactic": null,
-      "failed": true,
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "atMostMonoScopeConditioned",
+      "factHyp": "southernEurope",
+      "substFrom": "southernEurope",
+      "substTo": "portugal",
+      "narrow": {
+        "outer": null,
+        "inner": null,
+        "viaAux": "person"
+      },
       "problemId": 44,
       "problem": {
         "premises": [
@@ -386,7 +395,7 @@
         "hypothesis": "There are few committee members from Portugal.",
         "answer": "yes"
       },
-      "ruleFamily": null
+      "ruleFamily": "Phase 5: conditioned narrowing (entails_narrow)"
     },
     {
       "theorem": "FraCaS.Section1.Monotonicity.fracas_059_via_mono_nl",
@@ -1002,6 +1011,31 @@
         "answer": "undef"
       },
       "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_044_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "atMostMonoScopeConditioned",
+      "factHyp": "southernEurope",
+      "substFrom": "southernEurope",
+      "substTo": "portugal",
+      "narrow": {
+        "outer": null,
+        "inner": null,
+        "viaAux": "person"
+      },
+      "problemId": 44,
+      "problem": {
+        "premises": [
+          "Few committee members are from southern Europe.",
+          "All committee members are people.",
+          "All people who are from Portugal are from southern Europe."
+        ],
+        "hypothesis": "There are few committee members from Portugal.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 5: conditioned narrowing (entails_narrow)"
     },
     {
       "theorem": "FraCaS.Section1.Monotonicity.fracas_063_via_mono_nl",
