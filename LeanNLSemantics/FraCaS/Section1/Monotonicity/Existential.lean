@@ -4,32 +4,26 @@ import LeanNLSemantics.FraCaS.Section2.Plurals
 /-!
 # `exist_nl`: existential-import / quantifier-strength (Category B)
 
-**Validation status**: two real bugs found via CI so far, both isolated
-to `applyWithDecidableSide`'s numeral-side-condition discharge (the
+**Validation status**: four attempts, all isolated to
+`applyWithDecidableSide`'s numeral-side-condition discharge (the
 `atLeastSome`/`exactlySome` rules; `mostSome` needs no side fact and
-built/ran correctly from the first CI run). (1) Commit `786f9c6` called
-`Lean.Elab.Tactic.run` + `evalTactic (decide)`, but that function lives
-in `TermElabM`, not `MetaM`, and cannot be invoked from this file's
-plain-`MetaM` helpers - a build failure. (2) Commit `025d76e`'s
-hand-rolled `MetaM`-only replacement compiled, but silently failed to
-close `atLeastSome`/`exactlySome` goals (confirmed via CI: `mostSome`
-alone succeeded) - it skipped the `mkExpectedPropHint` step Lean core's
-own equivalent function relies on to force the `decide p`-reduces-to-
-`true` check during elaboration. (3) Commit `18abd7b` switched to calling
-`Lean.Meta.mkDecideProof` directly (core's own function, not a
-reimplementation) - but CI showed the *exact same* `atLeastSome`/
-`exactlySome` failure, unchanged, which means the real break is earlier
-in `applyWithDecidableSide` (most likely the `mkAppM lemmaName (preArgs
-++ #[sideMVar, mainFact])` call itself, given switching the decide-proof
-step changed nothing) and the outer `catch _ => pure none` has been
-silently swallowing it both times. This revision replaces the blanket
-catch with per-step `logInfo` so the next CI run's info log shows the
-real exception message instead of another guess. Every other API this
-file uses is one Phase 1/2 already confirmed working (`introAll`,
-`extractPQ`, `extractN`, `nameOf`, `liftMetaTactic1`) except
-`mkFreshExprMVar none` (a metavariable with no type yet, only assigned
-later by unification inside `mkAppM`), isolated to
-`applyWithDecidableSide`.
+built/ran correctly from the first CI run). (1) `786f9c6` called
+`Lean.Elab.Tactic.run` + `evalTactic (decide)` from `MetaM` - `TermElabM`
+can't be invoked there, a build failure. (2)/(3) `025d76e`/`18abd7b` both
+tried leaving the side-condition as an UNTYPED metavariable
+(`mkFreshExprMVar none`) for `mkAppM`'s own unification to discover its
+type, varying only how its eventual proof was built - both compiled but
+silently failed identically (confirmed via CI both times). (4) Diagnostic
+logging (`3b688ae`) surfaced why: `mkAppM` refuses to unify an
+unconstrained-`Sort` metavariable's type against a concrete expected type
+at all (`Application type mismatch: ?m.13 : ?m.12 ... expected 3 ≥ 1`) -
+the untyped-metavariable design was broken from the start, independent of
+how it was discharged. `applyWithDecidableSide` now reads the concrete
+side-condition type off a *partial* application of `lemmaName` instead
+(no untyped metavariable anywhere) - see its own doc comment for the
+mechanism. Every other API this file uses is one Phase 1/2 already
+confirmed working (`introAll`, `extractPQ`, `extractN`, `nameOf`,
+`liftMetaTactic1`).
 
 ## The semantic principle(s), characterized before writing any tactic
 code (per the instruction this file was scoped under)
@@ -120,43 +114,54 @@ directly against `Plurals.lean`: same `{A} [Fintype A] (n) (P Q)
 `P`/`Q`/`n` back out correctly without any change to `Tactic.lean`. -/
 def exactlyHead : Lean.Name := ``FraCaS.Section2.Exactly
 
-/-- Builds `lemmaName` applied to `preArgs ++ [sideCondition, mainFact]`,
-leaving the side-condition as a metavariable whose *type* - `n ≥ 1`,
-`n ≠ 0`, whatever the lemma's own signature says at that position - is
-discovered by `mkAppM`'s own unification, not independently reconstructed
-here, then discharges it via `Lean.Meta.mkDecideProof` (core's own
+/-- Builds `lemmaName` applied to `preArgs ++ [sideProof, mainFact]`. The
+side-condition's *type* - `n ≥ 1`, `n ≠ 0`, whatever the lemma's own
+signature says at that position - is read off directly from `lemmaName`'s
+own Pi type: `mkAppM lemmaName preArgs` builds the *partial* application
+(only `preArgs` supplied; `mkAppM` fills in the intervening implicit/
+instance binders but does not require the explicit arity to be
+saturated), leaving a `∀ (sideCond) (mainFact), _` Pi whose domain is
+exactly the concrete side-condition Prop we need (already instantiated
+with `preArgs`' own `n`/`P`/`Q`, no free variables left). That gets
+discharged via `Lean.Meta.mkDecideProof` (core's own
 `of_decide_eq_true`-via-`mkExpectedPropHint` recipe for a decidable
 proposition that reduces to `true` - every FraCaS instance's `n` is a
-concrete numeral). Returns `none`, not a thrown error, on any failure -
-callers keep searching other candidates.
+concrete numeral), then plugged into the *full* application alongside
+`mainFact`. Returns `none`, not a thrown error, on any failure - callers
+keep searching other candidates.
 
-CI's first run of this file (commit `786f9c6`) tried to discharge this
-side-condition via `Lean.Elab.Tactic.run` + `evalTactic (decide)`, which
-lives in `TermElabM` and cannot be invoked from a plain `MetaM` action - a
-genuine type mismatch. A hand-rolled `MetaM`-only replacement (commit
-`025d76e`) compiled but silently failed to close the goal (skipped the
-`mkExpectedPropHint` step core's own implementation relies on to force
-the `decide p`-reduces-to-`true` check). Calling `Lean.Meta.mkDecideProof`
-directly - core's own function, not a reimplementation - fixes both. -/
+**Validation status** - three attempts before this one, each confirmed
+via CI: (1) commit `786f9c6` discharged the side-condition via
+`Lean.Elab.Tactic.run` + `evalTactic (decide)`, which lives in `TermElabM`
+and cannot be invoked from a plain `MetaM` action - a build failure.
+(2)/(3) commits `025d76e`/`18abd7b` instead tried leaving the side
+condition as an UNTYPED metavariable (`mkFreshExprMVar none`) for
+`mkAppM`'s own unification to discover its type, varying only *how* the
+metavariable's eventual proof was constructed - both compiled but
+silently failed identically. Diagnostic logging (commit `3b688ae`)
+surfaced the real reason: `mkAppM` does not unify an unconstrained-`Sort`
+metavariable's type against a concrete expected type at all (`Application
+type mismatch: ?m.13 : ?m.12 ... but is expected to have type 3 ≥ 1`) -
+the untyped-metavariable design itself was broken from the start, not
+whatever discharged it. This version never creates that metavariable:
+`sideTy` is read off a concrete partial application instead, so nothing
+needs that unification to happen. -/
 def applyWithDecidableSide (lemmaName : Lean.Name) (preArgs : Array Expr) (mainFact : Expr) :
     MetaM (Option Expr) := do
-  let sideMVar ← mkFreshExprMVar none (kind := .synthetic)
-  let some proof ← (try some <$> mkAppM lemmaName (preArgs ++ #[sideMVar, mainFact])
-      catch e => do
-        logInfo m!"applyWithDecidableSide: mkAppM {lemmaName} failed: {e.toMessageData}"
-        pure none)
-    | return none
-  let sideTy ← instantiateMVars (← inferType sideMVar)
-  let some sideProof ← (try some <$> mkDecideProof sideTy
-      catch e => do
-        logInfo m!"applyWithDecidableSide: mkDecideProof on {sideTy} failed: {e.toMessageData}"
-        pure none)
-    | return none
   try
-    sideMVar.mvarId!.assign sideProof
-    some <$> instantiateMVars proof
+    let partialApp ← mkAppM lemmaName preArgs
+    let partialTy ← inferType partialApp
+    let some sideTy :=
+        (match partialTy with
+          | .forallE _ dom _ _ => some dom
+          | _ => none)
+      | do
+        logInfo m!"applyWithDecidableSide: {lemmaName}'s partial application isn't a Pi (got {partialTy})"
+        return none
+    let sideProof ← mkDecideProof sideTy
+    some <$> mkAppM lemmaName (preArgs ++ #[sideProof, mainFact])
   catch e =>
-    logInfo m!"applyWithDecidableSide: final assign/instantiate failed: {e.toMessageData}"
+    logInfo m!"applyWithDecidableSide: {lemmaName} failed: {e.toMessageData}"
     pure none
 
 /-- The Category-B tactic - see this file's header for the two
