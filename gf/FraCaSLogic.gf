@@ -442,4 +442,27 @@ abstract FraCaSLogic =
     -- mips_N ("500 MIPS", a computer-speed unit) - genuine dictionary
     -- gap, checked directly.
     mips_N : N ;
+    -- Section 7 (Temporal Reference), problems 251-308 (311-325 are
+    -- skipped entirely - see FraCaSLogicEng.gf's own comment on why).
+    -- first_A ("his first novel") - no plain ordinal adjective exists
+    -- in DictEngAbs (only compounds like first_class_A/firstborn_A),
+    -- checked directly - self-declared as an ordinary A, same
+    -- "self-declare the literal string" move as fourLegged_A.
+    first_A : A ;
+    -- birmingham_PN - not in DictEngAbs (checked directly), FraCaS's
+    -- own recurring city.
+    birmingham_PN : PN ;
+    -- This section's own recurring temporal PPs ("since 1992", "in
+    -- 1993", "in March 1993", "in two hours", "for two years", "every
+    -- month") are each self-declared as a fixed Adv rather than built
+    -- from a general Year/Duration subsystem - the same "disproportionate
+    -- machinery for a one-off adverbial" reasoning as onTuesday_Adv
+    -- (Section 3) and atFourOClock_Adv (Section 4), just with more of
+    -- them at once since this section repeats the pattern across many
+    -- distinct years/durations.
+    since1992_Adv, in1991_Adv, in1992_Adv, in1993_Adv, in1996_Adv : Adv ;
+    inMarch1993_Adv, in1994_Adv, inJuly1994_Adv : Adv ;
+    inTwoHours_Adv, inOneHour_Adv, inTwoYears_Adv : Adv ;
+    forTwoYears_Adv, forAYear_Adv, forAnHour_Adv, forTwoHours_Adv : Adv ;
+    everyMonth_Adv, everyWeek_Adv : Adv ;
 }

@@ -1096,6 +1096,17 @@ if __name__ == "__main__":
         # translating the sentence but losing the very relation each
         # problem is about. Every sentence still gets a real GF tree
         # (see run_gf_tests.py's own comment on this section).
+        #
+        # FraCaS Section 7 (Temporal Reference), problems 251-325: also
+        # deliberately NOT added - the strongest case yet for skipping,
+        # since this section's own Lean formalization is ALREADY almost
+        # entirely abstract (bare `Nat`/`Prop` variables, never
+        # accumulating named concrete predicates the way Sections 1-6
+        # do), so there is no real Lean-side content translate_cl's
+        # generic fusion could even usefully cross-check against here.
+        # Every buildable sentence still gets a real GF tree (a
+        # representative sample, not one per Lean theorem - see
+        # run_gf_tests.py's own comment on this section for why).
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

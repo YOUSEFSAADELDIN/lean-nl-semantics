@@ -95,6 +95,25 @@ concrete FraCaSLogicEng of FraCaSLogic =
     apcom_PN = mkPN "APCOM" ;
     itelComputer_N = mkN "ITEL computer" "ITEL computers" ;
     mips_N = mkN "MIPS" "MIPS" ;
+    first_A = mkA "first" ;
+    birmingham_PN = mkPN "Birmingham" ;
+    since1992_Adv = mkAdv "since 1992" ;
+    in1991_Adv = mkAdv "in 1991" ;
+    in1992_Adv = mkAdv "in 1992" ;
+    in1993_Adv = mkAdv "in 1993" ;
+    in1996_Adv = mkAdv "in 1996" ;
+    inMarch1993_Adv = mkAdv "in March 1993" ;
+    in1994_Adv = mkAdv "in 1994" ;
+    inJuly1994_Adv = mkAdv "in July 1994" ;
+    inTwoHours_Adv = mkAdv "in two hours" ;
+    inOneHour_Adv = mkAdv "in one hour" ;
+    inTwoYears_Adv = mkAdv "in two years" ;
+    forTwoYears_Adv = mkAdv "for two years" ;
+    forAYear_Adv = mkAdv "for a year" ;
+    forAnHour_Adv = mkAdv "for an hour" ;
+    forTwoHours_Adv = mkAdv "for two hours" ;
+    everyMonth_Adv = mkAdv "every month" ;
+    everyWeek_Adv = mkAdv "every week" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -1054,3 +1073,61 @@ concrete FraCaSLogicEng of FraCaSLogic =
 --
 -- This completes FraCaS Section 6 (all 31 problems, 220-250) in the
 -- GF/RGL toolchain.
+--
+-- FraCaS Section 7 (Temporal Reference), problems 251-325
+-- (Section7/Batch1-5.lean) - the largest FraCaS section, and, uniquely
+-- among all nine, one whose Lean formalization is ALREADY almost
+-- entirely abstract: most theorems are bare Nat/Prop variables or pure
+-- True/False countermodels, never accumulating named concrete
+-- predicates the way Sections 1-6 do. Given that, this section's own
+-- GF checks are a REPRESENTATIVE SAMPLE of each distinct English
+-- construction FraCaS uses (state+"since"+year, accomplishment+"in N
+-- hours", event-ordering "before"/"after" with named individuals,
+-- durative "for N"), not one check per Lean theorem the way every
+-- earlier section's checks are - many problems here literally share
+-- the same premise/hypothesis text (e.g. 255-257 all use "ITEL has
+-- made a loss since 1992"/"...in 1993"), so building each shared
+-- sentence once is more honest than many near-duplicate labels. See
+-- run_gf_tests.py's own comment on this section for the full
+-- breakdown and reasoning.
+--
+-- 311-325 are skipped entirely (each combines several constructions
+-- this grammar has no combinator for at once - embedded modal "would",
+-- passive "had been duped", nested attitude-verb complements, specific
+-- calendar dates), as are 259/260 (specific calendar-date arithmetic).
+--
+-- New self-declared words: birmingham_PN, first_A (no plain ordinal
+-- adjective exists in DictEngAbs), and this section's own recurring
+-- temporal adverbials (since1992_Adv, in1991_Adv..in1996_Adv,
+-- inMarch1993_Adv, in1994_Adv, inJuly1994_Adv, inTwoHours_Adv,
+-- inOneHour_Adv, inTwoYears_Adv, forTwoYears_Adv, forAYear_Adv,
+-- forAnHour_Adv, forTwoHours_Adv, everyMonth_Adv, everyWeek_Adv) - each
+-- a fixed Adv, same "disproportionate machinery for a one-off
+-- adverbial" reasoning as onTuesday_Adv (Section 3)/atFourOClock_Adv
+-- (Section 4). Every other word already exists in DictEngAbs.
+--
+-- after_Subj (Structural, already free) newly exercised this section
+-- for the "after" half of every event-ordering sentence, alongside
+-- before_Subj. AdvS/SubjS's own fixed clause-ordering (subordinate
+-- clause always fronted) means "Smith left before Jones left" comes
+-- out "before Jones left, Smith left" - the same accepted reordering
+-- as Sections 2/4.
+--
+-- Progressive aspect ("was running a business") is dropped to plain
+-- past ("ran a business") throughout, since Idiom's ProgrVP is
+-- unavailable (see Section 3's own comment on why). "Spent N hours/
+-- years V-ing" (a gerund-complement construction under "spend") is
+-- skipped throughout for the same reason as 311-325 - genuinely new
+-- machinery not worth building for sentences whose own Lean content is
+-- pure Nat arithmetic never tied to a GF tree in the first place.
+--
+-- Nothing added to translate.py this section either, for the
+-- strongest version yet of Sections 5/6's own reasoning - see
+-- translate.py's own comment.
+--
+-- This completes the buildable portion of FraCaS Section 7 (problems
+-- 251-308, minus 259/260's own documented exclusion, get real GF
+-- sentences - a representative sample, not one per problem, per this
+-- comment's own reasoning; 276/305/309/310 are FraCaS's own degenerate
+-- problems, already skipped by FraCaS/Types.lean; 311-325 are skipped
+-- here for the construction-gap reasons above) in the GF/RGL toolchain.

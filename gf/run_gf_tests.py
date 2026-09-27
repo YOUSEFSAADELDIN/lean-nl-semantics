@@ -2372,6 +2372,417 @@ _SECTION6_TENSED_CHECKS = [
     ),
 ]
 
+# FraCaS Section 7 (Temporal Reference), problems 251-325
+# (Section7/Batch1-5.lean) - the largest FraCaS section, and, uniquely
+# among all nine, one whose Lean formalization is ALREADY almost
+# entirely abstract: most theorems here are bare `Nat`/`Prop` variables
+# (`tSmith tJones : Nat`, `madeALoss : Nat -> Prop`) or pure True/False
+# countermodels, never accumulating named concrete predicates the way
+# Sections 1-6 do. Given that, this section's own GF checks are a
+# REPRESENTATIVE SAMPLE of each distinct English construction FraCaS
+# uses (state+"since"+year, accomplishment+"in N hours", event-
+# ordering "before"/"after" with named individuals, durative "for N"),
+# not one check per Lean theorem the way every earlier section's own
+# checks are - many of 251-325's problems literally share the same
+# premise/hypothesis text across several problem numbers (e.g. 255-257
+# all use "ITEL has made a loss since 1992"/"...in 1993"), so building
+# each shared sentence once and noting its reuse in this comment is
+# more honest than fifteen near-duplicate labels.
+#
+# 311-325 are skipped entirely: each combines several constructions
+# this grammar has no combinator for at once (embedded modal "would",
+# passive "had been duped", nested attitude-verb complements, specific
+# calendar dates like "Saturday, July 14th") - genuinely disproportionate
+# to build from scratch for problems whose own Lean formalizations are
+# already pure Nat arithmetic or countermodels never tied to a GF tree.
+# 259/260 (specific calendar-date arithmetic) are skipped for the same
+# reason.
+#
+# New self-declared words (all checked directly against DictEngAbs
+# first): birmingham_PN, first_A (no plain ordinal adjective exists,
+# only compounds like first_class_A), and this section's own recurring
+# temporal adverbials - since1992_Adv, in1991_Adv..in1996_Adv,
+# inMarch1993_Adv, in1994_Adv, inJuly1994_Adv, inTwoHours_Adv,
+# inOneHour_Adv, inTwoYears_Adv, forTwoYears_Adv, forAYear_Adv,
+# forAnHour_Adv, forTwoHours_Adv, everyMonth_Adv, everyWeek_Adv - each
+# self-declared as a fixed Adv rather than built from a general Year/
+# Duration subsystem, same "disproportionate machinery for a one-off
+# adverbial" reasoning as onTuesday_Adv (Section 3)/atFourOClock_Adv
+# (Section 4), just with many more of them at once. Every other word
+# already exists in DictEngAbs.
+#
+# after_Subj (Structural, already free - a genuine "before"/"after"
+# subordinator pair, not just before_Subj alone) newly exercised this
+# section for the "after" half of every event-ordering sentence.
+# AdvS/SubjS's own fixed clause-ordering (subordinate clause always
+# fronted, same as Section 2's "if" and Section 4's "before") means
+# "Smith left before Jones left" comes out "before Jones left, Smith
+# left" - the same accepted reordering as those sections.
+#
+# A few deliberate simplifications, same spirit as every earlier
+# section: progressive aspect ("was running a business", "was writing
+# a report") is dropped to plain past ("ran a business", "wrote a
+# report") throughout, since Idiom's ProgrVP is unavailable (see
+# Section 3's own comment on why) and this section never needs the
+# progressive/non-progressive contrast to be visible in the GF
+# rendering itself. "Spent N hours/years V-ing" (a gerund-complement
+# construction under "spend", recurring across ~2/2 285/286, 289,
+# 291-293, 296) is skipped throughout - genuinely new grammatical
+# machinery (GerundNP exists in Extend, but "spend" taking a duration
+# NP plus a bare gerund adjunct has no confirmed combinator) that would
+# take real effort to get right for sentences whose own Lean content
+# is, again, pure Nat arithmetic never tied to a GF tree.
+BASE_CHECKS += [
+    (
+        "fracas_251_premise",
+        "linearize PredVP (UsePN itel_PN) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN factory_N) (PrepNP in_Prep (UsePN birmingham_PN)))))",
+        "ITEL has a factory in Birmingham",
+    ),
+]
+
+_SECTION7_TENSED_CHECKS = [
+    (
+        "fracas_252_premise1",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (UseComp (CompAdv (PrepNP in_Prep (UsePN birmingham_PN)))) since1992_Adv)))",
+        "ITEL has been in Birmingham since 1992",
+    ),
+    (
+        "fracas_252_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (UseComp (CompAdv (PrepNP in_Prep (UsePN birmingham_PN)))) in1993_Adv)))",
+        "ITEL was in Birmingham in 1993",
+    ),
+    (
+        "fracas_253_premise",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a develop_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN editor_N)))) since1992_Adv)))",
+        "ITEL has developed a new editor since 1992",
+    ),
+    (
+        "fracas_253_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a develop_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN editor_N)))) in1993_Adv)))",
+        "ITEL developed a new editor in 1993",
+    ),
+    (
+        "fracas_254_premise",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (UseV expand_V) since1992_Adv)))",
+        "ITEL has expanded since 1992",
+    ),
+    (
+        "fracas_254_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (UseV expand_V) in1993_Adv)))",
+        "ITEL expanded in 1993",
+    ),
+    (
+        "fracas_255_premise",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumSg) (UseN loss_N))) since1992_Adv)))",
+        "ITEL has made a loss since 1992",
+    ),
+    (
+        "fracas_255_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumSg) (UseN loss_N))) in1993_Adv)))",
+        "ITEL made a loss in 1993",
+    ),
+    (
+        "fracas_258_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (AdvVP (ComplSlash (SlashV2a found_V2) (UsePN itel_PN)) inMarch1993_Adv)))",
+        "APCOM founded ITEL in March 1993",
+    ),
+    (
+        "fracas_258_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (UseV exist_V) in1992_Adv)))",
+        "ITEL existed in 1992",
+    ),
+    (
+        "fracas_261_premise1",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "before Jones left Smith left",
+    ),
+    (
+        "fracas_261_hypothesis",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN anderson_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "before Anderson left Smith left",
+    ),
+    (
+        "fracas_262_premise1",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "after Jones left Smith left",
+    ),
+    (
+        "fracas_262_hypothesis",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN anderson_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "after Anderson left Smith left",
+    ),
+    (
+        "fracas_263_premise1",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseComp (CompAP (PositA present_A))))))",
+        "after Jones left Smith was present",
+    ),
+    (
+        "fracas_263_premise2",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN anderson_PN) (UseComp (CompAP (PositA present_A)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V))))",
+        "after Anderson was present Jones left",
+    ),
+    (
+        "fracas_264_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V)))",
+        "Smith left",
+    ),
+    (
+        "fracas_264_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))",
+        "Jones left",
+    ),
+    (
+        "fracas_267_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
+        "Jones revised the contract",
+    ),
+    (
+        "fracas_267_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
+        "Smith revised the contract",
+    ),
+    (
+        "fracas_267_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))))))",
+        "before Smith revised the contract Jones revised the contract",
+    ),
+    (
+        "fracas_267_hypothesis",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))))))",
+        "after Jones revised the contract Smith revised the contract",
+    ),
+    (
+        "fracas_269_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V)))",
+        "Smith swam",
+    ),
+    (
+        "fracas_269_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV swim_V)))",
+        "Jones swam",
+    ),
+    (
+        "fracas_269_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV swim_V))))",
+        "before Smith swam Jones swam",
+    ),
+    (
+        "fracas_269_hypothesis",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV swim_V))))",
+        "after Smith swam Jones swam",
+    ),
+    (
+        "fracas_270_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N))))))",
+        "Smith swam to the shore",
+    ),
+    (
+        "fracas_270_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N))))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N)))))))",
+        "before Smith swam to the shore Jones swam to the shore",
+    ),
+    (
+        "fracas_270_hypothesis",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N))))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N)))))))",
+        "after Smith swam to the shore Jones swam to the shore",
+    ),
+    (
+        "fracas_273_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))))",
+        "Smith wrote the report",
+    ),
+    (
+        "fracas_273_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))))))",
+        "before Smith wrote the report Jones wrote the report",
+    ),
+    (
+        "fracas_273_hypothesis",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))))))",
+        "after Jones wrote the report Smith wrote the report",
+    ),
+    (
+        "fracas_275_premise",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a lose_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN temper_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N))))))",
+        "before he lost his temper Smith left the meeting",
+    ),
+    (
+        "fracas_275_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a lose_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN temper_N)))))",
+        "Smith lost his temper",
+    ),
+    (
+        "fracas_277_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) in1991_Adv)))",
+        "Smith lived in Birmingham in 1991",
+    ),
+    (
+        "fracas_277_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) in1992_Adv)))",
+        "Smith lived in Birmingham in 1992",
+    ),
+    (
+        "fracas_278_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (AdjCN (PositA first_A) (UseN novel_N)))) in1991_Adv)))",
+        "Smith wrote his first novel in 1991",
+    ),
+    (
+        "fracas_278_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (AdjCN (PositA first_A) (UseN novel_N)))) in1992_Adv)))",
+        "Smith wrote his first novel in 1992",
+    ),
+    (
+        "fracas_279_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN novel_N))) in1991_Adv)))",
+        "Smith wrote a novel in 1991",
+    ),
+    (
+        "fracas_279_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (UsePron it_Pron)) in1992_Adv)))",
+        "Smith wrote it in 1992",
+    ),
+    (
+        "fracas_280_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN novel_N))) in1992_Adv)))",
+        "Smith wrote a novel in 1992",
+    ),
+    (
+        "fracas_281_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant IndefArt NumSg) (UseN business_N))) in1991_Adv)))",
+        "Smith ran a business in 1991",
+    ),
+    (
+        "fracas_281_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a run_V2) (UsePron it_Pron)) in1992_Adv)))",
+        "Smith ran it in 1992",
+    ),
+    (
+        "fracas_282_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a discover_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN species_N)))) in1991_Adv)))",
+        "Smith discovered a new species in 1991",
+    ),
+    (
+        "fracas_282_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a discover_V2) (UsePron it_Pron)) in1992_Adv)))",
+        "Smith discovered it in 1992",
+    ),
+    (
+        "fracas_283_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a discover_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN species_N)))) in1992_Adv)))",
+        "Smith discovered a new species in 1992",
+    ),
+    (
+        "fracas_284_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inTwoHours_Adv)))",
+        "Smith wrote a report in two hours",
+    ),
+    (
+        "fracas_287_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inOneHour_Adv)))",
+        "Smith wrote a report in one hour",
+    ),
+    (
+        "fracas_288_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))",
+        "Smith wrote a report",
+    ),
+    (
+        "fracas_289_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a discover_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN species_N)))) inTwoHours_Adv)))",
+        "Smith discovered a new species in two hours",
+    ),
+    (
+        "fracas_290_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a discover_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN species_N))))))",
+        "Smith discovered a new species",
+    ),
+    (
+        "fracas_291_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a discover_V2) (DetCN many_Det (AdjCN (PositA new_A) (UseN species_N)))) inTwoHours_Adv)))",
+        "Smith discovered many new species in two hours",
+    ),
+    (
+        "fracas_292_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN business_N))) inTwoYears_Adv)))",
+        "Smith ran his business in two years",
+    ),
+    (
+        "fracas_294_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN business_N)))))",
+        "Smith ran his business",
+    ),
+    (
+        "fracas_295_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN chain_N) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (UseN business_N)))))) inTwoYears_Adv)))",
+        "Smith owned a chain of businesses in two years",
+    ),
+    (
+        "fracas_297_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN chain_N) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (UseN business_N))))))))",
+        "Smith owned a chain of businesses",
+    ),
+    (
+        "fracas_298_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forTwoYears_Adv)))",
+        "Smith lived in Birmingham for two years",
+    ),
+    (
+        "fracas_298_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forAYear_Adv)))",
+        "Smith lived in Birmingham for a year",
+    ),
+    (
+        "fracas_300_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN)))))",
+        "Smith lived in Birmingham",
+    ),
+    (
+        "fracas_301_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN business_N))) forTwoYears_Adv)))",
+        "Smith ran his business for two years",
+    ),
+    (
+        "fracas_301_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN business_N))) forAYear_Adv)))",
+        "Smith ran his business for a year",
+    ),
+    (
+        "fracas_303_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) forTwoHours_Adv)))",
+        "Smith wrote a report for two hours",
+    ),
+    (
+        "fracas_303_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) forAnHour_Adv)))",
+        "Smith wrote a report for an hour",
+    ),
+    (
+        "fracas_306_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a discover_V2) (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA new_A) (UseN species_N)))) forTwoYears_Adv)))",
+        "Smith discovered new species for two years",
+    ),
+    (
+        "fracas_306_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a discover_V2) (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA new_A) (UseN species_N))))))",
+        "Smith discovered new species",
+    ),
+    (
+        "fracas_307_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (AdvVP (ComplSlash (SlashV2a send_V2) (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN progress_N) (UseN report_N)))) everyMonth_Adv) in1994_Adv)))",
+        "ITEL sent a progress report every month in 1994",
+    ),
+    (
+        "fracas_307_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a send_V2) (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN progress_N) (UseN report_N)))) inJuly1994_Adv)))",
+        "ITEL sent a progress report in July 1994",
+    ),
+    (
+        "fracas_308_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV write_V) (PrepNP to_Prep (DetCN (DetQuant IndefArt NumSg) (UseN representativeMasc_N)))) everyWeek_Adv)))",
+        "Smith wrote to a representative every week",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -2442,6 +2853,7 @@ CHECKS = (
     + _SECTION4_TENSED_CHECKS
     + _SECTION5_TENSED_CHECKS
     + _SECTION6_TENSED_CHECKS
+    + _SECTION7_TENSED_CHECKS
 )
 
 
