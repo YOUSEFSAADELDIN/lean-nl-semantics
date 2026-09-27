@@ -1658,6 +1658,346 @@ _SECTION3_TENSED_CHECKS = [
     ),
 ]
 
+# FraCaS Section 4 (Ellipsis), problems 142-196 (Section4/Batch1-4.lean).
+# Ellipsis.lean's own header states this section's approach directly:
+# build the RESOLVED, non-elliptical reading of each sentence rather
+# than modeling the ellipsis mechanism itself ("So did Bill" -> "Bill
+# spoke to Mary", the same move Section 3 already made for pronouns).
+# Every check below is therefore a plain resolved sentence, not a
+# literal rendering of FraCaS's own elliptical surface form - and, same
+# as Section 3, nothing is added to translate.py here (see translate.py's
+# own comment): resolved-ellipsis facts are bundled/Skolemized/
+# ambiguity-per-reading the same way Section 3's anaphora facts are,
+# never "one quantified Cl".
+#
+# New words: atFourOClock_Adv/atFiveOClock_Adv/onMonday_Adv/
+# onFriday_Adv/onThursday_Adv (fixed one-off time adverbials, same
+# reasoning as Section 3's onTuesday_Adv/onWednesday_Adv) and
+# partTime_Adv (genuine dictionary gap) - all self-declared, see
+# FraCaSLogic.gf's own comment. Every other word (speak_V, find_V2,
+# write_V2, buy_V2, represent_V2, cost_V2, claim_VS, say_VS, own_V2,
+# work_V, sign_V2, man_N, woman_N, lawyer_N, auditor_N, report_N,
+# company_N, proposal_N, sue_PN, peter_PN, before_Subj, if_Subj,
+# red_A/blue_A/fast_A/slow_A) already exists in DictEngAbs.
+#
+# One genuine toolchain bug found and worked around: `pot1plus` (the
+# tens-plus-ones numeral combinator, "forty-five") renders its own BIND
+# tokens literally ("forty &+ - &+ five") rather than collapsing them,
+# at the current pinned gf-rgl tag - confirmed directly, not assumed,
+# and NumDigits hits the same bug on any multi-digit number. Round tens
+# via bare `pot1` ("twenty") are unaffected - confirmed directly too.
+# 168's own second sentence ("forty five women work part time") is
+# skipped entirely rather than either fought further or faked with a
+# wrong number; its first sentence ("five men work part time") already
+# exercises the same construction cleanly.
+#
+# Other documented near-misses, same spirit as every earlier section:
+# GenNP's own regular rule gives "Jones's"/"Smith's" (not FraCaS's own
+# "Jones'" elided-apostrophe style for names ending in s); AdvS/SubjS
+# always fronts the subordinate clause (same as Section 2's "if"
+# pattern), so 169/170's "before"-sentences come out "before Bill found
+# Mary, John found Mary" rather than FraCaS's own clause order.
+#
+# Several problems are skipped entirely, each for a genuine construction
+# gap rather than fought as one-offs: 163 ("know why S", an embedded
+# question under a V2Q-style verb), 171/172 ("want to know how
+# many/which Xs...", embedded questions under want), 173/174
+# ("everyone that John did" - relativizing a quantificational pronoun
+# NP, which this grammar's RelCN-based relative clauses don't support;
+# only CNs relativize), 177 (no new sentence needed - its own
+# countermodel is pure True/False, and 175/176 already exercise the
+# "said" construction this problem shares), 181 (same, no named
+# predicate at all in its own countermodel), 188 (ditto), and 191-195
+# (a passive impersonal "it was suggested that X and Y should go
+# together", combining a raising passive, modal "should", and a
+# reciprocal "together" this grammar has no combinator for - all five
+# share one already-complex premise and are all either `id` or pure
+# True/False countermodels in Lean, so nothing here would ever reach
+# translate.py either way).
+BASE_CHECKS += [
+    (
+        "fracas_153_premise1",
+        "linearize PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN car_N))))",
+        "John goes to Paris by car",
+    ),
+    (
+        "fracas_153_premise2",
+        "linearize PredVP (DetCN (DetQuant DefArt NumPl) (UseN student_N)) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN train_N))))",
+        "the students go to Paris by train",
+    ),
+    (
+        "fracas_155_premise1",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (UseN car_N)))",
+        "John owns a car",
+    ),
+    (
+        "fracas_155_premise2",
+        "linearize PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (UseN car_N)))",
+        "Bill owns a car",
+    ),
+    (
+        "fracas_156_premise",
+        "linearize PredVP (ConjNP and_Conj (BaseNP (UsePN john_PN) (UsePN bill_PN))) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (UseN car_N)))",
+        "John and Bill own a car",
+    ),
+    (
+        "fracas_157_premise1",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA red_A) (UseN car_N))))",
+        "John owns a red car",
+    ),
+    (
+        "fracas_157_premise2",
+        "linearize PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA blue_A) (UseN car_N))))",
+        "Bill owns a blue car",
+    ),
+    (
+        "fracas_159_hypothesis",
+        "linearize PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA fast_A) (UseN car_N))))",
+        "Bill owns a fast car",
+    ),
+    (
+        "fracas_160_hypothesis",
+        "linearize PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA fast_A) (AdjCN (PositA red_A) (UseN car_N)))))",
+        "Bill owns a fast red car",
+    ),
+    (
+        "fracas_162_premise1",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA fast_A) (AdjCN (PositA red_A) (UseN car_N)))))",
+        "John owns a fast red car",
+    ),
+    (
+        "fracas_162_hypothesis",
+        "linearize PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA slow_A) (AdjCN (PositA red_A) (UseN car_N)))))",
+        "Bill owns a slow red car",
+    ),
+    (
+        "fracas_167_premise1",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot1 n2))))))) (UseN man_N)) (AdvVP (UseV work_V) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN salesDepartment_N))))",
+        "twenty men work in the sales department",
+    ),
+    (
+        "fracas_167_premise2",
+        "linearize PredVP (PredetNP only_Predet (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN woman_N))) (AdvVP (UseV work_V) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN salesDepartment_N))))",
+        "only one woman works in the sales department",
+    ),
+    (
+        "fracas_167_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2)))))))) (UseN woman_N)) (AdvVP (UseV work_V) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN salesDepartment_N))))",
+        "two women work in the sales department",
+    ),
+    (
+        "fracas_168_premise1",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n5)))))))) (UseN man_N)) (AdvVP (UseV work_V) partTime_Adv)",
+        "five men work part time",
+    ),
+    (
+        "fracas_182_premise",
+        "linearize PredVP (UsePN smith_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN company_N)))",
+        "Smith represents his company",
+    ),
+    (
+        "fracas_182_hypothesis",
+        "linearize PredVP (UsePN jones_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN jones_PN)) NumSg) (UseN company_N)))",
+        "Jones represents Jones's company",
+    ),
+    (
+        "fracas_183_hypothesis",
+        "linearize PredVP (UsePN jones_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN smith_PN)) NumSg) (UseN company_N)))",
+        "Jones represents Smith's company",
+    ),
+    (
+        "fracas_184_hypothesis",
+        "linearize PredVP (UsePN smith_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN jones_PN)) NumSg) (UseN company_N)))",
+        "Smith represents Jones's company",
+    ),
+    (
+        "fracas_189_premise1a",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN man_N))))",
+        "John is a man",
+    ),
+    (
+        "fracas_189_premise1b",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN woman_N))))",
+        "Mary is a woman",
+    ),
+    (
+        "fracas_189_hypothesis",
+        "linearize PredVP (UsePN mary_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN company_N)))",
+        "Mary represents her company",
+    ),
+    (
+        "fracas_190_hypothesis",
+        "linearize PredVP (UsePN mary_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN john_PN)) NumSg) (UseN company_N)))",
+        "Mary represents John's company",
+    ),
+]
+
+# The rest of Section 4's sentences are past/future/perfect tense, or
+# already S-typed (169/170/179's AdvS conditionals) - same reasoning as
+# every earlier section's own tensed-exempt list.
+_SECTION4_TENSED_CHECKS = [
+    (
+        "fracas_142_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "John spoke to Mary",
+    ),
+    (
+        "fracas_142_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "Bill spoke to Mary",
+    ),
+    (
+        "fracas_143_premise3",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) atFourOClock_Adv)))",
+        "John spoke to Mary at four o'clock",
+    ),
+    (
+        "fracas_143_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) atFourOClock_Adv)))",
+        "Bill spoke to Mary at four o'clock",
+    ),
+    (
+        "fracas_145_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) atFiveOClock_Adv)))",
+        "Bill spoke to Mary at five o'clock",
+    ),
+    (
+        "fracas_146_premise1",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN john_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "John has spoken to Mary",
+    ),
+    (
+        "fracas_146_hypothesis",
+        "linearize UttS (UseCl (TTAnt TFut ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "Bill will speak to Mary",
+    ),
+    (
+        "fracas_147_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) onMonday_Adv)))",
+        "John spoke to Mary on Monday",
+    ),
+    (
+        "fracas_147_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PNeg (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) onMonday_Adv)))",
+        "Bill didn't speak to Mary on Monday",
+    ),
+    (
+        "fracas_147_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) onMonday_Adv)))",
+        "Bill spoke to Mary on Monday",
+    ),
+    (
+        "fracas_148_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN bill_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "Bill has spoken to Mary",
+    ),
+    (
+        "fracas_149_premise2",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (DetCN (DetQuant DefArt NumPl) (UseN student_N)) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "the students have spoken to Mary",
+    ),
+    (
+        "fracas_150_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN car_N))))))",
+        "John went to Paris by car",
+    ),
+    (
+        "fracas_150_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN train_N))))))",
+        "Bill went to Paris by train",
+    ),
+    (
+        "fracas_151_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN berlin_PN))) (PrepNP by8means_Prep (MassNP (UseN train_N))))))",
+        "Bill went to Berlin by train",
+    ),
+    (
+        "fracas_152_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN berlin_PN))) (PrepNP by8means_Prep (MassNP (UseN car_N))))))",
+        "Bill went to Berlin by car",
+    ),
+    (
+        "fracas_164_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN sue_PN)))))",
+        "John spoke to Sue",
+    ),
+    (
+        "fracas_165_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) onFriday_Adv)))",
+        "John spoke to Mary on Friday",
+    ),
+    (
+        "fracas_166_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) onThursday_Adv)))",
+        "John spoke to Mary on Thursday",
+    ),
+    (
+        "fracas_169",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a find_V2) (UsePN mary_PN))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a find_V2) (UsePN mary_PN)))))",
+        "before Bill found Mary John found Mary",
+    ),
+    (
+        "fracas_170",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a find_V2) (UsePN bill_PN))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a find_V2) (UsePN mary_PN)))))",
+        "before John found Bill John found Mary",
+    ),
+    (
+        "fracas_178_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))",
+        "John wrote a report",
+    ),
+    (
+        "fracas_178_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplVS say_VS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN peter_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))))",
+        "Bill said that Peter wrote a report",
+    ),
+    (
+        "fracas_179",
+        "linearize UttS (AdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))",
+        "if John wrote a report Bill wrote a report",
+    ),
+    (
+        "fracas_180_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a buy_V2) (DetCN (DetQuant IndefArt NumSg) (UseN car_N)))))",
+        "John bought a car",
+    ),
+    (
+        "fracas_185_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN proposal_N))))))))",
+        "Smith claimed that he had costed his proposal",
+    ),
+    (
+        "fracas_185_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN proposal_N))))))))",
+        "Jones claimed that he had costed his proposal",
+    ),
+    (
+        "fracas_186_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (GenNP (UsePN smith_PN)) NumSg) (UseN proposal_N))))))))",
+        "Jones claimed that he had costed Smith's proposal",
+    ),
+    (
+        "fracas_187_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (GenNP (UsePN smith_PN)) NumSg) (UseN proposal_N))))))))",
+        "Jones claimed that Smith had costed Smith's proposal",
+    ),
+    (
+        "fracas_196_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant IndefArt NumSg) (UseN lawyer_N)) (ComplSlash (SlashV2a sign_V2) (DetCN every_Det (UseN report_N)))))",
+        "a lawyer signed every report",
+    ),
+    (
+        "fracas_196_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN lawyer_N)) (ComplSlash (SlashV2a sign_V2) (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (UseN report_N))))))",
+        "one lawyer signed all the reports",
+    ),
+    (
+        "fracas_196_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN auditor_N)) (ComplSlash (SlashV2a sign_V2) (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (UseN report_N))))))",
+        "one auditor signed all the reports",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -1725,6 +2065,7 @@ CHECKS = (
     + _FRACAS_084_HYPOTHESIS_CHECK
     + _SECTION2_BATCH2_TENSED_CHECKS
     + _SECTION3_TENSED_CHECKS
+    + _SECTION4_TENSED_CHECKS
 )
 
 

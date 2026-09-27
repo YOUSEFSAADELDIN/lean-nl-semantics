@@ -408,4 +408,19 @@ abstract FraCaSLogic =
     -- sidesteps the whole module rather than debugging it, for a
     -- construction only these three sentences need.
     missing_A : A ;
+    -- Section 4 (Ellipsis), problems 142-196: this section's own
+    -- philosophy (Ellipsis.lean's header) is to build the RESOLVED,
+    -- non-elliptical reading of each sentence directly - "Bill spoke
+    -- to Mary" rather than modeling "So did Bill" as a literal
+    -- ellipsis construction - the same move Section 3 already made for
+    -- pronouns. That keeps this section's own vocabulary needs small:
+    -- atFourOClock_Adv/atFiveOClock_Adv/onMonday_Adv/onFriday_Adv/
+    -- onThursday_Adv (fixed one-off time adverbials, same
+    -- "disproportionate to build the real Weekday/clock-time
+    -- subsystem for one sentence" reasoning as onTuesday_Adv/
+    -- onWednesday_Adv in Section 3) and partTime_Adv ("work part
+    -- time" - genuine dictionary gap, checked directly).
+    atFourOClock_Adv, atFiveOClock_Adv : Adv ;
+    onMonday_Adv, onFriday_Adv, onThursday_Adv : Adv ;
+    partTime_Adv : Adv ;
 }

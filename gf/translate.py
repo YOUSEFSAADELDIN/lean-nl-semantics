@@ -1060,6 +1060,15 @@ if __name__ == "__main__":
         # expects. Every sentence in this section still gets a real,
         # independently-confirmed GF tree (see run_gf_tests.py's own
         # comment on this section for the full per-problem breakdown).
+        #
+        # FraCaS Section 4 (Ellipsis), problems 142-196: also
+        # deliberately NOT added here, for the same reason - Ellipsis.lean's
+        # own header explains this section builds the RESOLVED,
+        # non-elliptical reading of each sentence by hand rather than
+        # modeling ellipsis itself, the same "resolved bundled fact, not
+        # one quantified Cl" shape as Section 3's anaphora. Every
+        # sentence still gets a real GF tree (see run_gf_tests.py's own
+        # comment on this section).
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

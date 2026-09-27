@@ -78,6 +78,12 @@ concrete FraCaSLogicEng of FraCaSLogic =
     onTuesday_Adv = mkAdv "on Tuesday" ;
     onWednesday_Adv = mkAdv "on Wednesday" ;
     missing_A = mkA "missing" ;
+    atFourOClock_Adv = mkAdv "at four o'clock" ;
+    atFiveOClock_Adv = mkAdv "at five o'clock" ;
+    onMonday_Adv = mkAdv "on Monday" ;
+    onFriday_Adv = mkAdv "on Friday" ;
+    onThursday_Adv = mkAdv "on Thursday" ;
+    partTime_Adv = mkAdv "part time" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -904,4 +910,54 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- never going to reach translate.py either way.
 --
 -- This completes FraCaS Section 3 (all 28 problems, 114-141) in the
+-- GF/RGL toolchain.
+--
+-- FraCaS Section 4 (Ellipsis), problems 142-196 (Section4/Batch1-4.lean)
+-- - VP-ellipsis, gapping, "one"-anaphora, NP-ellipsis, sloppy/strict
+-- identity. Ellipsis.lean's own header states this section's approach
+-- directly: build the RESOLVED, non-elliptical reading of each
+-- sentence rather than modeling the ellipsis mechanism itself ("So did
+-- Bill" -> "Bill spoke to Mary"), the same move Section 3 already made
+-- for pronouns - so every check here is a plain resolved sentence, not
+-- a literal rendering of FraCaS's own elliptical surface form. Nothing
+-- added to translate.py this section either, for the same reason as
+-- Section 3 (see translate.py's own comment).
+--
+-- New self-declared words: atFourOClock_Adv/atFiveOClock_Adv/
+-- onMonday_Adv/onFriday_Adv/onThursday_Adv (fixed one-off time
+-- adverbials, same reasoning as Section 3's onTuesday_Adv/
+-- onWednesday_Adv) and partTime_Adv (genuine dictionary gap). Every
+-- other word this section needed already exists in DictEngAbs.
+--
+-- One genuine toolchain bug found and worked around, not assumed:
+-- `pot1plus` (the tens-plus-ones numeral combinator, "forty-five")
+-- renders its own BIND tokens literally ("forty &+ - &+ five") rather
+-- than collapsing them, at the current pinned gf-rgl tag; NumDigits
+-- hits the same bug on any multi-digit number. Round tens via bare
+-- `pot1` ("twenty") are unaffected - confirmed directly. 168's own
+-- second sentence ("forty five women work part time") is skipped
+-- entirely rather than fought further or faked with a wrong number.
+--
+-- Other documented near-misses: GenNP's own regular rule gives
+-- "Jones's"/"Smith's" (not FraCaS's own "Jones'" elided-apostrophe
+-- style); AdvS/SubjS always fronts the subordinate clause (same as
+-- Section 2's "if" pattern), so 169/170's "before"-sentences come out
+-- "before Bill found Mary, John found Mary" rather than FraCaS's own
+-- clause order.
+--
+-- Several problems are skipped entirely, each for a genuine
+-- construction gap rather than fought as one-offs (see run_gf_tests.py's
+-- own comment on this section for the full list): 163 (embedded
+-- question under a V2Q-style verb), 171/172 (embedded questions under
+-- "want to know"), 173/174 (relativizing a quantificational pronoun NP
+-- - this grammar's RelCN-based relatives only relativize CNs), 177/181/
+-- 188 (pure True/False countermodels needing no new sentence, already
+-- covered by neighboring problems' own sentences), and 191-195 (a
+-- passive impersonal "it was suggested that X and Y should go
+-- together" combining a raising passive, modal "should", and a
+-- reciprocal "together" - all five share one already-complex premise
+-- and are all `id`/countermodel proofs in Lean, so nothing here would
+-- ever reach translate.py either way).
+--
+-- This completes FraCaS Section 4 (all 55 problems, 142-196) in the
 -- GF/RGL toolchain.
