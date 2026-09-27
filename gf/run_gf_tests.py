@@ -1998,6 +1998,214 @@ _SECTION4_TENSED_CHECKS = [
     ),
 ]
 
+# FraCaS Section 5 (Adjectives), problems 197-219 (Section5/Batch1-2.lean).
+# Intersective/subsective/privative adjective distinctions - noun/
+# adjective-drop for affirmative adjectives, the opposite entailment
+# for privatives ("former"), adjective ordering with a stacked
+# privative+affirmative pair, contrary (not contradictory) comparison-
+# class adjectives, comparatives via ComparA, and extensional vs.
+# intensional comparison classes. Every sentence here is a plain
+# present-tense copula predication - by far the simplest section's
+# worth of GF sentences so far, no new module needed. Self-declares
+# dumbo_PN, fido_PN, kim_PN (FraCaS's own recurring cast - mickey_PN
+# and bill_PN are NOT here, both already free from DictEngAbs) and
+# fourLegged_A (genuine dictionary gap). Every other word (diamond_N,
+# genuine_A, former_A, successful_A, mammal_N, animal_N, mouse_N,
+# elephant_N, small_A, large_A, fat_A, competent_A, clever_A,
+# politician_N, legal_A, authority_N, law_N, lecturer_N) already
+# exists in DictEngAbs.
+#
+# ComparA : A -> NP -> AP ("warmer than I", Adjective module, already
+# extended) gives every comparative here directly - "smaller than
+# Dumbo" via `UseComp (CompAP (ComparA small_A (UsePN dumbo_PN)))`, and
+# "a fatter politician than Bill" via `AdjCN (ComparA fat_A (UsePN
+# bill_PN)) politician_N` - confirmed to place the comparative AFTER
+# the noun ("a politician fatter than Bill"), not before it, since the
+# AP now carries its own "than Bill" complement; standard English
+# placement for a "heavy" AP, and equally faithful to the meaning, not
+# a bug.
+#
+# The one real trap hit here: "all mice are small animals"/"all
+# elephants are large animals"/etc use a bare `all_Det` at first,
+# which doesn't exist (a genuine "Function all_Det is not in scope"
+# error, caught locally) - this project's own established pattern for
+# "all Xs are Ys" is `PredetNP all_Predet` wrapping a bare-plural
+# `DetCN (DetQuant IndefArt NumPl) cn`, same as Section 2's own
+# all_Predet uses, not a dedicated determiner.
+BASE_CHECKS += [
+    (
+        "fracas_197_premise",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA genuine_A) (UseN diamond_N))))",
+        "John has a genuine diamond",
+    ),
+    (
+        "fracas_197_hypothesis",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (UseN diamond_N)))",
+        "John has a diamond",
+    ),
+    (
+        "fracas_198_premise",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA former_A) (CompoundCN (UseN university_N) (UseN student_N))))))",
+        "John is a former university student",
+    ),
+    (
+        "fracas_198_hypothesis",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN university_N) (UseN student_N)))))",
+        "John is a university student",
+    ),
+    (
+        "fracas_199_premise",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA successful_A) (AdjCN (PositA former_A) (CompoundCN (UseN university_N) (UseN student_N)))))))",
+        "John is a successful former university student",
+    ),
+    (
+        "fracas_199_hypothesis",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompAP (PositA successful_A)))",
+        "John is successful",
+    ),
+    (
+        "fracas_202_premise",
+        "linearize PredVP (DetCN every_Det (UseN mammal_N)) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN animal_N))))",
+        "every mammal is an animal",
+    ),
+    (
+        "fracas_202_hypothesis",
+        "linearize PredVP (DetCN every_Det (AdjCN (PositA fourLegged_A) (UseN mammal_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA fourLegged_A) (UseN animal_N)))))",
+        "every four-legged mammal is a four-legged animal",
+    ),
+    (
+        "fracas_203_premise",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA fourLegged_A) (UseN animal_N)))))",
+        "Dumbo is a four-legged animal",
+    ),
+    (
+        "fracas_203_hypothesis",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompAP (PositA fourLegged_A)))",
+        "Dumbo is four-legged",
+    ),
+    (
+        "fracas_204_premise",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
+        "fracas_205_premise",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
+    ),
+    (
+        "fracas_208_hypothesis",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompAP (ComparA small_A (UsePN dumbo_PN))))",
+        "Mickey is smaller than Dumbo",
+    ),
+    (
+        "fracas_209_hypothesis",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompAP (ComparA large_A (UsePN dumbo_PN))))",
+        "Mickey is larger than Dumbo",
+    ),
+    (
+        "fracas_210_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN mouse_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "all mice are small animals",
+    ),
+    (
+        "fracas_210_premise2",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN mouse_N)))))",
+        "Mickey is a large mouse",
+    ),
+    (
+        "fracas_211_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN elephant_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "all elephants are large animals",
+    ),
+    (
+        "fracas_211_premise2",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN elephant_N)))))",
+        "Dumbo is a small elephant",
+    ),
+    (
+        "fracas_212_hypothesis",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompAP (ComparA large_A (UsePN mickey_PN))))",
+        "Dumbo is larger than Mickey",
+    ),
+    (
+        "fracas_213_hypothesis",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompAP (PositA small_A)))",
+        "Mickey is small",
+    ),
+    (
+        "fracas_214_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA legal_A) (UseN authority_N)))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN law_N) (UseN lecturer_N)))))",
+        "all legal authorities are law lecturers",
+    ),
+    (
+        "fracas_214_premise2",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN law_N) (UseN lecturer_N)))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA legal_A) (UseN authority_N)))))",
+        "all law lecturers are legal authorities",
+    ),
+    (
+        "fracas_214_hypothesis",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA fat_A) (AdjCN (PositA legal_A) (UseN authority_N))))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA fat_A) (CompoundCN (UseN law_N) (UseN lecturer_N))))))",
+        "all fat legal authorities are fat law lecturers",
+    ),
+    (
+        "fracas_215_hypothesis",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA competent_A) (AdjCN (PositA legal_A) (UseN authority_N))))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA competent_A) (CompoundCN (UseN law_N) (UseN lecturer_N))))))",
+        "all competent legal authorities are competent law lecturers",
+    ),
+    (
+        "fracas_216_premise",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (ComparA fat_A (UsePN bill_PN)) (UseN politician_N)))))",
+        "John is a politician fatter than Bill",
+    ),
+    (
+        "fracas_216_hypothesis",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompAP (ComparA fat_A (UsePN bill_PN))))",
+        "John is fatter than Bill",
+    ),
+    (
+        "fracas_217_premise",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (ComparA clever_A (UsePN bill_PN)) (UseN politician_N)))))",
+        "John is a politician cleverer than Bill",
+    ),
+    (
+        "fracas_217_hypothesis",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompAP (ComparA clever_A (UsePN bill_PN))))",
+        "John is cleverer than Bill",
+    ),
+    (
+        "fracas_218_premise",
+        "linearize PredVP (UsePN kim_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA clever_A) (UseN person_N)))))",
+        "Kim is a clever person",
+    ),
+    (
+        "fracas_218_hypothesis",
+        "linearize PredVP (UsePN kim_PN) (UseComp (CompAP (PositA clever_A)))",
+        "Kim is clever",
+    ),
+    (
+        "fracas_219_premise",
+        "linearize PredVP (UsePN kim_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA clever_A) (UseN politician_N)))))",
+        "Kim is a clever politician",
+    ),
+]
+
+# 206/207's own premises are already S-typed (built via `UseCl ... PNeg
+# (...)` directly to get the negative polarity), not a bare Cl -
+# same reasoning as every earlier tensed-exempt list.
+_SECTION5_TENSED_CHECKS = [
+    (
+        "fracas_206_premise",
+        "linearize UseCl (TTAnt TPres ASimul) PNeg (PredVP (UsePN fido_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N))))))",
+        "Fido isn't a small animal",
+    ),
+    (
+        "fracas_207_premise",
+        "linearize UseCl (TTAnt TPres ASimul) PNeg (PredVP (UsePN fido_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N))))))",
+        "Fido isn't a large animal",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -2066,6 +2274,7 @@ CHECKS = (
     + _SECTION2_BATCH2_TENSED_CHECKS
     + _SECTION3_TENSED_CHECKS
     + _SECTION4_TENSED_CHECKS
+    + _SECTION5_TENSED_CHECKS
 )
 
 

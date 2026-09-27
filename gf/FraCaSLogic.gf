@@ -423,4 +423,12 @@ abstract FraCaSLogic =
     atFourOClock_Adv, atFiveOClock_Adv : Adv ;
     onMonday_Adv, onFriday_Adv, onThursday_Adv : Adv ;
     partTime_Adv : Adv ;
+    -- Section 5 (Adjectives), problems 197-219: dumbo_PN/fido_PN/
+    -- kim_PN (FraCaS's own recurring cast, not in a general-purpose
+    -- dictionary - same reasoning as smith_PN/mfi_PN/etc. above;
+    -- mickey_PN and bill_PN are NOT here, both already exist in
+    -- DictEngAbs). fourLegged_A ("a four-legged animal") - genuine
+    -- dictionary gap, checked directly.
+    dumbo_PN, fido_PN, kim_PN : PN ;
+    fourLegged_A : A ;
 }

@@ -84,6 +84,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
     onFriday_Adv = mkAdv "on Friday" ;
     onThursday_Adv = mkAdv "on Thursday" ;
     partTime_Adv = mkAdv "part time" ;
+    dumbo_PN = mkPN "Dumbo" ;
+    fido_PN = mkPN "Fido" ;
+    kim_PN = mkPN "Kim" ;
+    fourLegged_A = mkA "four-legged" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -960,4 +964,42 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- ever reach translate.py either way).
 --
 -- This completes FraCaS Section 4 (all 55 problems, 142-196) in the
+-- GF/RGL toolchain.
+--
+-- FraCaS Section 5 (Adjectives), problems 197-219 (Section5/Batch1-2.lean)
+-- - intersective/subsective/privative adjective distinctions, adjective
+-- ordering with a stacked privative+affirmative pair, contrary (not
+-- contradictory) comparison-class adjectives, comparatives, and
+-- extensional vs. intensional comparison classes. Every sentence here
+-- is a plain present-tense copula predication - the simplest section's
+-- worth of GF sentences so far, no new module needed.
+--
+-- ComparA : A -> NP -> AP ("warmer than I", Adjective, already
+-- extended) gives every comparative directly. Confirmed directly (not
+-- assumed): a "heavy" AP with its own "than X" complement, used inside
+-- AdjCN, is placed AFTER the noun ("a politician fatter than Bill"),
+-- not before it - standard English placement for this kind of AP, not
+-- a bug, and equally faithful to FraCaS's own "a fatter politician
+-- than Bill".
+--
+-- New self-declared words: dumbo_PN, fido_PN, kim_PN (FraCaS's own
+-- recurring cast - mickey_PN and bill_PN are NOT here, both already
+-- free from DictEngAbs) and fourLegged_A (genuine dictionary gap).
+-- Every other word this section needed already exists in DictEngAbs.
+--
+-- One real trap hit and fixed: "all mice are small animals" etc. don't
+-- use a bare `all_Det` (a genuine "Function all_Det is not in scope"
+-- error, caught locally) - this project's own established "all Xs are
+-- Ys" pattern is `PredetNP all_Predet` wrapping a bare-plural DetCN,
+-- same as Section 2's own all_Predet uses, confirmed working directly.
+--
+-- Nothing added to translate.py this section either, for a different
+-- reason from Sections 3/4: this section's whole point is per-
+-- adjective entailment behavior (intersective vs. privative vs.
+-- subsective, extensional vs. intensional comparison classes), and
+-- translate_cl's own generic CN/VP-fusion would collapse exactly that
+-- distinction into one opaque predicate name rather than translating
+-- it faithfully - see translate.py's own comment.
+--
+-- This completes FraCaS Section 5 (all 23 problems, 197-219) in the
 -- GF/RGL toolchain.

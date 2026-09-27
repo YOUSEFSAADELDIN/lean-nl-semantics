@@ -1069,6 +1069,22 @@ if __name__ == "__main__":
         # one quantified Cl" shape as Section 3's anaphora. Every
         # sentence still gets a real GF tree (see run_gf_tests.py's own
         # comment on this section).
+        #
+        # FraCaS Section 5 (Adjectives), problems 197-219: also
+        # deliberately NOT added, despite most of its sentences being
+        # simple enough to fit translate_cl's existing shapes (a named-
+        # individual copula fact or an "Every CN1 CN2" universal) - the
+        # reason is different from Sections 3/4's own: this section's
+        # whole point is PER-ADJECTIVE entailment behavior (intersective
+        # "genuine diamond" licenses noun/adjective-drop; privative
+        # "former student" doesn't; subsective "small"/"large" are
+        # contrary; comparison classes are extensional or intensional),
+        # and _restrictor_expr/_scope_name's own generic CN/VP-fusion
+        # would collapse exactly that distinction into one opaque
+        # predicate name ("genuineDiamond") - silently discarding the
+        # very thing each problem is testing, not just translating it
+        # coarser. Every sentence still gets a real GF tree (see
+        # run_gf_tests.py's own comment on this section).
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")
