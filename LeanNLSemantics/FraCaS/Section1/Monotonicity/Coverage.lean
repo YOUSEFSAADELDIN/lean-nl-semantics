@@ -250,6 +250,14 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
     -- whichever of the three tactics runs *last* always has the most
     -- complete diagnosis, and the earlier two's messages are discarded
     -- unread rather than compared, not merely unused by accident.
+    -- Marks which theorem the next batch of `mono_nl`/`exist_nl`/
+    -- `mono_nl_compose` trace `logInfo`s (if any) belongs to - the traces
+    -- themselves carry no theorem name (see `Trace.lean`'s header: they
+    -- describe one substitution/combine step, not which theorem it came
+    -- from), so an export script reading this job's log back needs this
+    -- marker to group them. Purely a log-format concern; changes nothing
+    -- about what gets proved or how.
+    logInfo m!"mono_nl_coverage: attempting {name}"
     let monoOutcome ← runTactic (← `(tactic| mono_nl))
     let outcome : Except String Unit ←
       match monoOutcome with
