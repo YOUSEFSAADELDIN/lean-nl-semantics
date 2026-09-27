@@ -165,9 +165,21 @@ consistency check, not a blind-prediction accuracy score.
   library covers many languages under one abstract syntax, so the
   abstract syntax and translator are language-agnostic already, but
   further languages aren't a near-term goal.
-- **LLM-assisted fallback** — for sentences outside the grammar's
-  coverage, an LLM-based formalization path checked against the
-  grammar's own output where both exist.
+- **Certified monotonicity/natural-logic reasoner** (`LeanNLSemantics/
+  FraCaS/Section1/Monotonicity/`) — in progress, not yet compiled. A
+  Lean tactic (`mono_nl`) that closes a small, explicitly scoped fragment
+  of FraCaS Section 1 goals automatically, by computing which argument
+  position of `Every`/`Some`/`AtLeast`/`AtMost` a substitution needs and
+  applying the one already-proved `GQ.lean` lemma that direction
+  licenses — replacing bespoke per-problem proof terms with one general,
+  sound (by construction, not by a separate reflected interpreter yet)
+  search procedure over eight rules, rather than adding more one-off
+  proofs by hand. Deliberately not an LLM-based path — every rule is
+  grounded in an already-proved lemma, the same "prove it, don't assume
+  it" standard the rest of this project holds to, not a probabilistic
+  fallback. See `Tactic.lean`'s own header for the exact fragment and
+  its current validation status (this sandbox's Lean toolchain fetch is
+  policy-denied this session, so nothing here is CI-confirmed yet).
 - **General natural-language inference** — a substantially larger,
   separate undertaking (open-vocabulary parsing, world/taxonomic
   knowledge, automated entailment over arbitrary sentences, more

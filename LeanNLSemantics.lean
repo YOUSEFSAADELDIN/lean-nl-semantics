@@ -19,6 +19,11 @@ import LeanNLSemantics.FraCaS.Section1.Batch2
 import LeanNLSemantics.FraCaS.Section1.Batch3
 import LeanNLSemantics.FraCaS.Section1.Batch4
 import LeanNLSemantics.FraCaS.Section1.Batch5
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Polarity
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Signature
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Trace
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.CrossCheck
 import LeanNLSemantics.FraCaS.Section2.Plurals
 import LeanNLSemantics.FraCaS.Section2.Batch1
 import LeanNLSemantics.FraCaS.Section2.Batch2
