@@ -10,12 +10,15 @@ not a fixable client misconfiguration the way the GF/`cabal` issue in
 `gf/NOTES.md` was), so no Lean toolchain can be fetched here - every
 confirmation of this file has come from CI, the same bridging role it
 played for `build-gf` before a local GF toolchain became available.
-Phase 1 (everything except the "Phase 2" search below) is confirmed: CI
-found and this file fixed one real bug (`whnf` over-unfolding the goal,
-see `introAll`'s comment) and then ran clean, closing 32 of 459 scanned
-FraCaS theorems with zero eligible-but-failed misses among them. Phase 2
-(the combine step below) has not been through CI yet - awaiting that run
-before treating it the same way.
+Phase 1 is confirmed: CI found and this file fixed one real bug (`whnf`
+over-unfolding the goal, see `introAll`'s comment) and then ran clean.
+Phase 2 (the combine step below) is confirmed as well - both are folded
+into the one `searchMonoNl` search below, exercised together on every CI
+run since. The running, CI-confirmed corpus-wide count this search
+closes (together with Category B/Phase 3/4, layered on top in the other
+files that reuse it) is tracked in exactly one place, `Coverage.lean`'s
+own header, rather than duplicated here where it would go stale - see
+that file for the current numbers.
 
 ## What the tactic does
 

@@ -3,13 +3,13 @@ import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 /-!
 # Phase-1 demonstration: `mono_nl` against the fourteen target problems
 
-**Validation status**: see `Tactic.lean`'s header. This file's first CI
-run found a real bug in `mono_nl` itself (`whnf` over-unfolding the goal,
+**Validation status**: see `Tactic.lean`'s header (and `Coverage.lean`'s,
+for the current running corpus-wide count). This file's first CI run
+found a real bug in `mono_nl` itself (`whnf` over-unfolding the goal,
 fixed there) via these exact fourteen theorems failing to elaborate -
 i.e. this cross-check already did its job once, catching a genuine
-mistake before it could be mistaken for a working tactic. Awaiting a
-second CI run against the fix before treating any of these fourteen as
-confirmed.
+mistake before it could be mistaken for a working tactic. Every theorem
+below, through #124/#27, has since been CI-confirmed green.
 
 Unlike `Section1/GFCrossCheck.lean`'s cross-check (two *independently
 arrived at* formalizations - a hand proof and a separately GF-translated

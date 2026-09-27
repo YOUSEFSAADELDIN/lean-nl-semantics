@@ -7,18 +7,22 @@ import LeanNLSemantics
 /-!
 # Corpus-wide coverage scan
 
-**Validation status**: the corrected four-way split (14 trivial / 40
-proved / 15 eligible-but-failed / 393 outside-fragment, out of 462) is
-CI-confirmed for `mono_nl` alone (Phase 1 + 2). CI run 36308515404
-confirmed `mono_nl` + `exist_nl` (Category B) together: 14 trivial, 57
-proved (35 distinct FraCaS problems), 4 eligible but failed, 393
-outside-fragment, out of 468. CI run 36310612545 confirmed adding
-`mono_nl_compose` (Phase 3, problem 123 only): 59 proved (36 distinct),
-3 eligible but failed, out of 469. This version widens what
-`mono_nl_compose` enumerates (Phase 4, `Compose.lean`'s own header) to
-also cover problems 124 and 27 - `044` (`atMost_trans`) is the one
-remaining eligible-but-failed problem, left deliberately unsupported -
-not yet run against this build.
+**Validation status** - the single, authoritative running log of this
+scan's CI-confirmed numbers (kept in exactly this one place, not
+duplicated in `Tactic.lean`'s/`CrossCheck.lean`'s own headers, precisely
+so it can't go stale in one copy while another gets updated):
+
+| CI run | commit | phase added | trivial | proved (distinct) | eligible-failed | scanned |
+|---|---|---|---|---|---|---|
+| (early) | | Phase 1+2 (`mono_nl` alone) | 14 | 40 (25) | 15 | 462 |
+| 36308515404 | 390c6da | + Category B (`exist_nl`) | 14 | 57 (35) | 4 | 468 |
+| 36310612545 | b2da508 | + Phase 3 (`mono_nl_compose`, #123 only) | 14 | 59 (36) | 3 | 469 |
+| 36312200141 | 8934c04 | + Phase 4 (`exactly_atLeast`/`exactly_atMost` for #124, `some_entails_and` for #27) | 14 | 63 (**38**) | 1 | 471 |
+
+The Phase 4 row is current: the one remaining eligible-but-failed problem
+is `044` (`atMost_trans`), left deliberately unsupported - see
+`Compose.lean`'s header for the precise architectural boundary (a genuine
+two-step rule chain, not a single synthesize-then-substitute step).
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella
