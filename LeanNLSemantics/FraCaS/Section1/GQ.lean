@@ -100,6 +100,22 @@ Q)` fact `every_mp`'s second premise's restrictor names). -/
 theorem entails_refl {A : Type*} (P : A → Prop) : Every P P :=
   fun _ hx => hx
 
+/-- `entails_and`'s mixed-quantifier sibling: `Some P Q` plus a fact
+holding everywhere on `P` (`Every P R`) gives `Some P (fun x => R x ∧ Q
+x)` - the witness `Some P Q` already supplies satisfies `R` too, since it
+satisfies `P`. This is the one new piece `some_trans`'s own recipe needs
+beyond what `every_trans`'s Phase-2 reconstruction already has: `Some P R
+→ Every P S → Every (fun x => S x ∧ R x) Q → Some P Q` (problem 27's "a
+few committee members are from Sweden; all committee members are people;
+all people from Sweden are from Scandinavia ⊢ some committee members are
+from Scandinavia") reduces to `some_mono_scope P (fun x => S x ∧ R x) Q
+(some_entails_and P R S h1 h2) h3` - `some_mono_scope` (already in
+`Signature.lean`'s table) doing the actual substitution, exactly as
+`every_trans` reduces to `entails_and` feeding `every_mono_scope`. -/
+theorem some_entails_and {A : Type*} (P Q R : A → Prop) :
+    Some P Q → Every P R → Some P (fun x => R x ∧ Q x) :=
+  fun ⟨x, hx, hqx⟩ h => ⟨x, hx, h x hx, hqx⟩
+
 /-- `Every P Q` plus a witness that `P` holds of something (recovered here
 from a second premise `Some P R`, not assumed outright) gives `Some P Q` —
 problems 2/3/4's "every X wants Y; some X are Z ⊢ some X want Y" shape.

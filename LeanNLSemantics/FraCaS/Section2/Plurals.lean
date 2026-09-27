@@ -59,6 +59,24 @@ theorem some_of_exactly {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
   simp only [Finset.mem_filter] at hx
   exact ⟨x, hx.2⟩
 
+/-- `Exactly n P Q` gives `AtLeast n P Q` (and dually `AtMost n P Q`,
+`exactly_atMost` below): `Exactly`/`AtLeast`/`AtMost` are all stated over
+the exact same `card (P∧Q)`, differing only in `=`/`≥`/`≤` — an equality
+trivially gives both inequalities it's sandwiched between. The other two
+directions of the same numeric-quantifier-strength hierarchy
+`some_of_exactly`/`atLeast_some`/`most_some` (Section1/GQ.lean) already
+draw on for their own "positive cardinality gives existence" principle -
+problem 124's own hand proof (`Section3/Batch1.lean`) already uses this
+exact term (`le_of_eq hex.symm`) inline; this just names it. -/
+theorem exactly_atLeast {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] (h : Exactly n P Q) : AtLeast n P Q :=
+  le_of_eq h.symm
+
+/-- See `exactly_atLeast` - the other direction of the same equality. -/
+theorem exactly_atMost {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] (h : Exactly n P Q) : AtMost n P Q :=
+  le_of_eq h
+
 /-- `Every P Q` lifts to `Most P Q`, given `P` is nonempty (100% is a
 majority, but only if there's anyone to be a majority *of*) — problem
 100's "clients were impressed [quasi-universal reading] ⊢ most clients

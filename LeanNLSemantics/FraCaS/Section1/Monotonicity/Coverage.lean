@@ -9,13 +9,16 @@ import LeanNLSemantics
 
 **Validation status**: the corrected four-way split (14 trivial / 40
 proved / 15 eligible-but-failed / 393 outside-fragment, out of 462) is
-CI-confirmed for `mono_nl` alone (Phase 1 + 2). CI run 36308515404 then
+CI-confirmed for `mono_nl` alone (Phase 1 + 2). CI run 36308515404
 confirmed `mono_nl` + `exist_nl` (Category B) together: 14 trivial, 57
 proved (35 distinct FraCaS problems), 4 eligible but failed, 393
-outside-fragment, out of 468. This version adds `mono_nl_compose`
-(Phase 3, `Compose.lean`) as a third tactic, tried whenever both `mono_nl`
-and `exist_nl` fail, before a theorem is counted eligible-but-failed -
-not yet run.
+outside-fragment, out of 468. CI run 36310612545 confirmed adding
+`mono_nl_compose` (Phase 3, problem 123 only): 59 proved (36 distinct),
+3 eligible but failed, out of 469. This version widens what
+`mono_nl_compose` enumerates (Phase 4, `Compose.lean`'s own header) to
+also cover problems 124 and 27 - `044` (`atMost_trans`) is the one
+remaining eligible-but-failed problem, left deliberately unsupported -
+not yet run against this build.
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella
@@ -155,8 +158,8 @@ def reasonBucket (msg : String) : String :=
     "goal's argument shape not recognized (extractPQ arg-count mismatch)"
   else if (msg.splitOn "outside the Category-B fragment").length > 1 then
     "Some-headed, but no stronger-quantifier or Every-plus-witness match (exist_nl)"
-  else if (msg.splitOn "outside the Phase-3 fragment").length > 1 then
-    "no matching Entails fact even after also trying exist_nl-synthesized shape facts (mono_nl_compose)"
+  else if (msg.splitOn "outside the Phase-3/4 fragment").length > 1 then
+    "no matching Entails fact even after also trying exist_nl/exactly_atLeast/exactly_atMost/some_entails_and-synthesized shape facts (mono_nl_compose)"
   else if (msg.splitOn "tactic left goals open").length > 1 then
     "tactic closed the goal only partially"
   else

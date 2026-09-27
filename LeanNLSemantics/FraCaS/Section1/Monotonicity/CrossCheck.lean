@@ -51,9 +51,17 @@ Problem 123, added for Phase 3 (`Compose.lean`), uses `mono_nl_compose`:
 its real proof composes `exist_nl`'s `mostSome` (deriving `Some
 reportsNeeded sentByItel` from `Most reportsNeeded sentByItel`) with
 `mono_nl`'s own `someMonoScope`, exactly the way `Section3/Batch1.lean`'s
-hand proof does - see `Compose.lean`'s header for why 124, the other
-remaining eligible-but-failed problem, does *not* reduce this way and was
-deliberately left alone.
+hand proof does.
+
+Problems 124 and 27, added for Phase 4 (`Compose.lean`), also use
+`mono_nl_compose` unchanged - only what it enumerates was widened. 124
+composes the new `exactly_atLeast` (`Exactly 2 P Q → AtLeast 2 P Q`) with
+`mono_nl`'s existing `atLeastMonoScope`; 27 composes the new
+`some_entails_and` (`Some P R → Every P S → Some P (S∧R)`) with `mono_nl`'s
+existing `someMonoScope` - see `Compose.lean`'s header for the full
+characterization, and for why 044 (`atMost_trans`), the last remaining
+eligible-but-failed problem, does *not* reduce this way and was left
+unsupported.
 -/
 namespace FraCaS.Section1.Monotonicity
 
@@ -274,5 +282,25 @@ theorem fracas_123_via_mono_nl_compose :
       Some reportsNeeded onDesk := by mono_nl_compose
 
 end P123
+
+section P124
+variable {A : Type*} [Fintype A] (missing removed : A → Prop)
+variable [DecidablePred fun x : A => True ∧ missing x] [DecidablePred fun x : A => True ∧ removed x]
+
+theorem fracas_124_via_mono_nl_compose :
+    Exactly 2 (fun _ : A => True) missing → (∀ x, missing x → removed x) →
+      AtLeast 2 (fun _ : A => True) removed := by mono_nl_compose
+
+end P124
+
+section P027
+variable {A : Type*} (committee swedish person scandinavian : A → Prop)
+
+theorem fracas_027_via_mono_nl_compose :
+    Some committee swedish → Every committee person →
+      Every (fun x => person x ∧ swedish x) scandinavian →
+        Some committee scandinavian := by mono_nl_compose
+
+end P027
 
 end FraCaS.Section1.Monotonicity
