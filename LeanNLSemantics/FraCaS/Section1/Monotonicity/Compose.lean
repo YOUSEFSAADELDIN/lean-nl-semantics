@@ -58,7 +58,7 @@ real hypothesis, exactly as before - actually matches what the goal
 needs. Nothing here proves anything `exist_nl` couldn't already prove on
 its own; it only makes those proofs available one level up.
 -/
-open Lean Lean.Meta
+open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic
 
 namespace FraCaS.Section1.Monotonicity
 
