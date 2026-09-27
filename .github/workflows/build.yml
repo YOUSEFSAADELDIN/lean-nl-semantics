@@ -30,6 +30,18 @@ jobs:
       - name: Build
         run: lake build
 
+      # Coverage.lean is deliberately not imported by anything (it itself
+      # imports the root LeanNLSemantics umbrella to scan every proved
+      # FraCaS theorem, so importing it back from that umbrella would be
+      # circular) - `lake build` above never touches it. Run it directly
+      # instead, reusing the oleans `lake build` just produced: its
+      # `#mono_nl_coverage` command logs, via plain `logInfo`, which of
+      # the 342 FraCaS theorems the Phase-1 monotonicity fragment closes
+      # automatically and which it doesn't, without this step adding any
+      # rule to make more of them fit.
+      - name: Monotonicity fragment coverage scan
+        run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/Coverage.lean
+
   # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
   # package with its own manifest, so a version conflict between this
   # repo's (unpinned, tracking `main`) Mathlib and linglib's own pinned
