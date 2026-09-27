@@ -62,19 +62,25 @@ jobs:
         run: lake build
 
   # Phase 3: build the GF toolchain from source and run the confirmed
-  # `linearize` checks (gf/run_gf_tests.py) automatically on every push,
-  # instead of relying on someone manually running `linearize` on a
-  # separate machine and eyeballing the output (see gf/NOTES.md for how
-  # every one of these gotchas was originally found that way).
+  # `linearize` checks (gf/run_gf_tests.py) automatically on every push.
+  # All 342 FraCaS problems' worth of sentence shapes (all nine
+  # sections, 633 linearize checks) were built and validated against a
+  # locally-built copy of this exact same toolchain (gf-core/gf-rgl
+  # pinned to the commits below) before ever being pushed - see
+  # gf/NOTES.md for the full setup and every gotcha hit getting there,
+  # including how a local toolchain build in this project's own
+  # sandbox, once thought blocked, turned out to be a fixable `cabal`
+  # TUF-signature issue instead.
   #
-  # GitHub's runners have normal internet access - no restrictive egress
-  # policy - unlike the sandbox this repo's own Lean/CI work is otherwise
-  # developed in, where installing GF's Haskell toolchain is blocked.
-  #
-  # continue-on-error while Section 1 coverage is actively being
-  # extended (many new sentence shapes in quick succession) - re-remove
-  # once that work settles down, same reasoning as when this was first
-  # added and then removed after a single proven-green run.
+  # continue-on-error removed: PR #13 (github.com/YOUSEFSAADELDIN/
+  # lean-nl-semantics/pull/13) proved this job green on real GitHub
+  # Actions across two separate runs against the local-toolchain-
+  # validated state above, confirming the local and CI environments
+  # agree - the "prove it, don't assume it" bar the rest of this
+  # project holds to. If a future pin change (gf-core/gf-rgl commit) or
+  # a genuinely new construction ever needs a soft-landing period
+  # again, re-add it deliberately with the same reasoning, not by
+  # default.
   #
   # gf-core and gf-rgl are pinned to the exact commit/tag already
   # confirmed working by hand (gf/NOTES.md), not `main`/latest, for
@@ -84,7 +90,6 @@ jobs:
   # language it knows, not just English, which is slow from scratch).
   build-gf:
     runs-on: ubuntu-latest
-    continue-on-error: true
     env:
       GF_CORE_COMMIT: 378bfe691041878ca9fadd4697f1e58dc1620931
       GF_RGL_TAG: "20260403"

@@ -165,6 +165,26 @@
 -- instead" pattern as most_Det/of_Prep/etc. above.
 abstract FraCaSLogic =
   Cat, Structural, Sentence, Tense, Noun, Adjective, Verb, Numeral, Adverb, Relative, Phrase,
+  -- Conjunction (ConjNP/BaseNP/ConsNP and friends) is FraCaS Section 2's
+  -- own first new requirement: named-individual subjects joined by
+  -- "and"/"or"/"either...or" ("Smith, Jones and Anderson signed the
+  -- contract"), never needed in Section 1 (every subject there was a
+  -- single quantified NP, not a list of proper nouns).
+  Conjunction,
+  -- Extend is Section 2 Batch2's own first new requirement: GenNP
+  -- (NP -> Quant, "this man's") gives a REAL prenominal genitive -
+  -- problem 99's "the system's performance" - unlike worlds_Det above
+  -- (Section 1 problem 1's "the world's greatest tenor"), which had to
+  -- be self-declared as a fixed string because no such combinator was
+  -- found at the time. Checked directly this time (gf-rgl/src/abstract/
+  -- Extend.gf, gf-rgl/src/english/ExtendEng.gf) before repeating that
+  -- same self-declaration: GenNP genuinely exists and is a real
+  -- cross-language module (every language has its own ExtendXxx.gf,
+  -- same as Numeral/Adverb/Relative above), so it's extended normally
+  -- rather than hand-copied. (worlds_Det itself is left as-is, not
+  -- retrofitted onto GenNP, since it already works and retrofitting
+  -- risks reopening an already-closed Section 1 check for no benefit.)
+  Extend,
   -- Extended the dictionary swap (originally piloted on win_V2 alone)
   -- to the rest of the 30 collisions checked directly against this
   -- grammar's own words, after comparing each one's real DictEng
@@ -209,6 +229,11 @@ abstract FraCaSLogic =
     -- so there's no single already-existing word with the right
     -- sg/pl pair to source from.
     person_N,
+    -- mp_N joins irishman_N/person_N as a third word excluded and
+    -- hand-declared instead: DictEngAbs's own `mp_N = mkN "mp" "mp's"`
+    -- is lowercase, but the actual abbreviation "MP"/"MPs" needs
+    -- capitalizing.
+    mp_N,
     quite_Adv, she_Pron, so_AdA,
     somebody_NP, something_NP, somewhere_Adv, that_Quant, that_Subj,
     there_Adv, they_Pron, this_Quant, through_Prep, to_Prep, too_AdA,
@@ -282,4 +307,169 @@ abstract FraCaSLogic =
     -- (AdjCN combines an AP with a CN, not two APs) - self-declared as
     -- its own fixed string instead, same pattern as worlds_Det/etc.
     northAmerican_A : A ;
+    -- Section 2's own new proper nouns: smith_PN/jones_PN/anderson_PN
+    -- (FraCaS's own recurring fictional cast for Section 2's contract-
+    -- signing problems) aren't in a general-purpose dictionary -
+    -- checked directly, same as every other word here, and unsurprising
+    -- for personal surnames (cf. pavarotti_PN, a real person, still
+    -- needed the same treatment in Section 1).
+    smith_PN, jones_PN, anderson_PN : PN ;
+    -- mp_N ("a Labour MP") is excluded above (joining irishman_N/
+    -- person_N) and hand-declared here instead: same casing mismatch,
+    -- "MP"/"MPs" not "mp"/"mp's".
+    mp_N : N ;
+    -- labour_A ("a Labour MP", the UK political party as an attributive
+    -- adjective) and noted_A ("noted philosophers") are both genuine
+    -- dictionary gaps - checked directly - self-declared as fixed
+    -- strings, same pattern as most_Det/of_Prep/etc.
+    labour_A, noted_A : A ;
+    -- exactly_AdN ("exactly two lawyers", problems 85/86) is the exact-
+    -- cardinality counterpart of Structural's own at_least_AdN/
+    -- at_most_AdN (both already free, same AdNum-wrapping mechanism) -
+    -- checked directly, no dictionary entry under this name.
+    exactly_AdN : AdN ;
+    -- Section 2 Batch2 (problems 98-113):
+    -- bug32985_PN ("Bug # 32-985 is a known software fault") - FraCaS's
+    -- own invented bug-tracker id, obviously not in any dictionary.
+    bug32985_PN : PN ;
+    -- known_A ("a known software fault") - genuine dictionary gap,
+    -- checked directly, same pattern as labour_A/noted_A above.
+    known_A : A ;
+    -- apcomManager_N ("an APCOM manager", problems 103/104) is FraCaS's
+    -- own fictional company name fused directly onto "manager" as ONE
+    -- lexical item (mkN "APCOM manager" "APCOM managers"), the same
+    -- move as northAmerican_A above, rather than trying to compound a
+    -- self-declared "APCOM" proper noun with manager_N via CompoundCN -
+    -- CompoundCN's own recipe always renders its first part in
+    -- singular-nominative (see this file's own comment on CompoundCN
+    -- above), which is irrelevant for an invariant acronym like "APCOM"
+    -- but adds a moving part for no benefit; fusing it as a single noun
+    -- also matches Batch2.lean's own fused `apcomManager` variable name.
+    apcomManager_N : N ;
+    -- likely_AdV ("Smith is likely to make a poor stock-market trader",
+    -- problem 101) is used as a preverbal manner adverb via Verb's own
+    -- AdVVP ("Smith likely makes...") rather than attempting the real
+    -- "NP is likely to VP" raising-adjective construction, which this
+    -- grammar has no combinator for (Extend's own PredVPS/VPI family
+    -- handles VV-controlled infinitives, not A-controlled ones) -
+    -- a documented simplification, the same spirit as this problem's own
+    -- Lean formalization already simplifying the generic to a plain
+    -- universal (see Batch2.lean's comment on fracas_101). Declared as
+    -- its own fixed AdV string rather than derived from likely_A via
+    -- PositAdvAdj, same "don't trust an unpinned RGL derivation, self-
+    -- declare the literal string instead" reasoning as cheap_Adv above.
+    likely_AdV : AdV ;
+    -- Section 3 (Anaphora), problems 114-141:
+    -- itel_PN, gfi_PN, mfi_PN, icm_PN (FraCaS's own recurring fictional
+    -- companies, same reasoning as smith_PN/jones_PN/anderson_PN
+    -- above) and r95103_PN ("R-95-103", problem 138's own invented
+    -- report id, same reasoning as bug32985_PN) aren't in a
+    -- general-purpose dictionary. mary_PN/john_PN/bill_PN/bt_PN are
+    -- NOT here - all four already exist in DictEngAbs, checked
+    -- directly, and are left free via the extends line.
+    itel_PN, gfi_PN, mfi_PN, icm_PN, r95103_PN : PN ;
+    -- customer_N/student_N: DictEngAbs only has gendered pairs
+    -- (customerMasc_N/customerFem_N, studentMasc_N/studentFem_N), no
+    -- plain gender-neutral form - the same gap person_N/mp_N filled
+    -- above, checked directly the same way.
+    customer_N, student_N : N ;
+    -- salesDepartment_N ("the sales department", problem 132) is
+    -- fused as one lexical item rather than built via CompoundCN:
+    -- CompoundCN's own recipe always forces its first noun into
+    -- singular-nominative (see this file's own comment on CompoundCN
+    -- above), which would wrongly give "sale department" - "sales"
+    -- stays plural in this compound irregularly, so it's self-declared
+    -- as a fixed string instead, same move as apcomManager_N.
+    salesDepartment_N : N ;
+    -- payrise_N ("a large payrise", problem 139) - genuine dictionary
+    -- gap (DictEngAbs only has the separate, un-compounded raise_N/
+    -- rise_N), checked directly.
+    payrise_N : N ;
+    -- dedicated_A ("a dedicated line", problem 131) - genuine
+    -- dictionary gap, checked directly.
+    dedicated_A : A ;
+    -- onTuesday_Adv/onWednesday_Adv (problem 127's "on Tuesday"/"on
+    -- Wednesday") are self-declared as fixed strings rather than built
+    -- from RGL's real Weekday/weekdayPunctualAdv subsystem - that
+    -- subsystem is disproportionate machinery for the one sentence
+    -- that needs it here (never reused elsewhere in this problem, and
+    -- this problem's own premise is a GF-sentence-only check, never
+    -- fed to translate.py), same "self-declare the literal string"
+    -- call as worlds_Det/most_Det/etc. above.
+    onTuesday_Adv, onWednesday_Adv : Adv ;
+    -- missing_A ("two out of ten machines are missing", problems
+    -- 124-126) is self-declared as a plain adjective rather than built
+    -- from miss_V via Idiom's ProgrVP ("be missing") - Idiom turned out
+    -- to be a genuinely broken extend for this grammar at the current
+    -- pinned gf-rgl tag (a real "unknown identifier CleftAdv" error at
+    -- PMCFG-generation time, caught locally before ever reaching CI,
+    -- not assumed), and DictEngAbs has no missing_A of its own either
+    -- (checked directly) - self-declaring the adjective directly
+    -- sidesteps the whole module rather than debugging it, for a
+    -- construction only these three sentences need.
+    missing_A : A ;
+    -- Section 4 (Ellipsis), problems 142-196: this section's own
+    -- philosophy (Ellipsis.lean's header) is to build the RESOLVED,
+    -- non-elliptical reading of each sentence directly - "Bill spoke
+    -- to Mary" rather than modeling "So did Bill" as a literal
+    -- ellipsis construction - the same move Section 3 already made for
+    -- pronouns. That keeps this section's own vocabulary needs small:
+    -- atFourOClock_Adv/atFiveOClock_Adv/onMonday_Adv/onFriday_Adv/
+    -- onThursday_Adv (fixed one-off time adverbials, same
+    -- "disproportionate to build the real Weekday/clock-time
+    -- subsystem for one sentence" reasoning as onTuesday_Adv/
+    -- onWednesday_Adv in Section 3) and partTime_Adv ("work part
+    -- time" - genuine dictionary gap, checked directly).
+    atFourOClock_Adv, atFiveOClock_Adv : Adv ;
+    onMonday_Adv, onFriday_Adv, onThursday_Adv : Adv ;
+    partTime_Adv : Adv ;
+    -- Section 5 (Adjectives), problems 197-219: dumbo_PN/fido_PN/
+    -- kim_PN (FraCaS's own recurring cast, not in a general-purpose
+    -- dictionary - same reasoning as smith_PN/mfi_PN/etc. above;
+    -- mickey_PN and bill_PN are NOT here, both already exist in
+    -- DictEngAbs). fourLegged_A ("a four-legged animal") - genuine
+    -- dictionary gap, checked directly.
+    dumbo_PN, fido_PN, kim_PN : PN ;
+    fourLegged_A : A ;
+    -- Section 6 (Comparatives), problems 220-250: FraCaS's own
+    -- recurring computer-market cast - pc6082_PN, itelXZ_PN, itelZX_PN,
+    -- itelZY_PN, apcom_PN - none in a general-purpose dictionary (itel_PN
+    -- itself is NOT here, already self-declared in Section 3).
+    pc6082_PN, itelXZ_PN, itelZX_PN, itelZY_PN, apcom_PN : PN ;
+    -- itelComputer_N ("an ITEL computer", problems 246-248) is fused as
+    -- one lexical item, same reasoning as apcomManager_N in Section 2.
+    itelComputer_N : N ;
+    -- mips_N ("500 MIPS", a computer-speed unit) - genuine dictionary
+    -- gap, checked directly.
+    mips_N : N ;
+    -- Section 7 (Temporal Reference), problems 251-308 (311-325 are
+    -- skipped entirely - see FraCaSLogicEng.gf's own comment on why).
+    -- first_A ("his first novel") - no plain ordinal adjective exists
+    -- in DictEngAbs (only compounds like first_class_A/firstborn_A),
+    -- checked directly - self-declared as an ordinary A, same
+    -- "self-declare the literal string" move as fourLegged_A.
+    first_A : A ;
+    -- birmingham_PN - not in DictEngAbs (checked directly), FraCaS's
+    -- own recurring city.
+    birmingham_PN : PN ;
+    -- This section's own recurring temporal PPs ("since 1992", "in
+    -- 1993", "in March 1993", "in two hours", "for two years", "every
+    -- month") are each self-declared as a fixed Adv rather than built
+    -- from a general Year/Duration subsystem - the same "disproportionate
+    -- machinery for a one-off adverbial" reasoning as onTuesday_Adv
+    -- (Section 3) and atFourOClock_Adv (Section 4), just with more of
+    -- them at once since this section repeats the pattern across many
+    -- distinct years/durations.
+    since1992_Adv, in1991_Adv, in1992_Adv, in1993_Adv, in1996_Adv : Adv ;
+    inMarch1993_Adv, in1994_Adv, inJuly1994_Adv : Adv ;
+    inTwoHours_Adv, inOneHour_Adv, inTwoYears_Adv : Adv ;
+    forTwoYears_Adv, forAYear_Adv, forAnHour_Adv, forTwoHours_Adv : Adv ;
+    everyMonth_Adv, everyWeek_Adv : Adv ;
+    -- Section 8 (Verbs), problems 326-333: mtalk_PN (ITEL's own
+    -- invented product name, problems 326/327) is FraCaS's own
+    -- fictional entity, not in a general-purpose dictionary. in1990_Adv/
+    -- from1988to1992_Adv (self-declared fixed strings, same one-off
+    -- reasoning as Section 7's temporal adverbials).
+    mtalk_PN : PN ;
+    in1990_Adv, from1988to1992_Adv : Adv ;
 }

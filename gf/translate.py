@@ -445,6 +445,29 @@ def _restrictor_expr(cn):
         base_name = camel_name(_leaf_words(base_cn))
         vp_name = _scope_name(inner_vp)
         return f"(fun x => {base_name} x ∧ {vp_name} x)", [base_name, vp_name]
+    # A CN-conjunction - `ConjCN and_Conj (BaseCN cn1 cn2)`, "every
+    # representative and client" on its narrow-scope (N-bar-conjunction)
+    # reading - is the same "conjunction of predicates, not one fused
+    # name" story as the RelCN case above: FraCaS problem 88's own Lean
+    # encoding treats "representative and client" as the intersection
+    # restrictor `fun x => rep x ∧ client x`, matching this project's
+    # own conjunctive-restrictor convention exactly (problem 89's
+    # "representative or client" is the disjunctive analogue,
+    # `∨` instead of `∧`). Only the two-element case is handled - a
+    # longer conjoined list would need a real n-ary fold, not attempted
+    # here since no FraCaS problem so far needs one.
+    if (
+        cn.head == "ConjCN"
+        and len(cn.args) == 2
+        and cn.args[0].head in ("and_Conj", "or_Conj")
+        and cn.args[1].head == "BaseCN"
+        and len(cn.args[1].args) == 2
+    ):
+        op = "∧" if cn.args[0].head == "and_Conj" else "∨"
+        left_cn, right_cn = cn.args[1].args
+        left_name = camel_name(_leaf_words(left_cn))
+        right_name = camel_name(_leaf_words(right_cn))
+        return f"(fun x => {left_name} x {op} {right_name} x)", [left_name, right_name]
     name = camel_name(_leaf_words(cn))
     return name, [name]
 
@@ -500,6 +523,54 @@ def _try_translate_partitive_identity(subject, vp):
     )
 
 
+def _try_translate_named_individual_fact(subject, vp):
+    """Handles a bare 'ProperNoun is/was a CN' or 'ProperNoun VERB-PHRASE'
+    fact about a single named individual - e.g. fracas_099's "Smith was
+    a client at the demonstration" and "Smith was impressed by the
+    system's performance", or fracas_103's "Jones is an APCOM manager"
+    and "Jones has a company car". This is the instantiate-a-universal-
+    at-a-named-individual half of a FraCaS argument whose universal
+    premise translate_cl already reaches via _resolve_subject/PredetNP
+    - a genuinely different, much simpler shape than
+    _try_translate_partitive_identity above (no partitive count
+    involved: the fact directly names its own subject, so the only
+    question is which predicate name it's a fact about).
+
+    A copula 'is/was a CN' predicate reuses _restrictor_expr's own
+    CN-naming (so "a client at the demonstration" fuses to the same
+    name a corresponding "every client at the demonstration ..."
+    premise would use); any other VP reuses _scope_name, the same way
+    translate_cl's own scope predicate already does below. Neither
+    name is required to match the hand-written Lean proof's own
+    variable name exactly (see this module's docstring) - only to be
+    the SAME name across a premise/hypothesis pair translated from the
+    same English words, which both paths already guarantee."""
+    if subject.head != "UsePN" or len(subject.args) != 1:
+        return None
+    individual_name = camel_name(_leaf_words(subject))
+    if (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompNP"
+        and len(vp.args[0].args) == 1
+        and vp.args[0].args[0].head == "DetCN"
+        and len(vp.args[0].args[0].args) == 2
+    ):
+        cn = vp.args[0].args[0].args[1]
+        pred_expr, preds = _restrictor_expr(cn)
+        return Translation(
+            lean_prop=f"{pred_expr} {individual_name}",
+            free_predicates=preds,
+            free_individuals=[individual_name],
+        )
+    scope_name = _scope_name(vp)
+    return Translation(
+        lean_prop=f"{scope_name} {individual_name}",
+        free_predicates=[scope_name],
+        free_individuals=[individual_name],
+    )
+
+
 def translate_cl(t) -> Translation:
     if t.head != "PredVP" or len(t.args) != 2:
         raise NotImplementedError(
@@ -510,6 +581,10 @@ def translate_cl(t) -> Translation:
     inverted = _try_translate_partitive_identity(subject, vp)
     if inverted is not None:
         return inverted
+
+    named_fact = _try_translate_named_individual_fact(subject, vp)
+    if named_fact is not None:
+        return named_fact
 
     quant, cn = _resolve_subject(subject)
 
@@ -885,6 +960,168 @@ if __name__ == "__main__":
             "(NumNumeral (num (pot2as3 (pot1as2 pot110))))))) (UseN commissioner_N)) "
             "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))"
         ),
+        # FraCaS Section 2 (Plurals), problems 81-97 (Section2/Batch1.lean).
+        # Most of this bucket is deliberately NOT here: 81/82/83/85/86
+        # need a ConjNP-of-named-individuals subject translated into a
+        # conjunction of atomic named Props (`smithSigned ∧ jonesSigned
+        # ∧ ...`), and 85/86 also need Section2.Plurals' own `Exactly`
+        # quantifier - both genuinely new translate.py architecture this
+        # pass doesn't build (this translator's whole design is
+        # "one quantified Cl -> one GQ.lean Prop"; a bare conjunction of
+        # named individuals is a different shape entirely, out of scope
+        # here the same way the "there are few..." existential was in
+        # Section 1). 84/91/94/95 are countermodels/independence proofs
+        # (checked directly against Batch1.lean), not translatable
+        # either way. 87 is a real theorem but its premise is itself a
+        # conjunction of two separate `Every` facts, not one clause -
+        # same "not this translator's shape" reason as 81/82/83.
+        # 89/90/92/96/97 are real theorems this translator DOES reach,
+        # added below. 88 itself is NOT among them despite looking like
+        # 89's own mirror-image: checked directly against Batch1.lean,
+        # fracas_088 is actually a countermodel (dir1/dir2, `.unknown`)
+        # over Bool-indexed stand-ins, not a named-predicate Prop -
+        # the "every representative and client" premise, on this
+        # narrow-scope reading, genuinely doesn't license "every
+        # representative" (a rep who isn't also a client breaks it),
+        # unlike 89's wide-scope "representative or client" premise,
+        # which does. Its own GF sentence is still confirmed via
+        # run_gf_tests.py independently.
+        "fracas_089 (premise)": (
+            "PredVP (DetCN every_Det (ConjCN or_Conj (BaseCN (UseN representativeMasc_N) (UseN client_N)))) "
+            "(UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))"
+        ),
+        "fracas_090 (premise)": (
+            "PredVP (DetCN (DetQuant DefArt NumSg) (UseN chairman_N)) "
+            "(ComplSlash (SlashV2a read_out_V2) (DetCN (DetQuant DefArt NumPl) "
+            "(AdvCN (UseN item_N) (PrepNP on_Prep (DetCN (DetQuant DefArt NumSg) (UseN agenda_N))))))"
+        ),
+        "fracas_092 (premise)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (RelCN (UseN person_N) "
+            "(UseRCl (TTAnt TPast ASimul) PPos (RelVP IdRP (UseComp (CompAdv "
+            "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))))))) "
+            "(AdvVP (UseV vote_V) (PrepNP for_Prep (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN chairman_N)))))"
+        ),
+        "fracas_096 (premise)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant DefArt NumPl) (AdjCN (PositA ancient_A) (UseN greek_N)))) "
+            "(UseComp (CompCN (AdjCN (PositA noted_A) (UseN philosopher_N))))"
+        ),
+        "fracas_097 (premise)": (
+            "PredVP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN software_N) (UseN fault_N))) "
+            "(AdvVP (PassV2 blame_V2) (PrepNP for_Prep (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN system_N) (UseN failure_N)))))"
+        ),
+        # FraCaS Section 2 Batch2 (problems 98-113, Section2/Batch2.lean).
+        # 99 and 103 are both "Every RESTRICTOR SCOPE" premises
+        # instantiated at a named individual - the exact shape
+        # _try_translate_named_individual_fact above was added for.
+        # Everything else in this bucket is deliberately NOT here: 98 is
+        # a countermodel; 100/101/102 are the bare-plural/generic
+        # quasi-universal ambiguity translate_cl already can't resolve
+        # from syntax alone (same reason as problem 13's RelCN case,
+        # documented in translate_cl's own comment); 104 is a
+        # countermodel; 105-110 need Section2.Plurals' own `Exactly`
+        # quantifier, not built here (same deferral as 85/86); 111-113
+        # are named-individual cumulative/distributive "and" facts, a
+        # different shape entirely (same "not this translator's shape"
+        # reason as 81-86). Every sentence's own GF tree is still
+        # confirmed independently via run_gf_tests.py regardless.
+        "fracas_099 (premise1)": (
+            "PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN client_N)) "
+            "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN demonstration_N))))) "
+            "(AdvVP (PassV2 impress_V2) (PrepNP by8means_Prep (DetCN (DetQuant "
+            "(GenNP (DetCN (DetQuant DefArt NumSg) (UseN system_N))) NumSg) (UseN performance_N))))"
+        ),
+        "fracas_099 (premise2)": (
+            "PredVP (UsePN smith_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+            "(AdvCN (UseN client_N) (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN demonstration_N)))))))"
+        ),
+        "fracas_099 (hypothesis)": (
+            "PredVP (UsePN smith_PN) (AdvVP (PassV2 impress_V2) (PrepNP by8means_Prep "
+            "(DetCN (DetQuant (GenNP (DetCN (DetQuant DefArt NumSg) (UseN system_N))) NumSg) (UseN performance_N))))"
+        ),
+        "fracas_103 (premise1)": (
+            "PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN apcomManager_N))) "
+            "(ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN company_N) (UseN car_N))))"
+        ),
+        "fracas_103 (premise2)": (
+            "PredVP (UsePN jones_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN apcomManager_N))))"
+        ),
+        "fracas_103 (hypothesis)": (
+            "PredVP (UsePN jones_PN) (ComplSlash (SlashV2a have_V2) "
+            "(DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN company_N) (UseN car_N))))"
+        ),
+        # FraCaS Section 3 (Anaphora), problems 114-141: deliberately
+        # NOT added here, none of it. Anaphora.lean's own header explains
+        # why this section doesn't build general anaphora-resolution
+        # machinery in Lean - each pronoun is resolved by hand, per
+        # problem, into presupposition bundles, Skolem functions, or
+        # shared bound variables across sentences - and none of those
+        # shapes is "one quantified Cl" the way this translator's whole
+        # architecture (_resolve_subject/_restrictor_expr/_scope_name)
+        # expects. Every sentence in this section still gets a real,
+        # independently-confirmed GF tree (see run_gf_tests.py's own
+        # comment on this section for the full per-problem breakdown).
+        #
+        # FraCaS Section 4 (Ellipsis), problems 142-196: also
+        # deliberately NOT added here, for the same reason - Ellipsis.lean's
+        # own header explains this section builds the RESOLVED,
+        # non-elliptical reading of each sentence by hand rather than
+        # modeling ellipsis itself, the same "resolved bundled fact, not
+        # one quantified Cl" shape as Section 3's anaphora. Every
+        # sentence still gets a real GF tree (see run_gf_tests.py's own
+        # comment on this section).
+        #
+        # FraCaS Section 5 (Adjectives), problems 197-219: also
+        # deliberately NOT added, despite most of its sentences being
+        # simple enough to fit translate_cl's existing shapes (a named-
+        # individual copula fact or an "Every CN1 CN2" universal) - the
+        # reason is different from Sections 3/4's own: this section's
+        # whole point is PER-ADJECTIVE entailment behavior (intersective
+        # "genuine diamond" licenses noun/adjective-drop; privative
+        # "former student" doesn't; subsective "small"/"large" are
+        # contrary; comparison classes are extensional or intensional),
+        # and _restrictor_expr/_scope_name's own generic CN/VP-fusion
+        # would collapse exactly that distinction into one opaque
+        # predicate name ("genuineDiamond") - silently discarding the
+        # very thing each problem is testing, not just translating it
+        # coarser. Every sentence still gets a real GF tree (see
+        # run_gf_tests.py's own comment on this section).
+        #
+        # FraCaS Section 6 (Comparatives), problems 220-250: also
+        # deliberately NOT added, same reason as Section 5 - this
+        # section's whole point is the ASSUMED comparative relation
+        # between two gradable adjectives ("faster than" licensing
+        # "fast" via an explicit assumed fact) or real Nat arithmetic
+        # between named counts, and translate_cl's own generic CN/VP-
+        # fusion would collapse either into one opaque predicate name,
+        # translating the sentence but losing the very relation each
+        # problem is about. Every sentence still gets a real GF tree
+        # (see run_gf_tests.py's own comment on this section).
+        #
+        # FraCaS Section 7 (Temporal Reference), problems 251-325: also
+        # deliberately NOT added - the strongest case yet for skipping,
+        # since this section's own Lean formalization is ALREADY almost
+        # entirely abstract (bare `Nat`/`Prop` variables, never
+        # accumulating named concrete predicates the way Sections 1-6
+        # do), so there is no real Lean-side content translate_cl's
+        # generic fusion could even usefully cross-check against here.
+        # Every buildable sentence still gets a real GF tree (a
+        # representative sample, not one per Lean theorem - see
+        # run_gf_tests.py's own comment on this section for why).
+        #
+        # FraCaS Section 8 (Verbs), problems 326-333: also deliberately
+        # NOT added, same "assumed connecting fact" reasoning as
+        # Sections 5-7 (the imperfective-paradox and interval-
+        # containment content here isn't captured by generic CN/VP
+        # fusion). Every sentence still gets a real GF tree (see
+        # run_gf_tests.py's own comment on this section).
+        #
+        # FraCaS Section 9 (Attitudes), problems 334-346 - the final
+        # FraCaS section. Also deliberately NOT added, same reasoning as
+        # Sections 5-8: factivity/implicativity is an assumed connecting
+        # fact this translator's generic fusion doesn't represent.
+        # Every sentence still gets a real GF tree (see run_gf_tests.py's
+        # own comment on this section). This is translate.py's own last
+        # word on all nine FraCaS sections.
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")
