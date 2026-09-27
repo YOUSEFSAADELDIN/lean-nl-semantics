@@ -66,13 +66,15 @@ two of the three each reduce their own way:
   way Phase 2's own combine search already enumerates candidate `Every`
   pairs.
 
-- **044** (`atMost_trans`) does *not* reduce this way: its real proof
-  needs an *existing* rule (`atMost_mono_scope`) applied first to reach
-  an intermediate fact, then a *second*, different new lemma to reach the
-  actual goal from there - a genuine two-step chain, not a single
-  synthesize-then-substitute step. Left unsupported; see the standing
-  discussion for the precise boundary and what a minimal chaining
-  mechanism would need.
+- **044** (`atMost_trans`) does *not* reduce through composing `exist_nl`
+  into `mono_nl`'s search - `mono_nl_compose` still can't close it, and
+  correctly so, since nothing here was ever missing a *shape* fact for
+  it. Re-derived from scratch afterward (not by this file, see
+  `Tactic.lean`'s Phase 5 and `GQ.lean`'s `entails_narrow`), the actual
+  gap was a different axis entirely: the licensing fact `atMost_trans`
+  needs is never flat, only *conditioned* on an auxiliary restrictor. 044
+  is closed by plain `mono_nl` now, needing no composition at all - see
+  `CrossCheck.lean`'s header for exactly why.
 
 ## The composition itself
 

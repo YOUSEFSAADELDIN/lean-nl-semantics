@@ -59,9 +59,17 @@ composes the new `exactly_atLeast` (`Exactly 2 P Q → AtLeast 2 P Q`) with
 `mono_nl`'s existing `atLeastMonoScope`; 27 composes the new
 `some_entails_and` (`Some P R → Every P S → Some P (S∧R)`) with `mono_nl`'s
 existing `someMonoScope` - see `Compose.lean`'s header for the full
-characterization, and for why 044 (`atMost_trans`), the last remaining
-eligible-but-failed problem, does *not* reduce this way and was left
-unsupported.
+characterization.
+
+Problem 44, added for Phase 5 (`Tactic.lean`), uses plain `mono_nl` -
+unlike 123/124/27, it needs no composition at all: `atMost_trans`'s three
+premises (`AtMost n P R`, `Every P S`, `Every (S∧Q) R`) are all real,
+flatly-available local hypotheses, so `searchMonoNl`'s own Phase 5 (not
+`Compose.lean`'s enumeration) finds and narrows the conditioned fact
+directly. See `entails_narrow`'s doc comment (`GQ.lean`) for the general
+schema this instantiates, and `Tactic.lean`'s header for why this widens
+how a fact is *used* rather than where it's *found* - a different axis
+from Phase 3/4's composition, not a fourth flavor of it.
 -/
 namespace FraCaS.Section1.Monotonicity
 
@@ -302,5 +310,17 @@ theorem fracas_027_via_mono_nl_compose :
         Some committee scandinavian := by mono_nl_compose
 
 end P027
+
+section P044
+variable {A : Type*} [Fintype A] (n : Nat) (committee southernEurope person portugal : A → Prop)
+variable [DecidablePred fun x => committee x ∧ portugal x]
+variable [DecidablePred fun x => committee x ∧ southernEurope x]
+
+theorem fracas_044_via_mono_nl :
+    AtMost n committee southernEurope → Every committee person →
+      Every (fun x => person x ∧ portugal x) southernEurope →
+        AtMost n committee portugal := by mono_nl
+
+end P044
 
 end FraCaS.Section1.Monotonicity

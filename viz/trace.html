@@ -27,6 +27,8 @@
     --rust-soft: #F5E6E1;
     --slate: #4B5B6B;
     --slate-soft: #E7EDF1;
+    --moss: #3F7A52;
+    --moss-soft: #E3EFE6;
     --no: #A5432E;
     --shadow: 0 1px 2px rgba(33,31,27,0.06), 0 8px 24px -12px rgba(33,31,27,0.18);
   }
@@ -52,6 +54,8 @@
       --rust-soft: #33221D;
       --slate: #9FB3C4;
       --slate-soft: #212A31;
+      --moss: #7FC494;
+      --moss-soft: #1E2E24;
       --no: #E08066;
       --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
     }
@@ -77,6 +81,8 @@
     --rust-soft: #33221D;
     --slate: #9FB3C4;
     --slate-soft: #212A31;
+    --moss: #7FC494;
+    --moss-soft: #1E2E24;
     --no: #E08066;
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
   }
@@ -151,6 +157,7 @@
   .badge.fam-catb { background: var(--amber-soft); color: var(--amber); }
   .badge.fam-p3 { background: var(--slate-soft); color: var(--slate); }
   .badge.fam-p4 { background: var(--plum-soft); color: var(--plum); }
+  .badge.fam-p5 { background: var(--moss-soft); color: var(--moss); }
   .badge.fam-none { background: var(--rust-soft); color: var(--rust); }
   .row summary .chev { color: var(--ink-faint); flex: none; transition: transform 0.15s; margin-left: auto; }
   .row[open] summary .chev { transform: rotate(90deg); }
@@ -293,6 +300,9 @@
     "Phase 4: some_trans combine": {
       cls: "fam-p4", color: "var(--plum)",
       sub: "some_entails_and combines Some P R with Every P S into Some P (S∧R), for some_mono_scope to consume." },
+    "Phase 5: conditioned narrowing (entails_narrow)": {
+      cls: "fam-p5", color: "var(--moss)",
+      sub: "entails_narrow narrows a fact conditioned on an aux predicate down to one conditioned on the shape's own restrictor, for a conditioned scope rule to consume." },
   };
   const famOrder = Object.keys(FAMILY_META);
   const famCounts = {};
@@ -338,6 +348,18 @@
           <span class="to">${c.leftConjunct} ∧ ${c.rightConjunct}</span></span>
       </div>`;
     }
+    let narrowHtml = "";
+    if (t.narrow) {
+      const nw = t.narrow;
+      narrowHtml = `<div class="trace-step">
+        <span class="rule-name">narrow (entails_narrow)</span>
+        <span class="arrow-line">the shape's restrictor entails <span class="from">${nw.viaAux}</span>
+          (via <span class="mono">${nw.outer}</span>), and <span class="from">${nw.viaAux}</span> ∧
+          <span class="from">${t.substFrom ?? "?"}</span> entails <span class="to">${t.substTo ?? "?"}</span>
+          (via <span class="mono">${nw.inner}</span>) — narrowed together into a fact conditioned on the
+          shape's own restrictor, which the conditioned rule below consumes</span>
+      </div>`;
+    }
     const mainHtml = `<div class="trace-step">
       <span class="rule-name">${t.tactic === "mono_nl_compose" ? "mono_nl_compose" : "mono_nl"} · ${t.rule}
         <span style="color:var(--ink-faint)"> (${t.position})</span></span>
@@ -345,7 +367,7 @@
         <span class="to">${t.substTo ?? "?"}</span></span>
       ${t.shapeSource ? `<span class="arrow-line" style="color:var(--ink-muted)">shape synthesized via <span class="mono">${t.shapeSource}</span></span>` : ""}
     </div>`;
-    return combineHtml + mainHtml;
+    return combineHtml + narrowHtml + mainHtml;
   }
 
   function renderRow(t) {

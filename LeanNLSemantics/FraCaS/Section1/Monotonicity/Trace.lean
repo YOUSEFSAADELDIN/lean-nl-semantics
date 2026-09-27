@@ -35,7 +35,18 @@ inductive Position where
 Position)` cell of `QuantifierSig.table` - see `Signature.lean`'s header
 for why all eight (not just the ones the original fourteen target
 problems need) are in scope. `MonoRule.lemmaName` (`Tactic.lean`) maps
-each to the real `GQ.lean` theorem it applies. -/
+each to the real `GQ.lean` theorem it applies.
+
+`atMostMonoScopeConditioned` is a ninth, deliberately *not* one of
+`QuantifierSig.table`'s eight cells: it's the same `(AtMost, scope)` cell
+`atMostMonoScope` already occupies, consuming a *conditioned* Entails
+fact (`GQ.lean`'s `atMost_mono_scope_conditioned`) instead of a flat one
+- see `Tactic.lean`'s Phase 5 search and `entails_narrow`'s doc comment
+for the general schema this instantiates. Added deliberately outside
+`ruleFor`'s total table (which stays exactly the eight-cell map it
+always was) rather than replacing `atMostMonoScope` there, since the
+flat rule still fires first whenever a flat fact is actually available -
+this is a registered *fallback*, not a table entry. -/
 inductive MonoRule where
   | everyMonoScope
   | everyRestrict
@@ -45,17 +56,19 @@ inductive MonoRule where
   | atLeastRestrict
   | atMostMonoScope
   | atMostRestrict
+  | atMostMonoScopeConditioned
   deriving DecidableEq, Repr, Inhabited
 
 def MonoRule.quantifier : MonoRule → Quantifier
   | .everyMonoScope | .everyRestrict => .every
   | .someMonoScope | .someRestrict => .some
   | .atLeastMonoScope | .atLeastRestrict => .atLeast
-  | .atMostMonoScope | .atMostRestrict => .atMost
+  | .atMostMonoScope | .atMostRestrict | .atMostMonoScopeConditioned => .atMost
 
 def MonoRule.position : MonoRule → Position
   | .everyRestrict | .someRestrict | .atLeastRestrict | .atMostRestrict => .restrictor
-  | .everyMonoScope | .someMonoScope | .atLeastMonoScope | .atMostMonoScope => .scope
+  | .everyMonoScope | .someMonoScope | .atLeastMonoScope | .atMostMonoScope
+  | .atMostMonoScopeConditioned => .scope
 
 /-- The unique rule for a given `(Quantifier, Position)` cell - total,
 since the fragment's table (`Signature.lean`) covers all eight cells. -/
@@ -68,6 +81,25 @@ def ruleFor : Quantifier → Position → MonoRule
   | .atLeast, .restrictor => .atLeastRestrict
   | .atMost, .scope => .atMostMonoScope
   | .atMost, .restrictor => .atMostRestrict
+
+/-- Phase 5's one new kind of step - the general "conditioned narrowing"
+schema's trace record: `GQ.lean`'s `entails_narrow` combining an outer
+`Every shapeRestrictor viaAux` fact with an inner, `viaAux`-conditioned
+`Every (fun x => viaAux x ∧ needFrom x) needTo` fact into the conditioned
+fact `atMost_mono_scope_conditioned` (currently the only registered
+consumer - see `Tactic.lean`'s search) actually needs. Named in parallel
+with `CombineStep` (same "record what was combined, before the step that
+consumes it" shape) rather than reusing it directly: `CombineStep`
+records two facts sharing a restrictor combined into one about their
+conjunction (`entails_and`); this records one fact's restrictor being
+*narrowed* along a second, different-shaped fact (`entails_narrow`) - a
+different operation on a different pair of premise shapes, not a
+relabeling of the same one. -/
+structure NarrowStep where
+  outer            : Lean.Name
+  inner            : Lean.Name
+  viaAux           : Lean.Name
+  deriving Repr
 
 /-- One substitution step. `factHyp` is the local hypothesis whose type
 supplied the `Entails` fact (i.e. `GQ.Every substFrom substTo` in the
@@ -86,7 +118,14 @@ the one sharing the goal's own head, establishing which position differs
 premise itself was synthesized (via one of `Existential.lean`'s five
 principles) rather than found directly, so there is no single real
 declaration to point `factHyp`-style at - the label already says which
-principle and source hypothesis produced it. -/
+principle and source hypothesis produced it.
+
+`narrow` is `none` for every step except one closed via Phase 5's
+conditioned-narrowing search (see `NarrowStep`): when present, `factHyp`
+names the *narrowed* fact `entails_narrow` synthesized (not a real
+declaration, the same convention Phase 2's `combine` already uses), and
+`rule` is one of the registered *conditioned* rules
+(`atMostMonoScopeConditioned`) rather than its flat counterpart. -/
 structure MonoStep where
   position     : Position
   rule         : MonoRule
@@ -94,6 +133,7 @@ structure MonoStep where
   substFrom    : Lean.Name
   substTo      : Lean.Name
   shapeSource  : Option Lean.Name := none
+  narrow       : Option NarrowStep := none
   deriving Repr
 
 /-- Phase 2's one new kind of step: joining two `Every`-shaped facts

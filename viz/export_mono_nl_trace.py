@@ -70,6 +70,8 @@ MONO_RE = re.compile(
 COMBINE_RE = re.compile(
     r"mono_nl: combine \{ left := (.*?), right := (.*?), sharedLeft := (.*?), "
     r"leftConjunct := (.*?), rightConjunct := (.*?) \}")
+NARROW_RE = re.compile(
+    r"mono_nl: narrow \{ outer := (.*?), inner := (.*?), viaAux := (.*?) \}")
 
 PROBLEM_RE = re.compile(
     r'\{ id := (\d+), premises := \[(.*?)\],\s*hypothesis := "(.*?)", answer := \.(\w+) \}',
@@ -171,6 +173,7 @@ def parse_log(log_text: str) -> list[dict]:
         m_exist = EXIST_RE.search(flat)
         m_mono = MONO_RE.search(flat)
         m_combine = COMBINE_RE.search(flat)
+        m_narrow = NARROW_RE.search(flat)
         if m_exist:
             entry.update(
                 tactic="exist_nl", rule=m_exist.group(1),
@@ -195,6 +198,12 @@ def parse_log(log_text: str) -> list[dict]:
                     "leftConjunct": clean_name(m_combine.group(4)),
                     "rightConjunct": clean_name(m_combine.group(5)),
                 }
+            if m_narrow:
+                entry["narrow"] = {
+                    "outer": clean_name(m_narrow.group(1)),
+                    "inner": clean_name(m_narrow.group(2)),
+                    "viaAux": clean_name(m_narrow.group(3)),
+                }
         else:
             entry.update(tactic=None, failed=True)
         results.append(entry)
@@ -202,6 +211,8 @@ def parse_log(log_text: str) -> list[dict]:
 
 
 def rule_family(entry: dict) -> str | None:
+    if entry.get("narrow"):
+        return "Phase 5: conditioned narrowing (entails_narrow)"
     if entry.get("shapeSource"):
         src = entry["shapeSource"]
         if "exactlyAtLeast" in src or "exactlyAtMost" in src:

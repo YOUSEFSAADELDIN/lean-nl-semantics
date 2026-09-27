@@ -2,7 +2,7 @@ import Lean
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Trace
 
 /-!
-# `mono_nl`: the certified monotonicity tactic (Phase 1 + Phase 2)
+# `mono_nl`: the certified monotonicity tactic (Phase 1, 2 + 5)
 
 **Validation status**: this sandbox's egress policy denies
 `release.lean-lang.org` (403, confirmed via the proxy status endpoint,
@@ -60,6 +60,25 @@ knows how to prove). `searchMonoNl` below is written generically against
 an `extraShapeFacts` pool for exactly this reason, so this file never
 needs to import `Existential.lean` (which already imports this one - a
 reverse import would cycle) to support it.
+
+**Phase 5** widens how the `Entails` fact is *used*, the one axis Phase
+1/2/3 all deliberately left alone: every substitution rule so far has
+required that fact to hold flatly, everywhere (`Every needFrom needTo`).
+`atMost_trans`'s own real proof (`GQ.lean`) never has that - only a
+`needFrom`-`needTo` link *conditioned* on an auxiliary predicate that
+itself only holds within the shape's own restrictor (`Every P S`, `Every
+(fun x => S x ∧ needFrom x) needTo`). `GQ.lean`'s `entails_narrow`
+combines exactly those two premises into the conditioned fact `Every
+(fun x => P x ∧ needFrom x) needTo`, and a *conditioned* counterpart of
+the cell's own rule (currently only `atMost_mono_scope_conditioned`,
+registered as `MonoRule.atMostMonoScopeConditioned` - see `Trace.lean`)
+consumes it. Grounded, not invented for this one problem: the schema's
+`Every`-quantifier instance already exists independently as `every_mp`
+(see `entails_narrow`'s own doc comment for the exact correspondence).
+Like Phase 2, this lives directly in `searchMonoNl` rather than
+`Compose.lean`, since it is a new way to *use* a fact - the axis
+Phase 3/4's composition deliberately never touches - not a new place to
+*find* one.
 
 It fails, loudly (`throwError`, never a silent wrong answer), the moment
 the goal is outside this fragment: an unsupported head (`No`, `Most`, or
@@ -125,6 +144,7 @@ def MonoRule.lemmaName : MonoRule → Lean.Name
   | .atLeastRestrict  => ``FraCaS.Section1.atLeast_restrict
   | .atMostMonoScope  => ``FraCaS.Section1.atMost_mono_scope
   | .atMostRestrict   => ``FraCaS.Section1.atMost_restrict
+  | .atMostMonoScopeConditioned => ``FraCaS.Section1.atMost_mono_scope_conditioned
 
 /-- Repeatedly `intro`s the goal's leading Π-binders (every problem in
 this fragment is stated as a chain of implications ending in the
@@ -214,7 +234,7 @@ def decomposeConjLambda (e : Expr) : Option (Expr × Expr) :=
     | _ => none
   | _ => none
 
-/-- The Phase-1/2/3 monotonicity search, factored out of `elab "mono_nl"`
+/-- The Phase-1/2/3/5 monotonicity search, factored out of `elab "mono_nl"`
 so `Compose.lean` can reuse it (see this file's header, "Phase 3") without
 this file importing `Existential.lean` (which already imports this file -
 a reverse import would cycle). `computeExtra` is handed the post-`introAll`
@@ -303,14 +323,20 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
       -- Applies `rule`'s real GQ.lean lemma to a candidate `factExpr :
       -- expectedFactTy`, exactly as Phase 1 always did - `combine` is
       -- `none` for a real local hypothesis, `some _` when `factExpr` was
-      -- synthesized by the Phase-2 step below. Either way this closure is
-      -- the *only* place any lemma gets applied: Phase 2/3 add new ways
-      -- to find a fact, never a new way to consume one.
-      let tryFact (factExpr : Expr) (factHypName : Lean.Name) (combine : Option CombineStep) :
+      -- synthesized by the Phase-2 step below, and likewise `narrow` for
+      -- Phase 5's `entails_narrow`-synthesized fact. Either way this
+      -- closure is the *only* place any lemma gets applied: Phase 2/3/5
+      -- add new ways to find a fact, never a new way to consume one.
+      -- `ruleOverride` lets Phase 5 substitute a *conditioned* rule
+      -- (currently only `atMostMonoScopeConditioned`) for the cell's
+      -- default flat one without duplicating this whole closure.
+      let tryFact (factExpr : Expr) (factHypName : Lean.Name) (combine : Option CombineStep)
+          (narrow : Option NarrowStep := none) (ruleOverride : Option MonoRule := none) :
           MetaM Bool := do
         try
+          let effRule := ruleOverride.getD rule
           let lemmaArgs : Array Expr ←
-            match rule with
+            match effRule with
             | .everyMonoScope   => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
             | .everyRestrict    => pure #[goalP, goalQ, shapeP, shapeExpr, factExpr]
             | .someMonoScope    => pure #[goalP, shapeQ, goalQ, shapeExpr, factExpr]
@@ -319,16 +345,21 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
             | .atLeastRestrict  => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
             | .atMostMonoScope  => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
             | .atMostRestrict   => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
-          let proof ← mkAppM rule.lemmaName lemmaArgs
+            | .atMostMonoScopeConditioned => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
+          let proof ← mkAppM effRule.lemmaName lemmaArgs
           unless ← isDefEq (← inferType proof) (← goal.getType) do return false
           let step : MonoStep :=
-            { position, rule
+            { position, rule := effRule
               factHyp := factHypName
               substFrom := (← nameOf oldVal)
               substTo := (← nameOf newVal)
-              shapeSource := shapeLabel? }
+              shapeSource := shapeLabel?
+              narrow }
           match combine with
           | some c => logInfo m!"mono_nl: combine {repr c}"
+          | none => pure ()
+          match narrow with
+          | some nStep => logInfo m!"mono_nl: narrow {repr nStep}"
           | none => pure ()
           logInfo m!"mono_nl: {repr step}"
           goal.assign proof
@@ -382,6 +413,50 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
               if ← tryFact combined (← nameOf needTo) (some combineStep) then return true
             catch _ =>
               continue
+
+      -- Phase 5: the general "conditioned narrowing" schema (see
+      -- `GQ.lean`'s `entails_narrow` for its statement and grounding, and
+      -- `Trace.lean`'s `NarrowStep`/`atMostMonoScopeConditioned` for why
+      -- this is a registered fallback rather than a table cell). Only a
+      -- cell with a registered conditioned rule gets one; today that's
+      -- exactly `(AtMost, scope)` - everywhere else `condRule?` is `none`
+      -- and this block does nothing, so it can only ever widen what
+      -- already-passing goals close, never change how they do.
+      let condRule? : Option MonoRule :=
+        if rule == .atMostMonoScope then some .atMostMonoScopeConditioned else none
+      if let some condRule := condRule? then
+        -- The conditioned fact `entails_narrow` would produce is `Every
+        -- (fun x => auxRestrictor x ∧ needFrom x) needTo` for some
+        -- `auxRestrictor` - found here as a real local hypothesis
+        -- (`innerDecl`) via `decomposeConjLambda` on its own restrictor,
+        -- exactly the way Phase 2 decomposes `needTo` above (a
+        -- different predicate position, the same syntactic move).
+        for innerDecl in hyps do
+          match innerDecl.type.getAppFn.constName? with
+          | some innerHead =>
+            if innerHead == ``FraCaS.Section1.Every then
+              if let some (innerP, innerQ) := extractPQ .every innerDecl.type.getAppArgs then
+                if let some (auxRestrictor, innerNeedFrom) := decomposeConjLambda innerP then
+                  if (← isDefEq innerNeedFrom needFrom) && (← isDefEq innerQ needTo) then
+                    -- The second premise `entails_narrow` needs: a real
+                    -- local hypothesis `Every goalP auxRestrictor` - "the
+                    -- shape's own restrictor entails the aux predicate,"
+                    -- exactly `atMost_trans`'s own `Every P S` premise.
+                    let expectedOuterTy ← mkAppM ``FraCaS.Section1.Every #[goalP, auxRestrictor]
+                    for outerDecl in hyps do
+                      unless ← isDefEq outerDecl.type expectedOuterTy do continue
+                      try
+                        let conditioned ← mkAppM ``FraCaS.Section1.entails_narrow
+                          #[goalP, auxRestrictor, needFrom, needTo, outerDecl.toExpr, innerDecl.toExpr]
+                        let narrowStep : NarrowStep :=
+                          { outer := outerDecl.userName, inner := innerDecl.userName
+                            viaAux := (← nameOf auxRestrictor) }
+                        if ← tryFact conditioned (← nameOf needTo) none (some narrowStep)
+                            (some condRule) then
+                          return true
+                      catch _ =>
+                        continue
+          | none => pure ()
     return false
 
 /-- The Phase-1/2 monotonicity tactic - see this file's header for the full
@@ -393,8 +468,9 @@ elab "mono_nl" : tactic => do
     else
       throwError "mono_nl: goal is outside the Phase-1/2 monotonicity fragment \
         (no single-position substitution - backed either by a matching \
-        Entails fact directly, or by combining two into one via \
-        entails_and/entails_refl - closes it; this is a small sound \
-        fragment, not a general prover)"
+        Entails fact directly, by combining two into one via \
+        entails_and/entails_refl, or (for AtMost's scope cell) by \
+        narrowing one via entails_narrow - closes it; this is a small \
+        sound fragment, not a general prover)"
 
 end FraCaS.Section1.Monotonicity

@@ -44,10 +44,17 @@ here would be silently unsound, not just incomplete.
 **Positions**: exactly `restrictor` and `scope` - a single atomic
 argument differs between a known fact and the goal, never a compound
 expression. The conjunctive shape `every_trans`/`most_trans`/
-`atMost_trans` use (`fun x => S x ∧ R x`) is out of scope for this
-fragment; `Polarity.compose` in `Polarity.lean` is what a future
-extension into that shape would use, not something this file's table
-attempts to cover already.
+`atMost_trans` use (`fun x => S x ∧ R x`) is still out of scope for
+*this file's table*: `every_trans`'s own shape is instead reached via
+`Tactic.lean`'s Phase 2 (combining two flat facts, still consumed by this
+table's own `everyMonoScope`), and `atMost_trans`'s via Phase 5 (a
+`(AtMost, scope)`-specific *conditioned* counterpart, registered outside
+this table entirely rather than added to it - see `Trace.lean`'s
+`atMostMonoScopeConditioned`). Neither widens this table itself; both
+widen what feeds or consumes it. `most_trans` remains genuinely
+unreachable (`Most` is excluded above). `Polarity.compose` in
+`Polarity.lean` is what a future extension into nested positions would
+use, not something this file's table attempts to cover already.
 
 Every one of the eight `(quantifier, position)` cells below is grounded in
 an already-proved `GQ.lean` lemma (`MonoRule` in `Trace.lean` names all

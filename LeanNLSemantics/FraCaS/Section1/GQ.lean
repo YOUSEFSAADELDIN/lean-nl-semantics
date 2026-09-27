@@ -116,6 +116,35 @@ theorem some_entails_and {A : Type*} (P Q R : A → Prop) :
     Some P Q → Every P R → Some P (fun x => R x ∧ Q x) :=
   fun ⟨x, hx, hqx⟩ h => ⟨x, hx, h x hx, hqx⟩
 
+/-- Narrowing a fact's own restrictor along a known entailment: `P
+entails S` lets any fact conditioned on `S x ∧ X x` be re-conditioned on
+the (possibly smaller) `P x ∧ X x` instead - `S`/`X` never separately
+interact with anything else, so `P x → S x` is all `entails_and`-style
+composition needs to make the swap.
+
+This is the general schema `atMost_trans` (below) and `every_mp` (its
+`Every`-quantifier instance) both already reduce to, once each is looked
+at as "one Entails fact conditioned on an *outer* restrictor via a
+second Entails fact" rather than as a hand-written proof in its own
+right - not a rule invented to fit either: `every_mp`'s own proof (`fun
+h1 h2 x hx => h2 x ⟨hx, h1 x hx⟩`) already *is* `entails_narrow`
+specialized to `P = S` (taking the first premise's own `Every P Q` as
+both the "P entails S" step and the outer restrictor at once - see
+`Monotonicity/Tactic.lean`'s `atMost_mono_scope_conditioned` search for
+where the general form gets used for real, on a genuinely different
+outer/inner restrictor pair).
+
+`Monotonicity/Tactic.lean`'s Phase 2 `entails_and`/`entails_refl` combine
+step targets a different axis entirely - decomposing `needTo` into two
+conjuncts sharing `needFrom` as a common restrictor - so this doesn't
+overlap or duplicate that search; the two combine into the two premises
+`atMost_trans` actually needs (`Every P S`, `Every (fun x => S x ∧ Q x)
+R`), narrowed here into the one conditioned fact `atMost_mono_scope_
+conditioned` consumes. -/
+theorem entails_narrow {A : Type*} (P S X Y : A → Prop) :
+    Every P S → Every (fun x => S x ∧ X x) Y → Every (fun x => P x ∧ X x) Y :=
+  fun hPS hSXY x hx => hSXY x ⟨hPS x hx.1, hx.2⟩
+
 /-- `Every P Q` plus a witness that `P` holds of something (recovered here
 from a second premise `Some P R`, not assumed outright) gives `Some P Q` —
 problems 2/3/4's "every X wants Y; some X are Z ⊢ some X want Y" shape.
@@ -288,6 +317,29 @@ theorem atMost_mono_scope {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
     intro x hx
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
     exact ⟨hx.1, hrq x hx.2⟩
+  have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
+  omega
+
+/-- `atMost_mono_scope`'s conditioned generalization: the licensing
+implication only has to hold *within* `P` (`Every (fun x => P x ∧ R x)
+Q`, i.e. `∀ x, P x → R x → Q x`) rather than everywhere, since the proof
+only ever applies it to an `x` already known to satisfy `P` (`hx.1`
+below - exactly the same reason the flat `atMost_mono_scope` proof above
+still goes through when its own `hrq` is weakened this way: every use
+site already has `hx.1 : P x` sitting right there). This is the general
+schema's `AtMost`-scope instance - see `entails_narrow`'s doc comment for
+the schema itself and why `every_mp` is independent evidence it isn't
+invented for `atMost_trans` alone. `atMost_trans` itself is now exactly
+`entails_narrow` feeding this: `atMost_mono_scope_conditioned n P R Q h1
+(entails_narrow P S Q R h2 h3)`. -/
+theorem atMost_mono_scope_conditioned {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x] :
+    AtMost n P Q → Every (fun x => P x ∧ R x) Q → AtMost n P R := by
+  intro h hcond
+  have hsub : (Finset.univ.filter fun x => P x ∧ R x) ⊆ Finset.univ.filter fun x => P x ∧ Q x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, hcond x hx⟩
   have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
   omega
 
