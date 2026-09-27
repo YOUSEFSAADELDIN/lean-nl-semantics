@@ -6,36 +6,44 @@ import LeanNLSemantics
 # Corpus-wide coverage scan
 
 **Validation status**: the two-way (32/427) and three-way (32/34/393)
-splits below have each been confirmed once in CI (runs 36297683676 and
-36298768378). This version adds a fourth bucket - `trivial` - carved out
-of what was "eligible but failed," and re-targets `reasonBucket` at
-`Tactic.lean`'s Phase-2 message text; it also now measures Phase 2's
-`entails_and`/`entails_refl` combine step, added at the same time. None
-of *this* version's counts are confirmed yet - awaiting the next CI run
-before treating them as real, the same discipline every earlier version
-of this file held to.
+splits have each been confirmed once in CI (runs 36297683676,
+36298768378), and a first four-way version (with Phase 2's combine step)
+ran too (36300227430) - but that run's own `trivial` bucket (checked
+unconditionally, before eligibility) came out at 93, not the expected
+~14, for exactly the reason this file's header now explains: it was
+also catching theorems with no relation to this fragment at all.
+Reordered (eligibility first) immediately after that run, *not yet
+re-confirmed* - the 93/40/15/314 four-way split from that run is
+real but superseded by this fix, not a number to quote.
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella
 import, pulls in all nine sections) whose name's last component starts
 with `fracas_`. For each, in order:
-- **trivial**: the goal is already exactly one hypothesis's own type (an
-  `id`-shaped restatement), or one conjunct of an `And`-headed hypothesis
-  (a `.1`/`.2`-shaped projection) - not a substitution at all, so not
-  attempted by `mono_nl` and not counted as a monotonicity miss either
-  way. `isTrivial` draws this line *before* eligibility is even checked,
-  per the standing instruction that these fourteen cases (`fracas_001`,
-  `007`-`009`, `011`, `087`, `090`, `092`, `093`, `096`, `097`, `128`,
-  `149`, `153` - identified by inspection, not hard-coded here) shouldn't
-  be counted as genuine eligible-but-failed monotonicity problems.
-- **outside the fragment**: (checked on what's left) the conclusion's
-  head isn't one of `Every`/`Some`/`AtLeast`/`AtMost` at all - `mono_nl`
-  is never attempted, since `Signature.lean`'s table has nothing to say
-  about these regardless of what hypotheses are available.
-- **eligible but failed**: the head matches, but `mono_nl`'s own search
-  (Phase 1's direct-hypothesis match, or Phase 2's combine-then-match)
-  didn't find a fact - grouped by `mono_nl`'s own thrown message, not a
-  re-guessed classification.
+- **outside the fragment**: the conclusion's head isn't one of
+  `Every`/`Some`/`AtLeast`/`AtMost` at all - `mono_nl` is never attempted,
+  since `Signature.lean`'s table has nothing to say about these
+  regardless of what hypotheses are available. Checked *first*: an
+  earlier version of this scan checked `isTrivial` before eligibility and
+  found it also caught theorems whose head has nothing to do with this
+  fragment at all (an `Iff`/`Eq`/named-individual restatement elsewhere
+  in the corpus) - inflating "trivial" well past the standing
+  instruction's fourteen cases and understating "outside the fragment"
+  to match. `isTrivial` is only meaningful *within* the eligible set, so
+  it's only checked there now.
+- **trivial**: (checked within what's eligible) the goal is already
+  exactly one hypothesis's own type (an `id`-shaped restatement), or one
+  conjunct of an `And`-headed hypothesis (a `.1`/`.2`-shaped projection) -
+  not a substitution at all, so not attempted by `mono_nl` and not
+  counted as a monotonicity miss either way. These are the fourteen cases
+  (`fracas_001`, `007`-`009`, `011`, `087`, `090`, `092`, `093`, `096`,
+  `097`, `128`, `149`, `153` - identified by inspection, not hard-coded
+  here) the standing instruction asked not to count as genuine
+  eligible-but-failed monotonicity problems.
+- **eligible but failed**: the head matches, `isTrivial` doesn't, but
+  `mono_nl`'s own search (Phase 1's direct-hypothesis match, or Phase 2's
+  combine-then-match) didn't find a fact - grouped by `mono_nl`'s own
+  thrown message, not a re-guessed classification.
 - **automatically proved**: `mono_nl` closed it, whether via a direct
   fact (Phase 1) or a combined one (Phase 2) - the report doesn't need to
   distinguish which, since `Tactic.lean`'s own `logInfo` trace already
@@ -165,11 +173,16 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
     unless info.isTheorem do continue
     let ty := info.type
 
-    let trivialHere ← try isTrivial ty catch _ => pure false
-    if trivialHere then
-      trivial := trivial.push name
-      continue
-
+    -- Eligibility first, `isTrivial` only within it: checking `isTrivial`
+    -- unconditionally over the whole corpus (an earlier version of this
+    -- scan did) also caught theorems whose head has nothing to do with
+    -- the monotonicity fragment at all (an `Iff`/`Eq`/named-individual
+    -- restatement in, say, Section 4's ellipsis problems) - diluting
+    -- "outside the fragment" and inflating "trivial" well past the
+    -- fourteen cases this was meant to carve out of "eligible but
+    -- failed." `trivial` is specifically "eligible in principle, but a
+    -- restatement/projection rather than a real substitution question,"
+    -- not "any theorem anywhere that happens to restate a hypothesis."
     let eligible ← try isEligible ty catch _ => pure false
     unless eligible do
       outsideFragment := outsideFragment.push name
@@ -181,6 +194,11 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
         catch _ =>
           pure "<error while inspecting head>"
       outsideHeadBuckets := addToBucket outsideHeadBuckets headKey name
+      continue
+
+    let trivialHere ← try isTrivial ty catch _ => pure false
+    if trivialHere then
+      trivial := trivial.push name
       continue
 
     let outcome : Except String Unit ←
