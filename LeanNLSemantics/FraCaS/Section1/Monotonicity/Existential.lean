@@ -15,13 +15,21 @@ hand-rolled `MetaM`-only replacement compiled, but silently failed to
 close `atLeastSome`/`exactlySome` goals (confirmed via CI: `mostSome`
 alone succeeded) - it skipped the `mkExpectedPropHint` step Lean core's
 own equivalent function relies on to force the `decide p`-reduces-to-
-`true` check during elaboration. Now calls `Lean.Meta.mkDecideProof`
-directly (core's own function - see `Lean/Meta/AppBuilder.lean` - not a
-reimplementation). Every other API this file uses is one Phase 1/2
-already confirmed working (`introAll`, `extractPQ`, `extractN`, `nameOf`,
-`liftMetaTactic1`) except `mkFreshExprMVar none` (a metavariable with no
-type yet, only assigned later by unification inside `mkAppM`), isolated
-to `applyWithDecidableSide`. Awaiting the next CI run to confirm this fix.
+`true` check during elaboration. (3) Commit `18abd7b` switched to calling
+`Lean.Meta.mkDecideProof` directly (core's own function, not a
+reimplementation) - but CI showed the *exact same* `atLeastSome`/
+`exactlySome` failure, unchanged, which means the real break is earlier
+in `applyWithDecidableSide` (most likely the `mkAppM lemmaName (preArgs
+++ #[sideMVar, mainFact])` call itself, given switching the decide-proof
+step changed nothing) and the outer `catch _ => pure none` has been
+silently swallowing it both times. This revision replaces the blanket
+catch with per-step `logInfo` so the next CI run's info log shows the
+real exception message instead of another guess. Every other API this
+file uses is one Phase 1/2 already confirmed working (`introAll`,
+`extractPQ`, `extractN`, `nameOf`, `liftMetaTactic1`) except
+`mkFreshExprMVar none` (a metavariable with no type yet, only assigned
+later by unification inside `mkAppM`), isolated to
+`applyWithDecidableSide`.
 
 ## The semantic principle(s), characterized before writing any tactic
 code (per the instruction this file was scoped under)
@@ -132,14 +140,23 @@ the `decide p`-reduces-to-`true` check). Calling `Lean.Meta.mkDecideProof`
 directly - core's own function, not a reimplementation - fixes both. -/
 def applyWithDecidableSide (lemmaName : Lean.Name) (preArgs : Array Expr) (mainFact : Expr) :
     MetaM (Option Expr) := do
+  let sideMVar ← mkFreshExprMVar none (kind := .synthetic)
+  let some proof ← (try some <$> mkAppM lemmaName (preArgs ++ #[sideMVar, mainFact])
+      catch e => do
+        logInfo m!"applyWithDecidableSide: mkAppM {lemmaName} failed: {e.toMessageData}"
+        pure none)
+    | return none
+  let sideTy ← instantiateMVars (← inferType sideMVar)
+  let some sideProof ← (try some <$> mkDecideProof sideTy
+      catch e => do
+        logInfo m!"applyWithDecidableSide: mkDecideProof on {sideTy} failed: {e.toMessageData}"
+        pure none)
+    | return none
   try
-    let sideMVar ← mkFreshExprMVar none (kind := .synthetic)
-    let proof ← mkAppM lemmaName (preArgs ++ #[sideMVar, mainFact])
-    let sideTy ← instantiateMVars (← inferType sideMVar)
-    let sideProof ← mkDecideProof sideTy
     sideMVar.mvarId!.assign sideProof
     some <$> instantiateMVars proof
-  catch _ =>
+  catch e =>
+    logInfo m!"applyWithDecidableSide: final assign/instantiate failed: {e.toMessageData}"
     pure none
 
 /-- The Category-B tactic - see this file's header for the two
