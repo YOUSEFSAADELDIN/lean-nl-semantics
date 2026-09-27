@@ -4,15 +4,18 @@ import LeanNLSemantics.FraCaS.Section2.Plurals
 /-!
 # `exist_nl`: existential-import / quantifier-strength (Category B)
 
-**Validation status**: not yet through CI - see `Tactic.lean`'s header
-for this sandbox's standing toolchain constraint. Every API this file
-uses is one Phase 1/2 already confirmed working (`introAll`, `extractPQ`,
-`extractN`, `nameOf`, `liftMetaTactic1`, `Lean.Elab.Tactic.run` +
-`evalTactic`) except `mkFreshExprMVar none` (a metavariable with no type
-yet, only assigned later by unification inside `mkAppM`) and `decide` as
-the discharged tactic for a numeral side-condition - both new, both
-isolated to `applyWithDecidableSide` below, so a failure here would be
-easy to localize.
+**Validation status**: CI's first run of this file (commit `786f9c6`)
+found a real bug - `applyWithDecidableSide` originally discharged its
+numeral side-condition via `Lean.Elab.Tactic.run` + `evalTactic (decide)`,
+but `Lean.Elab.Tactic.run` lives in `TermElabM`, not `MetaM`, and cannot
+be invoked from this file's plain-`MetaM` helpers. Replaced with
+`proveByDecide`, the same `of_decide_eq_true (Eq.refl true)` recipe the
+`decide` tactic itself uses at its kernel-reducible fast path, staying in
+`MetaM` throughout. Every other API this file uses is one Phase 1/2
+already confirmed working (`introAll`, `extractPQ`, `extractN`, `nameOf`,
+`liftMetaTactic1`) except `mkFreshExprMVar none` (a metavariable with no
+type yet, only assigned later by unification inside `mkAppM`), isolated
+to `applyWithDecidableSide`. Awaiting the next CI run to confirm the fix.
 
 ## The semantic principle(s), characterized before writing any tactic
 code (per the instruction this file was scoped under)
@@ -103,24 +106,40 @@ directly against `Plurals.lean`: same `{A} [Fintype A] (n) (P Q)
 `P`/`Q`/`n` back out correctly without any change to `Tactic.lean`. -/
 def exactlyHead : Lean.Name := ``FraCaS.Section2.Exactly
 
+/-- Constructs a proof of the decidable proposition `p` via the exact
+recipe the `decide` tactic itself uses at its kernel-reducible fast path
+(`of_decide_eq_true (Eq.refl true)`, valid whenever `Decidable.decide p`
+reduces to `true`) - pure `MetaM`, deliberately not `Lean.Elab.Tactic.run`
++ `evalTactic`, which live in `TermElabM` and cannot be invoked from a
+plain `MetaM` action (the bug CI's first Category-B run caught: a type
+mismatch at `applyWithDecidableSide`, `TermElabM (List MVarId)` where
+`MetaM ?m` was expected). Returns `none`, not a thrown error, if `p`
+isn't decidable or doesn't reduce to `true`. -/
+def proveByDecide (p : Expr) : MetaM (Option Expr) := do
+  try
+    let inst ← synthInstance (← mkAppM ``Decidable #[p])
+    let eqProof ← mkEqRefl (mkConst ``Bool.true)
+    some <$> mkAppOptM ``of_decide_eq_true #[some p, some inst, some eqProof]
+  catch _ =>
+    pure none
+
 /-- Builds `lemmaName` applied to `preArgs ++ [sideCondition, mainFact]`,
 leaving the side-condition as a metavariable whose *type* - `n ≥ 1`,
 `n ≠ 0`, whatever the lemma's own signature says at that position - is
 discovered by `mkAppM`'s own unification, not independently reconstructed
-here, then discharges it with `decide` (every FraCaS instance's `n` is a
-concrete numeral). Returns `none`, not a thrown error, on any failure -
-callers keep searching other candidates. -/
+here, then discharges it via `proveByDecide` (every FraCaS instance's `n`
+is a concrete numeral). Returns `none`, not a thrown error, on any
+failure - callers keep searching other candidates. -/
 def applyWithDecidableSide (lemmaName : Lean.Name) (preArgs : Array Expr) (mainFact : Expr) :
     MetaM (Option Expr) := do
   try
     let sideMVar ← mkFreshExprMVar none (kind := .synthetic)
     let proof ← mkAppM lemmaName (preArgs ++ #[sideMVar, mainFact])
-    let remaining ← Lean.Elab.Tactic.run sideMVar.mvarId! do
-      Lean.Elab.Tactic.evalTactic (← `(tactic| decide))
-    if remaining.isEmpty then
-      some <$> instantiateMVars proof
-    else
-      pure none
+    let sideTy ← instantiateMVars (← inferType sideMVar)
+    let some sideProof ← proveByDecide sideTy
+      | return none
+    sideMVar.mvarId!.assign sideProof
+    some <$> instantiateMVars proof
   catch _ =>
     pure none
 
