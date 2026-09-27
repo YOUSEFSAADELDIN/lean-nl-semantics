@@ -4,7 +4,7 @@ import LeanNLSemantics.FraCaS.Section2.Plurals
 /-!
 # `exist_nl`: existential-import / quantifier-strength (Category B)
 
-**Validation status**: four attempts, all isolated to
+**Validation status**: five attempts, all isolated to
 `applyWithDecidableSide`'s numeral-side-condition discharge (the
 `atLeastSome`/`exactlySome` rules; `mostSome` needs no side fact and
 built/ran correctly from the first CI run). (1) `786f9c6` called
@@ -13,17 +13,21 @@ can't be invoked there, a build failure. (2)/(3) `025d76e`/`18abd7b` both
 tried leaving the side-condition as an UNTYPED metavariable
 (`mkFreshExprMVar none`) for `mkAppM`'s own unification to discover its
 type, varying only how its eventual proof was built - both compiled but
-silently failed identically (confirmed via CI both times). (4) Diagnostic
-logging (`3b688ae`) surfaced why: `mkAppM` refuses to unify an
-unconstrained-`Sort` metavariable's type against a concrete expected type
-at all (`Application type mismatch: ?m.13 : ?m.12 ... expected 3 ≥ 1`) -
-the untyped-metavariable design was broken from the start, independent of
-how it was discharged. `applyWithDecidableSide` now reads the concrete
-side-condition type off a *partial* application of `lemmaName` instead
-(no untyped metavariable anywhere) - see its own doc comment for the
-mechanism. Every other API this file uses is one Phase 1/2 already
-confirmed working (`introAll`, `extractPQ`, `extractN`, `nameOf`,
-`liftMetaTactic1`).
+silently failed identically. (4) Diagnostic logging (`3b688ae`) surfaced
+why: `mkAppM` refuses to unify an unconstrained-`Sort` metavariable's
+type against a concrete expected type at all. (5) `b65aa1f` tried reading
+the side-condition type off a *partial* `mkAppM lemmaName preArgs`
+application instead - compiled, but CI's logging showed a *different*
+bug: `mkAppM` only auto-fills instance-implicit binders *between*
+explicit args it was given, not ones *after* the last one, so the "side
+condition type" read off the partial application was actually the next
+unfilled instance binder (`DecidablePred (P∧Q)`, a `Type`, not the `Prop`
+needed) - `mkDecideProof` threw trying to `decide` a type. This version
+uses `forallMetaTelescope` instead: it creates one metavariable per
+binder up front, by position, so there is no "which slot is next"
+ambiguity for either bug to hide in - see the function's own doc comment.
+Every other API this file uses is one Phase 1/2 already confirmed working
+(`introAll`, `extractPQ`, `extractN`, `nameOf`, `liftMetaTactic1`).
 
 ## The semantic principle(s), characterized before writing any tactic
 code (per the instruction this file was scoped under)
@@ -114,52 +118,63 @@ directly against `Plurals.lean`: same `{A} [Fintype A] (n) (P Q)
 `P`/`Q`/`n` back out correctly without any change to `Tactic.lean`. -/
 def exactlyHead : Lean.Name := ``FraCaS.Section2.Exactly
 
-/-- Builds `lemmaName` applied to `preArgs ++ [sideProof, mainFact]`. The
-side-condition's *type* - `n ≥ 1`, `n ≠ 0`, whatever the lemma's own
-signature says at that position - is read off directly from `lemmaName`'s
-own Pi type: `mkAppM lemmaName preArgs` builds the *partial* application
-(only `preArgs` supplied; `mkAppM` fills in the intervening implicit/
-instance binders but does not require the explicit arity to be
-saturated), leaving a `∀ (sideCond) (mainFact), _` Pi whose domain is
-exactly the concrete side-condition Prop we need (already instantiated
-with `preArgs`' own `n`/`P`/`Q`, no free variables left). That gets
-discharged via `Lean.Meta.mkDecideProof` (core's own
-`of_decide_eq_true`-via-`mkExpectedPropHint` recipe for a decidable
-proposition that reduces to `true` - every FraCaS instance's `n` is a
-concrete numeral), then plugged into the *full* application alongside
-`mainFact`. Returns `none`, not a thrown error, on any failure - callers
-keep searching other candidates.
+/-- Builds `lemmaName` applied to `preArgs ++ [sideProof, mainFact]`,
+where `preArgs = #[n, P, Q]` and `lemmaName` is `atLeast_some` or
+`some_of_exactly` - both share the exact telescope `{A} [Fintype A]
+(n P Q : ...) [DecidablePred (P∧Q)] (hn) (h) : Some P Q` (checked
+directly against `GQ.lean`/`Plurals.lean`: 8 total binders, `n`/`P`/`Q`
+at indices 2/3/4, the side-condition `hn` and main fact `h` at 6/7).
 
-**Validation status** - three attempts before this one, each confirmed
-via CI: (1) commit `786f9c6` discharged the side-condition via
+Uses `Lean.Meta.forallMetaTelescope` to create one metavariable per
+binder up front (each later binder's domain already carrying the earlier
+ones as substituted subterms), unifies the three we're given (`n`/`P`/
+`Q`) via `isDefEq` (not a raw `.assign` - this is what lets `A` at index 0
+resolve for free, back-propagated from `P`/`Q`'s own `A → Prop` type
+the same way ordinary elaboration infers an implicit from a later
+explicit argument), resolves the two instance binders via `synthInstance`,
+reads index 6's now-concrete type and discharges it via
+`Lean.Meta.mkDecideProof`, unifies index 7 with `mainFact`, and returns
+the fully-instantiated application. Returns `none`, not a thrown error,
+on any failure - callers keep searching other candidates.
+
+**Validation status** - four attempts before this one, each confirmed via
+CI, all failing at *how the side-condition's type was discovered*, never
+at how its proof was built: (1) `786f9c6` discharged it via
 `Lean.Elab.Tactic.run` + `evalTactic (decide)`, which lives in `TermElabM`
 and cannot be invoked from a plain `MetaM` action - a build failure.
-(2)/(3) commits `025d76e`/`18abd7b` instead tried leaving the side
-condition as an UNTYPED metavariable (`mkFreshExprMVar none`) for
-`mkAppM`'s own unification to discover its type, varying only *how* the
-metavariable's eventual proof was constructed - both compiled but
-silently failed identically. Diagnostic logging (commit `3b688ae`)
-surfaced the real reason: `mkAppM` does not unify an unconstrained-`Sort`
-metavariable's type against a concrete expected type at all (`Application
-type mismatch: ?m.13 : ?m.12 ... but is expected to have type 3 ≥ 1`) -
-the untyped-metavariable design itself was broken from the start, not
-whatever discharged it. This version never creates that metavariable:
-`sideTy` is read off a concrete partial application instead, so nothing
-needs that unification to happen. -/
+(2)/(3) `025d76e`/`18abd7b` left it as an UNTYPED metavariable
+(`mkFreshExprMVar none`) for `mkAppM`'s own unification to discover its
+type - both compiled but silently failed identically, because `mkAppM`
+refuses to unify an unconstrained-`Sort` metavariable's type against a
+concrete expected type at all. (4) `b65aa1f` read the type off a
+*partial* `mkAppM lemmaName preArgs` application instead - compiled, but
+CI showed `mkAppM` only auto-fills instance-implicit binders *between*
+explicit args it was given, not ones *after* the last one, so the domain
+read off was actually the still-unfilled `DecidablePred (P∧Q)` instance
+binder (a `Type`, not the `Prop` needed) - `mkDecideProof` threw trying to
+`decide` a type. `forallMetaTelescope` sidesteps both bugs at once: every
+binder gets its own metavariable by position from the start, so there is
+no "which slot is next" step for either kind of mistake to hide in. -/
 def applyWithDecidableSide (lemmaName : Lean.Name) (preArgs : Array Expr) (mainFact : Expr) :
     MetaM (Option Expr) := do
   try
-    let partialApp ← mkAppM lemmaName preArgs
-    let partialTy ← inferType partialApp
-    let some sideTy :=
-        (match partialTy with
-          | .forallE _ dom _ _ => some dom
-          | _ => none)
-      | do
-        logInfo m!"applyWithDecidableSide: {lemmaName}'s partial application isn't a Pi (got {partialTy})"
-        return none
+    let const ← mkConstWithFreshMVarLevels lemmaName
+    let (mvars, bis, _) ← forallMetaTelescope (← inferType const)
+    unless mvars.size == 8 && preArgs.size == 3 do
+      logInfo m!"applyWithDecidableSide: {lemmaName} has {mvars.size} binders, expected 8"
+      return none
+    unless (← isDefEq mvars[2]! preArgs[0]!) && (← isDefEq mvars[3]! preArgs[1]!) &&
+        (← isDefEq mvars[4]! preArgs[2]!) do
+      return none
+    for i in [1, 5] do
+      if bis[i]!.isInstImplicit then
+        let inst ← synthInstance (← instantiateMVars (← inferType mvars[i]!))
+        unless ← isDefEq mvars[i]! inst do return none
+    let sideTy ← instantiateMVars (← inferType mvars[6]!)
     let sideProof ← mkDecideProof sideTy
-    some <$> mkAppM lemmaName (preArgs ++ #[sideProof, mainFact])
+    unless (← isDefEq mvars[6]! sideProof) && (← isDefEq mvars[7]! mainFact) do
+      return none
+    some <$> instantiateMVars (mkAppN const mvars)
   catch e =>
     logInfo m!"applyWithDecidableSide: {lemmaName} failed: {e.toMessageData}"
     pure none
