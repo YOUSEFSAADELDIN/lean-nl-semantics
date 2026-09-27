@@ -1,5 +1,5 @@
 <title>Does It Follow</title>
-<meta name="description" content="An interactive supplement: checking whether one English sentence follows from others, with each result proved in Lean 4.">
+<meta name="description" content="An interactive supplement: build an argument piece by piece and watch a certified Lean 4 reasoner check whether it holds.">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,132 +19,54 @@
     --accent-2: #7a3b2e;
     --fill-2: #c9c6ba;
     --fill-3: #8a877c;
-    --shadow: none;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       color-scheme: dark;
-      --paper: #141412;
-      --surface: #1a1a17;
-      --ink: #e9e7e0;
-      --ink-muted: #b3b0a5;
-      --ink-faint: #837f74;
-      --rule: #35342e;
-      --rule-strong: #4a4840;
-      --accent: #8fadd1;
-      --accent-2: #d2988a;
-      --fill-2: #4a4840;
-      --fill-3: #6b6858;
+      --paper: #141412; --surface: #1a1a17; --ink: #e9e7e0; --ink-muted: #b3b0a5; --ink-faint: #837f74;
+      --rule: #35342e; --rule-strong: #4a4840; --accent: #8fadd1; --accent-2: #d2988a;
+      --fill-2: #4a4840; --fill-3: #6b6858;
     }
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --paper: #141412;
-    --surface: #1a1a17;
-    --ink: #e9e7e0;
-    --ink-muted: #b3b0a5;
-    --ink-faint: #837f74;
-    --rule: #35342e;
-    --rule-strong: #4a4840;
-    --accent: #8fadd1;
-    --accent-2: #d2988a;
-    --fill-2: #4a4840;
-    --fill-3: #6b6858;
+    --paper: #141412; --surface: #1a1a17; --ink: #e9e7e0; --ink-muted: #b3b0a5; --ink-faint: #837f74;
+    --rule: #35342e; --rule-strong: #4a4840; --accent: #8fadd1; --accent-2: #d2988a;
+    --fill-2: #4a4840; --fill-3: #6b6858;
   }
 
   * { box-sizing: border-box; }
   body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: "Source Serif 4", Georgia, serif;
-    font-size: 17px;
-    line-height: 1.55;
-    padding-inline: 22px;
-    padding-block: 40px 72px;
+    background: var(--paper); color: var(--ink);
+    font-family: "Source Serif 4", Georgia, serif; font-size: 17px; line-height: 1.55;
+    padding-inline: 22px; padding-block: 40px 72px;
   }
   .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
-  .sc {
-    font-variant-caps: small-caps;
-    letter-spacing: 0.03em;
-  }
   a { color: var(--accent); }
   h1, h2, h3 { font-weight: 600; text-wrap: balance; margin: 0; }
   em { font-style: italic; }
 
-  .page { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
-  .wide { max-width: 880px; }
+  .page { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
 
-  /* running head */
   .runninghead {
     display: flex; justify-content: space-between; align-items: baseline;
     font-size: 13px; letter-spacing: 0.02em; color: var(--ink-faint);
     border-bottom: 1px solid var(--rule); padding-bottom: 10px;
   }
 
-  /* title block */
-  .titleblock { display: flex; flex-direction: column; gap: 14px; }
+  .titleblock { display: flex; flex-direction: column; gap: 12px; }
   .titleblock h1 { font-size: 34px; }
   .titleblock .subtitle { font-style: italic; color: var(--ink-muted); font-size: 18px; }
   .titleblock p { margin: 0; max-width: 66ch; }
 
-  /* figure shell */
   figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
   figcaption { font-size: 14.5px; color: var(--ink-muted); }
   figcaption .num { font-weight: 600; color: var(--ink); }
-  .figbox {
-    border: 1px solid var(--rule); background: var(--surface);
-    padding: 22px 24px;
-  }
+  .figbox { border: 1px solid var(--rule); background: var(--surface); padding: 22px 24px; }
 
   section { display: flex; flex-direction: column; gap: 16px; }
   section > h2 { font-size: 21px; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
 
-  /* example card (shared: hero + gallery detail) */
-  .example .sentences { display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; }
-  .example .premise { padding-left: 1.4em; text-indent: -1.4em; }
-  .example .premise::before { content: "\00b7\0020"; color: var(--ink-faint); }
-  .example .arrow-row { display: flex; align-items: baseline; gap: 10px; margin: 10px 0; }
-  .example .arrow-row .arrow { color: var(--ink-faint); }
-  .example .hyp { font-weight: 600; }
-  .example .verdict-line {
-    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
-    font-size: 14.5px; margin-top: 6px;
-  }
-  .verdict { font-variant-caps: small-caps; letter-spacing: 0.03em; font-weight: 600; color: var(--accent); }
-  .verdict.boundary { color: var(--ink-muted); }
-  .example .citation { color: var(--ink-faint); }
-  .example .note {
-    font-size: 14.5px; color: var(--ink-muted); border-left: 2px solid var(--rule-strong);
-    padding-left: 12px; margin-top: 8px;
-  }
-  .steps { counter-reset: step; margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
-  .step { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
-  .step::before {
-    counter-increment: step; content: counter(step) ".";
-    color: var(--ink-faint); font-variant-numeric: tabular-nums;
-  }
-  .step .prose { }
-  .step .formal { display: block; margin-top: 3px; font-size: 13px; color: var(--ink-faint); }
-
-  /* explorer */
-  .explorer { display: grid; grid-template-columns: 190px 1fr; gap: 0; border: 1px solid var(--rule); }
-  .explorer .list { border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
-  .explorer .list button {
-    all: unset; cursor: pointer; padding: 11px 14px; font-family: inherit; font-size: 14.5px;
-    color: var(--ink-muted); border-bottom: 1px solid var(--rule);
-  }
-  .explorer .list button:last-child { border-bottom: none; }
-  .explorer .list button .n { font-variant-numeric: tabular-nums; color: var(--ink-faint); margin-right: 6px; }
-  .explorer .list button[aria-current="true"] {
-    background: var(--paper); color: var(--ink); font-weight: 600;
-    box-shadow: inset 2px 0 0 var(--accent);
-  }
-  .explorer .detail { padding: 22px 24px; background: var(--surface); min-width: 0; }
-  .fam-label {
-    font-variant-caps: small-caps; letter-spacing: 0.03em; font-size: 13.5px; color: var(--ink-faint);
-  }
-
-  /* coverage table */
   table.coverage { border-collapse: collapse; width: 100%; font-size: 15px; }
   table.coverage th, table.coverage td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
   table.coverage th { font-variant-caps: small-caps; letter-spacing: 0.02em; font-weight: 600; color: var(--ink-muted); }
@@ -154,16 +76,47 @@
   .bar-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; font-size: 13px; color: var(--ink-muted); }
   .bar-legend .sw { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border: 1px solid var(--rule-strong); vertical-align: -1px; }
 
-  footer {
-    border-top: 1px solid var(--rule); padding-top: 16px; color: var(--ink-muted); font-size: 14.5px;
+  /* builder */
+  .picker { display: flex; flex-direction: column; gap: 10px; }
+  .picker-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .picker-row .rowlabel { font-size: 13.5px; color: var(--ink-faint); width: 100%; }
+  .chip {
+    border: 1px solid var(--rule-strong); background: var(--paper); color: var(--ink);
+    font-family: inherit; font-size: 14.5px; padding: 6px 13px; cursor: pointer;
   }
+  .chip:hover { border-color: var(--accent); }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+  .stage { border: 1px solid var(--rule); background: var(--surface); }
+  .stage-svg-wrap { padding: 10px 10px 0; }
+  .stage svg { width: 100%; height: auto; display: block; color: var(--ink); }
+  .stage svg .ring-mark { stroke: var(--accent); }
+  .stage-caption {
+    font-size: 15px; padding: 12px 20px; border-top: 1px solid var(--rule); min-height: 1.4em;
+  }
+  .stage-controls { display: flex; align-items: center; gap: 12px; padding: 0 20px 16px; }
+  .btn {
+    border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+    font-family: inherit; font-size: 14.5px; padding: 7px 16px; cursor: pointer;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn[disabled] { opacity: 0.35; cursor: default; }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule-strong); }
+  .progress { font-size: 13px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+  .result { padding: 16px 20px; border-top: 1px solid var(--rule); display: none; flex-direction: column; gap: 8px; }
+  .result.shown { display: flex; }
+  .result .hyp { font-weight: 600; }
+  .verdict { font-variant-caps: small-caps; letter-spacing: 0.03em; font-weight: 600; color: var(--accent); }
+  .verdict.boundary { color: var(--ink-muted); }
+  .result .citation { color: var(--ink-faint); font-size: 14px; }
+  .result .note { font-size: 14.5px; color: var(--ink-muted); border-left: 2px solid var(--rule-strong); padding-left: 12px; }
+
+  footer { border-top: 1px solid var(--rule); padding-top: 16px; color: var(--ink-muted); font-size: 14.5px; }
   footer p { margin: 0 0 8px; }
 
-  @media (max-width: 620px) {
-    .explorer { grid-template-columns: 1fr; }
-    .explorer .list { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--rule); }
-    .explorer .list button { border-bottom: none; border-right: 1px solid var(--rule); white-space: nowrap; }
-    .explorer .list button[aria-current="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
+  @media (max-width: 480px) {
+    .chip { font-size: 13.5px; padding: 6px 10px; }
   }
 </style>
 
@@ -177,44 +130,42 @@
     <h1>Does it follow?</h1>
     <p class="subtitle">Checking natural-language entailment with a proof assistant, not a language model.</p>
     <p>
-      Below, a small system decides whether one English sentence follows from one or more others, and proves it.
-      Each result is checked by <span class="mono">Lean 4</span>, the same kind of interactive theorem prover used
-      to verify mathematics, applying a short, fixed list of logical principles. Nothing is guessed by a language
-      model; every step corresponds to an already-proved statement the Lean kernel accepts.
+      Pick a fact below, then a topic. The diagram builds itself one premise at a time, and the reasoner's
+      verdict follows at the end. Everything shown is checked by <span class="mono">Lean 4</span>, applying a
+      short, fixed list of logical principles; nothing here is guessed by a language model.
     </p>
   </div>
 
   <section>
-    <h2>1. An example</h2>
-    <figure id="heroFigure"></figure>
-  </section>
-
-  <section>
-    <h2>2. Five principles</h2>
+    <h2>1. Five principles</h2>
     <p>
-      Every example on this page is closed by one of five principles, or by two of them applied in sequence.
-      None was written to fit a particular sentence; each is a general statement, proved once, about how the
-      relevant English determiners (<em>every</em>, <em>some</em>, <em>at least n</em>, <em>at most n</em>) behave.
+      Every argument below is closed by one of these, or by two applied in sequence. None was written to fit a
+      particular sentence; each is a general statement about how the determiner behaves, proved once.
     </p>
     <table class="coverage" id="principlesTable"></table>
   </section>
 
   <section>
-    <h2>3. Examples, by principle</h2>
-    <p>
-      Select an example. The panel on the right shows the sentences involved, the verdict, and the reasoning
-      step by step, in English alongside the Lean statement it corresponds to. The last entry is not an
-      entailment at all: it shows a case the system correctly declines to decide, and why.
-    </p>
-    <figure class="wide" id="explorerFigure"></figure>
+    <h2>2. Build an argument</h2>
+    <div class="picker">
+      <div class="picker-row">
+        <span class="rowlabel">Start from a fact:</span>
+        <div id="detChips"></div>
+      </div>
+      <div class="picker-row" id="topicRow" hidden>
+        <span class="rowlabel">About whom:</span>
+        <div id="topicChips"></div>
+      </div>
+    </div>
+    <figure id="stageFigure"></figure>
   </section>
 
   <section>
-    <h2>4. Coverage</h2>
+    <h2>3. Coverage</h2>
     <p>
-      The system above is deliberately narrow. Its scope is the monotonicity and cardinality behavior of four
-      quantifiers over two predicates: not anaphora, tense, comparatives, or the many other phenomena a broader
-      benchmark tests. Run against every already-formalized theorem in the
+      The system above is deliberately narrow: its scope is the monotonicity and cardinality behavior of a
+      handful of quantifiers over two predicates at a time, not anaphora, tense, comparatives, or the many
+      other phenomena a broader benchmark tests. Run against every already-formalized theorem in the
       <a href="https://github.com/YOUSEFSAADELDIN/lean-nl-semantics" target="_blank" rel="noopener">FraCaS</a>
       test suite (Cooper et al., 1996), the result is:
     </p>
@@ -223,23 +174,214 @@
 
   <footer>
     <p>
-      Every entry above, and every number in the coverage table, was checked by a real build (GitHub Actions,
-      Lean 4 and Mathlib). A full, per-theorem trace of the reasoner's search, including the cases summarized
-      above, is available in the
-      <a href="https://claude.ai/artifact/1Ki9tGkReNjEaxy1jinrJL" target="_blank" rel="noopener">reasoner trace explorer</a>.
+      Every diagram above, and every number in the coverage table, was checked by a real build (GitHub Actions,
+      Lean 4 and Mathlib). A full, per-theorem trace of the reasoner's search, including the arguments above,
+      is available in the <a href="trace.html" target="_blank" rel="noopener">reasoner trace explorer</a>.
     </p>
     <p>Source: <a href="https://github.com/YOUSEFSAADELDIN/lean-nl-semantics" target="_blank" rel="noopener">github.com/YOUSEFSAADELDIN/lean-nl-semantics</a></p>
   </footer>
 </div>
 
 <script>
-const FAMILY_NAMES = {
-  substitution: "Substitution",
-  cardinality: "Cardinality",
-  existential: "Existential transfer",
-  composition: "Composition",
-  narrowing: "Conditioned narrowing",
+const SVG_NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+function circlePrim(cx, cy, r, label, opts) {
+  opts = opts || {};
+  return { t: "circle", cx, cy, r, label, dashed: !!opts.dashed };
+}
+function dotPrim(cx, cy) { return { t: "dot", cx, cy }; }
+function ringPrim(cx, cy) { return { t: "ring", cx, cy }; }
+function labelPrim(x, y, text) { return { t: "label", x, y, text }; }
+function connectorPrim(x1, y1, x2, y2, label) { return { t: "connector", x1, y1, x2, y2, label }; }
+
+function drawPrimitive(svg, p) {
+  if (p.t === "circle") {
+    svg.appendChild(el("circle", { cx: p.cx, cy: p.cy, r: p.r, fill: "none", stroke: "currentColor",
+      "stroke-width": 1.5, ...(p.dashed ? { "stroke-dasharray": "5 4" } : {}) }));
+    const t = el("text", { x: p.cx, y: p.cy - p.r - 9, "text-anchor": "middle", "font-size": 13 });
+    t.textContent = p.label;
+    svg.appendChild(t);
+  } else if (p.t === "dot") {
+    svg.appendChild(el("circle", { cx: p.cx, cy: p.cy, r: 4.5, fill: "currentColor" }));
+  } else if (p.t === "ring") {
+    svg.appendChild(el("circle", { cx: p.cx, cy: p.cy, r: 9, class: "ring-mark", fill: "none", "stroke-width": 2 }));
+  } else if (p.t === "label") {
+    const t = el("text", { x: p.x, y: p.y, "text-anchor": "middle", "font-size": 12.5, "font-style": "italic" });
+    t.textContent = p.text;
+    svg.appendChild(t);
+  } else if (p.t === "connector") {
+    const midx = (p.x1 + p.x2) / 2, midy = Math.min(p.y1, p.y2) - 34;
+    const path = el("path", { d: `M ${p.x1} ${p.y1} Q ${midx} ${midy} ${p.x2} ${p.y2}`,
+      fill: "none", stroke: "currentColor", "stroke-width": 1.3, "marker-end": "url(#arrowhead)" });
+    svg.appendChild(path);
+    const t = el("text", { x: midx, y: midy - 6, "text-anchor": "middle", "font-size": 12 });
+    t.textContent = p.label;
+    svg.appendChild(t);
+  }
+}
+
+function makeDefs(svg) {
+  const defs = el("defs", {});
+  const marker = el("marker", { id: "arrowhead", markerWidth: 8, markerHeight: 8, refX: 6, refY: 3, orient: "auto" });
+  const poly = el("polygon", { points: "0 0, 7 3, 0 6", fill: "currentColor" });
+  marker.appendChild(poly);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+}
+
+// Each example: an array of "groups"; group 0 is drawn first, each further
+// group is revealed by a click. `captions[i]` is shown once group i is drawn.
+const EXAMPLES = {
+  49: {
+    det: "Some", topic: "a Swede",
+    hypothesis: "A Scandinavian won a Nobel prize.",
+    tactic: "mono_nl", rule: "some_restrict",
+    groups: [
+      [circlePrim(130,120,75,"Swede"), circlePrim(250,120,75,"won a Nobel prize"), dotPrim(190,120)],
+      [circlePrim(130,120,118,"Scandinavian")],
+      [ringPrim(190,120)],
+    ],
+    captions: [
+      "A Swede won a Nobel prize.",
+      "Every Swede is a Scandinavian.",
+      "The same witness is a Scandinavian, so a Scandinavian won a Nobel prize.",
+    ],
+  },
+  63: {
+    det: "At least three", topic: "female commissioners",
+    hypothesis: "At least three commissioners spend time at home.",
+    tactic: "mono_nl", rule: "atLeast_restrict",
+    note: "The second fact is not stated in the sentence. It is a background fact the formalization supplies.",
+    groups: [
+      [circlePrim(130,120,75,"female commissioner"), circlePrim(250,120,75,"spends time at home"),
+       dotPrim(178,120), dotPrim(190,120), dotPrim(202,120), labelPrim(190,160,"at least 3")],
+      [circlePrim(130,120,118,"commissioner")],
+      [ringPrim(178,120), ringPrim(190,120), ringPrim(202,120)],
+    ],
+    captions: [
+      "At least three female commissioners spend time at home.",
+      "Every female commissioner is a commissioner.",
+      "The same three are commissioners, so at least three commissioners spend time at home.",
+    ],
+  },
+  15: {
+    det: "At least three", topic: "tenors",
+    hypothesis: "Some tenor takes part.",
+    tactic: "exist_nl", rule: "atLeast_some",
+    groups: [
+      [circlePrim(150,120,80,"tenor"), circlePrim(270,120,80,"takes part"),
+       dotPrim(186,120), dotPrim(198,120), dotPrim(210,120), labelPrim(198,163,"at least 3")],
+      [ringPrim(198,120)],
+    ],
+    captions: [
+      "At least three tenors take part in the concert.",
+      "At least three means at least one: that one witness shows some tenor takes part.",
+    ],
+  },
+  2: {
+    det: "Every", topic: "Italian men",
+    hypothesis: "There are Italian men who want to be a great tenor.",
+    tactic: "exist_nl", rule: "every_some",
+    groups: [
+      [circlePrim(130,120,75,"Italian man"), circlePrim(130,120,118,"wants to be a great tenor")],
+      [circlePrim(250,120,70,"is a great tenor"), dotPrim(178,120)],
+      [ringPrim(178,120)],
+    ],
+    captions: [
+      "Every Italian man wants to be a great tenor.",
+      "Some Italian men are great tenors.",
+      "That witness wants to be a great tenor too, so some Italian man who is a great tenor wants to be one.",
+    ],
+  },
+  123: {
+    det: "Most", topic: "reports",
+    hypothesis: "Some reports from ITEL are on Smith's desk.",
+    tactic: "mono_nl_compose", rule: "most_some, then some_mono_scope",
+    groups: [
+      [circlePrim(130,120,75,"reports needed"), circlePrim(250,120,75,"sent by ITEL"),
+       dotPrim(190,120), labelPrim(190,160,"most ⇒ some")],
+      [circlePrim(250,120,118,"on her desk")],
+      [ringPrim(190,120)],
+    ],
+    captions: [
+      "Most of the reports Smith needs were sent by ITEL, so some report was.",
+      "A report sent by ITEL is on her desk.",
+      "That report is on her desk too.",
+    ],
+  },
+  124: {
+    det: "Exactly two", topic: "machines",
+    hypothesis: "Two machines have been removed.",
+    tactic: "mono_nl_compose", rule: "exactly_atLeast, then atLeast_mono_scope",
+    groups: [
+      [circlePrim(130,120,75,"machine"), circlePrim(250,120,75,"missing"),
+       dotPrim(178,120), dotPrim(202,120), labelPrim(190,160,"exactly 2")],
+      [circlePrim(250,120,118,"removed")],
+      [ringPrim(178,120), ringPrim(202,120), labelPrim(190,178,"so at least 2")],
+    ],
+    captions: [
+      "Exactly two machines are missing.",
+      "A missing machine has been removed.",
+      "Exactly two is also at least two, and the same two have been removed.",
+    ],
+  },
+  27: {
+    det: "Some", topic: "committee members",
+    hypothesis: "At least a few committee members are from Scandinavia.",
+    tactic: "mono_nl_compose", rule: "some_entails_and, then some_mono_scope",
+    groups: [
+      [circlePrim(130,120,75,"committee"), circlePrim(250,120,75,"from Sweden"), dotPrim(178,120)],
+      [connectorPrim(178,120,335,120,"person + Sweden ⊆ Scandinavia"), circlePrim(370,120,60,"Scandinavia", {dashed:true})],
+      [ringPrim(178,120), dotPrim(370,120), ringPrim(370,120)],
+    ],
+    captions: [
+      "Some committee member is from Sweden.",
+      "Every committee member is a person, and every person from Sweden is from Scandinavia.",
+      "So that committee member is from Scandinavia.",
+    ],
+  },
+  44: {
+    det: "Few", topic: "committee members",
+    hypothesis: "There are few committee members from Portugal.",
+    tactic: "mono_nl", rule: "entails_narrow, then atMost_mono_scope_conditioned",
+    groups: [
+      [circlePrim(130,120,75,"committee"), circlePrim(250,120,75,"from southern Europe"), labelPrim(190,160,"at most n")],
+      [circlePrim(210,150,45,"from Portugal", {dashed:true}), connectorPrim(210,150,190,120,"⊆, via person")],
+      [labelPrim(190,-5+205,"so at most n from Portugal too")],
+    ],
+    captions: [
+      "Few committee members are from southern Europe.",
+      "Every committee member is a person, and every person from Portugal is from southern Europe, so every committee member from Portugal is already known to be from southern Europe.",
+      "The same small bound applies to committee members from Portugal.",
+    ],
+  },
+  12: {
+    det: "Few", topic: "great tenors", boundary: true,
+    hypothesis: "There are great tenors who are poor.",
+    groups: [
+      [circlePrim(85,120,50,"tenor"), circlePrim(175,120,45,"poor", {dashed:true}), labelPrim(130,185,"possible: none are poor")],
+      [circlePrim(305,120,50,"tenor"), circlePrim(385,120,50,"poor"), dotPrim(340,120), labelPrim(350,185,"possible: some are poor")],
+    ],
+    captions: [
+      "Few great tenors are poor is consistent with a world where none of them are.",
+      "It is equally consistent with a world where some of them are.",
+    ],
+    note: "Both are consistent with the premise, so the hypothesis is not decided either way. The system proves exactly this, by exhibiting a small model of each kind, rather than by substituting a known fact: a different kind of reasoning (building models, not deriving a substitution), outside the fragment the five principles cover.",
+  },
 };
+
+const TREE = [
+  { det: "Some", ids: [49, 27] },
+  { det: "Every", ids: [2] },
+  { det: "At least three", ids: [63, 15] },
+  { det: "Exactly two", ids: [124] },
+  { det: "Few", ids: [44, 12] },
+  { det: "Most", ids: [123] },
+];
 
 const FAMILY_DEFS = [
   ["Substitution", "A predicate is exchanged for one the premises already show it implies."],
@@ -248,197 +390,129 @@ const FAMILY_DEFS = [
   ["Composition", "Two of the principles above are chained: the first produces a fact the second then substitutes with."],
   ["Conditioned narrowing", "A conditional fact known to hold over a broader restrictor is narrowed to a smaller one along a known entailment, then substituted."],
 ];
+document.getElementById("principlesTable").innerHTML =
+  `<tbody>${FAMILY_DEFS.map(([n,d]) => `<tr><th>${n}</th><td>${d}</td></tr>`).join("")}</tbody>`;
 
-const HERO = {
-  id: 49,
-  premises: ["A Swede won a Nobel prize.", "Every Swede is a Scandinavian."],
-  hypothesis: "A Scandinavian won a Nobel prize.",
-  family: "substitution",
-  tactic: "mono_nl", rule: "some_restrict",
-  formal: "some_restrict swede wonNobel scandinavian",
-  steps: [
-    ["The first sentence gives a witness: some Swede won a Nobel prize.", "Some swede wonNobel"],
-    ["The second sentence establishes that every Swede is a Scandinavian.", "Every swede scandinavian"],
-    ["That witness is therefore a Scandinavian, so some Scandinavian won a Nobel prize.", "Some scandinavian wonNobel"],
-  ],
-};
+// --- builder state ---
+let currentId = 49;
+let revealIndex = 0;
 
-const EXAMPLES = [
-  HERO,
-  {
-    id: 63, family: "substitution",
-    premises: ["At least three female commissioners spend time at home."],
-    hypothesis: "At least three commissioners spend time at home.",
-    tactic: "mono_nl", rule: "atLeast_restrict",
-    formal: "atLeast_restrict 3 femaleCommissioner timeAtHome commissioner",
-    steps: [
-      ["At least three female commissioners have the property in question.", "AtLeast 3 femaleCommissioner timeAtHome"],
-      ["Every female commissioner is also a commissioner.", "Every femaleCommissioner commissioner"],
-      ["The same three witnesses are commissioners, so at least three commissioners have the property.", "AtLeast 3 commissioner timeAtHome"],
-    ],
-    note: "The second fact is not stated in the sentence. It is a background fact the formalization supplies: a female commissioner is a commissioner.",
-  },
-  {
-    id: 15, family: "cardinality",
-    premises: ["At least three tenors will take part in the concert."],
-    hypothesis: "There are tenors who will take part in the concert.",
-    tactic: "exist_nl", rule: "atLeast_some",
-    formal: "atLeast_some 3 tenor takesPart",
-    steps: [
-      ["At least three tenors satisfy the property, and three is at least one.", "AtLeast 3 tenor takesPart, 3 ≥ 1"],
-      ["A count of at least one means the set is not empty, so some tenor takes part.", "Some tenor takesPart"],
-    ],
-  },
-  {
-    id: 2, family: "existential",
-    premises: ["Every Italian man wants to be a great tenor.", "Some Italian men are great tenors."],
-    hypothesis: "There are Italian men who want to be a great tenor.",
-    tactic: "exist_nl", rule: "every_some",
-    formal: "every_some italianMan wantsGreatTenor isGreatTenor",
-    steps: [
-      ["The second sentence supplies a witness: some Italian man is a great tenor.", "Some italianMan isGreatTenor"],
-      ["The first sentence applies to that same witness: every Italian man wants to be a great tenor.", "Every italianMan wantsGreatTenor"],
-      ["So that witness is an Italian man who wants to be a great tenor.", "Some italianMan wantsGreatTenor"],
-    ],
-  },
-  {
-    id: 123, family: "composition",
-    premises: ["ITEL has sent most of the reports Smith needs.", "They are on her desk."],
-    hypothesis: "There are some reports from ITEL on Smith's desk.",
-    tactic: "mono_nl_compose", rule: "most_some, then some_mono_scope",
-    formal: "some_mono_scope reportsNeeded sentByItel onDesk (most_some … hmost) honDesk",
-    steps: [
-      ["Most of the reports Smith needs were sent by ITEL, and a strict majority of a set cannot be empty, so some such report was sent by ITEL.", "Most reportsNeeded sentByItel ⇒ Some reportsNeeded sentByItel"],
-      ["The second sentence states that a report sent by ITEL is on her desk.", "Every sentByItel onDesk"],
-      ["The report from the first step is therefore on her desk.", "Some reportsNeeded onDesk"],
-    ],
-    note: "Two principles applied in sequence: cardinality, then substitution.",
-  },
-  {
-    id: 124, family: "composition",
-    premises: ["Two out of ten machines are missing.", "They have been removed."],
-    hypothesis: "Two machines have been removed.",
-    tactic: "mono_nl_compose", rule: "exactly_atLeast, then atLeast_mono_scope",
-    formal: "atLeast_mono_scope 2 machine missing removed (le_of_eq hex.symm) hmono",
-    steps: [
-      ["Exactly two machines are missing, and an exact count of two is also a count of at least two.", "Exactly 2 machine missing ⇒ AtLeast 2 machine missing"],
-      ["The second sentence states that a missing machine has been removed.", "Every missing removed"],
-      ["So at least two machines have been removed.", "AtLeast 2 machine removed"],
-    ],
-    note: "Two principles applied in sequence: a quantity conversion, then substitution.",
-  },
-  {
-    id: 27, family: "composition",
-    premises: ["A few committee members are from Sweden.", "All committee members are people.", "All people who are from Sweden are from Scandinavia."],
-    hypothesis: "At least a few committee members are from Scandinavia.",
-    tactic: "mono_nl_compose", rule: "some_entails_and, then some_mono_scope",
-    formal: "some_mono_scope committee (person∧swedish) scandinavian (some_entails_and …) h3",
-    steps: [
-      ["Some committee member is from Sweden, and every committee member is a person, so that same member is both a person and from Sweden.", "Some committee swedish, Every committee person ⇒ Some committee (person∧swedish)"],
-      ["The third sentence states that anyone who is a person from Sweden is from Scandinavia.", "Every (person∧swedish) scandinavian"],
-      ["So that committee member is from Scandinavia.", "Some committee scandinavian"],
-    ],
-    note: "Two principles applied in sequence: combining two facts about the same witness, then substitution.",
-  },
-  {
-    id: 44, family: "narrowing",
-    premises: ["Few committee members are from southern Europe.", "All committee members are people.", "All people who are from Portugal are from southern Europe."],
-    hypothesis: "There are few committee members from Portugal.",
-    tactic: "mono_nl", rule: "entails_narrow, then atMost_mono_scope_conditioned",
-    formal: "atMost_mono_scope_conditioned n committee southernEurope portugal h1 (entails_narrow …)",
-    steps: [
-      ["Every committee member is a person, and every person from Portugal is from southern Europe.", "Every committee person, Every (person∧portugal) southernEurope"],
-      ["So, restricted to committee members, everyone from Portugal is already known to be from southern Europe.", "Every (committee∧portugal) southernEurope"],
-      ["At most a small number of committee members are from southern Europe, and every committee member from Portugal is one of them, so at most that same small number are from Portugal.", "AtMost n committee southernEurope ⇒ AtMost n committee portugal"],
-    ],
-    note: "The fact in the second step only had to hold for people in general. Narrowing it to hold specifically for committee members is what makes the last step possible, and is the one principle this page's other examples do not use.",
-  },
-  {
-    id: 12, family: "boundary",
-    premises: ["Few great tenors are poor."],
-    hypothesis: "There are great tenors who are poor.",
-    boundary: true,
-    note: "“Few” is compatible with a world where none of them are poor, and with one where some are. Both are consistent with the premise, so the hypothesis is not decided by it either way. The formalization proves exactly this, by exhibiting a small model of each kind, rather than by substituting a known fact. That is a different kind of reasoning (building models, not deriving a substitution) and it is outside the fragment the five principles above cover.",
-  },
-];
+const detChips = document.getElementById("detChips");
+const topicRow = document.getElementById("topicRow");
+const topicChips = document.getElementById("topicChips");
+const stageFigure = document.getElementById("stageFigure");
 
-function renderSentences(ex) {
-  const premisesHtml = ex.premises.map(p => `<div class="premise">${p}</div>`).join("");
-  return `<div class="sentences">${premisesHtml}</div>
-    <div class="arrow-row"><span class="arrow">∴</span><span class="hyp">${ex.hypothesis}</span></div>`;
+function renderChips(container, items, current, onPick) {
+  container.innerHTML = "";
+  items.forEach((it) => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = it.label;
+    b.setAttribute("aria-pressed", it.value === current ? "true" : "false");
+    b.addEventListener("click", () => onPick(it.value));
+    container.appendChild(b);
+  });
 }
 
-function renderSteps(ex) {
-  return `<div class="steps">${ex.steps.map(([prose, formal]) =>
-    `<div class="step"><div><div class="prose">${prose}</div><span class="mono formal">${formal}</span></div></div>`
-  ).join("")}</div>`;
-}
-
-function renderExample(ex, opts) {
-  opts = opts || {};
-  const famName = FAMILY_NAMES[ex.family] || "";
-  let html = "";
-  if (!opts.noFamily) html += `<div class="fam-label">${famName}</div>`;
-  html += renderSentences(ex);
-  if (ex.boundary) {
-    html += `<div class="verdict-line"><span class="verdict boundary">not decided</span></div>`;
-    html += `<div class="note">${ex.note}</div>`;
-    return html;
+function pickDet(det) {
+  const node = TREE.find((n) => n.det === det);
+  if (node.ids.length === 1) {
+    topicRow.hidden = true;
+    selectExample(node.ids[0]);
+  } else {
+    topicRow.hidden = false;
+    renderChips(topicChips, node.ids.map((id) => ({ label: EXAMPLES[id].topic, value: id })),
+      currentId, selectExample);
   }
-  html += `<div class="verdict-line"><span class="verdict">proved</span>
-    <span class="citation mono">${ex.tactic} · ${ex.rule}</span></div>`;
-  if (ex.note) html += `<div class="note">${ex.note}</div>`;
-  html += renderSteps(ex);
-  html += `<div class="mono" style="font-size:13px;color:var(--ink-faint);margin-top:10px">${ex.formal}</div>`;
-  return html;
+  renderChips(detChips, TREE.map((n) => ({ label: n.det, value: n.det })), det, pickDet);
 }
 
-// Figure 1: hero
-document.getElementById("heroFigure").innerHTML = `
-  <div class="figbox example">${renderExample(HERO)}</div>
-  <figcaption><span class="num">Figure 1.</span> Problem 49 of the FraCaS test suite, closed by substitution.</figcaption>
-`;
+function selectExample(id) {
+  currentId = id;
+  revealIndex = 0;
+  const node = TREE.find((n) => n.ids.includes(id));
+  renderChips(detChips, TREE.map((n) => ({ label: n.det, value: n.det })), node.det, pickDet);
+  if (node.ids.length > 1) {
+    topicRow.hidden = false;
+    renderChips(topicChips, node.ids.map((i) => ({ label: EXAMPLES[i].topic, value: i })), id, selectExample);
+  } else {
+    topicRow.hidden = true;
+  }
+  renderStage();
+}
 
-// Figure: five principles table
-document.getElementById("principlesTable").innerHTML = `
-  <tbody>
-    ${FAMILY_DEFS.map(([name, def]) => `<tr><th>${name}</th><td>${def}</td></tr>`).join("")}
-  </tbody>
-`;
-
-// Figure 2: explorer
-const explorerFigure = document.getElementById("explorerFigure");
-explorerFigure.innerHTML = `
-  <div class="figbox" style="padding:0">
-    <div class="explorer">
-      <div class="list" id="exList"></div>
-      <div class="detail example" id="exDetail"></div>
+function renderStage() {
+  const ex = EXAMPLES[currentId];
+  const total = ex.groups.length;
+  const svgId = "diagramSvg";
+  stageFigure.innerHTML = `
+    <div class="figbox" style="padding:0">
+      <div class="stage">
+        <div class="stage-svg-wrap">
+          <svg id="${svgId}" viewBox="0 -30 460 240" role="img" aria-label="Diagram of the argument being built"></svg>
+        </div>
+        <div class="stage-caption" id="stageCaption"></div>
+        <div class="stage-controls">
+          <button class="btn" id="revealBtn">Show next fact</button>
+          <button class="btn ghost" id="resetBtn">Restart</button>
+          <span class="progress" id="progress"></span>
+        </div>
+        <div class="result" id="resultBox"></div>
+      </div>
     </div>
-  </div>
-  <figcaption><span class="num">Figure 2.</span> Eight examples, spanning the five principles and one boundary case.</figcaption>
-`;
-const exList = document.getElementById("exList");
-const exDetail = document.getElementById("exDetail");
-exList.innerHTML = EXAMPLES.map((ex, i) => `
-  <button data-i="${i}"><span class="n">${String(ex.id).padStart(3,"0")}</span>${
-    ex.boundary ? "boundary case" : FAMILY_NAMES[ex.family]
-  }</button>
-`).join("");
-function selectExample(i) {
-  Array.from(exList.children).forEach((b, j) => b.setAttribute("aria-current", j === i ? "true" : "false"));
-  exDetail.innerHTML = renderExample(EXAMPLES[i]);
-}
-exList.addEventListener("click", (e) => {
-  const btn = e.target.closest("button");
-  if (!btn) return;
-  selectExample(Number(btn.dataset.i));
-});
-selectExample(0);
+    <figcaption><span class="num">Figure 1.</span> Building the argument for &ldquo;<span id="figHyp"></span>&rdquo; one fact at a time.</figcaption>
+  `;
+  document.getElementById("figHyp").textContent = ex.hypothesis;
+  const svg = document.getElementById(svgId);
+  makeDefs(svg);
 
-// Figure 3: coverage
-const COVERAGE = {
-  trivial: 14, proved: 65, distinct: 39, eligibleFailed: 0, outside: 393, total: 472,
-};
+  const revealBtn = document.getElementById("revealBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const progress = document.getElementById("progress");
+  const caption = document.getElementById("stageCaption");
+  const resultBox = document.getElementById("resultBox");
+
+  function draw() {
+    while (svg.childNodes.length > 1) svg.removeChild(svg.lastChild); // keep defs
+    for (let i = 0; i <= revealIndex; i++) {
+      ex.groups[i].forEach((p) => drawPrimitive(svg, p));
+    }
+    caption.textContent = ex.captions[revealIndex];
+    progress.textContent = `${revealIndex + 1} of ${total}`;
+    const done = revealIndex >= total - 1;
+    revealBtn.disabled = done;
+    revealBtn.textContent = done ? "All facts shown" : "Show next fact";
+    if (done) {
+      resultBox.classList.add("shown");
+      if (ex.boundary) {
+        resultBox.innerHTML = `
+          <div class="hyp">${ex.hypothesis}</div>
+          <div><span class="verdict boundary">not decided</span></div>
+          <div class="note">${ex.note}</div>`;
+      } else {
+        resultBox.innerHTML = `
+          <div class="hyp">${ex.hypothesis}</div>
+          <div><span class="verdict">proved</span> <span class="citation mono">${ex.tactic} · ${ex.rule}</span></div>
+          ${ex.note ? `<div class="note">${ex.note}</div>` : ""}`;
+      }
+    } else {
+      resultBox.classList.remove("shown");
+      resultBox.innerHTML = "";
+    }
+  }
+
+  revealBtn.addEventListener("click", () => {
+    if (revealIndex < total - 1) { revealIndex++; draw(); }
+  });
+  resetBtn.addEventListener("click", () => { revealIndex = 0; draw(); });
+  draw();
+}
+
+pickDet("Some");
+selectExample(49);
+
+// --- coverage figure ---
+const COVERAGE = { trivial: 14, proved: 65, distinct: 39, eligibleFailed: 0, outside: 393, total: 472 };
 document.getElementById("coverageFigure").innerHTML = `
   <div class="figbox">
     <table class="coverage">
@@ -461,6 +535,6 @@ document.getElementById("coverageFigure").innerHTML = `
       <span><span class="sw" style="background:var(--fill-3)"></span>outside scope</span>
     </div>
   </div>
-  <figcaption><span class="num">Figure 3.</span> ${COVERAGE.total} already-formalized FraCaS theorems, scanned by the reasoner. Confirmed by continuous integration; see the repository for the exact run.</figcaption>
+  <figcaption><span class="num">Figure 2.</span> ${COVERAGE.total} already-formalized FraCaS theorems, scanned by the reasoner. Confirmed by continuous integration; see the repository for the exact run.</figcaption>
 `;
 </script>
