@@ -3,20 +3,40 @@
 This records how the GF toolchain was actually gotten working, and every
 real gotcha hit along the way, so the next round of grammar-writing
 doesn't have to rediscover any of it. Everything through the first five
-confirmed sentence shapes was done by hand on a separate machine
-(Windows 11 via WSL2) and relayed back, because this project's usual
-day-to-day development environment has no Haskell toolchain and blocks
-the domains needed to install one (`grammaticalframework.org`,
-`get.haskellstack.org`, Hackage's mirror fallback domains) — see below
-for how that was diagnosed. **GitHub Actions CI is a different story**:
-its runners have normal, unrestricted internet access, so `.github/workflows/build.yml`'s
-`build-gf` job builds the whole GF toolchain from source and runs
-`gf/run_gf_tests.py`'s automated `linearize` checks on every push -
-proven green end to end (cold-cache run: ~9.5 minutes total, dominated
-by building `gf-core`/`gf-rgl` from source; a cache hit skips almost all
-of that). New sentence shapes should be pushed and checked against this
-job first now, rather than relayed through a separate machine by hand -
-see `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for the grammar itself.
+confirmed sentence shapes was originally done by hand on a separate
+machine (Windows 11 via WSL2) and relayed back, because this project's
+usual day-to-day development environment was originally believed to
+have no viable path to a Haskell toolchain (`grammaticalframework.org`,
+`get.haskellstack.org`, Hackage's mirror fallback domains all appeared
+blocked) — see below for how that was diagnosed.
+
+**That turned out to be wrong**: the real blocker was never a full
+network block, just `cabal`'s own TUF secure-repo signature check
+failing through this environment's egress proxy - fixed once and for
+all by setting `~/.cabal/config`'s `hackage.haskell.org` repository to
+`secure: False`. Once that was found, the entire toolchain (`gf-core`
+via `cabal install` at the pinned commit below, `gf-rgl`'s `Setup.sh`
+at the pinned tag below, plus `DictEngAbs.gf`/`DictEng.gf` compiled
+separately the same way CI does it) builds and runs directly in this
+same sandbox - no relay to a separate machine needed for any of the
+work after that point. A `.claude/hooks/session-start.sh` SessionStart
+hook rebuilds this same toolchain automatically (idempotently) at the
+start of any future session here.
+
+**GitHub Actions CI is a still separate, still-necessary check**: its
+runners have normal, unrestricted internet access, so
+`.github/workflows/build.yml`'s `build-gf` job builds the same pinned
+toolchain from source (independently of whatever's cached in this
+sandbox) and runs `gf/run_gf_tests.py`'s automated `linearize` checks
+on every push. All 342 FraCaS problems' worth of sentence shapes across
+all nine FraCaS sections (633 `linearize` checks in total) have been
+built and fully validated against the local toolchain described above
+before being pushed - but, as of this note, none of that has yet been
+proven green through an actual GitHub Actions run; `build-gf`'s own
+`continue-on-error` stays on until a real CI run confirms the two
+environments agree. See `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for
+the grammar itself and each file's own per-section comments for what
+each FraCaS section needed and what it deliberately skipped.
 
 ## Toolchain install (Windows 11 / WSL2)
 
@@ -188,14 +208,26 @@ assuming a same-repo cross-reference is automatically still accurate.
 module exists in the `gf-rgl` *source* tree (`src/english/DictEngAbs.gf`,
 `src/english/DictEng.gf`). It's the RGL's ~30k-line general dictionary
 and is a separate, heavier build step Setup.sh doesn't run by default.
-**Don't extend `DictEngAbs`/`DictEng`** - declare every content word and
-determiner this project needs directly in `FraCaSLogic.gf`/
-`FraCaSLogicEng.gf` instead, the same way `really_AdA` always was. For a
-word that DictEng already has a recipe for (e.g. `most_Det`), the fix is
-to copy that recipe, not the dependency: `grep` the word's own `lin` rule
-directly out of `gf-rgl/src/english/DictEng.gf` (the source clone, not
-the built libs) and reuse the same right-hand side. `most_Det`'s real
-recipe is `mkDeterminer plural "most"`.
+
+**Superseded** (was originally: "don't extend `DictEngAbs`/`DictEng` at
+all, declare every content word directly instead"). That held only
+while every word this project needed was hand-declared one at a time;
+once the word count grew past Section 1, compiling `DictEngAbs.gf`/
+`DictEng.gf` directly (as its own extra step, straight into the same
+`~/gf-libs/alltenses` `Setup.sh` already populated - see
+`.github/workflows/build.yml`'s own "Build DictEng" step) and
+extending `FraCaSLogic`/`FraCaSLogicEng` with it turned out to work
+fine and cut the amount of hand-declared vocabulary dramatically -
+each grammar file's own extends line now reads `DictEngAbs - [...]`
+(excluding only the handful of names that collide with something
+already free via `Structural`, or whose real dictionary recipe doesn't
+match what a specific FraCaS sentence needs - see either grammar
+file's own comment on its exclusion list for the full account). The
+"copy the word's own `lin` rule instead of the whole module" move
+below is still the right one for a word that's excluded for either of
+those reasons, or that genuinely isn't in `DictEngAbs` at all (a
+FraCaS-specific proper noun, an invented product name, a compound this
+project needs fused as one lexical item).
 
 **Watch out: a module using an oper internally doesn't re-export it.**
 `someSg_Det`/`somePl_Det` in `StructuralEng.gf` are themselves built from

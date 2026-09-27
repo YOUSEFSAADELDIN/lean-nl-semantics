@@ -24,20 +24,31 @@ semantics) library, for comparing the two approaches.
   project's CN-as-type semantics to `linglib`'s CN-as-predicate
   semantics over a shared entity domain, built as its own separate Lake
   package so it can't affect the main library's build.
-- **GF integration** (`gf/`, proof of concept, scope intentionally
-  bounded — see below): a Grammatical Framework grammar and a Python
-  translator producing Lean terms from a hand-built (not freely parsed)
-  English sentence tree. Five sentence shapes covering FraCaS problems
-  2, 6, 7, 10, and 33 are confirmed end to end — GF itself doesn't run
-  in this repo's own CI sandbox, so the grammar side was built and
-  confirmed on a separate machine; see `gf/NOTES.md` for the full setup
-  and every gotcha hit along the way, and `gf/translate.py` for the
-  translator. `LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean` wires
-  one of these (problem 2's first premise) into the real proved
-  theorem: it's not a similarity check, the file typechecks only
-  because the GF-generated proposition is the exact same quantifier
-  combinator applied to the exact same restrictor/scope, in the same
-  order, as the hand-written proof already uses.
+- **GF integration** (`gf/`, scope intentionally bounded — see below): a
+  Grammatical Framework grammar and a Python translator producing Lean
+  terms from a hand-built (not freely parsed) English sentence tree,
+  used to cross-check the FraCaS formalizations above against real
+  English via `linearize`. Every one of the 342 problems' sentences
+  that this grammar can build at all now has a real, independently-
+  confirmed GF tree — 633 `linearize` checks across all nine FraCaS
+  sections (`gf/run_gf_tests.py`), validated against a real local
+  GF/RGL toolchain (not just parsed as text) before ever being pushed.
+  `gf/translate.py` additionally cross-checks a subset of Sections 1-2
+  by translating a GF tree straight into the same Lean `Prop` shape
+  the hand-written proof already uses — a genuine mechanical
+  cross-check, not a similarity check
+  (`LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean` wires one such
+  tree, problem 2's first premise, directly into its real proved
+  theorem). Later sections (5 onward) deliberately don't extend
+  `translate.py` — each one's whole point is a distinction (privative
+  adjectives, assumed comparative relations, factivity) that
+  `translate.py`'s own generic predicate-fusion would silently collapse
+  rather than translate faithfully — but still get real GF sentences.
+  A handful of problems per section are skipped for GF purposes with a
+  documented reason (a construction this grammar has no combinator for,
+  e.g. embedded questions, or specific calendar-date arithmetic) — see
+  `gf/FraCaSLogicEng.gf`'s own per-section comments and `gf/NOTES.md`
+  for the full setup and every gotcha hit along the way.
 
   This is deliberately not aimed at general English coverage — FraCaS
   is a small, closed vocabulary and sentence set, and covering it was
@@ -132,13 +143,16 @@ consistency check, not a blind-prediction accuracy score.
   sections.
 - **linglib bridge** — done. A separate Lake package connecting this
   project's CN-as-type semantics to linglib's CN-as-predicate semantics.
-- **GF integration** (proof of concept, `gf/`) — a Grammatical
-  Framework grammar producing the Lean terms this project already
-  proves things about, rather than each sentence being hand-formalized.
-  Five sentence shapes are proven working end to end, and one
-  (problem 2's first premise) is wired into its real proved theorem as
-  a genuine mechanical cross-check, not just a standalone proposition
-  — see `gf/NOTES.md`/`gf/translate.py` and
+- **GF integration** (`gf/`) — done, for the scope it set out to cover.
+  A Grammatical Framework grammar producing real, `linearize`-confirmed
+  English for every FraCaS sentence this grammar can build (633 checks
+  across all nine sections), rather than each sentence being hand-
+  formalized with no independent check on its own English gloss.
+  `gf/translate.py` additionally cross-checks a subset of Sections 1-2
+  by translating a GF tree straight into the same Lean `Prop` shape the
+  hand-written proof uses, with one such tree wired directly into its
+  real proved theorem as a genuine mechanical cross-check (not just a
+  standalone proposition) — see `gf/NOTES.md`/`gf/translate.py` and
   `LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean`. Free parsing
   against GF's own full English grammar turned out not to be usable for
   this — it's built to be maximally permissive and produces an
