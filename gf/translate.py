@@ -1107,6 +1107,13 @@ if __name__ == "__main__":
         # Every buildable sentence still gets a real GF tree (a
         # representative sample, not one per Lean theorem - see
         # run_gf_tests.py's own comment on this section for why).
+        #
+        # FraCaS Section 8 (Verbs), problems 326-333: also deliberately
+        # NOT added, same "assumed connecting fact" reasoning as
+        # Sections 5-7 (the imperfective-paradox and interval-
+        # containment content here isn't captured by generic CN/VP
+        # fusion). Every sentence still gets a real GF tree (see
+        # run_gf_tests.py's own comment on this section).
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

@@ -2783,6 +2783,80 @@ _SECTION7_TENSED_CHECKS = [
     ),
 ]
 
+# FraCaS Section 8 (Verbs), problems 326-333 (Section8/Batch1.lean) -
+# the shortest section, testing the imperfective paradox (a perfective
+# accomplishment/achievement entails culmination via an assumed
+# connecting fact; the progressive doesn't), interval containment, and
+# plural-subject conjunction/collective predicates. Self-declares
+# mtalk_PN (ITEL's own invented product), in1990_Adv, and
+# from1988to1992_Adv (fixed one-off adverbials, same reasoning as
+# Section 7's own). Every other word already exists in DictEngAbs.
+# Progressive premises (327/329's "was building"/"was winning") are
+# paraphrased to plain past, reusing 326/328's own premise trees, same
+# "Idiom's ProgrVP is unavailable" reasoning as Sections 3/7. 333's
+# "there was a group of people that met" drops the existential-there
+# construction (Idiom again) for the plain "a group of people met".
+# Nothing added to translate.py, same reasoning as Sections 5-7 (the
+# assumed-connecting-fact/interval-arithmetic content here isn't
+# something the generic CN/VP-fusion translator would do justice to).
+_SECTION8_TENSED_CHECKS = [
+    (
+        "fracas_326_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a build_V2) (UsePN mtalk_PN)) in1993_Adv)))",
+        "ITEL built MTALK in 1993",
+    ),
+    (
+        "fracas_326_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a finish_V2) (UsePN mtalk_PN)) in1993_Adv)))",
+        "ITEL finished MTALK in 1993",
+    ),
+    (
+        "fracas_328_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) (PrepNP from_Prep (UsePN apcom_PN))) in1993_Adv)))",
+        "ITEL won the contract from APCOM in 1993",
+    ),
+    (
+        "fracas_328_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN contract_N))) in1993_Adv)))",
+        "ITEL won a contract in 1993",
+    ),
+    (
+        "fracas_330_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a own_V2) (UsePN apcom_PN)) from1988to1992_Adv)))",
+        "ITEL owned APCOM from 1988 to 1992",
+    ),
+    (
+        "fracas_330_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a own_V2) (UsePN apcom_PN)) in1990_Adv)))",
+        "ITEL owned APCOM in 1990",
+    ),
+    (
+        "fracas_331_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN jones_PN))) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "Smith and Jones left the meeting",
+    ),
+    (
+        "fracas_331_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "Smith left the meeting",
+    ),
+    (
+        "fracas_332_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "Jones left the meeting",
+    ),
+    (
+        "fracas_333_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (ConsNP (UsePN smith_PN) (BaseNP (UsePN anderson_PN) (UsePN jones_PN)))) (UseV meet_V)))",
+        "Smith , Anderson and Jones met",
+    ),
+    (
+        "fracas_333_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN group_N) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (UseN person_N))))) (UseV meet_V)))",
+        "a group of people met",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -2854,6 +2928,7 @@ CHECKS = (
     + _SECTION5_TENSED_CHECKS
     + _SECTION6_TENSED_CHECKS
     + _SECTION7_TENSED_CHECKS
+    + _SECTION8_TENSED_CHECKS
 )
 
 

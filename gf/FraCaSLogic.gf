@@ -465,4 +465,11 @@ abstract FraCaSLogic =
     inTwoHours_Adv, inOneHour_Adv, inTwoYears_Adv : Adv ;
     forTwoYears_Adv, forAYear_Adv, forAnHour_Adv, forTwoHours_Adv : Adv ;
     everyMonth_Adv, everyWeek_Adv : Adv ;
+    -- Section 8 (Verbs), problems 326-333: mtalk_PN (ITEL's own
+    -- invented product name, problems 326/327) is FraCaS's own
+    -- fictional entity, not in a general-purpose dictionary. in1990_Adv/
+    -- from1988to1992_Adv (self-declared fixed strings, same one-off
+    -- reasoning as Section 7's temporal adverbials).
+    mtalk_PN : PN ;
+    in1990_Adv, from1988to1992_Adv : Adv ;
 }

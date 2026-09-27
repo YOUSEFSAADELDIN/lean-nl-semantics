@@ -114,6 +114,9 @@ concrete FraCaSLogicEng of FraCaSLogic =
     forTwoHours_Adv = mkAdv "for two hours" ;
     everyMonth_Adv = mkAdv "every month" ;
     everyWeek_Adv = mkAdv "every week" ;
+    mtalk_PN = mkPN "MTALK" ;
+    in1990_Adv = mkAdv "in 1990" ;
+    from1988to1992_Adv = mkAdv "from 1988 to 1992" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -1131,3 +1134,21 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- comment's own reasoning; 276/305/309/310 are FraCaS's own degenerate
 -- problems, already skipped by FraCaS/Types.lean; 311-325 are skipped
 -- here for the construction-gap reasons above) in the GF/RGL toolchain.
+--
+-- FraCaS Section 8 (Verbs), problems 326-333 (Section8/Batch1.lean) -
+-- the shortest section: the imperfective paradox (a perfective
+-- accomplishment/achievement entails culmination via an assumed
+-- connecting fact; the progressive doesn't), interval containment, and
+-- plural-subject conjunction/collective predicates. Self-declares
+-- mtalk_PN (ITEL's own invented product), in1990_Adv, and
+-- from1988to1992_Adv (fixed one-off adverbials, same reasoning as
+-- Section 7). Every other word already exists in DictEngAbs.
+-- Progressive premises (327/329) are paraphrased to plain past,
+-- reusing 326/328's own premise trees, same "Idiom's ProgrVP is
+-- unavailable" reasoning as Sections 3/7; 333's "there was a group of
+-- people that met" drops the existential-there construction (Idiom
+-- again) for the plain "a group of people met". Nothing added to
+-- translate.py, same reasoning as Sections 5-7.
+--
+-- This completes FraCaS Section 8 (all 8 problems, 326-333) in the
+-- GF/RGL toolchain.
