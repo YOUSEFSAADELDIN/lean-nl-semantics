@@ -431,4 +431,15 @@ abstract FraCaSLogic =
     -- dictionary gap, checked directly.
     dumbo_PN, fido_PN, kim_PN : PN ;
     fourLegged_A : A ;
+    -- Section 6 (Comparatives), problems 220-250: FraCaS's own
+    -- recurring computer-market cast - pc6082_PN, itelXZ_PN, itelZX_PN,
+    -- itelZY_PN, apcom_PN - none in a general-purpose dictionary (itel_PN
+    -- itself is NOT here, already self-declared in Section 3).
+    pc6082_PN, itelXZ_PN, itelZX_PN, itelZY_PN, apcom_PN : PN ;
+    -- itelComputer_N ("an ITEL computer", problems 246-248) is fused as
+    -- one lexical item, same reasoning as apcomManager_N in Section 2.
+    itelComputer_N : N ;
+    -- mips_N ("500 MIPS", a computer-speed unit) - genuine dictionary
+    -- gap, checked directly.
+    mips_N : N ;
 }

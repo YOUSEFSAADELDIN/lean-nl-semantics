@@ -1085,6 +1085,17 @@ if __name__ == "__main__":
         # very thing each problem is testing, not just translating it
         # coarser. Every sentence still gets a real GF tree (see
         # run_gf_tests.py's own comment on this section).
+        #
+        # FraCaS Section 6 (Comparatives), problems 220-250: also
+        # deliberately NOT added, same reason as Section 5 - this
+        # section's whole point is the ASSUMED comparative relation
+        # between two gradable adjectives ("faster than" licensing
+        # "fast" via an explicit assumed fact) or real Nat arithmetic
+        # between named counts, and translate_cl's own generic CN/VP-
+        # fusion would collapse either into one opaque predicate name,
+        # translating the sentence but losing the very relation each
+        # problem is about. Every sentence still gets a real GF tree
+        # (see run_gf_tests.py's own comment on this section).
     }
     for label, tree_text in examples.items():
         print(f"-- {label}")

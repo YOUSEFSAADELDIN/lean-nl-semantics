@@ -88,6 +88,13 @@ concrete FraCaSLogicEng of FraCaSLogic =
     fido_PN = mkPN "Fido" ;
     kim_PN = mkPN "Kim" ;
     fourLegged_A = mkA "four-legged" ;
+    pc6082_PN = mkPN "the PC-6082" ;
+    itelXZ_PN = mkPN "the ITEL-XZ" ;
+    itelZX_PN = mkPN "the ITEL-ZX" ;
+    itelZY_PN = mkPN "the ITEL-ZY" ;
+    apcom_PN = mkPN "APCOM" ;
+    itelComputer_N = mkN "ITEL computer" "ITEL computers" ;
+    mips_N = mkN "MIPS" "MIPS" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:
@@ -1002,4 +1009,48 @@ concrete FraCaSLogicEng of FraCaSLogic =
 -- it faithfully - see translate.py's own comment.
 --
 -- This completes FraCaS Section 5 (all 23 problems, 197-219) in the
+-- GF/RGL toolchain.
+--
+-- FraCaS Section 6 (Comparatives), problems 220-250 (Section6/Batch1-2.lean)
+-- - continues Section 5's comparative machinery and adds genuine
+-- cardinal comparatives, formalized in Lean as real `Nat` arithmetic.
+-- ComparA (Adjective, extended since Section 5) and CAdvAP + as_CAdv
+-- ("as cool as John" - CAdvAP in Adjective, as_CAdv in Structural, both
+-- already extended, newly exercised this section) cover every
+-- comparative/equative sentence here. No new module needed.
+--
+-- Self-declared: pc6082_PN, itelXZ_PN, itelZX_PN, itelZY_PN, apcom_PN
+-- (FraCaS's own recurring computer-market cast - itel_PN itself is NOT
+-- here, already self-declared in Section 3), itelComputer_N (fused,
+-- same reasoning as apcomManager_N in Section 2), and mips_N (genuine
+-- dictionary gap, declared with an EXPLICIT invariant plural after a
+-- single-arg mkN's own regular pluralization first gave the wrong
+-- "MIPSs" - caught locally, not assumed). Every other word already
+-- exists in DictEngAbs or was already self-declared.
+--
+-- Two genuine numeral bugs caught locally: `pot2`/`pot3plus`
+-- (hundreds/thousands) both take a `Sub10`/`Sub1000` argument, not a
+-- bare `Digit`/`Numeral` - `pot2 n5` alone is a real "Couldn't match
+-- expected type Sub10" error, fixed to `pot2 (pot0 n5)`, the same
+-- `pot0`-first coercion single digits already needed; and "eleven" is
+-- `pot111` (Numeral's own dedicated irregular constant), not `pot1plus`
+-- composing "one" + "ten" + "one" - "eleven" isn't decomposable that
+-- way at all.
+--
+-- Genuinely skipped: FraCaS's own "more N than NP" cardinal-
+-- comparative-quantifier construction ("won more orders than APCOM
+-- did", "twice as many orders", "3000 more computers") has no
+-- combinator in this grammar - a different construction entirely from
+-- ComparA's adjective-comparative machinery, and not worth building
+-- from scratch for a handful of sentences whose own Lean formalization
+-- is already pure `Nat` arithmetic never tied to a GF tree in the first
+-- place; every other sentence in 230-243 (the plain counts and "at
+-- least"/"exactly" bounds) is still built and confirmed normally.
+-- 236/237/244/245 (comparative-ellipsis readings, each a bare `id` over
+-- an opaque Prop variable) are skipped for the same reason.
+--
+-- Nothing added to translate.py this section either, same reasoning as
+-- Section 5 - see translate.py's own comment.
+--
+-- This completes FraCaS Section 6 (all 31 problems, 220-250) in the
 -- GF/RGL toolchain.

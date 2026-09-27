@@ -2206,6 +2206,172 @@ _SECTION5_TENSED_CHECKS = [
     ),
 ]
 
+# FraCaS Section 6 (Comparatives), problems 220-250 (Section6/Batch1-2.lean).
+# "Faster than"/"as fast as" licensing or refuting a bare "fast"
+# predication via an assumed connecting fact (220-229), genuine
+# cardinal comparatives as real Nat arithmetic (230-243), and
+# quantified comparative standards reusing Every/Some (246-250).
+#
+# ComparA (Adjective, already extended since Section 5) and CAdvAP +
+# as_CAdv ("as cool as John" - CAdvAP in Adjective, as_CAdv in
+# Structural, both already extended, newly exercised this section)
+# cover every comparative/equative here. Self-declares pc6082_PN,
+# itelXZ_PN, itelZX_PN, itelZY_PN, apcom_PN (FraCaS's own recurring
+# computer-market cast - itel_PN itself is NOT here, already
+# self-declared in Section 3), itelComputer_N (fused, same reasoning
+# as apcomManager_N in Section 2), and mips_N (genuine dictionary
+# gap - declared with an explicit invariant plural, `mkN "MIPS"
+# "MIPS"`, after a single-arg mkN's own regular pluralization first
+# gave "MIPSs", caught locally). Every other word (fast_A, slow_A,
+# order_N, win_V2, lose_V2, sell_V2, computer_N, at_least_AdN,
+# exactly_AdN) already exists or was already self-declared.
+#
+# Genuine numeral-building bugs caught locally, not assumed: `pot2`/
+# `pot3plus` (hundreds/thousands) both take a `Sub10`/`Sub1000`
+# argument, not a bare `Digit`/`Numeral` - `pot2 n5` alone is a real
+# "Couldn't match expected type Sub10" error; fixed to `pot2 (pot0
+# n5)`, the same `pot0`-first coercion single digits already needed.
+# "Eleven" is `pot111` (Numeral's own dedicated irregular constant, not
+# `pot1plus` composing "one" + "ten" + "one" the regular way - "eleven"
+# isn't decomposable that way at all).
+#
+# Genuinely skipped: FraCaS's own "more N than NP" cardinal-comparative-
+# quantifier construction ("ITEL won more orders than APCOM(did)",
+# "twice as many orders", "3000 more computers") has no combinator in
+# this grammar - "more"/"twice as many" modifying a plural count noun's
+# quantity relative to another NP is a different construction from
+# ComparA's own adjective-comparative machinery, and building it from
+# scratch for a handful of sentences whose own Lean formalization is
+# already pure `Nat` arithmetic (never itself tied to a GF tree) isn't
+# worth it; every OTHER sentence in 230-243 (the plain counts and
+# "at least"/"exactly" bounds) is still built and confirmed normally.
+# 236/237/244/245 (comparative-ellipsis readings whose own Lean proofs
+# are bare `id` over an opaque Prop variable) are skipped for the same
+# reason - each one's own premise is the same unbuilt "more N than NP"
+# construction.
+BASE_CHECKS += [
+    (
+        "fracas_220_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (UsePN itelXZ_PN))))",
+        "the PC-6082 is faster than the ITEL-XZ",
+    ),
+    (
+        "fracas_220_premise2",
+        "linearize PredVP (UsePN itelXZ_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the ITEL-XZ is fast",
+    ),
+    (
+        "fracas_220_hypothesis",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the PC-6082 is fast",
+    ),
+    (
+        "fracas_223_premise2",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (PositA slow_A)))",
+        "the PC-6082 is slow",
+    ),
+    (
+        "fracas_224_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (CAdvAP as_CAdv (PositA fast_A) (UsePN itelXZ_PN))))",
+        "the PC-6082 is as fast as the ITEL-XZ",
+    ),
+    (
+        "fracas_229_hypothesis",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA slow_A (UsePN itelXZ_PN))))",
+        "the PC-6082 is slower than the ITEL-XZ",
+    ),
+    (
+        "fracas_242_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot2 (pot0 n5))))))) (UseN mips_N)))))",
+        "the PC-6082 is faster than five hundred MIPS",
+    ),
+    (
+        "fracas_242_premise2",
+        "linearize PredVP (UsePN itelZX_PN) (UseComp (CompAP (ComparA slow_A (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot2 (pot0 n5))))))) (UseN mips_N)))))",
+        "the ITEL-ZX is slower than five hundred MIPS",
+    ),
+    (
+        "fracas_242_hypothesis",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (UsePN itelZX_PN))))",
+        "the PC-6082 is faster than the ITEL-ZX",
+    ),
+    (
+        "fracas_246_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN every_Det (UseN itelComputer_N)))))",
+        "the PC-6082 is faster than every ITEL computer",
+    ),
+    (
+        "fracas_246_premise2",
+        "linearize PredVP (UsePN itelZX_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N))))",
+        "the ITEL-ZX is an ITEL computer",
+    ),
+    (
+        "fracas_247_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N)))))",
+        "the PC-6082 is faster than an ITEL computer",
+    ),
+    (
+        "fracas_249_premise",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (ConjNP and_Conj (BaseNP (UsePN itelZX_PN) (UsePN itelZY_PN))))))",
+        "the PC-6082 is faster than the ITEL-ZX and the ITEL-ZY",
+    ),
+    (
+        "fracas_250_premise",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (ConjNP or_Conj (BaseNP (UsePN itelZX_PN) (UsePN itelZY_PN))))))",
+        "the PC-6082 is faster than the ITEL-ZX or the ITEL-ZY",
+    ),
+]
+
+# 230-243's own sentences are past tense ("won"/"lost"/"sold") - same
+# reasoning as every earlier tensed-exempt list.
+_SECTION6_TENSED_CHECKS = [
+    (
+        "fracas_230_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (DetCN somePl_Det (UseN order_N)))))",
+        "ITEL won some orders",
+    ),
+    (
+        "fracas_232_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 pot110)))))) (UseN order_N)))))",
+        "APCOM won ten orders",
+    ),
+    (
+        "fracas_232_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN (NumNumeral (num (pot2as3 (pot1as2 pot111))))))) (UseN order_N)))))",
+        "ITEL won at least eleven orders",
+    ),
+    (
+        "fracas_234_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (ComplSlash (SlashV2a win_V2) (DetCN somePl_Det (UseN order_N)))))",
+        "APCOM won some orders",
+    ),
+    (
+        "fracas_238_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot1 n2))))))) (UseN order_N)))))",
+        "ITEL won twenty orders",
+    ),
+    (
+        "fracas_240_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (ComplSlash (SlashV2a lose_V2) (DetCN somePl_Det (UseN order_N)))))",
+        "APCOM lost some orders",
+    ),
+    (
+        "fracas_241_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (ComplSlash (SlashV2a lose_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 pot110)))))) (UseN order_N)))))",
+        "APCOM lost ten orders",
+    ),
+    (
+        "fracas_243_premise2",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (ComplSlash (SlashV2a sell_V2) (DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot3plus (pot1as2 (pot0as1 (pot0 n2))) (pot2 (pot0 n5)))))))) (UseN computer_N)))))",
+        "APCOM sold exactly two thousand five hundred computers",
+    ),
+    (
+        "fracas_243_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a sell_V2) (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot3plus (pot1as2 (pot0as1 (pot0 n5))) (pot2 (pot0 n5))))))) (UseN computer_N)))))",
+        "ITEL sold five thousand five hundred computers",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
@@ -2275,6 +2441,7 @@ CHECKS = (
     + _SECTION3_TENSED_CHECKS
     + _SECTION4_TENSED_CHECKS
     + _SECTION5_TENSED_CHECKS
+    + _SECTION6_TENSED_CHECKS
 )
 
 
