@@ -1,0 +1,423 @@
+<title>Reasoner Trace</title>
+<meta name="description" content="Explore exactly which FraCaS problems the certified monotonicity reasoner closes automatically, and which rule it used for each one.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #F7F5EF;
+    --surface: #FFFFFF;
+    --surface-2: #F0EDE3;
+    --ink: #211F1B;
+    --ink-muted: #6E6759;
+    --ink-faint: #9C9583;
+    --rule: #E1DCCC;
+    --rule-strong: #C9C2AC;
+    --accent: #2F5D62;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E3EEEC;
+    --plum: #6B4C7A;
+    --plum-soft: #EDE6F0;
+    --amber: #A6741F;
+    --amber-soft: #F6EBD6;
+    --rust: #A5432E;
+    --rust-soft: #F5E6E1;
+    --slate: #4B5B6B;
+    --slate-soft: #E7EDF1;
+    --no: #A5432E;
+    --shadow: 0 1px 2px rgba(33,31,27,0.06), 0 8px 24px -12px rgba(33,31,27,0.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #17181A;
+      --surface: #1F211E;
+      --surface-2: #262723;
+      --ink: #EDEAE2;
+      --ink-muted: #A79F8E;
+      --ink-faint: #766F5F;
+      --rule: #34352E;
+      --rule-strong: #454639;
+      --accent: #6FC2BE;
+      --accent-ink: #10201F;
+      --accent-soft: #223330;
+      --plum: #C6A8D6;
+      --plum-soft: #2A2333;
+      --amber: #D9AE5C;
+      --amber-soft: #332A18;
+      --rust: #E08066;
+      --rust-soft: #33221D;
+      --slate: #9FB3C4;
+      --slate-soft: #212A31;
+      --no: #E08066;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #17181A;
+    --surface: #1F211E;
+    --surface-2: #262723;
+    --ink: #EDEAE2;
+    --ink-muted: #A79F8E;
+    --ink-faint: #766F5F;
+    --rule: #34352E;
+    --rule-strong: #454639;
+    --accent: #6FC2BE;
+    --accent-ink: #10201F;
+    --accent-soft: #223330;
+    --plum: #C6A8D6;
+    --plum-soft: #2A2333;
+    --amber: #D9AE5C;
+    --amber-soft: #332A18;
+    --rust: #E08066;
+    --rust-soft: #33221D;
+    --slate: #9FB3C4;
+    --slate-soft: #212A31;
+    --no: #E08066;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Sans 3", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    padding-inline: 20px;
+    padding-block: 32px 64px;
+  }
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; text-wrap: balance; margin: 0; color: var(--ink); }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  a { color: var(--accent); }
+
+  .page { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+
+  header.hero { display: flex; flex-direction: column; gap: 18px; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .hero h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 600; max-width: 18ch; }
+  .hero p.lede { font-size: 17px; color: var(--ink-muted); max-width: 66ch; margin: 0; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; margin-top: 6px; }
+  .stat { background: var(--surface); padding: 15px 16px; display: flex; flex-direction: column; gap: 3px; }
+  .stat .n { font-family: "Fraunces", serif; font-size: 27px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.01em; }
+  .stat.hi .n { color: var(--accent); }
+  .stat.lo .n { color: var(--no); }
+
+  section { display: flex; flex-direction: column; gap: 16px; }
+  section > .section-head { display: flex; flex-direction: column; gap: 6px; }
+  section > .section-head h2 { font-size: 22px; font-weight: 600; }
+  section > .section-head p { margin: 0; color: var(--ink-muted); max-width: 68ch; font-size: 14.5px; }
+
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 16px; padding: 22px 24px; box-shadow: var(--shadow); }
+
+  /* family bar chart */
+  .fam-rows { display: flex; flex-direction: column; gap: 12px; }
+  .fam-row { display: grid; grid-template-columns: minmax(140px,220px) 1fr 34px; gap: 12px; align-items: center; }
+  .fam-row .label { font-size: 13.5px; font-weight: 600; }
+  .fam-row .sub { display: block; font-size: 11.5px; color: var(--ink-muted); font-weight: 400; }
+  .fam-bar-track { background: var(--surface-2); border-radius: 5px; height: 20px; overflow: hidden; }
+  .fam-bar-fill { height: 100%; border-radius: 5px; }
+  .fam-row .n { font-size: 13px; color: var(--ink-muted); text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* controls */
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .controls input[type="search"] {
+    flex: 1 1 220px; background: var(--surface); border: 1px solid var(--rule-strong); border-radius: 9px;
+    padding: 10px 14px; font-size: 14px; color: var(--ink); font-family: inherit;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--rule-strong); border-radius: 999px;
+    padding: 7px 13px; font-size: 12.5px; cursor: pointer; user-select: none; background: var(--surface); color: var(--ink-muted);
+  }
+  .chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .controls .count { font-size: 13px; color: var(--ink-muted); margin-left: auto; white-space: nowrap; }
+
+  .list { display: flex; flex-direction: column; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
+  .row { border-bottom: 1px solid var(--rule); }
+  .row:last-child { border-bottom: none; }
+  .row summary { list-style: none; cursor: pointer; padding: 13px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .row summary::-webkit-details-marker { display: none; }
+  .row summary .pid { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-faint); width: 44px; flex: none; }
+  .row summary .hyp { font-size: 14px; flex: 1 1 240px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row summary .badges { display: flex; gap: 6px; flex: none; }
+  .badge { font-size: 10.5px; font-weight: 600; border-radius: 999px; padding: 3px 9px; letter-spacing: 0.01em; white-space: nowrap; }
+  .badge.fam-p12 { background: var(--accent-soft); color: var(--accent); }
+  .badge.fam-catb { background: var(--amber-soft); color: var(--amber); }
+  .badge.fam-p3 { background: var(--slate-soft); color: var(--slate); }
+  .badge.fam-p4 { background: var(--plum-soft); color: var(--plum); }
+  .badge.fam-none { background: var(--rust-soft); color: var(--rust); }
+  .row summary .chev { color: var(--ink-faint); flex: none; transition: transform 0.15s; margin-left: auto; }
+  .row[open] summary .chev { transform: rotate(90deg); }
+  .row-detail { padding: 2px 18px 18px 72px; display: flex; flex-direction: column; gap: 12px; }
+  .kv { display: flex; flex-direction: column; gap: 4px; }
+  .kv .k { font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+  .kv .v { font-size: 14px; }
+  .kv .v.mono { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; background: var(--surface-2); border-radius: 8px; padding: 9px 11px; white-space: pre-wrap; word-break: break-word; }
+  .kv ul { margin: 0; padding-left: 18px; }
+  .trace-step { display: flex; flex-direction: column; gap: 6px; background: var(--surface-2); border-radius: 10px; padding: 12px 14px; }
+  .trace-step .rule-name { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); }
+  .trace-step .arrow-line { font-size: 13.5px; }
+  .trace-step .arrow-line .from, .trace-step .arrow-line .to { font-family: "IBM Plex Mono", monospace; }
+
+  .unsupported-card { background: var(--rust-soft); border: 1px solid color-mix(in srgb, var(--rust) 35%, var(--rule)); border-radius: 14px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+  .unsupported-card h3 { font-size: 16px; color: var(--rust); }
+  .unsupported-card p { margin: 0; font-size: 14px; color: var(--ink); }
+  .unsupported-card .why { font-size: 13.5px; color: var(--ink-muted); }
+
+  footer { color: var(--ink-faint); font-size: 12.5px; padding-top: 8px; border-top: 1px solid var(--rule); text-align: center; }
+  footer a { color: var(--ink-muted); }
+
+  @media (max-width: 640px) {
+    .fam-row { grid-template-columns: 1fr; gap: 4px; }
+    .fam-row .n { text-align: left; }
+    .row summary { padding: 12px 14px; }
+    .row-detail { padding-left: 14px; }
+  }
+</style>
+
+<div class="page">
+  <header class="hero">
+    <span class="eyebrow">lean-nl-semantics &middot; monotonicity reasoner</span>
+    <h1>What the reasoner actually proved, and how</h1>
+    <p class="lede">
+      <span class="mono">mono_nl</span> / <span class="mono">exist_nl</span> / <span class="mono">mono_nl_compose</span>
+      are three deterministic Lean tactics — no LLM, no heuristic guessing — that each recognize one
+      certified inference shape (a position substitution along a known entailment, an existential-import
+      or cardinality step, or a principled composition of the two) and close a goal only by applying an
+      already-proved lemma. This page is the trace of that search across every theorem in the FraCaS
+      suite: which ones closed automatically, which rule closed each one, and which single case is still
+      left open.
+    </p>
+    <div class="stat-row" id="statRow"></div>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <h2>Proved theorems, by rule family</h2>
+      <p>Each family is a distinct semantic principle, not a FraCaS-specific pattern — see the family
+        descriptions below for what each one actually licenses.</p>
+    </div>
+    <div class="card">
+      <div class="fam-rows" id="famRows"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Explore the trace</h2>
+      <p>Every automatically-proved theorem, with the FraCaS problem it restates in English and the exact
+        rule/substitution the reasoner found for it.</p>
+    </div>
+    <div class="controls">
+      <input type="search" id="search" placeholder="Search by problem id, predicate, or English text…">
+      <span class="chip active" data-filter="all">All</span>
+      <span class="chip" data-filter="mono_nl">mono_nl</span>
+      <span class="chip" data-filter="exist_nl">exist_nl</span>
+      <span class="chip" data-filter="mono_nl_compose">mono_nl_compose</span>
+      <span class="count" id="resultCount"></span>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Still open: problem 44</h2>
+      <p>The one eligible theorem none of the three tactics closes — left unsupported deliberately,
+        not silently missed.</p>
+    </div>
+    <div class="unsupported-card" id="unsupportedCard"></div>
+  </section>
+
+  <footer>
+    Generated from a real GitHub Actions run of <span class="mono">#mono_nl_coverage</span>
+    (<code class="mono" id="ciMeta"></code>) — every trace line here is what the tactic itself logged
+    while closing the goal, not a separately authored description.
+    <a href="https://github.com/YOUSEFSAADELDIN/lean-nl-semantics" target="_blank" rel="noopener">lean-nl-semantics</a>
+  </footer>
+</div>
+
+<script>
+(async function () {
+  let data;
+  try {
+    const res = await fetch("data/mono_nl_trace.json");
+    data = await res.json();
+  } catch (e) {
+    document.getElementById("list").textContent = "Could not load data/mono_nl_trace.json: " + e;
+    return;
+  }
+
+  const { summary, theorems } = data;
+  const proved = theorems.filter(t => t.tactic);
+  const failed = theorems.filter(t => !t.tactic);
+
+  // ---------- stat row ----------
+  const statRow = document.getElementById("statRow");
+  const stats = [
+    { n: summary.trivial, l: "trivial (not a monotonicity question)" },
+    { n: `${summary.proved}`, l: `automatically proved (${summary.distinctProblems} distinct problems)`, hi: true },
+    { n: summary.eligibleFailed, l: "eligible but failed", lo: true },
+    { n: summary.outsideFragment, l: "outside the fragment" },
+    { n: summary.totalScanned, l: "FraCaS theorems scanned" },
+  ];
+  statRow.innerHTML = stats.map(s =>
+    `<div class="stat${s.hi ? " hi" : ""}${s.lo ? " lo" : ""}"><span class="n">${s.n}</span><span class="l">${s.l}</span></div>`
+  ).join("");
+
+  document.getElementById("ciMeta").textContent =
+    `run ${summary.generatedFrom.ciRun}, commit ${summary.generatedFrom.commit.slice(0, 7)}`;
+
+  // ---------- rule family chart ----------
+  const FAMILY_META = {
+    "Phase 1/2: position substitution": {
+      cls: "fam-p12", color: "var(--accent)",
+      sub: "A single Entails fact (direct, or combined from two via entails_and) substitutes one restrictor/scope value for another." },
+    "Category B: existential transfer": {
+      cls: "fam-catb", color: "var(--amber)",
+      sub: "Every P Q plus a witness that P holds of something gives Some P Q." },
+    "Category B: positive cardinality": {
+      cls: "fam-catb", color: "var(--amber)",
+      sub: "Most / AtLeast n / Exactly n all force card(P∧Q) > 0, hence Some P Q." },
+    "Phase 3: mono_nl_compose (Most -> Some composition)": {
+      cls: "fam-p3", color: "var(--slate)",
+      sub: "exist_nl synthesizes the shape fact mono_nl's own substitution then consumes." },
+    "Phase 4: Exactly -> AtLeast/AtMost": {
+      cls: "fam-p4", color: "var(--plum)",
+      sub: "Exactly n P Q gives AtLeast/AtMost n P Q unconditionally (same card(P∧Q), le_of_eq)." },
+    "Phase 4: some_trans combine": {
+      cls: "fam-p4", color: "var(--plum)",
+      sub: "some_entails_and combines Some P R with Every P S into Some P (S∧R), for some_mono_scope to consume." },
+  };
+  const famOrder = Object.keys(FAMILY_META);
+  const famCounts = {};
+  proved.forEach(t => { const f = t.ruleFamily || "?"; famCounts[f] = (famCounts[f] || 0) + 1; });
+  const maxCount = Math.max(...Object.values(famCounts));
+  const famRows = document.getElementById("famRows");
+  famRows.innerHTML = famOrder.filter(f => famCounts[f]).map(f => {
+    const meta = FAMILY_META[f];
+    const count = famCounts[f];
+    const pct = Math.round((count / maxCount) * 100);
+    return `<div class="fam-row">
+      <span class="label">${f.split(":")[0]}<span class="sub">${meta.sub}</span></span>
+      <div class="fam-bar-track"><div class="fam-bar-fill" style="width:${pct}%;background:${meta.color}"></div></div>
+      <span class="n">${count}</span>
+    </div>`;
+  }).join("");
+
+  // ---------- explorer list ----------
+  function famClass(f) {
+    if (!f) return "fam-none";
+    return (FAMILY_META[f] || {}).cls || "fam-none";
+  }
+  function famShort(f) {
+    if (!f) return "—";
+    return f.split(":")[0];
+  }
+
+  function renderTrace(t) {
+    if (t.tactic === "exist_nl") {
+      return `<div class="trace-step">
+        <span class="rule-name">exist_nl · ${t.rule}</span>
+        <span class="arrow-line">restrictor <span class="from">${t.restrictor ?? "?"}</span>,
+          scope <span class="to">${t.scope ?? "?"}</span>${t.sourceHyp ? ` — from <span class="from">${t.sourceHyp}</span>` : ""}</span>
+      </div>`;
+    }
+    let combineHtml = "";
+    if (t.combine) {
+      const c = t.combine;
+      combineHtml = `<div class="trace-step">
+        <span class="rule-name">combine (entails_and${c.left ? "" : " / entails_refl"})</span>
+        <span class="arrow-line">${c.sharedLeft} entails <span class="from">${c.leftConjunct}</span>
+          and <span class="from">${c.rightConjunct}</span> → ${c.sharedLeft} entails
+          <span class="to">${c.leftConjunct} ∧ ${c.rightConjunct}</span></span>
+      </div>`;
+    }
+    const mainHtml = `<div class="trace-step">
+      <span class="rule-name">${t.tactic === "mono_nl_compose" ? "mono_nl_compose" : "mono_nl"} · ${t.rule}
+        <span style="color:var(--ink-faint)"> (${t.position})</span></span>
+      <span class="arrow-line"><span class="from">${t.substFrom ?? "?"}</span> →
+        <span class="to">${t.substTo ?? "?"}</span></span>
+      ${t.shapeSource ? `<span class="arrow-line" style="color:var(--ink-muted)">shape synthesized via <span class="mono">${t.shapeSource}</span></span>` : ""}
+    </div>`;
+    return combineHtml + mainHtml;
+  }
+
+  function renderRow(t) {
+    const p = t.problem || {};
+    const fam = famShort(t.ruleFamily);
+    return `<details class="row" data-tactic="${t.tactic}" data-search="${
+      [t.problemId, p.hypothesis, p.premises && p.premises.join(" "), t.substFrom, t.substTo, t.restrictor, t.scope]
+        .join(" ").toLowerCase().replace(/"/g, "&quot;")
+    }">
+      <summary>
+        <span class="pid mono">#${t.problemId ?? "?"}</span>
+        <span class="hyp">${p.hypothesis || t.theorem}</span>
+        <span class="badges">
+          <span class="badge ${famClass(t.ruleFamily)}">${fam}</span>
+        </span>
+        <span class="chev">›</span>
+      </summary>
+      <div class="row-detail">
+        ${p.premises ? `<div class="kv"><span class="k">Premises</span><span class="v"><ul>${p.premises.map(x => `<li>${x}</li>`).join("")}</ul></span></div>` : ""}
+        <div class="kv"><span class="k">Hypothesis</span><span class="v">${p.hypothesis || "—"}</span></div>
+        <div class="kv"><span class="k">Reasoner trace</span><span class="v">${renderTrace(t)}</span></div>
+        <div class="kv"><span class="k">Theorem</span><span class="v mono">${t.theorem}</span></div>
+      </div>
+    </details>`;
+  }
+
+  const listEl = document.getElementById("list");
+  const sorted = [...proved].sort((a, b) => (a.problemId ?? 999) - (b.problemId ?? 999));
+  listEl.innerHTML = sorted.map(renderRow).join("");
+
+  const rows = Array.from(listEl.querySelectorAll(".row"));
+  const searchInput = document.getElementById("search");
+  const chips = Array.from(document.querySelectorAll(".chip"));
+  const resultCount = document.getElementById("resultCount");
+  let activeFilter = "all";
+
+  function applyFilters() {
+    const q = searchInput.value.trim().toLowerCase();
+    let shown = 0;
+    rows.forEach(r => {
+      const matchesFilter = activeFilter === "all" || r.dataset.tactic === activeFilter;
+      const matchesSearch = !q || r.dataset.search.includes(q);
+      const visible = matchesFilter && matchesSearch;
+      r.hidden = !visible;
+      if (visible) shown++;
+    });
+    resultCount.textContent = `${shown} of ${rows.length} shown`;
+  }
+  searchInput.addEventListener("input", applyFilters);
+  chips.forEach(c => c.addEventListener("click", () => {
+    chips.forEach(x => x.classList.remove("active"));
+    c.classList.add("active");
+    activeFilter = c.dataset.filter;
+    applyFilters();
+  }));
+  applyFilters();
+
+  // ---------- unsupported card ----------
+  const unsupportedCard = document.getElementById("unsupportedCard");
+  const f = failed[0];
+  if (f) {
+    const p = f.problem || {};
+    unsupportedCard.innerHTML = `
+      <h3>#${f.problemId} — ${p.hypothesis || f.theorem}</h3>
+      ${p.premises ? `<p>${p.premises.join(" ")}</p>` : ""}
+      <p class="why">Its real proof needs an existing rule applied first to reach an intermediate fact,
+        then a second, different lemma to reach the goal from there — a genuine two-step chain the
+        current one-synthesis-one-substitution architecture doesn't support. Left unsupported on
+        purpose, rather than patched with a problem-specific proof, until a general bounded-depth
+        chaining mechanism is deliberately added.</p>`;
+  } else {
+    unsupportedCard.remove();
+  }
+})();
+</script>
