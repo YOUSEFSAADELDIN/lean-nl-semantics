@@ -16,20 +16,23 @@ jobs:
             | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      # No lake-manifest.json is committed (nothing here has ever
-      # actually resolved the Mathlib dependency), so `lake build` alone
-      # fails with "No lake-manifest.json found" — `lake update` writes
-      # it first. Once one exists, commit it so future runs are pinned
-      # to a fixed Mathlib revision instead of re-resolving `main` every time.
+      # lake-manifest.json is now committed (captured from CI run
+      # 36313846108, commit 219ecca - see it for the exact resolution
+      # this pins: mathlib b63f6e8a, aesop a90fbf7b, batteries 33131f4f,
+      # etc.), so every run resolves against that fixed revision set
+      # instead of re-resolving Mathlib's `main` from scratch each time -
+      # a future unrelated upstream break can no longer turn this
+      # project's CI red with zero code change here. `lake update` only
+      # runs as a fallback (a fresh clone/fork missing the manifest, or
+      # someone deliberately deleting it to re-resolve); it is never run
+      # when the pin is already in place, since running it unconditionally
+      # would silently re-resolve to `main` and defeat the pin on every
+      # single run.
       - name: Resolve dependencies
-        run: lake update
-
-      # Temporary: dumps the freshly-resolved manifest to the log so it
-      # can be captured and committed, pinning future runs instead of
-      # re-resolving `main` every time (see the comment above). Removed
-      # once lake-manifest.json is committed and this step's job is done.
-      - name: Print resolved lake-manifest.json
-        run: cat lake-manifest.json
+        run: |
+          if [ ! -f lake-manifest.json ]; then
+            lake update
+          fi
 
       - name: Fetch Mathlib cache
         run: lake exe cache get

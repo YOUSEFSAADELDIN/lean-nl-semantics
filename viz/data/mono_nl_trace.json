@@ -1,0 +1,1248 @@
+{
+  "summary": {
+    "generatedFrom": {
+      "ciRun": 36313846108,
+      "commit": "219ecca095a482f51bfb17d5a5c5482ee0e86884",
+      "note": "trace/coverage numbers match CI run 36312200141 (commit 8934c04); this run only added the per-theorem 'attempting' log marker used to parse this export, no semantic change"
+    },
+    "trivial": 14,
+    "proved": 63,
+    "distinctProblems": 38,
+    "eligibleFailed": 1,
+    "outsideFragment": 393,
+    "totalScanned": 471
+  },
+  "theorems": [
+    {
+      "theorem": "FraCaS.Section2.fracas_108",
+      "tactic": "exist_nl",
+      "rule": "exactlySome",
+      "sourceHyp": null,
+      "restrictor": "accountant",
+      "scope": "attended",
+      "problemId": 108,
+      "problem": {
+        "premises": [
+          "Just one accountant attended the meeting."
+        ],
+        "hypothesis": "Some accountant attended the meeting.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_069",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "residentWestern",
+      "substTo": "residentMajorWestern",
+      "problemId": 69,
+      "problem": {
+        "premises": [
+          "The residents of western countries can travel freely within Europe.",
+          "All residents of major western countries are residents of western countries."
+        ],
+        "hypothesis": "The residents of major western countries have the right to live in Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_049_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "swede",
+      "substTo": "scandinavian",
+      "problemId": 49,
+      "problem": {
+        "premises": [
+          "A Swede won a Nobel prize.",
+          "Every Swede is a Scandinavian."
+        ],
+        "hypothesis": "A Scandinavian won a Nobel prize.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_066_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "naResident",
+      "substTo": "canadianResident",
+      "problemId": 66,
+      "problem": {
+        "premises": [
+          "Every resident of the North American continent can travel freely within Europe.",
+          "Every Canadian resident is a resident of the North American continent."
+        ],
+        "hypothesis": "Every Canadian resident can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_002_via_exist_nl",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaSome",
+      "sourceHyp": null,
+      "restrictor": "italianMan",
+      "scope": "wantsGreatTenor",
+      "problemId": 2,
+      "problem": {
+        "premises": [
+          "Every Italian man wants to be a great tenor.",
+          "Some Italian men are great tenors."
+        ],
+        "hypothesis": "There are Italian men who want to be a great tenor.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    },
+    {
+      "theorem": "FraCaS.Section2.fracas_110",
+      "tactic": "exist_nl",
+      "rule": "exactlySome",
+      "sourceHyp": null,
+      "restrictor": "accountant",
+      "scope": "attended",
+      "problemId": 110,
+      "problem": {
+        "premises": [
+          "Just one accountant attended the meeting."
+        ],
+        "hypothesis": "Some accountant attended the meeting.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_063",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "atLeastRestrict",
+      "factHyp": null,
+      "substFrom": "femaleCommissioner",
+      "substTo": "commissioner",
+      "problemId": 63,
+      "problem": {
+        "premises": [
+          "At least three female commissioners spend time at home."
+        ],
+        "hypothesis": "At least three commissioners spend time at home.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_010_via_exist_nl",
+      "tactic": "exist_nl",
+      "rule": "mostSome",
+      "sourceHyp": null,
+      "restrictor": "greatTenor",
+      "scope": "italianPred",
+      "problemId": 10,
+      "problem": {
+        "premises": [
+          "Most great tenors are Italian."
+        ],
+        "hypothesis": "There are great tenors who are Italian.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_003",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaSome",
+      "sourceHyp": null,
+      "restrictor": "italianMan",
+      "scope": "wantsGreatTenor",
+      "problemId": 3,
+      "problem": {
+        "premises": [
+          "All Italian men want to be a great tenor.",
+          "Some Italian men are great tenors."
+        ],
+        "hypothesis": "There are Italian men who want to be a great tenor.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_002",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaSome",
+      "sourceHyp": null,
+      "restrictor": "italianMan",
+      "scope": "wantsGreatTenor",
+      "problemId": 2,
+      "problem": {
+        "premises": [
+          "Every Italian man wants to be a great tenor.",
+          "Some Italian men are great tenors."
+        ],
+        "hypothesis": "There are Italian men who want to be a great tenor.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_021_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => individual\u271d x \u2227 right\u271d x",
+      "substFrom": "fun x => individual\u271d x \u2227 right\u271d x",
+      "substTo": "residentMemberState",
+      "combine": {
+        "left": "(unnamed premise)",
+        "right": "(unnamed premise)",
+        "sharedLeft": "residentMemberState",
+        "leftConjunct": "individual",
+        "rightConjunct": "right"
+      },
+      "problemId": 21,
+      "problem": {
+        "premises": [
+          "The residents of member states have the right to live in Europe.",
+          "All residents of member states are individuals.",
+          "Every individual who has the right to live in Europe can travel freely within Europe."
+        ],
+        "hypothesis": "The residents of member states can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_024",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "interestingResult",
+      "substTo": "result",
+      "problemId": 24,
+      "problem": {
+        "premises": [
+          "Many delegates obtained interesting results from the survey."
+        ],
+        "hypothesis": "Many delegates obtained results from the survey.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section2.fracas_107",
+      "tactic": "exist_nl",
+      "rule": "exactlySome",
+      "sourceHyp": null,
+      "restrictor": "accountant",
+      "scope": "attended",
+      "problemId": 107,
+      "problem": {
+        "premises": [
+          "Just one accountant attended the meeting."
+        ],
+        "hypothesis": "Some accountants attended the meeting.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_023",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "finishOnTime",
+      "substTo": "finish",
+      "problemId": 23,
+      "problem": {
+        "premises": [
+          "Some delegates finished the survey on time."
+        ],
+        "hypothesis": "Some delegates finished the survey.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_013_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => leadingTenor\u271d x \u2227 excellent\u271d x",
+      "substFrom": "fun x => leadingTenor\u271d x \u2227 excellent\u271d x",
+      "substTo": "leadingTenor",
+      "combine": {
+        "left": null,
+        "right": "(unnamed premise)",
+        "sharedLeft": "leadingTenor",
+        "leftConjunct": "leadingTenor",
+        "rightConjunct": "excellent"
+      },
+      "problemId": 13,
+      "problem": {
+        "premises": [
+          "Both leading tenors are excellent.",
+          "Leading tenors who are excellent are indispensable."
+        ],
+        "hypothesis": "Both leading tenors are indispensable.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_124_via_mono_nl_compose",
+      "tactic": "mono_nl_compose",
+      "position": "scope",
+      "rule": "atLeastMonoScope",
+      "factHyp": null,
+      "substFrom": "missing",
+      "substTo": "removed",
+      "shapeSource": "compose.exactlyAtLeast",
+      "problemId": 124,
+      "problem": {
+        "premises": [
+          "Two out of ten machines are missing.",
+          "They have been removed."
+        ],
+        "hypothesis": "Two machines have been removed.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 4: Exactly -> AtLeast/AtMost"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_004",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaSome",
+      "sourceHyp": null,
+      "restrictor": "italianTenor",
+      "scope": "wantsGreat",
+      "problemId": 4,
+      "problem": {
+        "premises": [
+          "Each Italian tenor wants to be great.",
+          "Some Italian tenors are great."
+        ],
+        "hypothesis": "There are Italian tenors who want to be great.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_031_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "atLeastMonoScope",
+      "factHyp": null,
+      "substFrom": "lotOfTime",
+      "substTo": "someTime",
+      "problemId": 31,
+      "problem": {
+        "premises": [
+          "At least three commissioners spend a lot of time at home."
+        ],
+        "hypothesis": "At least three commissioners spend time at home.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_010",
+      "tactic": "exist_nl",
+      "rule": "mostSome",
+      "sourceHyp": null,
+      "restrictor": "greatTenor",
+      "scope": "italianPred",
+      "problemId": 10,
+      "problem": {
+        "premises": [
+          "Most great tenors are Italian."
+        ],
+        "hypothesis": "There are great tenors who are Italian.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_044",
+      "tactic": null,
+      "failed": true,
+      "problemId": 44,
+      "problem": {
+        "premises": [
+          "Few committee members are from southern Europe.",
+          "All committee members are people.",
+          "All people who are from Portugal are from southern Europe."
+        ],
+        "hypothesis": "There are few committee members from Portugal.",
+        "answer": "yes"
+      },
+      "ruleFamily": null
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_059_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "femaleCommitteeMember",
+      "substTo": "committeeMember",
+      "problemId": 59,
+      "problem": {
+        "premises": [
+          "A few female committee members are from Scandinavia."
+        ],
+        "hypothesis": "At least a few committee members are from Scandinavia.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_057",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "portugueseDelegate",
+      "substTo": "delegate",
+      "problemId": 57,
+      "problem": {
+        "premises": [
+          "Several Portuguese delegates got the results published in major national newspapers."
+        ],
+        "hypothesis": "Several delegates got the results published in major national newspapers.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_025",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "publishedInNewspapers",
+      "substTo": "published",
+      "problemId": 25,
+      "problem": {
+        "premises": [
+          "Several delegates got the results published in major national newspapers."
+        ],
+        "hypothesis": "Several delegates got the results published.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_107_via_exist_nl",
+      "tactic": "exist_nl",
+      "rule": "exactlySome",
+      "sourceHyp": null,
+      "restrictor": "accountant",
+      "scope": "attended",
+      "problemId": 107,
+      "problem": {
+        "premises": [
+          "Just one accountant attended the meeting."
+        ],
+        "hypothesis": "Some accountants attended the meeting.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section2.fracas_109",
+      "tactic": "exist_nl",
+      "rule": "exactlySome",
+      "sourceHyp": null,
+      "restrictor": "accountant",
+      "scope": "attended",
+      "problemId": 109,
+      "problem": {
+        "premises": [
+          "Just one accountant attended the meeting."
+        ],
+        "hypothesis": "Some accountants attended the meeting.",
+        "answer": "no"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_017",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "wonNobelLit",
+      "substTo": "wonNobel",
+      "problemId": 17,
+      "problem": {
+        "premises": [
+          "An Irishman won the Nobel prize for literature."
+        ],
+        "hypothesis": "An Irishman won a Nobel prize.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_029_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "everyMonoScope",
+      "factHyp": null,
+      "substFrom": "leadingBusinessman",
+      "substTo": "businessman",
+      "problemId": 29,
+      "problem": {
+        "premises": [
+          "Both commissioners used to be leading businessmen."
+        ],
+        "hypothesis": "Both commissioners used to be businessmen.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_049",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "swede",
+      "substTo": "scandinavian",
+      "problemId": 49,
+      "problem": {
+        "premises": [
+          "A Swede won a Nobel prize.",
+          "Every Swede is a Scandinavian."
+        ],
+        "hypothesis": "A Scandinavian won a Nobel prize.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_005_via_exist_nl",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaExists",
+      "sourceHyp": "hNonempty",
+      "restrictor": "ambitious",
+      "scope": "italianPred",
+      "problemId": 5,
+      "problem": {
+        "premises": [
+          "The really ambitious tenors are Italian."
+        ],
+        "hypothesis": "There are really ambitious tenors who are Italian.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_021",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => individual\u271d x \u2227 right\u271d x",
+      "substFrom": "fun x => individual\u271d x \u2227 right\u271d x",
+      "substTo": "residentMemberState",
+      "combine": {
+        "left": "(unnamed premise)",
+        "right": "(unnamed premise)",
+        "sharedLeft": "residentMemberState",
+        "leftConjunct": "individual",
+        "rightConjunct": "right"
+      },
+      "problemId": 21,
+      "problem": {
+        "premises": [
+          "The residents of member states have the right to live in Europe.",
+          "All residents of member states are individuals.",
+          "Every individual who has the right to live in Europe can travel freely within Europe."
+        ],
+        "hypothesis": "The residents of member states can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_056",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "britishDelegate",
+      "substTo": "delegate",
+      "problemId": 56,
+      "problem": {
+        "premises": [
+          "Many British delegates obtained interesting results from the survey."
+        ],
+        "hypothesis": "Many delegates obtained interesting results from the survey.",
+        "answer": "unknown"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section3.fracas_123",
+      "tactic": "mono_nl_compose",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "sentByItel",
+      "substTo": "onDesk",
+      "shapeSource": "exist_nl.mostSome",
+      "problemId": 123,
+      "problem": {
+        "premises": [
+          "ITEL has sent most of the reports Smith needs.",
+          "They are on her desk."
+        ],
+        "hypothesis": "There are some reports from ITEL on Smith's desk.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 3: mono_nl_compose (Most -> Some composition)"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_066",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "naResident",
+      "substTo": "canadianResident",
+      "problemId": 66,
+      "problem": {
+        "premises": [
+          "Every resident of the North American continent can travel freely within Europe.",
+          "Every Canadian resident is a resident of the North American continent."
+        ],
+        "hypothesis": "Every Canadian resident can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_029",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "everyMonoScope",
+      "factHyp": null,
+      "substFrom": "leadingBusinessman",
+      "substTo": "businessman",
+      "problemId": 29,
+      "problem": {
+        "premises": [
+          "Both commissioners used to be leading businessmen."
+        ],
+        "hypothesis": "Both commissioners used to be businessmen.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_018_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => person\u271d x \u2227 right\u271d x",
+      "substFrom": "fun x => person\u271d x \u2227 right\u271d x",
+      "substTo": "european",
+      "combine": {
+        "left": "(unnamed premise)",
+        "right": "(unnamed premise)",
+        "sharedLeft": "european",
+        "leftConjunct": "person",
+        "rightConjunct": "right"
+      },
+      "problemId": 18,
+      "problem": {
+        "premises": [
+          "Every European has the right to live in Europe.",
+          "Every European is a person.",
+          "Every person who has the right to live in Europe can travel freely within Europe."
+        ],
+        "hypothesis": "Every European can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_076_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "atMostRestrict",
+      "factHyp": null,
+      "substFrom": "committee",
+      "substTo": "femaleCommittee",
+      "problemId": 76,
+      "problem": {
+        "premises": [
+          "Few committee members are from southern Europe."
+        ],
+        "hypothesis": "Few female committee members are from southern Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_068",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "naResident",
+      "substTo": "canadianResident",
+      "problemId": 68,
+      "problem": {
+        "premises": [
+          "Each resident of the North American continent can travel freely within Europe.",
+          "Every Canadian resident is a resident of the North American continent."
+        ],
+        "hypothesis": "Each Canadian resident can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_048",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "atMostMonoScope",
+      "factHyp": null,
+      "substFrom": "timeAtHome",
+      "substTo": "lotOfTime",
+      "problemId": 48,
+      "problem": {
+        "premises": [
+          "At most ten commissioners spend time at home."
+        ],
+        "hypothesis": "At most ten commissioners spend a lot of time at home.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_018",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => person\u271d x \u2227 right\u271d x",
+      "substFrom": "fun x => person\u271d x \u2227 right\u271d x",
+      "substTo": "european",
+      "combine": {
+        "left": "(unnamed premise)",
+        "right": "(unnamed premise)",
+        "sharedLeft": "european",
+        "leftConjunct": "person",
+        "rightConjunct": "right"
+      },
+      "problemId": 18,
+      "problem": {
+        "premises": [
+          "Every European has the right to live in Europe.",
+          "Every European is a person.",
+          "Every person who has the right to live in Europe can travel freely within Europe."
+        ],
+        "hypothesis": "Every European can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_031",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "atLeastMonoScope",
+      "factHyp": null,
+      "substFrom": "lotOfTime",
+      "substTo": "someTime",
+      "problemId": 31,
+      "problem": {
+        "premises": [
+          "At least three commissioners spend a lot of time at home."
+        ],
+        "hypothesis": "At least three commissioners spend time at home.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_057_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "portugueseDelegate",
+      "substTo": "delegate",
+      "problemId": 57,
+      "problem": {
+        "premises": [
+          "Several Portuguese delegates got the results published in major national newspapers."
+        ],
+        "hypothesis": "Several delegates got the results published in major national newspapers.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_020",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => person\u271d x \u2227 right\u271d x",
+      "substFrom": "fun x => person\u271d x \u2227 right\u271d x",
+      "substTo": "european",
+      "combine": {
+        "left": "(unnamed premise)",
+        "right": "(unnamed premise)",
+        "sharedLeft": "european",
+        "leftConjunct": "person",
+        "rightConjunct": "right"
+      },
+      "problemId": 20,
+      "problem": {
+        "premises": [
+          "Each European has the right to live in Europe.",
+          "Every European is a person.",
+          "Every person who has the right to live in Europe can travel freely within Europe."
+        ],
+        "hypothesis": "Each European can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_077_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "commissioner",
+      "substTo": "femaleCommissioner",
+      "problemId": 77,
+      "problem": {
+        "premises": [
+          "Both commissioners used to be in business."
+        ],
+        "hypothesis": "Both female commissioners used to be in business.",
+        "answer": "undef"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_019",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => person\u271d x \u2227 right\u271d x",
+      "substFrom": "fun x => person\u271d x \u2227 right\u271d x",
+      "substTo": "european",
+      "combine": {
+        "left": "(unnamed premise)",
+        "right": "(unnamed premise)",
+        "sharedLeft": "european",
+        "leftConjunct": "person",
+        "rightConjunct": "right"
+      },
+      "problemId": 19,
+      "problem": {
+        "premises": [
+          "All Europeans have the right to live in Europe.",
+          "Every European is a person.",
+          "Every person who has the right to live in Europe can travel freely within Europe."
+        ],
+        "hypothesis": "All Europeans can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_048_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "scope",
+      "rule": "atMostMonoScope",
+      "factHyp": null,
+      "substFrom": "timeAtHome",
+      "substTo": "lotOfTime",
+      "problemId": 48,
+      "problem": {
+        "premises": [
+          "At most ten commissioners spend time at home."
+        ],
+        "hypothesis": "At most ten commissioners spend a lot of time at home.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_013",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": "fun x => leadingTenor\u271d x \u2227 excellent\u271d x",
+      "substFrom": "fun x => leadingTenor\u271d x \u2227 excellent\u271d x",
+      "substTo": "leadingTenor",
+      "combine": {
+        "left": null,
+        "right": "(unnamed premise)",
+        "sharedLeft": "leadingTenor",
+        "leftConjunct": "leadingTenor",
+        "rightConjunct": "excellent"
+      },
+      "problemId": 13,
+      "problem": {
+        "premises": [
+          "Both leading tenors are excellent.",
+          "Leading tenors who are excellent are indispensable."
+        ],
+        "hypothesis": "Both leading tenors are indispensable.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_015",
+      "tactic": "exist_nl",
+      "rule": "atLeastSome",
+      "sourceHyp": null,
+      "restrictor": "tenor",
+      "scope": "takesPart",
+      "problemId": 15,
+      "problem": {
+        "premises": [
+          "At least three tenors will take part in the concert."
+        ],
+        "hypothesis": "There are tenors who will take part in the concert.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_027_via_mono_nl_compose",
+      "tactic": "mono_nl_compose",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "fun x => person\u271d x \u2227 swedish\u271d x",
+      "substTo": "scandinavian",
+      "shapeSource": "compose.someEntailsAnd",
+      "problemId": 27,
+      "problem": {
+        "premises": [
+          "A few committee members are from Sweden.",
+          "All committee members are people.",
+          "All people who are from Sweden are from Scandinavia."
+        ],
+        "hypothesis": "At least a few committee members are from Scandinavia.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 4: some_trans combine"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_055_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "irishDelegate",
+      "substTo": "delegate",
+      "problemId": 55,
+      "problem": {
+        "premises": [
+          "Some Irish delegates finished the survey on time."
+        ],
+        "hypothesis": "Some delegates finished the survey on time.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_059",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "femaleCommitteeMember",
+      "substTo": "committeeMember",
+      "problemId": 59,
+      "problem": {
+        "premises": [
+          "A few female committee members are from Scandinavia."
+        ],
+        "hypothesis": "At least a few committee members are from Scandinavia.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_077",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "commissioner",
+      "substTo": "femaleCommissioner",
+      "problemId": 77,
+      "problem": {
+        "premises": [
+          "Both commissioners used to be in business."
+        ],
+        "hypothesis": "Both female commissioners used to be in business.",
+        "answer": "undef"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_063_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "atLeastRestrict",
+      "factHyp": null,
+      "substFrom": "femaleCommissioner",
+      "substTo": "commissioner",
+      "problemId": 63,
+      "problem": {
+        "premises": [
+          "At least three female commissioners spend time at home."
+        ],
+        "hypothesis": "At least three commissioners spend time at home.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_067",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "naResident",
+      "substTo": "canadianResident",
+      "problemId": 67,
+      "problem": {
+        "premises": [
+          "All residents of the North American continent can travel freely within Europe.",
+          "Every Canadian resident is a resident of the North American continent."
+        ],
+        "hypothesis": "All Canadian residents can travel freely within Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_027",
+      "tactic": "mono_nl_compose",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "fun x => person\u271d x \u2227 swedish\u271d x",
+      "substTo": "scandinavian",
+      "shapeSource": "compose.someEntailsAnd",
+      "problemId": 27,
+      "problem": {
+        "premises": [
+          "A few committee members are from Sweden.",
+          "All committee members are people.",
+          "All people who are from Sweden are from Scandinavia."
+        ],
+        "hypothesis": "At least a few committee members are from Scandinavia.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 4: some_trans combine"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_076",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "atMostRestrict",
+      "factHyp": null,
+      "substFrom": "committee",
+      "substTo": "femaleCommittee",
+      "problemId": 76,
+      "problem": {
+        "premises": [
+          "Few committee members are from southern Europe."
+        ],
+        "hypothesis": "Few female committee members are from southern Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_002_from_gf",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaSome",
+      "sourceHyp": null,
+      "restrictor": "italianMan",
+      "scope": "wantGreatTenor",
+      "problemId": 2,
+      "problem": {
+        "premises": [
+          "Every Italian man wants to be a great tenor.",
+          "Some Italian men are great tenors."
+        ],
+        "hypothesis": "There are Italian men who want to be a great tenor.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_015_via_exist_nl",
+      "tactic": "exist_nl",
+      "rule": "atLeastSome",
+      "sourceHyp": null,
+      "restrictor": "tenor",
+      "scope": "takesPart",
+      "problemId": 15,
+      "problem": {
+        "premises": [
+          "At least three tenors will take part in the concert."
+        ],
+        "hypothesis": "There are tenors who will take part in the concert.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: positive cardinality"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_069_via_mono_nl",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "everyRestrict",
+      "factHyp": null,
+      "substFrom": "residentWestern",
+      "substTo": "residentMajorWestern",
+      "problemId": 69,
+      "problem": {
+        "premises": [
+          "The residents of western countries can travel freely within Europe.",
+          "All residents of major western countries are residents of western countries."
+        ],
+        "hypothesis": "The residents of major western countries have the right to live in Europe.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_055",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "someRestrict",
+      "factHyp": null,
+      "substFrom": "irishDelegate",
+      "substTo": "delegate",
+      "problemId": 55,
+      "problem": {
+        "premises": [
+          "Some Irish delegates finished the survey on time."
+        ],
+        "hypothesis": "Some delegates finished the survey on time.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_123_via_mono_nl_compose",
+      "tactic": "mono_nl_compose",
+      "position": "scope",
+      "rule": "someMonoScope",
+      "factHyp": null,
+      "substFrom": "sentByItel",
+      "substTo": "onDesk",
+      "shapeSource": "exist_nl.mostSome",
+      "problemId": 123,
+      "problem": {
+        "premises": [
+          "ITEL has sent most of the reports Smith needs.",
+          "They are on her desk."
+        ],
+        "hypothesis": "There are some reports from ITEL on Smith's desk.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 3: mono_nl_compose (Most -> Some composition)"
+    },
+    {
+      "theorem": "FraCaS.Section3.fracas_124",
+      "tactic": "mono_nl_compose",
+      "position": "scope",
+      "rule": "atLeastMonoScope",
+      "factHyp": null,
+      "substFrom": "missing",
+      "substTo": "removed",
+      "shapeSource": "compose.exactlyAtLeast",
+      "problemId": 124,
+      "problem": {
+        "premises": [
+          "Two out of ten machines are missing.",
+          "They have been removed."
+        ],
+        "hypothesis": "Two machines have been removed.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 4: Exactly -> AtLeast/AtMost"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_005",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaExists",
+      "sourceHyp": "hNonempty",
+      "restrictor": "ambitious",
+      "scope": "italianPred",
+      "problemId": 5,
+      "problem": {
+        "premises": [
+          "The really ambitious tenors are Italian."
+        ],
+        "hypothesis": "There are really ambitious tenors who are Italian.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    },
+    {
+      "theorem": "FraCaS.Section1.fracas_080",
+      "tactic": "mono_nl",
+      "position": "restrictor",
+      "rule": "atMostRestrict",
+      "factHyp": null,
+      "substFrom": "commissioner",
+      "substTo": "femaleCommissioner",
+      "problemId": 80,
+      "problem": {
+        "premises": [
+          "At most ten commissioners spend time at home."
+        ],
+        "hypothesis": "At most ten female commissioners spend time at home.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Phase 1/2: position substitution"
+    },
+    {
+      "theorem": "FraCaS.Section1.Monotonicity.fracas_004_via_exist_nl",
+      "tactic": "exist_nl",
+      "rule": "someOfNonemptyViaSome",
+      "sourceHyp": null,
+      "restrictor": "italianTenor",
+      "scope": "wantsGreat",
+      "problemId": 4,
+      "problem": {
+        "premises": [
+          "Each Italian tenor wants to be great.",
+          "Some Italian tenors are great."
+        ],
+        "hypothesis": "There are Italian tenors who want to be great.",
+        "answer": "yes"
+      },
+      "ruleFamily": "Category B: existential transfer"
+    }
+  ]
+}
