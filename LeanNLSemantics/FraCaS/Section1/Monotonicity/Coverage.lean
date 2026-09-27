@@ -1,20 +1,17 @@
 import Lean
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
 import LeanNLSemantics
 
 /-!
 # Corpus-wide coverage scan
 
-**Validation status**: the two-way (32/427) and three-way (32/34/393)
-splits have each been confirmed once in CI (runs 36297683676,
-36298768378), and a first four-way version (with Phase 2's combine step)
-ran too (36300227430) - but that run's own `trivial` bucket (checked
-unconditionally, before eligibility) came out at 93, not the expected
-~14, for exactly the reason this file's header now explains: it was
-also catching theorems with no relation to this fragment at all.
-Reordered (eligibility first) immediately after that run, *not yet
-re-confirmed* - the 93/40/15/314 four-way split from that run is
-real but superseded by this fix, not a number to quote.
+**Validation status**: the corrected four-way split (14 trivial / 40
+proved / 15 eligible-but-failed / 393 outside-fragment, out of 462) is
+CI-confirmed (run 36300667468) for `mono_nl` alone (Phase 1 + 2). This
+version adds `exist_nl` (Category B, `Existential.lean`) as a second
+tactic tried whenever `mono_nl` fails, before a theorem is counted
+eligible-but-failed - not yet run.
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella
@@ -40,14 +37,18 @@ with `fracas_`. For each, in order:
   `097`, `128`, `149`, `153` - identified by inspection, not hard-coded
   here) the standing instruction asked not to count as genuine
   eligible-but-failed monotonicity problems.
-- **eligible but failed**: the head matches, `isTrivial` doesn't, but
-  `mono_nl`'s own search (Phase 1's direct-hypothesis match, or Phase 2's
-  combine-then-match) didn't find a fact - grouped by `mono_nl`'s own
-  thrown message, not a re-guessed classification.
-- **automatically proved**: `mono_nl` closed it, whether via a direct
-  fact (Phase 1) or a combined one (Phase 2) - the report doesn't need to
-  distinguish which, since `Tactic.lean`'s own `logInfo` trace already
-  does, per-theorem, in the build log.
+- **eligible but failed**: the head matches, `isTrivial` doesn't, and
+  neither tactic closes it - `mono_nl` (Phase 1's direct-hypothesis
+  match, or Phase 2's combine-then-match) tried first, `exist_nl`
+  (Category B's existential-import/quantifier-strength family,
+  `Existential.lean`) tried second whenever `mono_nl` fails - grouped by
+  whichever tactic's thrown message is actually informative (see
+  `reasonBucket`'s own comment for why `exist_nl`'s generic "wrong head"
+  rejection never overwrites a real `mono_nl` diagnosis), not a
+  re-guessed classification.
+- **automatically proved**: either tactic closed it - the report doesn't
+  need to distinguish which, since each tactic's own `logInfo` trace
+  already does, per-theorem, in the build log.
 
 Per the standing instruction this reasoner was scoped under, nothing
 here adds a rule *because* some corpus example needs it - the fragment
@@ -146,8 +147,10 @@ def reasonBucket (msg : String) : String :=
     "no single differing position had a matching (direct or combined) Entails fact"
   else if (msg.splitOn "could not read the restrictor/scope").length > 1 then
     "goal's argument shape not recognized (extractPQ arg-count mismatch)"
+  else if (msg.splitOn "outside the Category-B fragment").length > 1 then
+    "Some-headed, but no stronger-quantifier or Every-plus-witness match (exist_nl)"
   else if (msg.splitOn "tactic left goals open").length > 1 then
-    "mono_nl closed the goal only partially"
+    "tactic closed the goal only partially"
   else
     "other: " ++ (msg.splitOn "\n").head?.getD msg
 
@@ -201,11 +204,20 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
       trivial := trivial.push name
       continue
 
-    let outcome : Except String Unit ←
+    -- Two independent tactics, tried in turn - `mono_nl` (position
+    -- substitution, Phase 1/2) and `exist_nl` (existential-import/
+    -- quantifier-strength, Category B, `Existential.lean`). Neither
+    -- calls the other; a theorem only needs one of the two shapes to
+    -- close, and `mono_nl`'s own failure message is discarded (not
+    -- reported) whenever `exist_nl` goes on to succeed, so a theorem
+    -- closed by either counts as proved with no "which one" ambiguity
+    -- left over - Tactic.lean's/Existential.lean's own `logInfo` traces
+    -- in the build log already say which.
+    let runTactic (tacticStx : Lean.TSyntax `tactic) : MetaM (Except String Unit) :=
       try
         let mvar ← mkFreshExprMVar ty (kind := .synthetic)
         let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
-          Lean.Elab.Tactic.evalTactic (← `(tactic| mono_nl))
+          Lean.Elab.Tactic.evalTactic tacticStx
         if remaining.isEmpty then
           pure (.ok ())
         else
@@ -213,6 +225,25 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
       catch e =>
         let msg ← renderException e
         pure (.error msg)
+
+    let monoOutcome ← runTactic (← `(tactic| mono_nl))
+    let outcome : Except String Unit ←
+      match monoOutcome with
+      | .ok () => pure (.ok ())
+      | .error monoMsg =>
+        match ← runTactic (← `(tactic| exist_nl)) with
+        | .ok () => pure (.ok ())
+        | .error existMsg =>
+          -- `exist_nl` rejects any non-`Some`-headed goal immediately,
+          -- before looking at a single hypothesis - that boilerplate
+          -- message would otherwise overwrite `mono_nl`'s own, more
+          -- specific reason for every Every/AtLeast/AtMost-headed miss.
+          -- Report it only when `exist_nl` actually engaged (the goal
+          -- *was* `Some`-headed) and still came up empty.
+          if (existMsg.splitOn "exist_nl only closes Some-headed goals").length > 1 then
+            pure (.error monoMsg)
+          else
+            pure (.error existMsg)
 
     match outcome with
     | .ok () => proved := proved.push name

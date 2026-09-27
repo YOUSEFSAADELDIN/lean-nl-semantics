@@ -102,10 +102,30 @@ theorem entails_refl {A : Type*} (P : A → Prop) : Every P P :=
 
 /-- `Every P Q` plus a witness that `P` holds of something (recovered here
 from a second premise `Some P R`, not assumed outright) gives `Some P Q` —
-problems 2/3/4's "every X wants Y; some X are Z ⊢ some X want Y" shape. -/
+problems 2/3/4's "every X wants Y; some X are Z ⊢ some X want Y" shape.
+
+The real principle this instantiates is existential transfer through a
+universal: *any* fact establishing `P` nonempty, combined with `Every P
+Q`, gives `Some P Q` - `R` above is discarded entirely (only the witness
+`x` and `P x` are used), so a second `Some`-headed premise is one
+possible *source* of that witness, not part of the principle itself. See
+`some_of_nonempty` immediately below for the same principle stated over
+a bare nonemptiness fact, the other source `Monotonicity/Existential.lean`
+finds this witness from (e.g. problem 5's explicit `∃ x, ambitious x`
+premise, no second `Some` in sight). -/
 theorem every_some {A : Type*} (P Q R : A → Prop) :
     Every P Q → Some P R → Some P Q :=
   fun h ⟨x, hx, _⟩ => ⟨x, hx, h x hx⟩
+
+/-- The same existential-transfer principle as `every_some`, stated over
+a bare nonemptiness witness instead of a second `Some`-headed premise -
+not a new principle, just this file's own two-line proof of it, kept
+separate from `every_some` (rather than deriving one from the other)
+since both are already relied on directly, unchanged, by existing
+`Batch1.lean` proofs. -/
+theorem some_of_nonempty {A : Type*} (P Q : A → Prop) :
+    (∃ x, P x) → Every P Q → Some P Q :=
+  fun ⟨x, hx⟩ h => ⟨x, hx, h x hx⟩
 
 /-- Three-premise universal transitivity: `Every P R`, `Every P S`, and
 `Every (fun x => S x ∧ R x) Q` (i.e. "every P that is both R and S is Q")

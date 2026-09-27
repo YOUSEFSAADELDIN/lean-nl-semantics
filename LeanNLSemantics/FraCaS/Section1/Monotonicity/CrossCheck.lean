@@ -1,4 +1,4 @@
-import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
 
 /-!
 # Phase-1 demonstration: `mono_nl` against the fourteen target problems
@@ -38,10 +38,19 @@ Problems 13 and 18-21, added for Phase 2, exercise the new combine step
 direct hypothesis match - `mono_nl` reconstructs `every_mp`'s and
 `every_trans`'s own recipe (combine two premises into a conjunction, then
 substitute) without either being named anywhere in `Tactic.lean`.
+
+Problems 2-5, 10, 15, and 107-110, added for Category B, use `exist_nl`
+instead of `mono_nl` - a different tactic entirely (see `Existential.
+lean`'s header for why this is a genuinely different search, not a third
+`mono_nl` rule), covering `every_some`'s/`some_of_nonempty`'s existential-
+transfer principle (2-5) and `most_some`'s/`atLeast_some`'s/
+`some_of_exactly`'s positive-cardinality principle (10, 15, 107-110).
+Problems 107-110 share one statement (same pattern as 66-68/18-20).
 -/
 namespace FraCaS.Section1.Monotonicity
 
 open FraCaS.Section1
+open FraCaS.Section2
 
 section P029
 variable {A : Type*} (commissioner leadingBusinessman businessman : A → Prop)
@@ -190,5 +199,62 @@ theorem fracas_021_via_mono_nl :
         Every residentMemberState travelFreely := by mono_nl
 
 end P021
+
+section P002
+variable {A : Type*} (italianMan wantsGreatTenor isGreatTenor : A → Prop)
+
+/-- Stands for problems 2 and 3 alike (identical statement in the
+original source, same as 66-68/18-20). -/
+theorem fracas_002_via_exist_nl :
+    Every italianMan wantsGreatTenor → Some italianMan isGreatTenor →
+      Some italianMan wantsGreatTenor := by exist_nl
+
+end P002
+
+section P004
+variable {A : Type*} (italianTenor wantsGreat isGreat : A → Prop)
+
+theorem fracas_004_via_exist_nl :
+    Every italianTenor wantsGreat → Some italianTenor isGreat →
+      Some italianTenor wantsGreat := by exist_nl
+
+end P004
+
+section P005
+variable {A : Type*} (ambitious italianPred : A → Prop)
+
+theorem fracas_005_via_exist_nl (hNonempty : ∃ x, ambitious x) :
+    Every ambitious italianPred → Some ambitious italianPred := by exist_nl
+
+end P005
+
+section P010
+variable {A : Type*} [Fintype A] (greatTenor italianPred : A → Prop)
+variable [DecidablePred greatTenor] [DecidablePred fun x => greatTenor x ∧ italianPred x]
+
+theorem fracas_010_via_exist_nl :
+    Most greatTenor italianPred → Some greatTenor italianPred := by exist_nl
+
+end P010
+
+section P015
+variable {A : Type*} [Fintype A] (tenor takesPart : A → Prop)
+variable [DecidablePred fun x => tenor x ∧ takesPart x]
+
+theorem fracas_015_via_exist_nl :
+    AtLeast 3 tenor takesPart → Some tenor takesPart := by exist_nl
+
+end P015
+
+section P107
+variable {A : Type*} [Fintype A] (accountant attended : A → Prop)
+variable [DecidablePred fun x => accountant x ∧ attended x]
+
+/-- Stands for problems 107-110 alike (identical statement in the
+original source). -/
+theorem fracas_107_via_exist_nl :
+    Exactly 1 accountant attended → Some accountant attended := by exist_nl
+
+end P107
 
 end FraCaS.Section1.Monotonicity
