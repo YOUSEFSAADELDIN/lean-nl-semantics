@@ -11,7 +11,17 @@ proved / 15 eligible-but-failed / 393 outside-fragment, out of 462) is
 CI-confirmed (run 36300667468) for `mono_nl` alone (Phase 1 + 2). This
 version adds `exist_nl` (Category B, `Existential.lean`) as a second
 tactic tried whenever `mono_nl` fails, before a theorem is counted
-eligible-but-failed - not yet run.
+eligible-but-failed. One bug found and fixed once the main build finally
+went green end-to-end (`Existential.lean`'s own fix took five attempts
+first): `runTactic`'s local `Lean.Elab.Tactic.run mvar.mvarId! (evalTactic
+...)` call was annotated `MetaM (Except String Unit)`, but
+`Lean.Elab.Tactic.run` returns `TermElabM (List MVarId)` - the identical
+mismatch `Existential.lean`'s `applyWithDecidableSide` hit originally.
+Unlike there, no rewrite was needed: this whole scan already runs inside
+`liftTermElabM do ...` (the command elaborator below), so `TermElabM` was
+already available - `runTactic` just needed its own annotation corrected
+to match, not a different implementation. Re-running the scan against
+this corrected build is what will actually confirm the numbers below.
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella
@@ -213,7 +223,7 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
     -- closed by either counts as proved with no "which one" ambiguity
     -- left over - Tactic.lean's/Existential.lean's own `logInfo` traces
     -- in the build log already say which.
-    let runTactic (tacticStx : Lean.TSyntax `tactic) : MetaM (Except String Unit) :=
+    let runTactic (tacticStx : Lean.TSyntax `tactic) : TermElabM (Except String Unit) :=
       try
         let mvar ← mkFreshExprMVar ty (kind := .synthetic)
         let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
