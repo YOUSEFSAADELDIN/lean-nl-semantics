@@ -189,23 +189,28 @@ end P055
 /-! ## Problem 56: a genuine divergence from FraCaS's own gold answer -/
 
 section P056
-variable {A : Type*} (britishDelegate obtainedResults delegate : A → Prop)
 
-/-- FraCaS marks this `.unknown`, with its own `<note>` explaining why:
-they read "many" as a *proportion* (non-monotone — "many British
-delegates" doesn't bound "many delegates" because the British could be
-all of a tiny British contingent while diluting the overall proportion),
-whereas this project's `Some`-based treatment of "many" (documented in
-`GQ.lean`) reads it as a plain existential, which *is* monotone under
-restrictor-widening — the same `some_restrict` shape as 49/55/57/59.
-Under this project's own stated semantics the entailment holds and this
-theorem proves it; the discrepancy with FraCaS's gold label is a known,
-documented limitation of collapsing "many"/"several"/"a few" to `Some`,
-not a bug to silently paper over. -/
-theorem fracas_056 :
-    Some britishDelegate obtainedResults → Every britishDelegate delegate →
-      Some delegate obtainedResults :=
-  some_restrict britishDelegate obtainedResults delegate
+/-- FraCaS marks this `.unknown`: "many" is a genuinely *proportional*
+determiner (see `GQ.lean`'s `Most` doc comment - this project now models
+"many" as `Most`, not `Some`), so "many British delegates got results"
+doesn't bound "many delegates got results" - the British could be a
+strict majority of a tiny British contingent while being far short of a
+majority of the overall delegate population. Direction 1: both British
+delegates (of four total delegates) got results - a majority of the
+British delegates, but only half of all delegates, not a majority.
+Direction 2: everyone got results, so both hold together. Superseded a
+`some_restrict`-based proof that treated "many" as a plain, restrictor-
+widening-monotone existential like "several"/"a few" (57/59) - genuinely
+different for "many" specifically, per FraCaS's own gold answer here. -/
+theorem fracas_056_dir1 :
+    Most (fun x : Fin 4 => x.val < 2) (fun x : Fin 4 => x.val < 2) ∧
+      ¬ Most (fun _ : Fin 4 => True) (fun x : Fin 4 => x.val < 2) := by
+  decide
+
+theorem fracas_056_dir2 :
+    Most (fun x : Fin 4 => x.val < 2) (fun _ : Fin 4 => True) ∧
+      Most (fun _ : Fin 4 => True) (fun _ : Fin 4 => True) := by
+  decide
 
 end P056
 

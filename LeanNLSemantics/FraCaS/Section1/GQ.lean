@@ -40,24 +40,53 @@ gotcha `CN.lean`'s `Fintype` instance hit first. -/
 abbrev card {A : Type*} [Fintype A] (P : A → Prop) [DecidablePred P] : Nat :=
   (Finset.univ.filter P).card
 
-/-- "Every/all/each/both P are Q" (treating `both` as `every` restricted
-to a 2-element P, and ignoring that cardinality presupposition where it
-isn't needed for the inference — see `Batch1.lean`'s problem 13). -/
+/-- "Every/all/each/both P are Q" - `both` still collapses to bare
+`Every` in the problems already using it this way (13/29/46: the
+restrictor never changes between premise and hypothesis, so the missing
+"exactly two" presupposition never mattered to begin with; 30/45/61:
+already-correct countermodels of a *different* invalid step, unrelated
+to cardinality) and is left alone there, since it already gives the
+right answer for those problems' own structural reasons. Problems 77/78
+are the case this coarse reading gets wrong: restricting "both/neither
+commissioners" to "female commissioners" of unknown size does not
+preserve "exactly two" the way restricting to a subset of already-known
+matching cardinality would, and collapsing into bare `Every`/`No` there
+made that restriction wrongly provable - see `Both`/`Neither` below,
+used for exactly those two problems. -/
 def Every {A : Type*} (P Q : A → Prop) : Prop := ∀ x, P x → Q x
 
-/-- "Some/an/a/many/several/a few P are Q" — all of these differ only in
-an implicated *approximate size*, not in the truth-conditional entailment
-pattern FraCaS Section 1 actually tests (problems 1–11 all just ask
-whether the determiner licenses "there exist P who are Q"), so one
-existential covers all of them here; see each problem's comment in
-`Batch1.lean` for the source determiner. -/
+/-- "Some/an/a/several/a few P are Q" - these differ from each other only
+in an implicated *approximate size*, not in the truth-conditional
+entailment pattern FraCaS Section 1 actually tests, so one existential
+covers all of them; see each problem's comment in `Batch1.lean` for the
+source determiner. "Many" is the one exception (see `Most`'s doc
+comment) - problem 56 is exactly the case where "many" and "several"
+behave differently under restrictor-widening (FraCaS's own gold: problem
+56, "many", is `.undef`; problems 57/59, "several"/"a few", are `.yes`),
+so collapsing "many" into this same existential silently validated the
+wrong answer for that one determiner specifically. -/
 def Some {A : Type*} (P Q : A → Prop) : Prop := ∃ x, P x ∧ Q x
 
-/-- "No/neither P is Q" (`neither` again treated as `no` restricted to a
-2-element P). -/
+/-- "No/neither P is Q" - `neither` still collapses to bare `No` in the
+problems already using it this way, for exactly the same reasons and
+with the same one exception (problem 78) as `Every`'s doc comment gives
+for `both`; see `Neither` below. -/
 def No {A : Type*} (P Q : A → Prop) : Prop := ∀ x, P x → ¬ Q x
 
-/-- "Most P are Q": strictly more than half of the `P`s are also `Q`. -/
+/-- "Most P are Q": strictly more than half of the `P`s are also `Q`.
+Also stands in for "many P are Q" (problem 56 only - see `Some`'s doc
+comment): FraCaS's own text never commits to an exact proportion or
+count for "many," so this project doesn't invent one either, but "many"
+does need to be a *proportional* (not bare-existential) determiner - the
+one property that actually matters for problem 56, and the one `Most`
+already has (no restrictor-widening lemma exists for it, unlike `Some`'s
+`some_restrict`, precisely because a majority of a subset need not be a
+majority of a wider superset - the same reason a majority of "British
+delegates" need not be a majority of "delegates"). Reusing `Most` outright
+rather than adding a separate, less-precisely-calibrated "at least half"
+type keeps this to the one property the corpus actually tests, instead of
+a new definition dressed up to look more precise than the source
+licenses. -/
 abbrev Most {A : Type*} [Fintype A] (P Q : A → Prop)
     [DecidablePred P] [DecidablePred fun x => P x ∧ Q x] : Prop :=
   2 * card (fun x => P x ∧ Q x) > card P
@@ -71,6 +100,21 @@ abbrev AtLeast {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
 abbrev AtMost {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
     [DecidablePred fun x => P x ∧ Q x] : Prop :=
   card (fun x => P x ∧ Q x) ≤ n
+
+/-- "Both P are Q": `Every P Q` plus the genuine cardinality
+presupposition `both` carries (exactly two `P`s) that `Every`'s own
+doc comment explains most `both`-headed problems don't actually need -
+used only for the one problem (77) where the presupposition is exactly
+what blocks a restrictor-narrowing that bare `Every` would otherwise
+wrongly validate: nothing pins a narrower predicate's own cardinality at
+two just because the wider one's is. -/
+abbrev Both {A : Type*} [Fintype A] (P Q : A → Prop) [DecidablePred P] : Prop :=
+  card P = 2 ∧ Every P Q
+
+/-- "Neither P is Q": `No`'s counterpart to `Both`, same reasoning
+(problem 78 only) - see `Both`'s doc comment. -/
+abbrev Neither {A : Type*} [Fintype A] (P Q : A → Prop) [DecidablePred P] : Prop :=
+  card P = 2 ∧ No P Q
 
 /-! ## Composition lemmas
 
