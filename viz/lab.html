@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semantics Lab</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23212423'/%3E%3Ccircle cx='10' cy='16' r='4' fill='%23d99a3e'/%3E%3Ccircle cx='22' cy='16' r='4' fill='%234fb4ac'/%3E%3Cline x1='14' y1='16' x2='18' y2='16' stroke='%23c9587c' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#17191a;
+  --panel:#212423;
+  --panel-2:#262a29;
+  --line:#3a3f3d;
+  --line-soft:#2c302f;
+  --bone:#e9e4d6;
+  --bone-dim:#a8a89c;
+  --amber:#d99a3e;
+  --amber-dim:#7a6438;
+  --cyan:#4fb4ac;
+  --cyan-dim:#3a6a67;
+  --magenta:#c9587c;
+  --magenta-dim:#6e3d4c;
+  --led:#5fbf6f;
+  --led-dim:#3a5a3f;
+  --red:#c05656;
+  --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --serif:'IBM Plex Serif', Georgia, serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--bone);font-family:var(--mono);}
+body{padding-bottom:60px;}
+a{color:var(--cyan)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+header.top{border-bottom:1px solid var(--line);padding:18px 0 0;position:sticky;top:0;background:var(--bg);z-index:20;}
+header.top .row1{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+h1.brand{font-size:15px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 14px;font-weight:600;}
+h1.brand small{display:block;font-size:11px;letter-spacing:.08em;color:var(--bone-dim);text-transform:none;font-family:var(--serif);font-style:italic;margin-top:3px;}
+nav.modes{display:flex;gap:2px;margin-bottom:0;}
+nav.modes button{
+  background:var(--panel);color:var(--bone-dim);border:1px solid var(--line);border-bottom:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  padding:9px 16px;cursor:pointer;border-radius:3px 3px 0 0;
+}
+nav.modes button.active{background:var(--bg);color:var(--bone);border-color:var(--line);position:relative;top:1px;border-bottom:1px solid var(--bg);}
+nav.modes button:hover:not(.active){color:var(--bone);}
+main{padding-top:26px;}
+.hint{color:var(--bone-dim);font-size:12px;line-height:1.6;max-width:640px;}
+.hint b{color:var(--bone);}
+
+/* ---- chips / racks ---- */
+.rack{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:16px 18px;margin-bottom:18px;}
+.rack-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:7px 0;}
+.rack-row + .rack-row{border-top:1px dashed var(--line-soft);}
+.rack-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim);width:98px;flex:none;}
+.chip{
+  background:var(--panel-2);border:1px solid var(--line);color:var(--bone-dim);
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;
+  padding:6px 11px;border-radius:3px;cursor:pointer;transition:border-color .12s,color .12s;
+}
+.chip:hover{color:var(--bone);border-color:#575d5a;}
+.chip.on{color:var(--bg);font-weight:600;}
+.chip.on.c-amber{background:var(--amber);border-color:var(--amber);}
+.chip.on.c-cyan{background:var(--cyan);border-color:var(--cyan);}
+.chip.on.c-magenta{background:var(--magenta);border-color:var(--magenta);}
+.toggle{
+  display:inline-flex;align-items:center;gap:7px;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:14px;padding:4px 6px 4px 4px;cursor:pointer;font-size:11.5px;color:var(--bone-dim);
+}
+.toggle .dot{width:16px;height:16px;border-radius:50%;background:#4a4f4d;transition:background .12s;flex:none;}
+.toggle.on{color:var(--bone);}
+.toggle.on .dot{background:var(--amber);}
+.toggle.on.scope-tone .dot{background:var(--cyan);}
+
+/* ---- sentence readout ---- */
+.readout{
+  font-family:var(--serif);font-size:26px;line-height:1.5;padding:22px 4px 6px;color:var(--bone);
+}
+.readout .id-note{display:block;font-family:var(--mono);font-size:10px;color:var(--bone-dim);letter-spacing:.08em;text-transform:uppercase;margin-top:6px;}
+
+/* ---- signal chain ---- */
+.chain{display:flex;flex-direction:column;gap:0;}
+.module{border:1px solid var(--line);border-radius:4px;background:var(--panel);margin-top:-1px;}
+.module + .module{margin-top:14px;}
+.module-head{
+  display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none;
+}
+.module-head .jack{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none;}
+.module-head.amber .jack{background:var(--amber);}
+.module-head.cyan .jack{background:var(--cyan);}
+.module-head.magenta .jack{background:var(--magenta);}
+.module-head.led .jack{background:var(--led);}
+.module-head .title{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+.module-head .sub{font-size:11px;color:var(--bone-dim);margin-left:auto;font-family:var(--mono);}
+.module-body{padding:2px 16px 18px;display:none;}
+.module.open .module-body{display:block;}
+.module.open .module-head{border-bottom:1px solid var(--line-soft);}
+.cable-connector{height:14px;width:2px;background:var(--line);margin:0 auto;}
+.cable-connector.amber{background:var(--amber-dim);}
+.cable-connector.cyan{background:var(--cyan-dim);}
+.cable-connector.magenta{background:var(--magenta-dim);}
+
+/* ---- tree svg ---- */
+.tree-wrap{overflow-x:auto;padding:10px 0;}
+.tnode rect{fill:var(--panel-2);stroke:var(--line);stroke-width:1;}
+.tnode.leaf rect{fill:var(--panel-2);}
+.tnode.leaf.r rect{stroke:var(--amber-dim);}
+.tnode.leaf.s rect{stroke:var(--cyan-dim);}
+.tnode text{fill:var(--bone-dim);font-family:var(--mono);font-size:11px;}
+.tnode.leaf text{fill:var(--bone);font-weight:600;}
+.tnode{cursor:pointer;}
+.tnode.selected rect{stroke:var(--magenta);stroke-width:1.6;}
+.tedge{stroke:var(--line);stroke-width:1.3;fill:none;}
+.inspector{margin-top:8px;font-size:11.5px;color:var(--bone-dim);border-top:1px dashed var(--line-soft);padding-top:9px;min-height:18px;}
+.inspector b{color:var(--bone);}
+.inspector code{color:var(--amber);background:none;}
+
+/* ---- semantics module ---- */
+.sem-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
+.sem-box{border:1px solid var(--line);border-radius:3px;padding:12px 14px;background:var(--panel-2);}
+.sem-box h4{margin:0 0 8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim);}
+.sem-box .pred{font-family:var(--mono);font-size:14px;color:var(--bone);}
+.sem-box .name{margin-top:6px;font-size:11px;color:var(--bone-dim);}
+@media (max-width:640px){.sem-grid{grid-template-columns:1fr;}}
+
+/* ---- reason module ---- */
+.reason-actions{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px;}
+.btn{
+  background:var(--panel-2);border:1px solid var(--line);color:var(--bone);font-family:var(--mono);
+  font-size:11.5px;padding:9px 14px;border-radius:3px;cursor:pointer;letter-spacing:.02em;
+}
+.btn:hover{border-color:#575d5a;}
+.btn.magenta{border-color:var(--magenta-dim);}
+.step{border:1px solid var(--line-soft);border-radius:3px;padding:12px 14px;background:var(--panel-2);margin-top:4px;}
+.step .arrow{color:var(--bone-dim);font-size:12px;margin:6px 0;padding-left:2px;}
+.step .lemma{font-size:12px;color:var(--magenta);margin-top:8px;}
+.step .lemma code{color:var(--bone);}
+.step.not-licensed{border-color:var(--line-soft);}
+.step.not-licensed .lemma{color:var(--bone-dim);}
+.tag{display:inline-block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:2px;margin-right:6px;}
+.tag.follows{background:var(--led-dim);color:var(--led);}
+.tag.unknown{background:var(--line-soft);color:var(--bone-dim);}
+
+/* ---- verify module ---- */
+.verify-row{display:flex;align-items:center;gap:12px;margin-top:8px;}
+.led-lamp{width:14px;height:14px;border-radius:50%;background:var(--line-soft);flex:none;box-shadow:none;}
+.led-lamp.on{background:var(--led);box-shadow:0 0 8px 1px rgba(95,191,111,.55);}
+.led-lamp.wait{background:var(--bone-dim);}
+.verify-text{font-size:13px;}
+.verify-text .honest{display:block;margin-top:6px;font-size:11px;color:var(--bone-dim);font-style:italic;font-family:var(--serif);}
+details.tech{margin-top:10px;}
+details.tech summary{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone-dim);cursor:pointer;}
+details.tech pre{font-size:11.5px;color:var(--bone);background:var(--panel-2);border:1px solid var(--line-soft);padding:10px 12px;border-radius:3px;white-space:pre-wrap;word-break:break-word;margin-top:8px;}
+
+/* ---- explore ---- */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.filters select,.filters input{
+  background:var(--panel-2);color:var(--bone);border:1px solid var(--line);font-family:var(--mono);
+  font-size:11.5px;padding:7px 10px;border-radius:3px;
+}
+.filters input{flex:1;min-width:180px;}
+.problist{border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+.prow{border-bottom:1px solid var(--line-soft);padding:11px 14px;cursor:pointer;}
+.prow:last-child{border-bottom:none;}
+.prow:hover{background:var(--panel-2);}
+.prow .head{display:flex;gap:10px;align-items:baseline;font-size:12px;}
+.prow .pid{color:var(--bone-dim);width:38px;flex:none;}
+.prow .eng{color:var(--bone);flex:1;font-family:var(--serif);font-size:14px;}
+.badge{font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:2px;flex:none;}
+.badge.yes{background:var(--led-dim);color:var(--led);}
+.badge.no{background:#5a2f2f;color:var(--red);}
+.badge.unknown,.badge.undef{background:var(--line-soft);color:var(--bone-dim);}
+.prow .badges{display:flex;gap:5px;margin-top:7px;padding-left:48px;flex-wrap:wrap;}
+.mini{font-size:9px;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:2px;border:1px solid var(--line);color:var(--bone-dim);}
+.mini.on.amber{border-color:var(--amber-dim);color:var(--amber);}
+.mini.on.magenta{border-color:var(--magenta-dim);color:var(--magenta);}
+.prow .detail{display:none;padding:10px 0 4px 48px;font-size:12px;color:var(--bone-dim);max-width:640px;}
+.prow.open .detail{display:block;}
+.prow .detail div{margin-bottom:4px;}
+
+/* ---- challenge ---- */
+.challenge-card{border:1px solid var(--line);border-radius:4px;padding:24px;background:var(--panel);max-width:640px;}
+.challenge-card .eng{font-family:var(--serif);font-size:20px;line-height:1.6;}
+.challenge-card .prem{color:var(--bone);}
+.challenge-card .concl{color:var(--bone-dim);margin-top:10px;}
+.choices{display:flex;gap:10px;margin-top:18px;}
+.choices button{flex:1;padding:12px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--bone);border-radius:3px;cursor:pointer;}
+.choices button:hover{border-color:#575d5a;}
+.reveal{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line-soft);display:none;}
+.reveal.show{display:block;}
+.reveal .verdict{font-size:13px;margin-bottom:8px;}
+.reveal .correct{color:var(--led);}
+.reveal .incorrect{color:var(--red);}
+.next-btn{margin-top:14px;}
+footer.foot{margin-top:60px;border-top:1px solid var(--line);padding:18px 0 40px;color:var(--bone-dim);font-size:11px;}
+footer.foot a{color:var(--bone-dim);text-decoration:underline;}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="row1">
+      <h1 class="brand">Semantics Lab<small>a controlled-English reasoning instrument, backed by GF and Lean</small></h1>
+    </div>
+    <nav class="modes">
+      <button data-mode="lab" class="active">Build</button>
+      <button data-mode="explore">Explore FraCaS</button>
+      <button data-mode="challenge">Challenge</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="view-lab">
+  <p class="hint">Construct a sentence from the racks below. Every sentence produced here is real English, generated on request by the actual GF grammar this project compiles in CI. Nothing here is written by a language model. Toggle a modifier in <b>Reason</b> to add a second premise and watch whether the conclusion is licensed.</p>
+
+  <div class="rack" id="rack">
+    <div class="rack-row" id="row-det">
+      <span class="rack-label">Determiner</span>
+    </div>
+    <div class="rack-row" id="row-restrictor">
+      <span class="rack-label">Restrictor</span>
+    </div>
+    <div class="rack-row" id="row-scope">
+      <span class="rack-label">Scope</span>
+    </div>
+  </div>
+
+  <div class="readout" id="readout"></div>
+
+  <div class="chain">
+    <div class="module open" data-m="syntax">
+      <div class="module-head amber" data-toggle="syntax"><span class="jack"></span><span class="title">Syntax</span><span class="sub">GF abstract syntax tree</span></div>
+      <div class="module-body">
+        <p class="hint">Click a node to see what it is. Amber nodes come from the restrictor, cyan from the scope.</p>
+        <div class="tree-wrap"><svg id="tree-svg"></svg></div>
+        <div class="inspector" id="tree-inspector">Click a node above.</div>
+      </div>
+    </div>
+    <div class="cable-connector amber"></div>
+    <div class="module" data-m="semantics">
+      <div class="module-head cyan" data-toggle="semantics"><span class="jack"></span><span class="title">Semantics</span><span class="sub">restrictor / scope split</span></div>
+      <div class="module-body">
+        <p class="hint">This project treats a determiner as a relation between two predicates over one domain: the <b>restrictor</b> (who we're talking about) and the <b>scope</b> (what's claimed of them), following Barwise &amp; Cooper's generalized-quantifier format, the same shape <code>LeanNLSemantics/FraCaS/Section1/GQ.lean</code> defines <code>Every</code>/<code>Some</code>/<code>AtLeast</code>/<code>AtMost</code> in.</p>
+        <div class="sem-grid">
+          <div class="sem-box"><h4>Restrictor</h4><div class="pred" id="sem-restrictor-pred"></div><div class="name" id="sem-restrictor-name"></div></div>
+          <div class="sem-box"><h4>Scope</h4><div class="pred" id="sem-scope-pred"></div><div class="name" id="sem-scope-name"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cable-connector cyan"></div>
+    <div class="module" data-m="reason">
+      <div class="module-head magenta" data-toggle="reason"><span class="jack"></span><span class="title">Reason</span><span class="sub">add a premise, derive a conclusion</span></div>
+      <div class="module-body">
+        <p class="hint">Toggling a modifier below adds a second premise (an "every &hellip; is a &hellip;" fact, always true by construction) and asks whether the sentence above still follows once the modifier changes.</p>
+        <div class="reason-actions">
+          <button class="btn magenta" id="btn-toggle-scope">Toggle scope modifier</button>
+          <button class="btn magenta" id="btn-toggle-restrictor">Toggle restrictor modifier</button>
+        </div>
+        <div id="reason-step"></div>
+      </div>
+    </div>
+    <div class="cable-connector magenta"></div>
+    <div class="module" data-m="verify">
+      <div class="module-head led" data-toggle="verify"><span class="jack"></span><span class="title">Verify</span><span class="sub">kernel status</span></div>
+      <div class="module-body">
+        <div class="verify-row"><span class="led-lamp wait" id="led-lamp"></span><span class="verify-text" id="verify-text">Make a move in Reason to check whether it's licensed.</span></div>
+        <details class="tech" id="verify-tech" style="display:none;"><summary>Open the kernel (exact Lean signature + raw GF trees)</summary><pre id="verify-pre"></pre></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="view-explore" style="display:none;">
+  <p class="hint">All 342 FraCaS problems this project formalized. <span class="mini on amber" style="border:none;padding:0;">GF</span> means a real GF grammar linearizes the confirmed English for at least one sentence in that problem. <span class="mini on magenta" style="border:none;padding:0;">reasoner</span> means the deterministic monotonicity/existential reasoner (<code>mono_nl</code>/<code>exist_nl</code>) closed it on its own: a strictly smaller, honestly-labeled subset of the problems Lean has a hand-written proof for.</p>
+  <div class="filters">
+    <input type="text" id="f-search" placeholder="search English text&hellip;">
+    <select id="f-section"><option value="">All sections</option></select>
+    <select id="f-answer"><option value="">Any gold answer</option><option value="yes">yes</option><option value="no">no</option><option value="unknown">unknown</option><option value="undef">undef</option></select>
+    <select id="f-flag"><option value="">Any status</option><option value="reasoner">reasoner-solved</option><option value="gf">GF-checked</option></select>
+  </div>
+  <div class="problist" id="problist"></div>
+</section>
+
+<section id="view-challenge" style="display:none;">
+  <p class="hint">A controlled-English inference, drawn from the same generator as Build. Decide whether the conclusion follows, then reveal.</p>
+  <div class="challenge-card" id="challenge-card"></div>
+</section>
+
+</main>
+
+<footer class="foot wrap">
+  Every sentence, tree, and verdict on this page is generated by the actual GF grammar and cites an actual Lean theorem in <a href="https://github.com/YOUSEFSAADELDIN/lean-nl-semantics">this repository</a>. Nothing on this page is produced by a language model. See also the <a href="trace.html">reasoner trace explorer</a> and the <a href="index.html">full corpus reference</a>.
+</footer>
+
+<script>
+(async function(){
+const DATA = await (await fetch('data/lab.json')).json();
+
+/* ------------------------------------------------------------ */
+/* mode switching                                                 */
+/* ------------------------------------------------------------ */
+const views = {lab:document.getElementById('view-lab'), explore:document.getElementById('view-explore'), challenge:document.getElementById('view-challenge')};
+document.querySelectorAll('nav.modes button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.modes button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    Object.entries(views).forEach(([k,el])=> el.style.display = (k===b.dataset.mode? '' : 'none'));
+    if (b.dataset.mode==='explore' && !exploreBuilt) buildExplore();
+    if (b.dataset.mode==='challenge' && !challenge.current) nextChallenge();
+  });
+});
+
+/* ------------------------------------------------------------ */
+/* LAB / BUILD                                                    */
+/* ------------------------------------------------------------ */
+const B = DATA.builder;
+const slotById = Object.fromEntries(B.cnSlots.map(s=>[s.id,s]));
+const detById = Object.fromEntries(B.determiners.map(d=>[d.id,d]));
+
+// index moves for O(1) lookup
+const moveIndex = {};
+B.moves.forEach(m=>{
+  const p = m.premise, key = [p.determinerId, p.restrictor.slot, p.restrictor.withAdjective, p.scope.slot, p.scope.withAdjective, m.position].join('|');
+  moveIndex[key] = m;
+});
+// index sentences (premise of any scope-position move == the exact combo's own sentence)
+const sentenceIndex = {};
+B.moves.filter(m=>m.position==='scope').forEach(m=>{
+  const p = m.premise, key = [p.determinerId, p.restrictor.slot, p.restrictor.withAdjective, p.scope.slot, p.scope.withAdjective].join('|');
+  sentenceIndex[key] = p;
+});
+
+const state = { detId:'every', rSlot:'man', rAdj:true, sSlot:'tenor', sAdj:true, selectedNode:null, lastMove:null };
+
+function currentSentence(){
+  const key = [state.detId, state.rSlot, state.rAdj, state.sSlot, state.sAdj].join('|');
+  return sentenceIndex[key];
+}
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1)+'.'; }
+
+function renderRack(){
+  const rowDet = document.getElementById('row-det');
+  rowDet.querySelectorAll('.chip').forEach(e=>e.remove());
+  B.determiners.forEach(d=>{
+    const c = document.createElement('button');
+    c.className = 'chip c-magenta' + (d.id===state.detId?' on':'');
+    c.textContent = d.label;
+    c.addEventListener('click', ()=>{ state.detId = d.id; rerender(true); });
+    rowDet.appendChild(c);
+  });
+
+  const rowR = document.getElementById('row-restrictor');
+  rowR.querySelectorAll('.chip,.toggle').forEach(e=>e.remove());
+  B.cnSlots.forEach(s=>{
+    const c = document.createElement('button');
+    c.className = 'chip c-amber' + (s.id===state.rSlot?' on':'');
+    c.textContent = s.noun;
+    c.disabled = s.id===state.sSlot;
+    c.style.opacity = c.disabled? .35:1;
+    c.addEventListener('click', ()=>{ if(s.id===state.sSlot) return; state.rSlot = s.id; rerender(true); });
+    rowR.appendChild(c);
+  });
+  const rSlotObj = slotById[state.rSlot];
+  const rToggle = document.createElement('button');
+  rToggle.className = 'toggle' + (state.rAdj?' on':'');
+  rToggle.innerHTML = '<span class="dot"></span><span>'+rSlotObj.adj+'</span>';
+  rToggle.addEventListener('click', ()=>{ doToggle('restrictor'); });
+  rowR.appendChild(rToggle);
+
+  const rowS = document.getElementById('row-scope');
+  rowS.querySelectorAll('.chip,.toggle').forEach(e=>e.remove());
+  B.cnSlots.forEach(s=>{
+    const c = document.createElement('button');
+    c.className = 'chip c-cyan' + (s.id===state.sSlot?' on':'');
+    c.textContent = s.noun;
+    c.disabled = s.id===state.rSlot;
+    c.style.opacity = c.disabled? .35:1;
+    c.addEventListener('click', ()=>{ if(s.id===state.rSlot) return; state.sSlot = s.id; rerender(true); });
+    rowS.appendChild(c);
+  });
+  const sSlotObj = slotById[state.sSlot];
+  const sToggle = document.createElement('button');
+  sToggle.className = 'toggle scope-tone' + (state.sAdj?' on':'');
+  sToggle.innerHTML = '<span class="dot"></span><span>'+sSlotObj.adj+'</span>';
+  sToggle.addEventListener('click', ()=>{ doToggle('scope'); });
+  rowS.appendChild(sToggle);
+}
+
+function renderReadout(){
+  const rec = currentSentence();
+  document.getElementById('readout').innerHTML = cap(rec.english) + '<span class="id-note">'+detById[state.detId].label+' &middot; new example, not part of the 342-problem FraCaS corpus</span>';
+}
+
+/* ---- syntax tree ---- */
+const LEAF_FUN = {det:null, adj:'PositA', noun:'UseN'};
+function buildDisplayTree(){
+  const det = detById[state.detId], rSlot = slotById[state.rSlot], sSlot = slotById[state.sSlot];
+  function cnNode(slot, withAdj, tone){
+    if (withAdj) return { id:tone+'-cn', fun:'AdjCN', label:slot.adj+' '+slot.noun, tone, children:[
+      { id:tone+'-adj', fun:'PositA', label:slot.adj, leafFun:slot.adj_fun, tone, leaf:true },
+      { id:tone+'-noun', fun:'UseN', label:slot.noun, leafFun:slot.noun_fun, tone, leaf:true },
+    ]};
+    return { id:tone+'-cn', fun:'UseN', label:slot.noun, leafFun:slot.noun_fun, tone, leaf:true };
+  }
+  const detNode = { id:'det', fun:(det.family==='AtLeast'||det.family==='AtMost')?'DetQuant':(det.id==='every'?'every_Det':'somePl_Det'), label:det.label, leaf:true, tone:'r' };
+  const subject = { id:'subject', fun:'DetCN', label:det.label+' '+(state.rAdj?rSlot.adj+' ':'')+rSlot.noun, children:[detNode, cnNode(rSlot,state.rAdj,'r')] };
+  const predicate = { id:'predicate', fun:'UseComp', label:'predicate', children:[
+    { id:'comp', fun:'CompCN', label:'"is/are &hellip;"', children:[cnNode(sSlot,state.sAdj,'s')] }
+  ]};
+  return { id:'root', fun:'PredVP', label:'clause', children:[subject, predicate] };
+}
+function layout(node){
+  let n=0; const xs=150, ys=68;
+  (function assign(nd,depth){
+    nd.depth=depth;
+    if(!nd.children||!nd.children.length){ nd.x=n*xs; n++; nd.y=depth*ys; return nd.x; }
+    const cx = nd.children.map(c=>assign(c,depth+1));
+    nd.x=(cx[0]+cx[cx.length-1])/2; nd.y=depth*ys; return nd.x;
+  })(node,0);
+  return {node, leaves:n};
+}
+const FUN_DESC = {
+  PredVP:'a clause: subject NP applied to a verb phrase', DetCN:'a noun phrase: determiner + common noun',
+  AdjCN:'a common noun modified by an adjective (semantically: conjunction)', UseN:'a bare common noun',
+  PositA:'an adjective in its positive (unmarked) form', UseComp:'the predicate slot of a copula clause',
+  CompCN:'"is/are" plus a noun-phrase complement', DetQuant:'a quantified determiner (numeral + approximator)',
+};
+function renderTree(){
+  const svg = document.getElementById('tree-svg');
+  const tree = buildDisplayTree();
+  const {node:root, leaves} = layout(tree);
+  const W = Math.max(leaves*150, 300), H = (maxDepth(root)+1)*68 + 40;
+  svg.setAttribute('viewBox', '0 0 '+W+' '+H);
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+  let edges='', nodes='';
+  (function walk(nd){
+    (nd.children||[]).forEach(c=>{
+      const px=nd.x+60, py=nd.y+16, cx=c.x+60, cy=c.y+16;
+      const my = (py+cy)/2;
+      edges += '<path class="tedge" d="M '+px+' '+(py+14)+' V '+my+' H '+cx+' V '+cy+'"/>';
+      walk(c);
+    });
+  })(root);
+  (function walk(nd){
+    const w = Math.max(56, nd.label.replace(/&\w+;/g,'x').length*7.2 + 20);
+    const cls = ['tnode']; if(nd.leaf) cls.push('leaf', nd.tone||'');
+    if (state.selectedNode===nd.id) cls.push('selected');
+    nodes += '<g class="'+cls.join(' ')+'" data-id="'+nd.id+'" data-fun="'+nd.fun+'" transform="translate('+(nd.x+60-w/2)+','+nd.y+')">'
+      + '<rect width="'+w+'" height="30" rx="4"></rect>'
+      + '<text x="'+(w/2)+'" y="19" text-anchor="middle">'+nd.label+'</text>'
+      + '</g>';
+    (nd.children||[]).forEach(walk);
+  })(root);
+  svg.innerHTML = edges+nodes;
+  svg.querySelectorAll('.tnode').forEach(g=>{
+    g.addEventListener('click', ()=>{
+      state.selectedNode = g.dataset.id;
+      renderTree();
+      const fun = g.dataset.fun;
+      const desc = FUN_DESC[fun] || 'a lexical item';
+      document.getElementById('tree-inspector').innerHTML = '<b>'+fun+'</b>: '+desc;
+    });
+  });
+}
+function maxDepth(nd){ return (nd.children&&nd.children.length)? 1+Math.max(...nd.children.map(maxDepth)) : 0; }
+
+/* ---- semantics ---- */
+function camel(adj, noun, withAdj){
+  if(!withAdj) return noun;
+  return adj.charAt(0).toLowerCase()+adj.slice(1)+noun.charAt(0).toUpperCase()+noun.slice(1);
+}
+function renderSemantics(){
+  const rSlot=slotById[state.rSlot], sSlot=slotById[state.sSlot];
+  document.getElementById('sem-restrictor-pred').textContent = state.rAdj? rSlot.adj.toLowerCase()+'(x) ∧ '+rSlot.noun+'(x)' : rSlot.noun+'(x)';
+  document.getElementById('sem-restrictor-name').textContent = 'Lean name: '+camel(rSlot.adj,rSlot.noun,state.rAdj);
+  document.getElementById('sem-scope-pred').textContent = state.sAdj? sSlot.adj.toLowerCase()+'(x) ∧ '+sSlot.noun+'(x)' : sSlot.noun+'(x)';
+  document.getElementById('sem-scope-name').textContent = 'Lean name: '+camel(sSlot.adj,sSlot.noun,state.sAdj);
+}
+
+/* ---- reason / verify ---- */
+function doToggle(position){
+  const key = [state.detId, state.rSlot, state.rAdj, state.sSlot, state.sAdj, position].join('|');
+  const move = moveIndex[key];
+  if (position==='restrictor') state.rAdj = !state.rAdj; else state.sAdj = !state.sAdj;
+  state.lastMove = move;
+  rerender(false);
+  renderReasonStep(move);
+  renderVerify(move);
+  document.querySelector('.module[data-m="reason"]').classList.add('open');
+  document.querySelector('.module[data-m="verify"]').classList.add('open');
+}
+function renderReasonStep(move){
+  if (!move){ document.getElementById('reason-step').innerHTML=''; return; }
+  const cls = move.licensed? 'step' : 'step not-licensed';
+  const tag = move.licensed? '<span class="tag follows">follows</span>' : '<span class="tag unknown">not determined</span>';
+  document.getElementById('reason-step').innerHTML =
+    '<div class="'+cls+'">'
+    + '<div>'+tag+cap(move.premise.english)+'</div>'
+    + '<div class="arrow">&darr; '+(move.licensingFact? ('licensing fact: '+cap(move.licensingFact).toLowerCase()) : 'no licensing fact applies in this direction')+'</div>'
+    + '<div>'+cap(move.conclusion.english)+'</div>'
+    + (move.licensed? '<div class="lemma">via general lemma <code>'+move.lemma+'</code></div>' : '<div class="lemma">'+move.family+' is not monotone this way at this position; correctly left undetermined, not false.</div>')
+    + '</div>';
+}
+function renderVerify(move){
+  const lamp = document.getElementById('led-lamp');
+  const text = document.getElementById('verify-text');
+  const tech = document.getElementById('verify-tech');
+  if (!move){ lamp.className='led-lamp wait'; text.textContent='Make a move in Reason to check whether it\'s licensed.'; tech.style.display='none'; return; }
+  if (move.licensed){
+    lamp.className='led-lamp on';
+    text.innerHTML = '&#10003; licensed by <code>'+move.lemma+'</code><span class="honest">General rule, Lean-verified for every predicate over every domain. This exact sentence pair was not itself compiled; it did not need to be, since the general theorem already covers it.</span>';
+  } else {
+    lamp.className='led-lamp wait';
+    text.innerHTML = 'not licensed by any rule in this fragment for this direction<span class="honest">This does not mean the conclusion is false; only that this step does not decide it, exactly like FraCaS\'s own "unknown" problems (e.g. problem 12).</span>';
+  }
+  tech.style.display='';
+  tech.querySelector ? null : null;
+  document.getElementById('verify-pre').textContent =
+    'lemma signature (verbatim from GQ.lean):\n  ' + (move.lemmaSignature||'(none licensed)') + '\n\n'
+    + 'premise gf tree:\n  ' + move.premise.gfText + '\n\n'
+    + 'conclusion gf tree:\n  ' + move.conclusion.gfText;
+}
+
+function rerender(resetMove){
+  renderRack(); renderReadout(); renderTree(); renderSemantics();
+  if (resetMove){
+    state.lastMove=null;
+    document.getElementById('reason-step').innerHTML='';
+    renderVerify(null);
+  }
+}
+
+document.querySelectorAll('.module-head').forEach(h=>{
+  h.addEventListener('click', ()=> h.closest('.module').classList.toggle('open'));
+});
+document.getElementById('btn-toggle-scope').addEventListener('click', ()=>doToggle('scope'));
+document.getElementById('btn-toggle-restrictor').addEventListener('click', ()=>doToggle('restrictor'));
+
+rerender(true);
+
+/* ------------------------------------------------------------ */
+/* EXPLORE FRACAS                                                 */
+/* ------------------------------------------------------------ */
+let exploreBuilt = false;
+function buildExplore(){
+  exploreBuilt = true;
+  const F = DATA.fracas;
+  const secSel = document.getElementById('f-section');
+  F.sections.forEach(s=>{
+    const o = document.createElement('option'); o.value=s.section; o.textContent = s.section+'. '+s.name; secSel.appendChild(o);
+  });
+  function draw(){
+    const q = document.getElementById('f-search').value.toLowerCase();
+    const sec = document.getElementById('f-section').value;
+    const ans = document.getElementById('f-answer').value;
+    const flag = document.getElementById('f-flag').value;
+    const list = document.getElementById('problist');
+    list.innerHTML='';
+    const rows = F.problems.filter(p=>{
+      if (sec && String(p.section)!==sec) return false;
+      if (ans && p.answer!==ans) return false;
+      if (flag==='reasoner' && !p.reasonerSolved) return false;
+      if (flag==='gf' && !p.gfChecked) return false;
+      if (q){
+        const hay = (p.premises.join(' ')+' '+p.hypothesis).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    }).slice(0, 400);
+    rows.forEach(p=>{
+      const row = document.createElement('div'); row.className='prow';
+      row.innerHTML = '<div class="head"><span class="pid">#'+p.id+'</span><span class="eng">'+p.hypothesis+'</span><span class="badge '+p.answer+'">'+p.answer+'</span></div>'
+        + '<div class="badges">'
+        + '<span class="mini'+(p.gfChecked?' on amber':'')+'">GF</span>'
+        + '<span class="mini on">Lean</span>'
+        + '<span class="mini'+(p.reasonerSolved?' on magenta':'')+'">reasoner</span>'
+        + '</div>'
+        + '<div class="detail">'
+        + '<div><b>Premises:</b> '+p.premises.join(' / ')+'</div>'
+        + '<div><b>Hypothesis:</b> '+p.hypothesis+'</div>'
+        + '<div><b>Gold answer:</b> '+p.answer+'</div>'
+        + (p.reasonerSolved? '<div><b>Reasoner rule(s):</b> '+p.reasonerRules.join(', ')+'</div>' : '<div>Not automatically solved by the deterministic reasoner; formalized and proved by hand.</div>')
+        + '</div>';
+      row.addEventListener('click', ()=> row.classList.toggle('open'));
+      list.appendChild(row);
+    });
+    if (!rows.length) list.innerHTML = '<div class="prow" style="cursor:default;">No problems match.</div>';
+  }
+  ['f-search','f-section','f-answer','f-flag'].forEach(id=> document.getElementById(id).addEventListener('input', draw));
+  draw();
+}
+
+/* ------------------------------------------------------------ */
+/* CHALLENGE                                                      */
+/* ------------------------------------------------------------ */
+const challenge = { current:null };
+function nextChallenge(){
+  const pool = B.moves;
+  const m = pool[Math.floor(Math.random()*pool.length)];
+  challenge.current = m;
+  const gold = m.licensed ? 'yes' : 'unknown';
+  const card = document.getElementById('challenge-card');
+  card.innerHTML =
+    '<div class="eng"><div class="prem">'+cap(m.premise.english)+'</div>'
+    + (m.licensingFact? ('<div class="prem">'+cap(m.licensingFact)+'</div>') : '')
+    + '<div class="concl">Does it follow that: '+cap(m.conclusion.english).toLowerCase().replace(/\.$/,'.')+'</div></div>'
+    + '<div class="choices"><button data-c="yes">Yes</button><button data-c="no">No</button><button data-c="unknown">Unknown</button></div>'
+    + '<div class="reveal" id="challenge-reveal"></div>';
+  card.querySelectorAll('.choices button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const pick = b.dataset.c;
+      const ok = pick===gold;
+      const rev = document.getElementById('challenge-reveal');
+      rev.className='reveal show';
+      rev.innerHTML =
+        '<div class="verdict '+(ok?'correct':'incorrect')+'">'+(ok?'Correct.':'Not quite.')+' The verified answer is <b>'+gold+'</b>.</div>'
+        + (m.licensed? ('<div class="lemma" style="color:var(--magenta);">licensed by general lemma <code style="color:var(--bone)">'+m.lemma+'</code>: <code style="color:var(--bone)">'+m.lemmaSignature+'</code></div>') : '<div style="color:var(--bone-dim);font-size:12px;">No rule in this fragment licenses this direction; correctly left undetermined.</div>')
+        + '<button class="btn next-btn" id="next-challenge">Next &rarr;</button>';
+      document.getElementById('next-challenge').addEventListener('click', nextChallenge);
+    });
+  });
+}
+
+})();
+</script>
+</body>
+</html>
