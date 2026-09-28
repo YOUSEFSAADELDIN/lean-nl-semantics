@@ -52,6 +52,17 @@ jobs:
       - name: Monotonicity fragment coverage scan
         run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/Coverage.lean
 
+      # AssumptionAudit.lean is deliberately not imported by anything
+      # either, same reason as Coverage.lean above (it imports the root
+      # LeanNLSemantics umbrella, so importing it back would be
+      # circular) - run directly, reusing the oleans `lake build` above
+      # just produced. Its `#print axioms` commands log, per theorem,
+      # exactly which axioms the kernel actually used - the corpus-wide
+      # extension of MTT/AssumptionAudit.lean's own 14-theorem audit
+      # (see that file for the CI-confirmed result on the MTT side).
+      - name: FraCaS corpus assumption audit
+        run: lake env lean LeanNLSemantics/FraCaS/AssumptionAudit.lean
+
   # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
   # package with its own manifest, so a version conflict between this
   # repo's (unpinned, tracking `main`) Mathlib and linglib's own pinned
