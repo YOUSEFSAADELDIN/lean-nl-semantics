@@ -215,6 +215,56 @@ elab "most_nl" : tactic => do
     else
       throwError "most_nl: no (Most, Every, Every) hypothesis triple matches most_trans"
 
+/-- The same targeted-search fix as `most_nl`, for `Section2/Plurals
+.lean`'s `every_most` (`Every P Q → (∃x, P x) → Most P Q`) - problem 100
+needs exactly this, and a bare `aesop (add safe apply every_most)`
+attempt (tried first, same as `most_trans`) still wasn't reliable enough
+even though `Most P Q`'s conclusion alone already pins down `P`/`Q` here
+(no leftover metavariable the way `most_trans`'s `R`/`S` were) - so
+extracting both premises concretely off matched hypotheses first, the
+same recipe `searchMostNl` already uses, is applied again rather than
+spending more CI cycles guessing why the generic path is unreliable. -/
+def searchEveryMostNl (goal : MVarId) : MetaM Bool := do
+  let (_introduced, goal) ← introAll goal
+  goal.withContext do
+    let goalTy ← goal.getType
+    let some goalHeadName := goalTy.getAppFn.constName? | return false
+    unless goalHeadName == ``FraCaS.Section1.Most do return false
+    let some (goalP, goalQ) := extractMostPQ goalTy.getAppArgs | return false
+    let lctx ← getLCtx
+    let hyps := (lctx.decls.toList.filterMap id).filter (fun d => !d.isImplementationDetail)
+    for h1 in hyps do
+      -- h1 : Every goalP goalQ
+      let h1Ty ← inferType h1.toExpr
+      let some h1Head := h1Ty.getAppFn.constName? | continue
+      unless h1Head == ``FraCaS.Section1.Every do continue
+      let h1Args := h1Ty.getAppArgs
+      unless h1Args.size == 3 do continue
+      unless ← isDefEq h1Args[1]! goalP do continue
+      unless ← isDefEq h1Args[2]! goalQ do continue
+      for h2 in hyps do
+        -- h2 : ∃ x, goalP x
+        let h2Ty ← inferType h2.toExpr
+        let some h2Head := h2Ty.getAppFn.constName? | continue
+        unless h2Head == ``Exists do continue
+        let h2Args := h2Ty.getAppArgs
+        unless h2Args.size == 2 do continue
+        unless ← isDefEq h2Args[1]! goalP do continue
+        try
+          let proof ← mkAppM ``FraCaS.Section2.every_most #[goalP, goalQ, h2.toExpr, h1.toExpr]
+          unless ← isDefEq (← inferType proof) goalTy do continue
+          goal.assign proof
+          return true
+        catch _ => continue
+    return false
+
+elab "every_most_nl" : tactic => do
+  liftMetaTactic1 fun goal => do
+    if ← searchEveryMostNl goal then
+      return none
+    else
+      throwError "every_most_nl: no (Every, Exists) hypothesis pair matches every_most"
+
 /-- The `aesop` call below is armed with every general (not
 problem-specific) composition/entailment lemma `GQ.lean` **and**
 `Section2/Plurals.lean` already has (`entails_and` through `every_most`)
@@ -241,6 +291,7 @@ def attemptClose (ty : Expr) : TermElabM Bool := do
   if ← runTactic ty (← `(tactic| exist_nl)) then return true
   if ← runTactic ty (← `(tactic| mono_nl_compose)) then return true
   if ← runTactic ty (← `(tactic| most_nl)) then return true
+  if ← runTactic ty (← `(tactic| every_most_nl)) then return true
   if ← runTactic ty (← `(tactic|
       aesop
         (add unfold FraCaS.Section1.Every, unfold FraCaS.Section1.Some,
