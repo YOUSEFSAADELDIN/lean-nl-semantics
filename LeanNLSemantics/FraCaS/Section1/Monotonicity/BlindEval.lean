@@ -157,12 +157,21 @@ def answerMatches (gold : Answer) (decision : String) : Bool :=
   | .undef, "unknown" => true
   | _, _ => false
 
+/-- `Answer` has no `ToMessageData` instance (only `Repr`/`DecidableEq`),
+so mismatches are logged against this plain string, not the value
+itself. -/
+def answerToString : Answer → String
+  | .yes => "yes"
+  | .no => "no"
+  | .unknown => "unknown"
+  | .undef => "undef"
+
 elab "#blind_eval_section1" : command => liftTermElabM do
   let env ← getEnv
   let mut skippedNotBare : Nat := 0
   let mut skippedNotEntailmentShaped : Array Lean.Name := #[]
   let mut matched : Array (Nat × String) := #[]
-  let mut mismatches : Array (Nat × Answer × String) := #[]
+  let mut mismatches : Array (Nat × String × String) := #[]
   let mut contradictions : Array Nat := #[]
   let mut noGoldEntry : Array Nat := #[]
 
@@ -201,7 +210,7 @@ elab "#blind_eval_section1" : command => liftTermElabM do
       if answerMatches problem.answer decision then
         matched := matched.push (problemNum, decision)
       else
-        mismatches := mismatches.push (problemNum, problem.answer, decision)
+        mismatches := mismatches.push (problemNum, answerToString problem.answer, decision)
 
   let total := matched.size + mismatches.size + contradictions.size + noGoldEntry.size
   logInfo m!"blind_eval_section1: {matched.size}/{total} automated verdicts match gold \
