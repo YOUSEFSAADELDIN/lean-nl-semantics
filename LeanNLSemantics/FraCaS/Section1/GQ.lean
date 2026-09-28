@@ -79,12 +79,98 @@ Reusable across many Section 1 problems, the same way `Subtyping.lean`'s
 — most of Section 1's "does the conclusion follow" problems are one of
 these shapes applied to differently-named predicates. -/
 
+/-- Combining two `Every`-shaped facts that share a restrictor into one
+fact about their conjunction — `Every` *is* this file's entailment
+relation (`Monotonicity/Signature.lean`'s file comment), so this is
+exactly "P entails Q, P entails R, therefore P entails Q ∧ R," with no
+reference to any particular quantifier. Every one of `every_trans`/
+`every_mp`/`some_trans`/`atMost_trans` below combines two premises this
+same way before feeding the result into a quantifier-specific rule —
+this lemma is the piece those four proofs share, pulled out so
+`Monotonicity/Tactic.lean`'s Phase-2 extension can apply it directly
+instead of re-deriving it once per rule name. -/
+theorem entails_and {A : Type*} (P Q R : A → Prop) :
+    Every P Q → Every P R → Every P (fun x => Q x ∧ R x) :=
+  fun hq hr x hx => ⟨hq x hx, hr x hx⟩
+
+/-- Every predicate entails itself — the trivial `Every` fact `every_mp`'s
+own shape needs (`Every P Q → Every (P ∧ Q) R → Every P R`: combining this
+with the first premise via `entails_and` gives exactly the `Every P (P ∧
+Q)` fact `every_mp`'s second premise's restrictor names). -/
+theorem entails_refl {A : Type*} (P : A → Prop) : Every P P :=
+  fun _ hx => hx
+
+/-- `entails_and`'s mixed-quantifier sibling: `Some P Q` plus a fact
+holding everywhere on `P` (`Every P R`) gives `Some P (fun x => R x ∧ Q
+x)` - the witness `Some P Q` already supplies satisfies `R` too, since it
+satisfies `P`. This is the one new piece `some_trans`'s own recipe needs
+beyond what `every_trans`'s Phase-2 reconstruction already has: `Some P R
+→ Every P S → Every (fun x => S x ∧ R x) Q → Some P Q` (problem 27's "a
+few committee members are from Sweden; all committee members are people;
+all people from Sweden are from Scandinavia ⊢ some committee members are
+from Scandinavia") reduces to `some_mono_scope P (fun x => S x ∧ R x) Q
+(some_entails_and P R S h1 h2) h3` - `some_mono_scope` (already in
+`Signature.lean`'s table) doing the actual substitution, exactly as
+`every_trans` reduces to `entails_and` feeding `every_mono_scope`. -/
+theorem some_entails_and {A : Type*} (P Q R : A → Prop) :
+    Some P Q → Every P R → Some P (fun x => R x ∧ Q x) :=
+  fun ⟨x, hx, hqx⟩ h => ⟨x, hx, h x hx, hqx⟩
+
+/-- Narrowing a fact's own restrictor along a known entailment: `P
+entails S` lets any fact conditioned on `S x ∧ X x` be re-conditioned on
+the (possibly smaller) `P x ∧ X x` instead - `S`/`X` never separately
+interact with anything else, so `P x → S x` is all `entails_and`-style
+composition needs to make the swap.
+
+This is the general schema `atMost_trans` (below) and `every_mp` (its
+`Every`-quantifier instance) both already reduce to, once each is looked
+at as "one Entails fact conditioned on an *outer* restrictor via a
+second Entails fact" rather than as a hand-written proof in its own
+right - not a rule invented to fit either: `every_mp`'s own proof (`fun
+h1 h2 x hx => h2 x ⟨hx, h1 x hx⟩`) already *is* `entails_narrow`
+specialized to `P = S` (taking the first premise's own `Every P Q` as
+both the "P entails S" step and the outer restrictor at once - see
+`Monotonicity/Tactic.lean`'s `atMost_mono_scope_conditioned` search for
+where the general form gets used for real, on a genuinely different
+outer/inner restrictor pair).
+
+`Monotonicity/Tactic.lean`'s Phase 2 `entails_and`/`entails_refl` combine
+step targets a different axis entirely - decomposing `needTo` into two
+conjuncts sharing `needFrom` as a common restrictor - so this doesn't
+overlap or duplicate that search; the two combine into the two premises
+`atMost_trans` actually needs (`Every P S`, `Every (fun x => S x ∧ Q x)
+R`), narrowed here into the one conditioned fact `atMost_mono_scope_
+conditioned` consumes. -/
+theorem entails_narrow {A : Type*} (P S X Y : A → Prop) :
+    Every P S → Every (fun x => S x ∧ X x) Y → Every (fun x => P x ∧ X x) Y :=
+  fun hPS hSXY x hx => hSXY x ⟨hPS x hx.1, hx.2⟩
+
 /-- `Every P Q` plus a witness that `P` holds of something (recovered here
 from a second premise `Some P R`, not assumed outright) gives `Some P Q` —
-problems 2/3/4's "every X wants Y; some X are Z ⊢ some X want Y" shape. -/
+problems 2/3/4's "every X wants Y; some X are Z ⊢ some X want Y" shape.
+
+The real principle this instantiates is existential transfer through a
+universal: *any* fact establishing `P` nonempty, combined with `Every P
+Q`, gives `Some P Q` - `R` above is discarded entirely (only the witness
+`x` and `P x` are used), so a second `Some`-headed premise is one
+possible *source* of that witness, not part of the principle itself. See
+`some_of_nonempty` immediately below for the same principle stated over
+a bare nonemptiness fact, the other source `Monotonicity/Existential.lean`
+finds this witness from (e.g. problem 5's explicit `∃ x, ambitious x`
+premise, no second `Some` in sight). -/
 theorem every_some {A : Type*} (P Q R : A → Prop) :
     Every P Q → Some P R → Some P Q :=
   fun h ⟨x, hx, _⟩ => ⟨x, hx, h x hx⟩
+
+/-- The same existential-transfer principle as `every_some`, stated over
+a bare nonemptiness witness instead of a second `Some`-headed premise -
+not a new principle, just this file's own two-line proof of it, kept
+separate from `every_some` (rather than deriving one from the other)
+since both are already relied on directly, unchanged, by existing
+`Batch1.lean` proofs. -/
+theorem some_of_nonempty {A : Type*} (P Q : A → Prop) :
+    (∃ x, P x) → Every P Q → Some P Q :=
+  fun ⟨x, hx⟩ h => ⟨x, hx, h x hx⟩
 
 /-- Three-premise universal transitivity: `Every P R`, `Every P S`, and
 `Every (fun x => S x ∧ R x) Q` (i.e. "every P that is both R and S is Q")
@@ -231,6 +317,29 @@ theorem atMost_mono_scope {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
     intro x hx
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
     exact ⟨hx.1, hrq x hx.2⟩
+  have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
+  omega
+
+/-- `atMost_mono_scope`'s conditioned generalization: the licensing
+implication only has to hold *within* `P` (`Every (fun x => P x ∧ R x)
+Q`, i.e. `∀ x, P x → R x → Q x`) rather than everywhere, since the proof
+only ever applies it to an `x` already known to satisfy `P` (`hx.1`
+below - exactly the same reason the flat `atMost_mono_scope` proof above
+still goes through when its own `hrq` is weakened this way: every use
+site already has `hx.1 : P x` sitting right there). This is the general
+schema's `AtMost`-scope instance - see `entails_narrow`'s doc comment for
+the schema itself and why `every_mp` is independent evidence it isn't
+invented for `atMost_trans` alone. `atMost_trans` itself is now exactly
+`entails_narrow` feeding this: `atMost_mono_scope_conditioned n P R Q h1
+(entails_narrow P S Q R h2 h3)`. -/
+theorem atMost_mono_scope_conditioned {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x] :
+    AtMost n P Q → Every (fun x => P x ∧ R x) Q → AtMost n P R := by
+  intro h hcond
+  have hsub : (Finset.univ.filter fun x => P x ∧ R x) ⊆ Finset.univ.filter fun x => P x ∧ Q x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, hcond x hx⟩
   have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
   omega
 
