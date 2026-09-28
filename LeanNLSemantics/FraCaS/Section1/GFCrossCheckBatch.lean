@@ -31,6 +31,71 @@ not reproduce on its own.
 
 open FraCaS.Section1 FraCaS.Section2
 
+theorem fracas_001_from_gf {A : Type*} (italian becomeGreatestTenor : A → Prop) :
+    Some italian becomeGreatestTenor → Some italian becomeGreatestTenor := by
+  intros
+  apply fracas_001 <;> assumption
+
+theorem fracas_004_from_gf {A : Type*} (italianTenor wantGreat great : A → Prop) :
+    Every italianTenor wantGreat → Some italianTenor great → Some italianTenor wantGreat := by
+  intros
+  apply fracas_004 <;> assumption
+
+theorem fracas_007_from_gf {A : Type*} (greatTenor swedish : A → Prop) :
+    Some greatTenor swedish → Some greatTenor swedish := by
+  intros
+  apply fracas_007 <;> assumption
+
+theorem fracas_008_from_gf {A : Type*} (greatTenor german : A → Prop) :
+    Some greatTenor german → Some greatTenor german := by
+  intros
+  apply fracas_008 <;> assumption
+
+theorem fracas_009_from_gf {A : Type*} (greatTenor british : A → Prop) :
+    Some greatTenor british → Some greatTenor british := by
+  intros
+  apply fracas_009 <;> assumption
+
+theorem fracas_010_from_gf {A : Type*} (greatTenor italian : A → Prop) :
+    Most greatTenor italian → Some greatTenor italian := by
+  intros
+  apply fracas_010 <;> assumption
+
+theorem fracas_011_from_gf {A : Type*} (greatTenor singPopularMusic likePopularMusic : A → Prop) :
+    Some greatTenor singPopularMusic → Some greatTenor likePopularMusic → Some greatTenor singPopularMusic := by
+  intros
+  apply fracas_011 <;> assumption
+
+theorem fracas_015_from_gf {A : Type*} (tenor takePartConcert : A → Prop) :
+    AtLeast 3 tenor takePartConcert → Some tenor takePartConcert := by
+  intros
+  apply fracas_015 <;> assumption
+
+theorem fracas_018_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
+    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope := by
+  intros
+  apply fracas_018 <;> assumption
+
+theorem fracas_021_from_gf {A : Type*} (residentMemberState haveRightLiveEurope individual canTravelFreeEurope : A → Prop) :
+    Every residentMemberState haveRightLiveEurope → Every residentMemberState individual → Every (fun x => individual x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every residentMemberState canTravelFreeEurope := by
+  intros
+  apply fracas_021 <;> assumption
+
+theorem fracas_026_from_gf {A : Type*} (european residentEurope person canTravelFreeEurope : A → Prop) :
+    Most european residentEurope → Every european person → Every (fun x => person x ∧ residentEurope x) canTravelFreeEurope → Most european canTravelFreeEurope := by
+  intros
+  apply fracas_026 <;> assumption
+
+theorem fracas_027_from_gf {A : Type*} (committeeMember sweden person scandinavia : A → Prop) :
+    Some committeeMember sweden → Every committeeMember person → Every (fun x => person x ∧ sweden x) scandinavia → Some committeeMember scandinavia := by
+  intros
+  apply fracas_027 <;> assumption
+
+theorem fracas_049_from_gf {A : Type*} (swedeMasc winNobelPrize scandinavian : A → Prop) :
+    Some swedeMasc winNobelPrize → Every swedeMasc scandinavian → Some scandinavian winNobelPrize := by
+  intros
+  apply fracas_049 <;> assumption
+
 theorem fracas_090_from_gf {A : Type*} (chairman read_outItemAgenda : A → Prop) :
     Every chairman read_outItemAgenda → Every chairman read_outItemAgenda := by
   intros
@@ -40,6 +105,11 @@ theorem fracas_096_from_gf {A : Type*} (ancientGreek notedPhilosopher : A → Pr
     Every ancientGreek notedPhilosopher → Every ancientGreek notedPhilosopher := by
   intros
   apply fracas_096 <;> assumption
+
+theorem fracas_097_from_gf {A : Type*} (softwareFault blameSystemFailure : A → Prop) :
+    Some softwareFault blameSystemFailure → Some softwareFault blameSystemFailure := by
+  intros
+  apply fracas_097 <;> assumption
 
 theorem fracas_103_from_gf {A : Type*} (apcomManager haveCompanyCar : A → Prop) (jones : A) :
     Every apcomManager haveCompanyCar → apcomManager jones → haveCompanyCar jones := by

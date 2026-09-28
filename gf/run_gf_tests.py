@@ -2994,6 +2994,108 @@ _SECTION9_TENSED_CHECKS = [
     ),
 ]
 
+# Hypothesis trees for problems whose premise(s) already had a
+# confirmed tree above but whose hypothesis never did - closing that
+# gap is what scripts/gen_gf_cross_check.py's own generated file
+# (GFCrossCheckBatch.lean) needs to cross-check more problems fully
+# end to end, rather than just their premises. Each one reuses the
+# exact restrictor/VP subtrees the corresponding premise(s) already
+# confirmed above (so translate.py's own predicate naming - a pure
+# function of an English-word subtree - comes out identical on both
+# sides), recombined with whichever quantifier/subject the real
+# fracas_NNN theorem's own hypothesis actually needs. Confirmed via
+# this project's local GF toolchain before being added here (not
+# merely asserted) - see gf/NOTES.md for how that toolchain was set up.
+BASE_CHECKS += [
+    (
+        "fracas_001_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN italian_N)) "
+        "(ComplSlash (SlashV2a become_V2) (DetCN worlds_Det (AdjCN (PositA greatest_A) (UseN tenor_N))))",
+        "an Italian becomes the world's greatest tenor",
+    ),
+    (
+        "fracas_004_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN tenor_N))) "
+        "(ComplVV want_VV (UseComp (CompAP (PositA great_A))))",
+        "some Italian tenors want to be great",
+    ),
+    (
+        "fracas_007_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA swedish_A)))",
+        "some great tenors are Swedish",
+    ),
+    (
+        "fracas_008_hypothesis",
+        "linearize PredVP (DetCN many_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA german_A)))",
+        "many great tenors are German",
+    ),
+    (
+        "fracas_009_hypothesis",
+        "linearize PredVP (DetCN several_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA british_A)))",
+        "several great tenors are British",
+    ),
+    (
+        "fracas_010_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA italian_A)))",
+        "some great tenors are Italian",
+    ),
+    (
+        "fracas_011_hypothesis",
+        "linearize PredVP (DetCN aFew_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(ComplSlash (SlashV2a sing_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))",
+        "a few great tenors sing popular music",
+    ),
+    (
+        "fracas_015_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN tenor_N)) "
+        "(ComplSlash (SlashV2a take_V2) (AdvNP (MassNP (UseN part_N)) "
+        "(PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))",
+        "some tenors take part in the concert",
+    ),
+    (
+        "fracas_018_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_021_hypothesis",
+        "linearize PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "all residents of member states can travel freely within Europe",
+    ),
+    (
+        "fracas_026_hypothesis",
+        "linearize PredVP (DetCN most_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "most Europeans can travel freely within Europe",
+    ),
+    (
+        "fracas_027_hypothesis",
+        "linearize PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "a few committee members are from Scandinavia",
+    ),
+    (
+        "fracas_049_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN scandinavian_N)) "
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "some Scandinavians win a Nobel prize",
+    ),
+    (
+        "fracas_097_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN software_N) (UseN fault_N))) "
+        "(AdvVP (PassV2 blame_V2) (PrepNP for_Prep (DetCN (DetQuant DefArt NumSg) "
+        "(CompoundCN (UseN system_N) (UseN failure_N)))))",
+        "software faults are blamed for the system failure",
+    ),
+]
+
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
 
 # Pilot past/future tense checks: NOTES.md's tense fix was only ever
