@@ -52,6 +52,12 @@ jobs:
       - name: Monotonicity fragment coverage scan
         run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/Coverage.lean
 
+      # BlindEval.lean is deliberately not imported by anything either
+      # (same circularity reason as Coverage.lean just above) - run
+      # directly, reusing the oleans `lake build` already produced.
+      - name: Blind evaluation (Section 1 pilot)
+        run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/BlindEval.lean
+
   # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
   # package with its own manifest, so a version conflict between this
   # repo's (unpinned, tracking `main`) Mathlib and linglib's own pinned
