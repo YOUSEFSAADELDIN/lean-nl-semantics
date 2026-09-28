@@ -7,6 +7,14 @@ includes a full mechanization of the FraCaS test suite for natural
 language inference, and a bridge to `linglib`, a Montagovian (predicate
 semantics) library, for comparing the two approaches.
 
+**[Try the Semantics Lab](https://yousefsaadeldin.github.io/lean-nl-semantics/lab.html)**
+— build a controlled-English sentence, watch its real GF syntax tree,
+and check whether a conclusion is licensed by a Lean-verified rule, all
+live in the browser. Also live: the [full corpus
+reference](https://yousefsaadeldin.github.io/lean-nl-semantics/index.html),
+the [reasoner trace explorer](https://yousefsaadeldin.github.io/lean-nl-semantics/trace.html),
+and a [recruiter-facing walkthrough](https://yousefsaadeldin.github.io/lean-nl-semantics/entailment.html).
+
 ## Status
 
 - **MTT core** (`LeanNLSemantics/MTT/`): a Lean 4 port of the MTT
