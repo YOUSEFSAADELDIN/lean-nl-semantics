@@ -40,12 +40,15 @@ file:
    final conclusion negated (**neg**: does `premises → ¬hypothesis`
    hold?), via the same fixed tactic chain both times - `mono_nl`,
    `exist_nl`, `mono_nl_compose` (this corpus's own certified fragment,
-   `Tactic.lean`/`Existential.lean`/`Compose.lean`), then one `aesop` call
-   armed with every general `GQ.lean` lemma and told to unfold `Every`/
-   `Some`/`No` (plain `def`s it can't see through on its own -
-   `Most`/`AtLeast`/`AtMost`/`Exactly` are already-transparent `abbrev`s;
-   see `attemptClose`'s own comment for why the whole list, not a
-   hand-picked subset), then `grind`.
+   `Tactic.lean`/`Existential.lean`/`Compose.lean`), then this file's own
+   `most_nl` (a small, targeted search for `Most`-headed goals via
+   `GQ.lean`'s `most_trans` - `Most` is outside the certified fragment
+   entirely, see `searchMostNl`'s own comment for why a generic tactic
+   isn't enough here), then one `aesop` call armed with every general
+   `GQ.lean` lemma and told to unfold `Every`/`Some`/`No` (plain `def`s it
+   can't see through on its own - `Most`/`AtLeast`/`AtMost`/`Exactly` are
+   already-transparent `abbrev`s; see `attemptClose`'s own comment for why
+   the whole list, not a hand-picked subset), then `grind`.
 3. Turns (pos succeeds, neg fails) into **yes**, (neg succeeds, pos
    fails) into **no**, (neither succeeds) into **unknown**, and (both
    succeed) into a flagged **contradiction** - that last case would mean
@@ -132,6 +135,84 @@ def runTactic (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM Bool :=
   catch _ =>
     return false
 
+/-- Reads `Most`'s own restrictor/scope predicates back out of a fully-
+applied occurrence's argument array - `Most`'s own signature, verified
+directly against `GQ.lean`'s source: `{A} [Fintype A] (P Q : A → Prop)
+[DecidablePred P] [DecidablePred (P∧Q)]`, six entries, P/Q at indices
+2/3 (no `n` slot, unlike `AtLeast`/`AtMost` - see `Tactic.lean`'s own
+`extractPQ` comment for that layout). -/
+def extractMostPQ (args : Array Expr) : Option (Expr × Expr) :=
+  if args.size == 6 then some (args[2]!, args[3]!) else none
+
+/-- A small, targeted search for `Most`-headed goals via `GQ.lean`'s
+`most_trans` - the one general composition fact `fracas_026`'s hand
+proof needs, outside `mono_nl`'s own certified fragment
+(`Signature.lean`'s table excludes `Most` entirely - see `Tactic.lean`'s
+header). Modeled directly on `searchMonoNl`'s own style: reads `R`/`S`
+concretely off matched local hypotheses *before* ever building the
+`most_trans` application, rather than leaving them as metavariables for
+a bare `apply` to guess at. That distinction is not academic - a plain
+`aesop (add safe apply most_trans)` attempt (tried first; the earlier
+version of this file's own history, and this comment, record the
+failure rather than silently overwriting it) still wasn't enough: `apply`
+elaborates left to right and needs to synthesize `DecidablePred (fun x
+=> P x ∧ ?R x)` before `?R` is ever assigned (nothing in `most_trans`'s
+conclusion `Most P Q` mentions `R`/`S` at all - only its premises do),
+and typeclass search on a metavariable-containing type just fails
+outright, before `aesop`'s own `assumption` step gets a chance to
+resolve `?R` from a real hypothesis. -/
+def searchMostNl (goal : MVarId) : MetaM Bool := do
+  let (_introduced, goal) ← introAll goal
+  goal.withContext do
+    let goalTy ← goal.getType
+    let some goalHeadName := goalTy.getAppFn.constName? | return false
+    unless goalHeadName == ``FraCaS.Section1.Most do return false
+    let some (goalP, goalQ) := extractMostPQ goalTy.getAppArgs | return false
+    let lctx ← getLCtx
+    let hyps := (lctx.decls.toList.filterMap id).filter (fun d => !d.isImplementationDetail)
+    for h1 in hyps do
+      let h1Ty ← inferType h1.toExpr
+      let some h1Head := h1Ty.getAppFn.constName? | continue
+      unless h1Head == ``FraCaS.Section1.Most do continue
+      let some (h1P, hR) := extractMostPQ h1Ty.getAppArgs | continue
+      unless ← isDefEq h1P goalP do continue
+      for h2 in hyps do
+        let h2Ty ← inferType h2.toExpr
+        let some h2Head := h2Ty.getAppFn.constName? | continue
+        unless h2Head == ``FraCaS.Section1.Every do continue
+        let h2Args := h2Ty.getAppArgs
+        unless h2Args.size == 3 do continue
+        let h2P := h2Args[1]!
+        let hS := h2Args[2]!
+        unless ← isDefEq h2P goalP do continue
+        let domTy := (← inferType goalP).bindingDomain!
+        let expectedH3P ← withLocalDeclD `x domTy fun x => do
+          let conj ← mkAppM ``And #[mkApp hS x, mkApp hR x]
+          mkLambdaFVars #[x] conj
+        for h3 in hyps do
+          let h3Ty ← inferType h3.toExpr
+          let some h3Head := h3Ty.getAppFn.constName? | continue
+          unless h3Head == ``FraCaS.Section1.Every do continue
+          let h3Args := h3Ty.getAppArgs
+          unless h3Args.size == 3 do continue
+          unless ← isDefEq h3Args[1]! expectedH3P do continue
+          unless ← isDefEq h3Args[2]! goalQ do continue
+          try
+            let proof ← mkAppM ``FraCaS.Section1.most_trans
+              #[goalP, hR, hS, goalQ, h1.toExpr, h2.toExpr, h3.toExpr]
+            unless ← isDefEq (← inferType proof) goalTy do continue
+            goal.assign proof
+            return true
+          catch _ => continue
+    return false
+
+elab "most_nl" : tactic => do
+  liftMetaTactic1 fun goal => do
+    if ← searchMostNl goal then
+      return none
+    else
+      throwError "most_nl: no (Most, Every, Every) hypothesis triple matches most_trans"
+
 /-- The `aesop` call below is armed with every general (not
 problem-specific) composition/entailment lemma `GQ.lean` already has
 (`entails_and` through `atMost_restrict`) - the complete list, not a
@@ -156,6 +237,7 @@ def attemptClose (ty : Expr) : TermElabM Bool := do
   if ← runTactic ty (← `(tactic| mono_nl)) then return true
   if ← runTactic ty (← `(tactic| exist_nl)) then return true
   if ← runTactic ty (← `(tactic| mono_nl_compose)) then return true
+  if ← runTactic ty (← `(tactic| most_nl)) then return true
   if ← runTactic ty (← `(tactic|
       aesop
         (add unfold FraCaS.Section1.Every, unfold FraCaS.Section1.Some,
