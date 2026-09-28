@@ -6,7 +6,7 @@ import LeanNLSemantics.FraCaS.Data.Problems
 import LeanNLSemantics
 
 /-!
-# Blind evaluation (Section 1 pilot)
+# Blind evaluation (Sections 1-2)
 
 Every `fracas_NNN` theorem so far (`Batch1.lean`-`Batch5.lean`) is
 *hand-proved*: whoever wrote `theorem fracas_002 : Every P Q → Some P R
@@ -19,15 +19,16 @@ concern the "self-serving?" review of the axiom audit (`AssumptionAudit
 just a human confirming, problem by problem, a proof they already knew
 existed.
 
-This file is a first, honest attempt at closing that gap, scoped to
-Section 1 only (Section 2 and beyond are staged separately - see this
-file's own validation-status table as it grows). For every **bare**
-`fracas_NNN` theorem in `FraCaS.Section1` (no `_dir1`/`_via_mono_nl`/...
-suffix - those exist for the coverage scan's own diversity or for the
-countermodel-pair method the `.undef` problems and several others use,
-and are not single entailment-shaped statements this procedure could
-even pose a yes/no question about; skipped rather than forced), this
-file:
+This file is a first, honest attempt at closing that gap - originally
+scoped to Section 1 only, now extended to Section 2 as well (Section 3
+and beyond are staged separately, per the original plan's own "run it
+against what `translate.py` already covers" scope). For every **bare**
+`fracas_NNN` theorem in `FraCaS.Section1` or `FraCaS.Section2` (no
+`_dir1`/`_via_mono_nl`/... suffix - those exist for the coverage scan's
+own diversity or for the countermodel-pair method the `.undef` problems
+and several others use, and are not single entailment-shaped statements
+this procedure could even pose a yes/no question about; skipped rather
+than forced), this file:
 
 1. Takes the theorem's own **type** only, never its hand-written proof
    term - the type is the translated Prop (premises and hypothesis, both
@@ -94,7 +95,8 @@ is deliberately narrowed to what `mono_nl` itself can close: no `No`/
 tactic can answer it. -/
 def blindEvalHeads : List Lean.Name :=
   [``FraCaS.Section1.Every, ``FraCaS.Section1.Some, ``FraCaS.Section1.No,
-   ``FraCaS.Section1.Most, ``FraCaS.Section1.AtLeast, ``FraCaS.Section1.AtMost]
+   ``FraCaS.Section1.Most, ``FraCaS.Section1.AtLeast, ``FraCaS.Section1.AtMost,
+   ``FraCaS.Section1.Both, ``FraCaS.Section1.Neither, ``FraCaS.Section2.Exactly]
 
 /-- Whether a theorem's conclusion, after introducing its implication
 chain, is headed by one of `blindEvalHeads` - reuses `introAll` from
@@ -214,18 +216,19 @@ elab "most_nl" : tactic => do
       throwError "most_nl: no (Most, Every, Every) hypothesis triple matches most_trans"
 
 /-- The `aesop` call below is armed with every general (not
-problem-specific) composition/entailment lemma `GQ.lean` already has
-(`entails_and` through `atMost_restrict`) - the complete list, not a
-hand-picked subset chosen to close any one problem. `most_trans` is in
-there for exactly the reason it needs to be: it is what `fracas_026`'s
-own hand proof already calls, a previously-proved general fact about
-`Most`, not a rule invented for this file - handing the *entire* list to
-a generic search is what keeps this from being "one rule added because
-problem 26 needed it" (see this file's header for why that distinction
-matters to the whole methodology). `mono_nl`/`exist_nl`/`mono_nl_compose`
-already encode most of these as a directed, certified search; this is
-the same knowledge, given instead to an undirected one, for the goals
-(`Most`/`No`-headed) that certified search was never scoped to touch.
+problem-specific) composition/entailment lemma `GQ.lean` **and**
+`Section2/Plurals.lean` already has (`entails_and` through `every_most`)
+- the complete list, not a hand-picked subset chosen to close any one
+problem. `most_trans` is in there for exactly the reason it needs to be:
+it is what `fracas_026`'s own hand proof already calls, a previously-
+proved general fact about `Most`, not a rule invented for this file -
+handing the *entire* list to a generic search is what keeps this from
+being "one rule added because problem 26 needed it" (see this file's
+header for why that distinction matters to the whole methodology).
+`mono_nl`/`exist_nl`/`mono_nl_compose` already encode most of the
+Section 1 lemmas as a directed, certified search; this is the same
+knowledge, given instead to an undirected one, for the goals (`Most`/
+`No`/`Exactly`-headed) that certified search was never scoped to touch.
 
 The fixed tactic chain both directions get, in order: this corpus's
 own certified monotonicity fragment first (`mono_nl`, `exist_nl`,
@@ -253,7 +256,10 @@ def attemptClose (ty : Expr) : TermElabM Bool := do
           safe apply FraCaS.Section1.atMost_trans, safe apply FraCaS.Section1.atMost_mono_scope,
           safe apply FraCaS.Section1.atMost_mono_scope_conditioned,
           safe apply FraCaS.Section1.some_restrict, safe apply FraCaS.Section1.every_restrict,
-          safe apply FraCaS.Section1.atLeast_restrict, safe apply FraCaS.Section1.atMost_restrict)))
+          safe apply FraCaS.Section1.atLeast_restrict, safe apply FraCaS.Section1.atMost_restrict,
+          safe apply FraCaS.Section2.exactly_ne, safe apply FraCaS.Section2.exactly_pos_not_no,
+          safe apply FraCaS.Section2.some_of_exactly, safe apply FraCaS.Section2.exactly_atLeast,
+          safe apply FraCaS.Section2.exactly_atMost, safe apply FraCaS.Section2.every_most)))
   then return true
   if ← runTactic ty (← `(tactic| grind)) then return true
   return false
@@ -278,7 +284,13 @@ def answerToString : Answer → String
   | .unknown => "unknown"
   | .undef => "undef"
 
-elab "#blind_eval_section1" : command => liftTermElabM do
+/-- The shared scan both `#blind_eval_section1` and `#blind_eval_section2`
+run, parameterized only by which namespace's bare `fracas_NNN` theorems to
+scan and a label for the log lines - identical logic both times, so this
+is pulled out rather than copy-pasted (the earlier version of this file
+had only the Section 1 copy; this is that same body, unchanged, now
+callable for either namespace). -/
+def runBlindEval (namePrefix : Lean.Name) (label : String) : TermElabM Unit := do
   let env ← getEnv
   let mut skippedNotBare : Nat := 0
   let mut skippedNotEntailmentShaped : Array Lean.Name := #[]
@@ -288,7 +300,7 @@ elab "#blind_eval_section1" : command => liftTermElabM do
   let mut noGoldEntry : Array Nat := #[]
 
   for (name, info) in env.constants.toList do
-    unless name.getPrefix == `FraCaS.Section1 do continue
+    unless name.getPrefix == namePrefix do continue
     unless info.isTheorem do continue
     let some problemNum := bareProblemId name | do
       unless (lastComponent name).startsWith "fracas_" do continue
@@ -301,7 +313,7 @@ elab "#blind_eval_section1" : command => liftTermElabM do
       skippedNotEntailmentShaped := skippedNotEntailmentShaped.push name
       continue
 
-    logInfo m!"blind_eval_section1: attempting fracas_{problemNum}"
+    logInfo m!"{label}: attempting fracas_{problemNum}"
     let posOk ← attemptClose ty
     let tyNeg ← negateConclusion ty
     let negOk ← attemptClose tyNeg
@@ -325,7 +337,7 @@ elab "#blind_eval_section1" : command => liftTermElabM do
         mismatches := mismatches.push (problemNum, answerToString problem.answer, decision)
 
   let total := matched.size + mismatches.size + contradictions.size + noGoldEntry.size
-  logInfo m!"blind_eval_section1: {matched.size}/{total} automated verdicts match gold \
+  logInfo m!"{label}: {matched.size}/{total} automated verdicts match gold \
     ({skippedNotBare} skipped as suffixed/non-bare, \
     {skippedNotEntailmentShaped.size} skipped as not entailment-shaped, \
     {contradictions.size} contradictions, {noGoldEntry.size} with no gold entry)"
@@ -337,6 +349,13 @@ elab "#blind_eval_section1" : command => liftTermElabM do
   logInfo m!"skipped, not entailment-shaped [{skippedNotEntailmentShaped.size}]: \
     {skippedNotEntailmentShaped.toList}"
 
+elab "#blind_eval_section1" : command => liftTermElabM do
+  runBlindEval `FraCaS.Section1 "blind_eval_section1"
+
+elab "#blind_eval_section2" : command => liftTermElabM do
+  runBlindEval `FraCaS.Section2 "blind_eval_section2"
+
 end FraCaS.Section1.Monotonicity.BlindEval
 
 #blind_eval_section1
+#blind_eval_section2

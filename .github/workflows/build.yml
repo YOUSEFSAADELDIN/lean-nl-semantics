@@ -55,7 +55,7 @@ jobs:
       # BlindEval.lean is deliberately not imported by anything either
       # (same circularity reason as Coverage.lean just above) - run
       # directly, reusing the oleans `lake build` already produced.
-      - name: Blind evaluation (Section 1 pilot)
+      - name: Blind evaluation (Sections 1-2)
         run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/BlindEval.lean
 
   # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
