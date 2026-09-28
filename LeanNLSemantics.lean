@@ -29,6 +29,7 @@ import LeanNLSemantics.FraCaS.Section1.Monotonicity.CrossCheck
 import LeanNLSemantics.FraCaS.Section2.Plurals
 import LeanNLSemantics.FraCaS.Section2.Batch1
 import LeanNLSemantics.FraCaS.Section2.Batch2
+import LeanNLSemantics.FraCaS.Section1.GFCrossCheckBatch
 import LeanNLSemantics.FraCaS.Section3.Anaphora
 import LeanNLSemantics.FraCaS.Section3.Batch1
 import LeanNLSemantics.FraCaS.Section3.Batch2
