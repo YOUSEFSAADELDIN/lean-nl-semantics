@@ -31,87 +31,80 @@ not reproduce on its own.
 
 open FraCaS.Section1 FraCaS.Section2
 
+-- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per
+-- predicate/conjunction they apply to - a real theorem's own
+-- variable block always supplies one concretely (unfold-friendly,
+-- so decide can compute), but the actual decision procedure is
+-- never exercised on THESE theorems (their proof is just the real
+-- theorem re-applied) - classical satisfies the instance search
+-- uniformly, for every predicate this file ever binds, without
+-- computing which concrete decidability argument each one needs.
+attribute [local instance] Classical.propDecidable
+
 theorem fracas_001_from_gf {A : Type*} (italian becomeGreatestTenor : A → Prop) :
-    Some italian becomeGreatestTenor → Some italian becomeGreatestTenor := by
-  intros
-  apply fracas_001 <;> assumption
+    Some italian becomeGreatestTenor → Some italian becomeGreatestTenor :=
+  fun h1 => fracas_001 _ _ h1
 
 theorem fracas_004_from_gf {A : Type*} (italianTenor wantGreat great : A → Prop) :
-    Every italianTenor wantGreat → Some italianTenor great → Some italianTenor wantGreat := by
-  intros
-  apply fracas_004 <;> assumption
+    Every italianTenor wantGreat → Some italianTenor great → Some italianTenor wantGreat :=
+  fun h1 h2 => fracas_004 _ _ _ h1 h2
 
 theorem fracas_007_from_gf {A : Type*} (greatTenor swedish : A → Prop) :
-    Some greatTenor swedish → Some greatTenor swedish := by
-  intros
-  apply fracas_007 <;> assumption
+    Some greatTenor swedish → Some greatTenor swedish :=
+  fun h1 => fracas_007 _ _ h1
 
 theorem fracas_008_from_gf {A : Type*} (greatTenor german : A → Prop) :
-    Some greatTenor german → Some greatTenor german := by
-  intros
-  apply fracas_008 <;> assumption
+    Some greatTenor german → Some greatTenor german :=
+  fun h1 => fracas_008 _ _ h1
 
 theorem fracas_009_from_gf {A : Type*} (greatTenor british : A → Prop) :
-    Some greatTenor british → Some greatTenor british := by
-  intros
-  apply fracas_009 <;> assumption
+    Some greatTenor british → Some greatTenor british :=
+  fun h1 => fracas_009 _ _ h1
 
-theorem fracas_010_from_gf {A : Type*} (greatTenor italian : A → Prop) :
-    Most greatTenor italian → Some greatTenor italian := by
-  intros
-  apply fracas_010 <;> assumption
+theorem fracas_010_from_gf {A : Type*} [Fintype A] (greatTenor italian : A → Prop) :
+    Most greatTenor italian → Some greatTenor italian :=
+  fun h1 => fracas_010 _ _ h1
 
 theorem fracas_011_from_gf {A : Type*} (greatTenor singPopularMusic likePopularMusic : A → Prop) :
-    Some greatTenor singPopularMusic → Some greatTenor likePopularMusic → Some greatTenor singPopularMusic := by
-  intros
-  apply fracas_011 <;> assumption
+    Some greatTenor singPopularMusic → Some greatTenor likePopularMusic → Some greatTenor singPopularMusic :=
+  fun h1 h2 => fracas_011 _ _ _ h1 h2
 
-theorem fracas_015_from_gf {A : Type*} (tenor takePartConcert : A → Prop) :
-    AtLeast 3 tenor takePartConcert → Some tenor takePartConcert := by
-  intros
-  apply fracas_015 <;> assumption
+theorem fracas_015_from_gf {A : Type*} [Fintype A] (tenor takePartConcert : A → Prop) :
+    AtLeast 3 tenor takePartConcert → Some tenor takePartConcert :=
+  fun h1 => fracas_015 _ _ h1
 
 theorem fracas_018_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
-    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope := by
-  intros
-  apply fracas_018 <;> assumption
+    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope :=
+  fun h1 h2 h3 => fracas_018 _ _ _ _ h1 h2 h3
 
 theorem fracas_021_from_gf {A : Type*} (residentMemberState haveRightLiveEurope individual canTravelFreeEurope : A → Prop) :
-    Every residentMemberState haveRightLiveEurope → Every residentMemberState individual → Every (fun x => individual x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every residentMemberState canTravelFreeEurope := by
-  intros
-  apply fracas_021 <;> assumption
+    Every residentMemberState haveRightLiveEurope → Every residentMemberState individual → Every (fun x => individual x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every residentMemberState canTravelFreeEurope :=
+  fun h1 h2 h3 => fracas_021 _ _ _ _ h1 h2 h3
 
-theorem fracas_026_from_gf {A : Type*} (european residentEurope person canTravelFreeEurope : A → Prop) :
-    Most european residentEurope → Every european person → Every (fun x => person x ∧ residentEurope x) canTravelFreeEurope → Most european canTravelFreeEurope := by
-  intros
-  apply fracas_026 <;> assumption
+theorem fracas_026_from_gf {A : Type*} [Fintype A] (european residentEurope person canTravelFreeEurope : A → Prop) :
+    Most european residentEurope → Every european person → Every (fun x => person x ∧ residentEurope x) canTravelFreeEurope → Most european canTravelFreeEurope :=
+  fun h1 h2 h3 => fracas_026 _ _ _ _ h1 h2 h3
 
 theorem fracas_027_from_gf {A : Type*} (committeeMember sweden person scandinavia : A → Prop) :
-    Some committeeMember sweden → Every committeeMember person → Every (fun x => person x ∧ sweden x) scandinavia → Some committeeMember scandinavia := by
-  intros
-  apply fracas_027 <;> assumption
+    Some committeeMember sweden → Every committeeMember person → Every (fun x => person x ∧ sweden x) scandinavia → Some committeeMember scandinavia :=
+  fun h1 h2 h3 => fracas_027 _ _ _ _ h1 h2 h3
 
 theorem fracas_049_from_gf {A : Type*} (swedeMasc winNobelPrize scandinavian : A → Prop) :
-    Some swedeMasc winNobelPrize → Every swedeMasc scandinavian → Some scandinavian winNobelPrize := by
-  intros
-  apply fracas_049 <;> assumption
+    Some swedeMasc winNobelPrize → Every swedeMasc scandinavian → Some scandinavian winNobelPrize :=
+  fun h1 h2 => fracas_049 _ _ _ h1 h2
 
 theorem fracas_090_from_gf {A : Type*} (chairman read_outItemAgenda : A → Prop) :
-    Every chairman read_outItemAgenda → Every chairman read_outItemAgenda := by
-  intros
-  apply fracas_090 <;> assumption
+    Every chairman read_outItemAgenda → Every chairman read_outItemAgenda :=
+  fun h1 => fracas_090 _ _ h1
 
 theorem fracas_096_from_gf {A : Type*} (ancientGreek notedPhilosopher : A → Prop) :
-    Every ancientGreek notedPhilosopher → Every ancientGreek notedPhilosopher := by
-  intros
-  apply fracas_096 <;> assumption
+    Every ancientGreek notedPhilosopher → Every ancientGreek notedPhilosopher :=
+  fun h1 => fracas_096 _ _ h1
 
 theorem fracas_097_from_gf {A : Type*} (softwareFault blameSystemFailure : A → Prop) :
-    Some softwareFault blameSystemFailure → Some softwareFault blameSystemFailure := by
-  intros
-  apply fracas_097 <;> assumption
+    Some softwareFault blameSystemFailure → Some softwareFault blameSystemFailure :=
+  fun h1 => fracas_097 _ _ h1
 
 theorem fracas_103_from_gf {A : Type*} (apcomManager haveCompanyCar : A → Prop) (jones : A) :
-    Every apcomManager haveCompanyCar → apcomManager jones → haveCompanyCar jones := by
-  intros
-  apply fracas_103 <;> assumption
+    Every apcomManager haveCompanyCar → apcomManager jones → haveCompanyCar jones :=
+  fun h1 h2 => fracas_103 _ _ _ h1 h2

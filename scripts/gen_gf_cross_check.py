@@ -187,6 +187,16 @@ def main() -> None:
         "",
         "open FraCaS.Section1 FraCaS.Section2",
         "",
+        "-- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per",
+        "-- predicate/conjunction they apply to - a real theorem's own",
+        "-- variable block always supplies one concretely (unfold-friendly,",
+        "-- so decide can compute), but the actual decision procedure is",
+        "-- never exercised on THESE theorems (their proof is just the real",
+        "-- theorem re-applied) - classical satisfies the instance search",
+        "-- uniformly, for every predicate this file ever binds, without",
+        "-- computing which concrete decidability argument each one needs.",
+        "attribute [local instance] Classical.propDecidable",
+        "",
     ]
 
     for idn in sorted(by_id):
@@ -269,19 +279,51 @@ def main() -> None:
                 if v not in individuals:
                     individuals.append(v)
 
+        arrow_chain = " → ".join([p.lean_prop for p in translated_premises] + [translated_hyp.lean_prop])
+
+        # Most/AtLeast/AtMost/Exactly need [Fintype A] (a real structural
+        # fact - classical logic can't manufacture one for an abstract A)
+        # plus a DecidablePred instance per predicate/conjunction they
+        # apply to - the latter is uniformly discharged by this file's
+        # own `attribute [local instance] Classical.propDecidable"
+        # (below), so only Fintype needs adding here, conditionally.
+        needs_fintype = any(
+            q in arrow_chain for q in ("Most ", "AtLeast ", "AtMost ", "Exactly ")
+        )
+
         binder_parts = ["{A : Type*}"]
+        if needs_fintype:
+            binder_parts.append("[Fintype A]")
         if preds:
             binder_parts.append(f"({' '.join(preds)} : A → Prop)")
         for v in individuals:
             binder_parts.append(f"({v} : A)")
         binders = " ".join(binder_parts)
 
-        arrow_chain = " → ".join([p.lean_prop for p in translated_premises] + [translated_hyp.lean_prop])
+        # `apply fracas_NNN <;> assumption` (this generator's first
+        # attempt) isn't reliable once a theorem chains 3+ premises where
+        # a predicate appears only in a MIDDLE premise, never in the
+        # final conclusion (fracas_018/21/26/27's `every_trans`/
+        # `most_trans`-style composition: apply leaves that predicate an
+        # unresolved metavariable, and `assumption` tried independently
+        # per remaining goal via `<;>` doesn't reliably resolve it in the
+        # right order) - the same failure mode `most_nl`/`every_most_nl`
+        # were built to work around in BlindEval.lean. Supplying every
+        # predicate/individual argument as `_` and every hypothesis by
+        # name, all in ONE application, lets Lean's own left-to-right
+        # elaboration resolve each metavariable from the earliest
+        # hypothesis that determines it, before the next one is checked -
+        # exactly GFCrossCheck.lean's own original example's shape
+        # (predicates supplied), generalized to also thread the
+        # hypotheses through the same application instead of applying
+        # them after.
+        hyp_names = [f"h{i}" for i in range(1, n + 1)]
+        underscores = " ".join(["_"] * (len(preds) + len(individuals)))
+        proof_args = " ".join(filter(None, [underscores, " ".join(hyp_names)]))
 
         lines.append(f"theorem fracas_{idn:03d}_from_gf {binders} :")
-        lines.append(f"    {arrow_chain} := by")
-        lines.append("  intros")
-        lines.append(f"  apply fracas_{idn:03d} <;> assumption")
+        lines.append(f"    {arrow_chain} :=")
+        lines.append(f"  fun {' '.join(hyp_names)} => fracas_{idn:03d} {proof_args}")
         lines.append("")
         emitted.append(idn)
 
