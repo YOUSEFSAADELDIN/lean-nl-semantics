@@ -20,9 +20,20 @@ touches it. Run directly instead
 (`lake env lean LeanNLSemantics/FraCaS/AssumptionAudit.lean`), same as
 `Section1/Monotonicity/Coverage.lean`'s own CI step.
 
-**Validation status**: not yet run through CI as of this generation -
-see this project's README/Coverage.lean for where a confirmed result
-gets recorded once it has been.
+**Validation status - CI-confirmed** (CI run 36480666845, commit
+8004f6c, branch fracas-assumption-audit): all 472 expected theorems
+resolved (0 missing, 0 elaboration failures). 370 fully axiom-free
+("does not depend on any axioms" at all); the remaining 102 depend on
+exactly Lean/Mathlib's own standard three (`propext`, `Classical.choice`,
+`Quot.sound`), the ones essentially any nontrivial Mathlib-based proof
+uses. Zero depend on anything beyond that - zero custom, per-problem, or
+otherwise nonstandard axioms anywhere in the corpus. Zero use `sorryAx`.
+See `assumption_audit_result.json` (committed alongside this file,
+produced by `scripts/parse_fracas_assumption_audit.py` against that
+run's real log) for the full per-theorem breakdown this summary was
+computed from. If this file's own theorem count above no longer reads
+472, this status is stale - re-run the CI step and
+`parse_fracas_assumption_audit.py`, then update this constant by hand.
 -/
 
 open FraCaS.Section1 FraCaS.Section1.Monotonicity FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9
