@@ -40,10 +40,12 @@ file:
    final conclusion negated (**neg**: does `premises → ¬hypothesis`
    hold?), via the same fixed tactic chain both times - `mono_nl`,
    `exist_nl`, `mono_nl_compose` (this corpus's own certified fragment,
-   `Tactic.lean`/`Existential.lean`/`Compose.lean`), then generic `aesop`
-   (with and without first unfolding `Every`/`Some`/`No`, which are plain
-   `def`s aesop can't see through on its own - `Most`/`AtLeast`/`AtMost`/
-   `Exactly` are already-transparent `abbrev`s), then `grind`.
+   `Tactic.lean`/`Existential.lean`/`Compose.lean`), then one `aesop` call
+   armed with every general `GQ.lean` lemma and told to unfold `Every`/
+   `Some`/`No` (plain `def`s it can't see through on its own -
+   `Most`/`AtLeast`/`AtMost`/`Exactly` are already-transparent `abbrev`s;
+   see `attemptClose`'s own comment for why the whole list, not a
+   hand-picked subset), then `grind`.
 3. Turns (pos succeeds, neg fails) into **yes**, (neg succeeds, pos
    fails) into **no**, (neither succeeds) into **unknown**, and (both
    succeed) into a flagged **contradiction** - that last case would mean
@@ -130,18 +132,46 @@ def runTactic (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM Bool :=
   catch _ =>
     return false
 
-/-- The fixed tactic chain both directions get, in order: this corpus's
+/-- The `aesop` call below is armed with every general (not
+problem-specific) composition/entailment lemma `GQ.lean` already has
+(`entails_and` through `atMost_restrict`) - the complete list, not a
+hand-picked subset chosen to close any one problem. `most_trans` is in
+there for exactly the reason it needs to be: it is what `fracas_026`'s
+own hand proof already calls, a previously-proved general fact about
+`Most`, not a rule invented for this file - handing the *entire* list to
+a generic search is what keeps this from being "one rule added because
+problem 26 needed it" (see this file's header for why that distinction
+matters to the whole methodology). `mono_nl`/`exist_nl`/`mono_nl_compose`
+already encode most of these as a directed, certified search; this is
+the same knowledge, given instead to an undirected one, for the goals
+(`Most`/`No`-headed) that certified search was never scoped to touch.
+
+The fixed tactic chain both directions get, in order: this corpus's
 own certified monotonicity fragment first (`mono_nl`, `exist_nl`,
-`mono_nl_compose`), then generic `aesop` (as-is, then again after
-unfolding the plain-`def` quantifiers it can't see through on its own),
-then `grind` as a last resort. Stops at the first success. -/
+`mono_nl_compose`), then one `aesop` call - unfolding the plain-`def`
+quantifiers (`Every`/`Some`/`No`) it can't see through on its own, and
+armed with every general GQ.lean lemma above - then `grind` as a last
+resort. Stops at the first success. -/
 def attemptClose (ty : Expr) : TermElabM Bool := do
   if ← runTactic ty (← `(tactic| mono_nl)) then return true
   if ← runTactic ty (← `(tactic| exist_nl)) then return true
   if ← runTactic ty (← `(tactic| mono_nl_compose)) then return true
-  if ← runTactic ty (← `(tactic| aesop)) then return true
-  if ← runTactic ty
-      (← `(tactic| (unfold FraCaS.Section1.Every FraCaS.Section1.Some FraCaS.Section1.No; aesop)))
+  if ← runTactic ty (← `(tactic|
+      aesop
+        (add unfold FraCaS.Section1.Every, unfold FraCaS.Section1.Some,
+          unfold FraCaS.Section1.No,
+          safe apply FraCaS.Section1.entails_and, safe apply FraCaS.Section1.entails_refl,
+          safe apply FraCaS.Section1.some_entails_and, safe apply FraCaS.Section1.entails_narrow,
+          safe apply FraCaS.Section1.every_some, safe apply FraCaS.Section1.some_of_nonempty,
+          safe apply FraCaS.Section1.every_trans, safe apply FraCaS.Section1.every_mp,
+          safe apply FraCaS.Section1.no_iff_not_some, safe apply FraCaS.Section1.atLeast_some,
+          safe apply FraCaS.Section1.most_some, safe apply FraCaS.Section1.some_mono_scope,
+          safe apply FraCaS.Section1.every_mono_scope, safe apply FraCaS.Section1.atLeast_mono_scope,
+          safe apply FraCaS.Section1.some_trans, safe apply FraCaS.Section1.most_trans,
+          safe apply FraCaS.Section1.atMost_trans, safe apply FraCaS.Section1.atMost_mono_scope,
+          safe apply FraCaS.Section1.atMost_mono_scope_conditioned,
+          safe apply FraCaS.Section1.some_restrict, safe apply FraCaS.Section1.every_restrict,
+          safe apply FraCaS.Section1.atLeast_restrict, safe apply FraCaS.Section1.atMost_restrict)))
   then return true
   if ← runTactic ty (← `(tactic| grind)) then return true
   return false
