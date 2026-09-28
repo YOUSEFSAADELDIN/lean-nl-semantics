@@ -19,9 +19,11 @@ via `cabal install` at the pinned commit below, `gf-rgl`'s `Setup.sh`
 at the pinned tag below, plus `DictEngAbs.gf`/`DictEng.gf` compiled
 separately the same way CI does it) builds and runs directly in this
 same sandbox - no relay to a separate machine needed for any of the
-work after that point. A `.claude/hooks/session-start.sh` SessionStart
-hook rebuilds this same toolchain automatically (idempotently) at the
-start of any future session here.
+work after that point. If a future development environment starts
+from scratch, the same steps below (`cabal install` at the pinned
+commit, `gf-rgl`'s `Setup.sh` at the pinned tag, the `secure: False`
+fix above) reproduce it; nothing here depends on a specific tool or
+session mechanism to rebuild it automatically.
 
 **GitHub Actions CI is a still separate, still-necessary check**: its
 runners have normal, unrestricted internet access, so
