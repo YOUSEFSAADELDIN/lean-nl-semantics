@@ -234,7 +234,12 @@ def main() -> None:
         "binder position this script's arrow-chain model doesn't cover;",
         "problems 38/70 are `.no`-answer problems that also need an aux",
         "hypothesis, where deriving it safely needs more care than this round",
-        "attempted; problems 44/46/81/82/85/86/92 hit real, pre-existing",
+        "attempted; problem 69's hand proof uses the SAME bound variable for",
+        "premise 1's own scope and the hypothesis's predicate, even though",
+        "their surface text differs (\"can travel freely\" vs \"have the right",
+        "to live\") and translate_cl correctly gives them different names -",
+        "bridging that needs a composed proof, not just an extra hypothesis;",
+        "problems 44/46/81/82/85/86/92 hit real, pre-existing",
         "`gf/translate.py` gaps (`few_Det`, `CountNP` partitives, conjoined",
         "subjects, bare-cardinal determiners, `everyone_NP`) rather than",
         "anything this script can paper over; and problems 101/102 (Section",
@@ -283,6 +288,21 @@ def main() -> None:
             # a theorem already known to fail, for a reason worth recording
             # rather than silently omitting.
             skipped[idn] = "generics: hand proof's predicate identification is non-compositional (see comment)"
+            continue
+        if idn == 69:
+            # Confirmed via a real CI failure (not just guessed): the hand
+            # proof's premise-1 scope variable and the hypothesis's own
+            # predicate are the SAME bound variable ("rightToLive"), even
+            # though premise 1's surface text ("can travel freely within
+            # Europe") and the hypothesis's ("have the right to live in
+            # Europe") are different VPs that translate_cl correctly gives
+            # different predicate names to (canTravelFreeEurope vs
+            # haveRightLiveEurope). Unlike AUX_HYPOTHESIS's cases, bridging
+            # this needs an extra lemma application composed around
+            # every_restrict, not just one more hypothesis chained into a
+            # single application of the real theorem - out of scope for
+            # this generator's proof-term shape.
+            skipped[idn] = "premise-1 scope and hypothesis predicate are the same bound variable in the hand proof, but distinct translate_cl names - needs a composed proof, not just an extra hypothesis"
             continue
         has_hyp = any(r.startswith("_hypothesis") for r in roles if r != "")
         hyp_variant_roles = [r for r in roles if r.startswith("_hypothesis_")]

@@ -28,7 +28,12 @@ like "a lot of" when naming a VP's object); problem 5 needs an extra
 binder position this script's arrow-chain model doesn't cover;
 problems 38/70 are `.no`-answer problems that also need an aux
 hypothesis, where deriving it safely needs more care than this round
-attempted; problems 44/46/81/82/85/86/92 hit real, pre-existing
+attempted; problem 69's hand proof uses the SAME bound variable for
+premise 1's own scope and the hypothesis's predicate, even though
+their surface text differs ("can travel freely" vs "have the right
+to live") and translate_cl correctly gives them different names -
+bridging that needs a composed proof, not just an extra hypothesis;
+problems 44/46/81/82/85/86/92 hit real, pre-existing
 `gf/translate.py` gaps (`few_Det`, `CountNP` partitives, conjoined
 subjects, bare-cardinal determiners, `everyone_NP`) rather than
 anything this script can paper over; and problems 101/102 (Section
@@ -165,10 +170,6 @@ theorem fracas_059_from_gf {A : Type*} (femaleCommitteeMember scandinavia commit
 theorem fracas_063_from_gf {A : Type*} [Fintype A] (femaleCommissioner spendTimeHome commissioner : A → Prop) :
     AtLeast 3 femaleCommissioner spendTimeHome → Every femaleCommissioner commissioner → AtLeast 3 commissioner spendTimeHome :=
   fun h1 h2 => fracas_063 _ _ _ h1 h2
-
-theorem fracas_069_from_gf {A : Type*} (residentWesternCountry canTravelFreeEurope residentMajorWesternCountry haveRightLiveEurope : A → Prop) :
-    Every residentWesternCountry canTravelFreeEurope → Every residentMajorWesternCountry residentWesternCountry → Every residentMajorWesternCountry haveRightLiveEurope :=
-  fun h1 h2 => fracas_069 _ _ _ _ h1 h2
 
 theorem fracas_089_from_gf {A : Type*} (representativeMasc client meeting : A → Prop) :
     Every (fun x => representativeMasc x ∨ client x) meeting → Every representativeMasc meeting ∧ Every client meeting :=
