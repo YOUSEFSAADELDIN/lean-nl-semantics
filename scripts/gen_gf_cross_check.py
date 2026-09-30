@@ -14,13 +14,16 @@ For each such problem, every premise/hypothesis tree is fed through
 GF toolchain needed at translation time), and a `fracas_NNN_from_gf`
 theorem is emitted: same shape as `GFCrossCheck.lean`'s own example,
 restating the theorem with `translate.py`'s own generated predicate/
-individual names and proving it via `intros; apply fracas_NNN <;>
-assumption` - deliberately arity/order-agnostic (rather than hand-
-guessing each real theorem's own predicate-argument order for 16
-different theorems), so this only typechecks if the translated
-proposition's *shape* genuinely matches the already-proved theorem's,
-same bar `GFCrossCheck.lean`'s own single example already holds itself
-to.
+individual names and proving it via `fun h1 h2 ... => fracas_NNN _ _
+... h1 h2 ...` (predicate/individual args as `_`, hypotheses supplied
+by name, in the real theorem's own declared order) - an earlier
+`intros; apply fracas_NNN <;> assumption` version proved unreliable on
+3+-premise compositions, where a predicate appearing only in a middle
+premise (never the conclusion) was left as an unresolved metavariable
+`assumption` could not reliably close in the needed order. Either way,
+this only typechecks if the translated proposition's *shape* genuinely
+matches the already-proved theorem's, same bar `GFCrossCheck.lean`'s
+own single example already holds itself to.
 
 Only problems with EVERY premise and the hypothesis all translating
 without a Python-level error are attempted - `translate.py`'s own
@@ -50,6 +53,44 @@ their already-proved fracas_NNN counterparts. See
 `scripts/gen_gf_cross_check.py` for how this list was derived. If this
 file's own theorem count no longer matches, this status is stale -
 re-run the script and update this constant by hand."""
+
+
+CONJUNCT_IDS = {89: ["_hypothesis_rep", "_hypothesis_client"]}
+
+
+def _scope_aux(ps, h) -> str:
+    """`(forall x, <premise's own scope> x -> <hypothesis's own scope> x)`
+    - the "world-knowledge" fact a handful of `..._mono_scope`-proved
+    theorems need beyond their one real FraCaS premise (e.g. "finishing
+    on time entails finishing"), read directly off each real theorem's
+    own stated type, not guessed. `free_predicates` is always
+    `[*restrictor_preds, scope_name]` (`translate_cl`'s own uniform
+    convention, checked directly against its source), so the scope is
+    always the LAST entry. """
+    return f"(∀ x, {ps[-1].free_predicates[-1]} x → {h.free_predicates[-1]} x)"
+
+
+def _restrict_aux(ps, h) -> str:
+    """`Every <premise's own restrictor> <hypothesis's own restrictor>`
+    - the dual of `_scope_aux`, for theorems whose extra fact instead
+    narrows/widens the RESTRICTOR while the scope stays fixed (e.g.
+    "Irish delegate" subset of "delegate") - `some_restrict`/
+    `every_restrict`/`atLeast_restrict`'s own shape. The restrictor is
+    always the FIRST entry of `free_predicates`."""
+    return f"Every {ps[-1].free_predicates[0]} {h.free_predicates[0]}"
+
+
+# Ids needing exactly one extra hypothesis beyond their real FraCaS
+# premises, and which of the two shapes above it takes - both read off
+# each id's own real theorem source directly (see AssumptionAudit-style
+# discipline throughout this project: confirmed, not assumed). Inserted
+# right before the hypothesis in the arrow chain for every one of these -
+# checked directly against each real theorem's own text, not assumed to
+# be uniform.
+AUX_HYPOTHESIS = {
+    17: _scope_aux, 23: _scope_aux, 24: _scope_aux, 25: _scope_aux, 29: _scope_aux,
+    55: _restrict_aux, 57: _restrict_aux, 59: _restrict_aux, 63: _restrict_aux,
+}
 
 
 def load_base_checks():
@@ -102,14 +143,18 @@ def load_bare_theorem_ids() -> set:
 def real_theorem_arrow_count(idn: int) -> "int | None":
     """The number of top-level (paren-depth-0) `->` arrows in fracas_NNN's
     own stated type - its true explicit-hypothesis arity. Several hand
-    proofs (23/24/25/29/31: `some_mono_scope`/`every_mono_scope`-style)
-    take an EXTRA hypothesis beyond one per FraCaS premise - a `(forall
-    x, P x -> Q x)` "world-knowledge" scope-entailment fact that isn't
-    itself sourced from any distinct FraCaS premise sentence at all, so
-    `len(premises) + 1` (this script's default) undercounts them. Only a
-    real match here (not just a plausible-looking premise count) makes a
-    problem eligible - confirmed by reading the actual Lean source, not
-    assumed from Problems.lean's own premise list length. """
+    proofs (`AUX_HYPOTHESIS`'s own keys: 17/23/24/25/29 via
+    `some_mono_scope`/`every_mono_scope`-style scope facts, 55/57/59/63
+    via `some_restrict`/`every_restrict`/`atLeast_restrict`-style
+    restrictor facts) take an EXTRA hypothesis beyond one per FraCaS
+    premise - a "world-knowledge" fact that isn't itself sourced from any
+    distinct FraCaS premise sentence at all, so `len(premises)` (this
+    script's default) undercounts them; `31` needs one too but is
+    excluded separately (see `AUX_HYPOTHESIS`'s own comment) since its
+    two trees collide on the same generated name. Only a real match here
+    (not just a plausible-looking premise count) makes a problem
+    eligible - confirmed by reading the actual Lean source, not assumed
+    from Problems.lean's own premise list length. """
     for section in ("Section1", "Section2"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             text = path.read_text()
@@ -177,17 +222,26 @@ def main() -> None:
         "already has a real, linearize-confirmed GF tree (`gf/run_gf_tests.py`)",
         "that `gf/translate.py` translates cleanly, where the real theorem's",
         "own top-level arrow count exactly matches (one arrow per premise,",
-        "chaining into the hypothesis) - see `scripts/gen_gf_cross_check.py`",
-        "for exactly how, including two real, non-obvious exclusions it found",
-        "and documents rather than silently omitting: several premise-count-1",
-        "problems (23-25, 29, 31, ...) actually need an *extra* hypothesis",
-        "beyond their one real FraCaS premise (a \"world-knowledge\" scope-",
-        "entailment fact, not itself sourced from any distinct premise",
-        "sentence), and problems 101/102 (Section 2's generics) have a hand",
-        "proof that deliberately names a premise's own predicate the same as",
-        "the hypothesis's (\"likelyPoorTrader\" for both) - a real semantic",
-        "modeling choice a literal, compositional translator correctly does",
-        "not reproduce on its own.",
+        "chaining into the hypothesis, plus a \"world-knowledge\" auxiliary",
+        "hypothesis for ids in `AUX_HYPOTHESIS`) - see",
+        "`scripts/gen_gf_cross_check.py` for exactly how, including the",
+        "non-obvious exclusions it found and documents rather than silently",
+        "omitting: problem 31 needs an aux hypothesis like 17/23-25/29 but is",
+        "excluded because its premise and hypothesis trees collide on the same",
+        "generated predicate name (`translate.py` doesn't read determiners",
+        "like \"a lot of\" when naming a VP's object); problem 5 needs an extra",
+        "*nonempty-restrictor* premise (`hNonempty : ∃ x, ambitious x`) in a",
+        "binder position this script's arrow-chain model doesn't cover;",
+        "problems 38/70 are `.no`-answer problems that also need an aux",
+        "hypothesis, where deriving it safely needs more care than this round",
+        "attempted; problems 44/46/81/82/85/86/92 hit real, pre-existing",
+        "`gf/translate.py` gaps (`few_Det`, `CountNP` partitives, conjoined",
+        "subjects, bare-cardinal determiners, `everyone_NP`) rather than",
+        "anything this script can paper over; and problems 101/102 (Section",
+        "2's generics) have a hand proof that deliberately names a premise's",
+        "own predicate the same as the hypothesis's (\"likelyPoorTrader\" for",
+        "both) - a real semantic modeling choice a literal, compositional",
+        "translator correctly does not reproduce on its own.",
         "-/",
         "",
         "open FraCaS.Section1 FraCaS.Section2",
@@ -245,10 +299,9 @@ def main() -> None:
         # than a blanket "any _hypothesis_X set is a conjunction" rule,
         # since that would be guessing at problems this hasn't been
         # checked for.
-        conjunct_ids = {89: ["_hypothesis_rep", "_hypothesis_client"]}
-        if idn in conjunct_ids:
-            if "_hypothesis" in roles or set(hyp_variant_roles) != set(conjunct_ids[idn]):
-                skipped[idn] = f"expected exactly {conjunct_ids[idn]} as conjuncts, got {sorted(roles)}"
+        if idn in CONJUNCT_IDS:
+            if "_hypothesis" in roles or set(hyp_variant_roles) != set(CONJUNCT_IDS[idn]):
+                skipped[idn] = f"expected exactly {CONJUNCT_IDS[idn]} as conjuncts, got {sorted(roles)}"
                 continue
         elif hyp_variant_roles:
             # Ambiguous-reading variants (fracas_109's own "_hypothesis_
@@ -273,25 +326,27 @@ def main() -> None:
         if not ok:
             skipped[idn] = "a/b premise variant present - ambiguous, skipped"
             continue
-        if not has_hyp or (idn not in conjunct_ids and "_hypothesis" not in roles):
+        if not has_hyp or (idn not in CONJUNCT_IDS and "_hypothesis" not in roles):
             skipped[idn] = "no hypothesis tree"
             continue
         if sorted(premise_trees) != list(range(1, n + 1)):
             skipped[idn] = f"needs {n} premises, has {sorted(premise_trees)}"
             continue
         real_arrows = real_theorem_arrow_count(idn)
-        if real_arrows != n:
+        expected_arrows = n + (1 if idn in AUX_HYPOTHESIS else 0)
+        if real_arrows != expected_arrows:
             skipped[idn] = (
-                f"real theorem has {real_arrows} top-level arrows, expected {n} "
-                "(one per premise, chaining into the hypothesis) - likely an extra "
-                "world-knowledge hypothesis not sourced from any FraCaS premise"
+                f"real theorem has {real_arrows} top-level arrows, expected {expected_arrows} "
+                "(one per premise, chaining into the hypothesis, plus one more if this id "
+                "is in AUX_HYPOTHESIS) - likely an extra world-knowledge hypothesis not "
+                "sourced from any FraCaS premise and not yet accounted for"
             )
             continue
 
         try:
             translated_premises = [translate_cl(parse_tree(premise_trees[i])) for i in range(1, n + 1)]
-            if idn in conjunct_ids:
-                conjuncts = [translate_cl(parse_tree(roles[r])) for r in conjunct_ids[idn]]
+            if idn in CONJUNCT_IDS:
+                conjuncts = [translate_cl(parse_tree(roles[r])) for r in CONJUNCT_IDS[idn]]
                 conj_preds: list[str] = []
                 conj_individuals: list[str] = []
                 for c in conjuncts:
@@ -341,7 +396,11 @@ def main() -> None:
                 if v not in individuals:
                     individuals.append(v)
 
-        arrow_chain = " → ".join([p.lean_prop for p in translated_premises] + [translated_hyp.lean_prop])
+        chain_parts = [p.lean_prop for p in translated_premises]
+        if idn in AUX_HYPOTHESIS:
+            chain_parts.append(AUX_HYPOTHESIS[idn](translated_premises, translated_hyp))
+        chain_parts.append(translated_hyp.lean_prop)
+        arrow_chain = " → ".join(chain_parts)
 
         # Most/AtLeast/AtMost/Exactly need [Fintype A] (a real structural
         # fact - classical logic can't manufacture one for an abstract A)
@@ -379,7 +438,7 @@ def main() -> None:
         # (predicates supplied), generalized to also thread the
         # hypotheses through the same application instead of applying
         # them after.
-        hyp_names = [f"h{i}" for i in range(1, n + 1)]
+        hyp_names = [f"h{i}" for i in range(1, expected_arrows + 1)]
         underscores = " ".join(["_"] * (len(preds) + len(individuals)))
         proof_args = " ".join(filter(None, [underscores, " ".join(hyp_names)]))
 

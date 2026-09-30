@@ -16,17 +16,26 @@ first premise) to every problem whose full premise/hypothesis set
 already has a real, linearize-confirmed GF tree (`gf/run_gf_tests.py`)
 that `gf/translate.py` translates cleanly, where the real theorem's
 own top-level arrow count exactly matches (one arrow per premise,
-chaining into the hypothesis) - see `scripts/gen_gf_cross_check.py`
-for exactly how, including two real, non-obvious exclusions it found
-and documents rather than silently omitting: several premise-count-1
-problems (23-25, 29, 31, ...) actually need an *extra* hypothesis
-beyond their one real FraCaS premise (a "world-knowledge" scope-
-entailment fact, not itself sourced from any distinct premise
-sentence), and problems 101/102 (Section 2's generics) have a hand
-proof that deliberately names a premise's own predicate the same as
-the hypothesis's ("likelyPoorTrader" for both) - a real semantic
-modeling choice a literal, compositional translator correctly does
-not reproduce on its own.
+chaining into the hypothesis, plus a "world-knowledge" auxiliary
+hypothesis for ids in `AUX_HYPOTHESIS`) - see
+`scripts/gen_gf_cross_check.py` for exactly how, including the
+non-obvious exclusions it found and documents rather than silently
+omitting: problem 31 needs an aux hypothesis like 17/23-25/29 but is
+excluded because its premise and hypothesis trees collide on the same
+generated predicate name (`translate.py` doesn't read determiners
+like "a lot of" when naming a VP's object); problem 5 needs an extra
+*nonempty-restrictor* premise (`hNonempty : ∃ x, ambitious x`) in a
+binder position this script's arrow-chain model doesn't cover;
+problems 38/70 are `.no`-answer problems that also need an aux
+hypothesis, where deriving it safely needs more care than this round
+attempted; problems 44/46/81/82/85/86/92 hit real, pre-existing
+`gf/translate.py` gaps (`few_Det`, `CountNP` partitives, conjoined
+subjects, bare-cardinal determiners, `everyone_NP`) rather than
+anything this script can paper over; and problems 101/102 (Section
+2's generics) have a hand proof that deliberately names a premise's
+own predicate the same as the hypothesis's ("likelyPoorTrader" for
+both) - a real semantic modeling choice a literal, compositional
+translator correctly does not reproduce on its own.
 -/
 
 open FraCaS.Section1 FraCaS.Section2
@@ -44,6 +53,14 @@ attribute [local instance] Classical.propDecidable
 theorem fracas_001_from_gf {A : Type*} (italian becomeGreatestTenor : A → Prop) :
     Some italian becomeGreatestTenor → Some italian becomeGreatestTenor :=
   fun h1 => fracas_001 _ _ h1
+
+theorem fracas_002_from_gf {A : Type*} (italianMan wantGreatTenor greatTenor : A → Prop) :
+    Every italianMan wantGreatTenor → Some italianMan greatTenor → Some italianMan wantGreatTenor :=
+  fun h1 h2 => fracas_002 _ _ _ h1 h2
+
+theorem fracas_003_from_gf {A : Type*} (italianMan wantGreatTenor greatTenor : A → Prop) :
+    Every italianMan wantGreatTenor → Some italianMan greatTenor → Some italianMan wantGreatTenor :=
+  fun h1 h2 => fracas_003 _ _ _ h1 h2
 
 theorem fracas_004_from_gf {A : Type*} (italianTenor wantGreat great : A → Prop) :
     Every italianTenor wantGreat → Some italianTenor great → Some italianTenor wantGreat :=
@@ -73,6 +90,10 @@ theorem fracas_011_from_gf {A : Type*} (greatTenor singPopularMusic likePopularM
     Some greatTenor singPopularMusic → Some greatTenor likePopularMusic → Some greatTenor singPopularMusic :=
   fun h1 h2 => fracas_011 _ _ _ h1 h2
 
+theorem fracas_013_from_gf {A : Type*} (leadingTenor excellent indispensable : A → Prop) :
+    Every leadingTenor excellent → Every (fun x => leadingTenor x ∧ excellent x) indispensable → Every leadingTenor indispensable :=
+  fun h1 h2 => fracas_013 _ _ _ h1 h2
+
 theorem fracas_014_from_gf {A : Type*} (leadingTenor cheap : A → Prop) (pavarotti : A) :
     No leadingTenor cheap → leadingTenor pavarotti → ¬ ((fun x => leadingTenor x ∧ cheap x) pavarotti) :=
   fun h1 h2 => fracas_014 _ _ _ h1 h2
@@ -81,13 +102,37 @@ theorem fracas_015_from_gf {A : Type*} [Fintype A] (tenor takePartConcert : A �
     AtLeast 3 tenor takePartConcert → Some tenor takePartConcert :=
   fun h1 => fracas_015 _ _ h1
 
+theorem fracas_017_from_gf {A : Type*} (irishman winNobelPrizeLiterature winNobelPrize : A → Prop) :
+    Some irishman winNobelPrizeLiterature → (∀ x, winNobelPrizeLiterature x → winNobelPrize x) → Some irishman winNobelPrize :=
+  fun h1 h2 => fracas_017 _ _ _ h1 h2
+
 theorem fracas_018_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
     Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope :=
   fun h1 h2 h3 => fracas_018 _ _ _ _ h1 h2 h3
 
+theorem fracas_019_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
+    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope :=
+  fun h1 h2 h3 => fracas_019 _ _ _ _ h1 h2 h3
+
+theorem fracas_020_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
+    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope :=
+  fun h1 h2 h3 => fracas_020 _ _ _ _ h1 h2 h3
+
 theorem fracas_021_from_gf {A : Type*} (residentMemberState haveRightLiveEurope individual canTravelFreeEurope : A → Prop) :
     Every residentMemberState haveRightLiveEurope → Every residentMemberState individual → Every (fun x => individual x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every residentMemberState canTravelFreeEurope :=
   fun h1 h2 h3 => fracas_021 _ _ _ _ h1 h2 h3
+
+theorem fracas_023_from_gf {A : Type*} (delegate finishSurveyTime finishSurvey : A → Prop) :
+    Some delegate finishSurveyTime → (∀ x, finishSurveyTime x → finishSurvey x) → Some delegate finishSurvey :=
+  fun h1 h2 => fracas_023 _ _ _ h1 h2
+
+theorem fracas_024_from_gf {A : Type*} (delegate obtainInterestingResultSurvey obtainResultSurvey : A → Prop) :
+    Some delegate obtainInterestingResultSurvey → (∀ x, obtainInterestingResultSurvey x → obtainResultSurvey x) → Some delegate obtainResultSurvey :=
+  fun h1 h2 => fracas_024 _ _ _ h1 h2
+
+theorem fracas_025_from_gf {A : Type*} (delegate getResultPublishMajorNationalNewspaper getResultPublish : A → Prop) :
+    Some delegate getResultPublishMajorNationalNewspaper → (∀ x, getResultPublishMajorNationalNewspaper x → getResultPublish x) → Some delegate getResultPublish :=
+  fun h1 h2 => fracas_025 _ _ _ h1 h2
 
 theorem fracas_026_from_gf {A : Type*} [Fintype A] (european residentEurope person canTravelFreeEurope : A → Prop) :
     Most european residentEurope → Every european person → Every (fun x => person x ∧ residentEurope x) canTravelFreeEurope → Most european canTravelFreeEurope :=
@@ -97,9 +142,33 @@ theorem fracas_027_from_gf {A : Type*} (committeeMember sweden person scandinavi
     Some committeeMember sweden → Every committeeMember person → Every (fun x => person x ∧ sweden x) scandinavia → Some committeeMember scandinavia :=
   fun h1 h2 h3 => fracas_027 _ _ _ _ h1 h2 h3
 
+theorem fracas_029_from_gf {A : Type*} (commissioner leadingBusinessman businessman : A → Prop) :
+    Every commissioner leadingBusinessman → (∀ x, leadingBusinessman x → businessman x) → Every commissioner businessman :=
+  fun h1 h2 => fracas_029 _ _ _ h1 h2
+
 theorem fracas_049_from_gf {A : Type*} (swedeMasc winNobelPrize scandinavian : A → Prop) :
     Some swedeMasc winNobelPrize → Every swedeMasc scandinavian → Some scandinavian winNobelPrize :=
   fun h1 h2 => fracas_049 _ _ _ h1 h2
+
+theorem fracas_055_from_gf {A : Type*} (irishDelegate finishSurveyTime delegate : A → Prop) :
+    Some irishDelegate finishSurveyTime → Every irishDelegate delegate → Some delegate finishSurveyTime :=
+  fun h1 h2 => fracas_055 _ _ _ h1 h2
+
+theorem fracas_057_from_gf {A : Type*} (portugueseDelegate getResultPublishMajorNationalNewspaper delegate : A → Prop) :
+    Some portugueseDelegate getResultPublishMajorNationalNewspaper → Every portugueseDelegate delegate → Some delegate getResultPublishMajorNationalNewspaper :=
+  fun h1 h2 => fracas_057 _ _ _ h1 h2
+
+theorem fracas_059_from_gf {A : Type*} (femaleCommitteeMember scandinavia committeeMember : A → Prop) :
+    Some femaleCommitteeMember scandinavia → Every femaleCommitteeMember committeeMember → Some committeeMember scandinavia :=
+  fun h1 h2 => fracas_059 _ _ _ h1 h2
+
+theorem fracas_063_from_gf {A : Type*} [Fintype A] (femaleCommissioner spendTimeHome commissioner : A → Prop) :
+    AtLeast 3 femaleCommissioner spendTimeHome → Every femaleCommissioner commissioner → AtLeast 3 commissioner spendTimeHome :=
+  fun h1 h2 => fracas_063 _ _ _ h1 h2
+
+theorem fracas_069_from_gf {A : Type*} (residentWesternCountry canTravelFreeEurope residentMajorWesternCountry haveRightLiveEurope : A → Prop) :
+    Every residentWesternCountry canTravelFreeEurope → Every residentMajorWesternCountry residentWesternCountry → Every residentMajorWesternCountry haveRightLiveEurope :=
+  fun h1 h2 => fracas_069 _ _ _ _ h1 h2
 
 theorem fracas_089_from_gf {A : Type*} (representativeMasc client meeting : A → Prop) :
     Every (fun x => representativeMasc x ∨ client x) meeting → Every representativeMasc meeting ∧ Every client meeting :=

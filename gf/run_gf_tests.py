@@ -3107,6 +3107,123 @@ BASE_CHECKS += [
         "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (AdvVP (UseV come_V) cheap_Adv)))))))",
         "Pavarotti is a leading tenor that comes cheap",
     ),
+    (
+        "fracas_002_premise2",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men are great tenors",
+    ),
+    (
+        "fracas_002_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men want to be great tenors",
+    ),
+    (
+        "fracas_003_premise2",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men are great tenors",
+    ),
+    (
+        "fracas_003_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men want to be great tenors",
+    ),
+    (
+        "fracas_005_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (AdAP really_AdA (PositA ambitious_A)) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA italian_A)))",
+        "some really ambitious tenors are Italian",
+    ),
+    (
+        "fracas_013_premise1",
+        "linearize PredVP (DetCN every_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA excellent_A)))",
+        "every leading tenor is excellent",
+    ),
+    (
+        "fracas_013_hypothesis",
+        "linearize PredVP (DetCN every_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA indispensable_A)))",
+        "every leading tenor is indispensable",
+    ),
+    (
+        "fracas_017_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "an Irishman wins a Nobel prize",
+    ),
+    (
+        "fracas_019_premise2",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) (UseComp (CompCN (UseN person_N)))",
+        "every European is a person",
+    ),
+    (
+        "fracas_019_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'person_N')} {_CAN_TRAVEL_FREELY_VP}",
+        "every person that has the right to live in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_019_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_020_premise2",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) (UseComp (CompCN (UseN person_N)))",
+        "every European is a person",
+    ),
+    (
+        "fracas_020_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'person_N')} {_CAN_TRAVEL_FREELY_VP}",
+        "every person that has the right to live in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_020_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_055_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some delegates finish the survey on time",
+    ),
+    (
+        "fracas_057_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2) "
+        "(PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) "
+        "(AdjCN (PositA national_A) (UseN newspaper_N)))))))",
+        "some delegates get the results published in major national newspapers",
+    ),
+    (
+        "fracas_059_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "some committee members are from Scandinavia",
+    ),
+    (
+        "fracas_063_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at least three commissioners spend time at home",
+    ),
+    (
+        "fracas_069_premise2",
+        "linearize PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) "
+        "(AdjCN (PositA western_A) (UseN country_N))))))) "
+        "(UseComp (CompNP (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N)))))))",
+        "all residents of major Western countries are residents of Western countries",
+    ),
 ]
 
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]
