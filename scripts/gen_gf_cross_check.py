@@ -41,7 +41,7 @@ GF_DIR = ROOT / "gf"
 OUT_PATH = ROOT / "LeanNLSemantics" / "FraCaS" / "Section1" / "GFCrossCheckBatch.lean"
 
 sys.path.insert(0, str(GF_DIR))
-from translate import translate_cl, parse_tree  # noqa: E402
+from translate import Translation, translate_cl, parse_tree  # noqa: E402
 
 CONFIRMED_STATUS = """\
 **Validation status - CI-confirmed** (CI run TBD, commit TBD, branch
@@ -61,21 +61,25 @@ def load_base_checks():
     return mod.BASE_CHECKS
 
 
-def load_premise_counts():
+def _load_problems_lean_entries():
     text = (ROOT / "LeanNLSemantics/FraCaS/Data/Problems.lean").read_text()
     pat = re.compile(
         r'\{\s*id\s*:=\s*(\d+),\s*premises\s*:=\s*(\[.*?\]),\s*hypothesis\s*:=\s*"[^"]*",'
-        r"\s*answer\s*:=\s*\.\w+\s*\}",
+        r"\s*answer\s*:=\s*\.(\w+)\s*\}",
         re.S,
     )
+    return pat.findall(text)
+
+
+def load_premise_counts():
     counts = {}
-    for id_str, premises_text in pat.findall(text):
-        counts[int(id_str)] = premises_text.count('",') + (1 if premises_text.strip() != "[]" else 0)
-    # More reliable: count quoted strings directly.
-    counts = {}
-    for id_str, premises_text in pat.findall(text):
+    for id_str, premises_text, _answer in _load_problems_lean_entries():
         counts[int(id_str)] = len(re.findall(r'"', premises_text)) // 2
     return counts
+
+
+def load_answers():
+    return {int(id_str): answer for id_str, _premises, answer in _load_problems_lean_entries()}
 
 
 def load_bare_theorem_ids() -> set:
@@ -141,6 +145,7 @@ def premise_index(role: str) -> "tuple[int, str] | None":
 def main() -> None:
     base_checks = load_base_checks()
     premise_counts = load_premise_counts()
+    answers = load_answers()
     bare_theorem_ids = load_bare_theorem_ids()
 
     by_id: dict[int, dict[str, str]] = {}
@@ -226,10 +231,31 @@ def main() -> None:
             skipped[idn] = "generics: hand proof's predicate identification is non-compositional (see comment)"
             continue
         has_hyp = any(r.startswith("_hypothesis") for r in roles if r != "")
-        hyp_role = next((r for r in roles if r.startswith("_hypothesis")), None)
-        if hyp_role and hyp_role not in ("_hypothesis",):
-            # Ambiguous-reading variants (_hypothesis_client etc.) - skip,
-            # picking one arbitrarily would misrepresent the ambiguity.
+        hyp_variant_roles = [r for r in roles if r.startswith("_hypothesis_")]
+        # fracas_089 is the one case where "_hypothesis_X" roles are
+        # genuine CONJUNCTS the real theorem needs together ("every rep
+        # is at the meeting AND every client is"), not alternate readings
+        # of an ambiguous sentence (that pattern - e.g. fracas_109's own
+        # "_hypothesis_client"/"_hypothesis_rep"-shaped naming elsewhere
+        # in this corpus - was already handled by reformalizing the
+        # problem itself in an earlier round, not through this mechanism)
+        # - confirmed by reading fracas_089's own real conclusion
+        # (`Every rep atMeeting ∧ Every client atMeeting`) directly, not
+        # assumed from the role names. Hard-coded to this one id rather
+        # than a blanket "any _hypothesis_X set is a conjunction" rule,
+        # since that would be guessing at problems this hasn't been
+        # checked for.
+        conjunct_ids = {89: ["_hypothesis_rep", "_hypothesis_client"]}
+        if idn in conjunct_ids:
+            if "_hypothesis" in roles or set(hyp_variant_roles) != set(conjunct_ids[idn]):
+                skipped[idn] = f"expected exactly {conjunct_ids[idn]} as conjuncts, got {sorted(roles)}"
+                continue
+        elif hyp_variant_roles:
+            # Ambiguous-reading variants (fracas_109's own "_hypothesis_
+            # client"/"_hypothesis_rep" naming, despite the similar-
+            # looking suffix, is exactly this case, not the conjunction
+            # one above) - skip, picking one arbitrarily would
+            # misrepresent the ambiguity.
             if "_hypothesis" not in roles:
                 skipped[idn] = f"only ambiguous hypothesis variant(s): {sorted(roles)}"
                 continue
@@ -247,7 +273,7 @@ def main() -> None:
         if not ok:
             skipped[idn] = "a/b premise variant present - ambiguous, skipped"
             continue
-        if not has_hyp or "_hypothesis" not in roles:
+        if not has_hyp or (idn not in conjunct_ids and "_hypothesis" not in roles):
             skipped[idn] = "no hypothesis tree"
             continue
         if sorted(premise_trees) != list(range(1, n + 1)):
@@ -264,9 +290,45 @@ def main() -> None:
 
         try:
             translated_premises = [translate_cl(parse_tree(premise_trees[i])) for i in range(1, n + 1)]
-            translated_hyp = translate_cl(parse_tree(roles["_hypothesis"]))
+            if idn in conjunct_ids:
+                conjuncts = [translate_cl(parse_tree(roles[r])) for r in conjunct_ids[idn]]
+                conj_preds: list[str] = []
+                conj_individuals: list[str] = []
+                for c in conjuncts:
+                    for p in c.free_predicates:
+                        if p not in conj_preds:
+                            conj_preds.append(p)
+                    for v in c.free_individuals:
+                        if v not in conj_individuals:
+                            conj_individuals.append(v)
+                translated_hyp = Translation(
+                    lean_prop=" ∧ ".join(c.lean_prop for c in conjuncts),
+                    free_predicates=conj_preds,
+                    free_individuals=conj_individuals,
+                )
+            else:
+                translated_hyp = translate_cl(parse_tree(roles["_hypothesis"]))
         except Exception as e:
             skipped[idn] = f"translate error: {e}"
+            continue
+
+        # A `.no` gold answer means the real theorem proves premises ->
+        # NOT hypothesis, not premises -> hypothesis (Batch1.lean's own
+        # header states this convention directly) - confirmed against the
+        # two real cases this hits (6, 14) by reading their actual Lean
+        # source, not assumed from the answer alone. Wrapped in parens
+        # unconditionally so precedence can't bite (id 14's own hypothesis
+        # is already a conjunction: `(fun x => leadingTenor x ∧ cheap x)
+        # pavarotti`, needing `¬ (...)`, not `¬ (fun x => ...) pavarotti`).
+        answer = answers.get(idn)
+        if answer == "no":
+            translated_hyp = Translation(
+                lean_prop=f"¬ ({translated_hyp.lean_prop})",
+                free_predicates=translated_hyp.free_predicates,
+                free_individuals=translated_hyp.free_individuals,
+            )
+        elif answer != "yes":
+            skipped[idn] = f"gold answer is .{answer}, not .yes/.no - not attempted"
             continue
 
         preds: list[str] = []

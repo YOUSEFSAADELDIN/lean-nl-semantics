@@ -3094,6 +3094,19 @@ BASE_CHECKS += [
         "(CompoundCN (UseN system_N) (UseN failure_N)))))",
         "software faults are blamed for the system failure",
     ),
+    (
+        "fracas_006_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA modest_A)))",
+        "some really great tenors are modest",
+    ),
+    (
+        "fracas_014_hypothesis",
+        "linearize PredVP (UsePN pavarotti_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+        "(RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (AdvVP (UseV come_V) cheap_Adv)))))))",
+        "Pavarotti is a leading tenor that comes cheap",
+    ),
 ]
 
 TENSE_RECONFIRMATIONS = [_tense_reconfirm(*check) for check in BASE_CHECKS]

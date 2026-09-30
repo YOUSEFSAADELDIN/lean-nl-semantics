@@ -49,6 +49,10 @@ theorem fracas_004_from_gf {A : Type*} (italianTenor wantGreat great : A → Pro
     Every italianTenor wantGreat → Some italianTenor great → Some italianTenor wantGreat :=
   fun h1 h2 => fracas_004 _ _ _ h1 h2
 
+theorem fracas_006_from_gf {A : Type*} (reallyGreatTenor modest : A → Prop) :
+    No reallyGreatTenor modest → ¬ (Some reallyGreatTenor modest) :=
+  fun h1 => fracas_006 _ _ h1
+
 theorem fracas_007_from_gf {A : Type*} (greatTenor swedish : A → Prop) :
     Some greatTenor swedish → Some greatTenor swedish :=
   fun h1 => fracas_007 _ _ h1
@@ -68,6 +72,10 @@ theorem fracas_010_from_gf {A : Type*} [Fintype A] (greatTenor italian : A → P
 theorem fracas_011_from_gf {A : Type*} (greatTenor singPopularMusic likePopularMusic : A → Prop) :
     Some greatTenor singPopularMusic → Some greatTenor likePopularMusic → Some greatTenor singPopularMusic :=
   fun h1 h2 => fracas_011 _ _ _ h1 h2
+
+theorem fracas_014_from_gf {A : Type*} (leadingTenor cheap : A → Prop) (pavarotti : A) :
+    No leadingTenor cheap → leadingTenor pavarotti → ¬ ((fun x => leadingTenor x ∧ cheap x) pavarotti) :=
+  fun h1 h2 => fracas_014 _ _ _ h1 h2
 
 theorem fracas_015_from_gf {A : Type*} [Fintype A] (tenor takePartConcert : A → Prop) :
     AtLeast 3 tenor takePartConcert → Some tenor takePartConcert :=
@@ -92,6 +100,10 @@ theorem fracas_027_from_gf {A : Type*} (committeeMember sweden person scandinavi
 theorem fracas_049_from_gf {A : Type*} (swedeMasc winNobelPrize scandinavian : A → Prop) :
     Some swedeMasc winNobelPrize → Every swedeMasc scandinavian → Some scandinavian winNobelPrize :=
   fun h1 h2 => fracas_049 _ _ _ h1 h2
+
+theorem fracas_089_from_gf {A : Type*} (representativeMasc client meeting : A → Prop) :
+    Every (fun x => representativeMasc x ∨ client x) meeting → Every representativeMasc meeting ∧ Every client meeting :=
+  fun h1 => fracas_089 _ _ _ h1
 
 theorem fracas_090_from_gf {A : Type*} (chairman read_outItemAgenda : A → Prop) :
     Every chairman read_outItemAgenda → Every chairman read_outItemAgenda :=
