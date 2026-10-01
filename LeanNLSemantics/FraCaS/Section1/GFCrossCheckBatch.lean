@@ -76,6 +76,25 @@ ids); 168/169/170/175/176/179/180 (each needs a genuinely new GF
 tree or an `AdvS`-headed conditional top level not yet built,
 left for a future round); and 143/156/158/161/174/177/181/184/
 188/192/194 (countermodel-only, already excluded automatically).
+Section 5 (adjectives, 197-219) adds 14 more ids, all via
+`CUSTOM_BUILD` again: per Adjectives.lean's own approach note, this
+project treats adjective-noun predication directly (not via MTT's
+Intersective/SubsCN subtype machinery), so most ids are either a
+trivial noun-/adjective-drop projection (197/203), a bare-`Prop`-
+atom restatement (199/216/218), or a genuinely assumed "world-
+knowledge" fact chained in as an extra hypothesis - a privative-
+adjective entailment (198), a contrary-adjective pair (204/205), a
+comparative relation (208/209/212), or comparison-class-shift
+bundling (210/211/212) - across two DIFFERENT real-theorem
+conventions for "Adj N" that don't generalize over each other: some
+drop the noun entirely (204's bare `small`/`large`, domain
+implicitly animals) while others fuse adjective+noun into one
+predicate (210's `smallAnimal`, alongside a separate `animal`).
+Not covered: 197 (looked like 203's own adjective-drop shape at
+first glance, but its own stated type is actually two-sorted
+`{Person Thing}`, the same blocker as 127/134/135/150-153/196);
+200/201/206/207/213/215/217/219 (countermodel-only, already
+excluded automatically).
 `scripts/gen_gf_cross_check.py` documents the non-obvious
 exclusions it found rather than silently omitting them, including
 earlier rounds': problems 31 and 46 each need an aux hypothesis (like
@@ -446,9 +465,45 @@ theorem fracas_199_from_gf (johnSuccessful : Prop) :
     johnSuccessful → johnSuccessful :=
   fun h => fracas_199 _ h
 
+theorem fracas_202_from_gf {A : Type*} (mammal animal fourLegged : A → Prop) :
+    (∀ x, mammal x → animal x) → ∀ x, (mammal x ∧ fourLegged x) → (animal x ∧ fourLegged x) :=
+  fun h => fracas_202 _ _ _ h
+
 theorem fracas_203_from_gf {A : Type*} (fourLegged animal : A → Prop) (dumbo : A) :
     fourLegged dumbo ∧ animal dumbo → fourLegged dumbo :=
   fun h => fracas_203 _ _ _ h
+
+theorem fracas_204_from_gf {A : Type*} (small large : A → Prop) (mickey : A) :
+    (∀ x, small x → ¬ large x) → small mickey → ¬ large mickey :=
+  fun h1 h2 => fracas_204 _ _ _ h1 h2
+
+theorem fracas_205_from_gf {A : Type*} (small large : A → Prop) (dumbo : A) :
+    (∀ x, large x → ¬ small x) → large dumbo → ¬ small dumbo :=
+  fun h1 h2 => fracas_205 _ _ _ h1 h2
+
+theorem fracas_208_from_gf {A : Type*} (small large : A → Prop) (smallThan : A → A → Prop) (mickey dumbo : A) :
+    (∀ x y, small x → large y → smallThan x y) → small mickey → large dumbo → smallThan mickey dumbo :=
+  fun h hs hl => fracas_208 _ _ _ _ _ h hs hl
+
+theorem fracas_209_from_gf {A : Type*} (small large : A → Prop) (largeThan : A → A → Prop) (mickey dumbo : A) :
+    (∀ x y, small x → large y → ¬ largeThan x y) → small mickey → large dumbo → ¬ largeThan mickey dumbo :=
+  fun h hs hl => fracas_209 _ _ _ _ _ h hs hl
+
+theorem fracas_210_from_gf {A : Type*} (mouse animal smallAnimal largeMouse largeAnimal : A → Prop) (mickey : A) :
+    (∀ x, mouse x → animal x ∧ smallAnimal x) → (∀ x, smallAnimal x → ¬ largeAnimal x) → (mouse mickey ∧ largeMouse mickey) → ¬ largeAnimal mickey :=
+  fun h1 h2 h3 => fracas_210 _ _ _ _ _ _ h1 h2 h3
+
+theorem fracas_211_from_gf {A : Type*} (elephant animal largeAnimal smallElephant smallAnimal : A → Prop) (dumbo : A) :
+    (∀ x, elephant x → animal x ∧ largeAnimal x) → (∀ x, largeAnimal x → ¬ smallAnimal x) → (elephant dumbo ∧ smallElephant dumbo) → ¬ smallAnimal dumbo :=
+  fun h1 h2 h3 => fracas_211 _ _ _ _ _ _ h1 h2 h3
+
+theorem fracas_212_from_gf {A : Type*} (mouse elephant animal smallAnimal largeAnimal largeMouse smallElephant : A → Prop) (largeThan : A → A → Prop) (mickey dumbo : A) :
+    (∀ x, mouse x → animal x ∧ smallAnimal x) → (∀ x, elephant x → animal x ∧ largeAnimal x) → (mouse mickey ∧ largeMouse mickey) → (elephant dumbo ∧ smallElephant dumbo) → (∀ x y, smallAnimal x → largeAnimal y → largeThan y x) → largeThan dumbo mickey :=
+  fun h1 h2 h3 h4 h5 => fracas_212 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5
+
+theorem fracas_214_from_gf {A : Type*} (legalAuthority lawLecturer fat : A → Prop) :
+    (∀ x, legalAuthority x → lawLecturer x) → (∀ x, lawLecturer x → legalAuthority x) → ∀ x, (legalAuthority x ∧ fat x) → (lawLecturer x ∧ fat x) :=
+  fun h1 h2 => fracas_214 _ _ _ h1 h2
 
 theorem fracas_216_from_gf (johnFatBill : Prop) :
     johnFatBill → johnFatBill :=

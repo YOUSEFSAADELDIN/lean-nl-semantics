@@ -2244,14 +2244,56 @@ BASE_CHECKS += [
         "Dumbo is a large animal",
     ),
     (
+        # fracas_204's own contrary-adjective aux fact needs BOTH "small"
+        # and "large" named - "large" isn't in 204's own premise at all,
+        # so this reuses fracas_205's own already-confirmed premise tree
+        # purely to name it (the subject, Dumbo, is irrelevant here).
+        "fracas_204_hypothesis",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
+    ),
+    (
+        # Symmetric reuse: fracas_205 needs "small" named too, from
+        # fracas_204's own already-confirmed premise tree.
+        "fracas_205_hypothesis",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
         "fracas_208_hypothesis",
         "linearize PredVP (UsePN mickey_PN) (UseComp (CompAP (ComparA small_A (UsePN dumbo_PN))))",
         "Mickey is smaller than Dumbo",
     ),
     (
+        # fracas_208's own two premises ("Mickey is a small animal"/
+        # "Dumbo is a large animal") are identical to fracas_204's/205's
+        # own premises - reusing those already-confirmed trees rather
+        # than re-linearizing them.
+        "fracas_208_premise1",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
+        "fracas_208_premise2",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
+    ),
+    (
         "fracas_209_hypothesis",
         "linearize PredVP (UsePN mickey_PN) (UseComp (CompAP (ComparA large_A (UsePN dumbo_PN))))",
         "Mickey is larger than Dumbo",
+    ),
+    (
+        # Same reuse as fracas_208's own premises - fracas_209 shares the
+        # identical antecedent (only the hypothesis differs).
+        "fracas_209_premise1",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
+        "fracas_209_premise2",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
     ),
     (
         "fracas_210_premise1",
@@ -2264,6 +2306,15 @@ BASE_CHECKS += [
         "Mickey is a large mouse",
     ),
     (
+        # fracas_210's own conclusion needs "largeAnimal" (fused
+        # adjective+noun) named - not present in 210's own two premises
+        # at all, so this reuses fracas_205's own already-confirmed
+        # premise tree purely to name it.
+        "fracas_210_hypothesis",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
+    ),
+    (
         "fracas_211_premise1",
         "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN elephant_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA large_A) (UseN animal_N)))))",
         "all elephants are large animals",
@@ -2274,9 +2325,40 @@ BASE_CHECKS += [
         "Dumbo is a small elephant",
     ),
     (
+        # Symmetric to 210's own reuse: fracas_211 needs "smallAnimal"
+        # named, from fracas_204's own already-confirmed premise tree.
+        "fracas_211_hypothesis",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
         "fracas_212_hypothesis",
         "linearize PredVP (UsePN dumbo_PN) (UseComp (CompAP (ComparA large_A (UsePN mickey_PN))))",
         "Dumbo is larger than Mickey",
+    ),
+    (
+        # fracas_212's own four premises are identical to fracas_210's/
+        # fracas_211's own two premises each (it combines both problems'
+        # setups) - reusing those already-confirmed trees rather than
+        # re-linearizing them.
+        "fracas_212_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN mouse_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "all mice are small animals",
+    ),
+    (
+        "fracas_212_premise2",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN elephant_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "all elephants are large animals",
+    ),
+    (
+        "fracas_212_premise3",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN mouse_N)))))",
+        "Mickey is a large mouse",
+    ),
+    (
+        "fracas_212_premise4",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN elephant_N)))))",
+        "Dumbo is a small elephant",
     ),
     (
         "fracas_213_hypothesis",

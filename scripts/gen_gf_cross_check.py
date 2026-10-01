@@ -1300,6 +1300,299 @@ def _build_fracas_218(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+def _predet_restrictor_scope(p):
+    """PredVP (PredetNP all_Predet (DetCN det cn)) (UseComp (CompNP
+    (DetCN det cn))) -> (restrictor_cn, scope_cn) - the "All Xs are Ys"
+    shape 210/211/212/214 share."""
+    restrictor_cn = p.args[0].args[1].args[1]
+    scope_cn = p.args[1].args[0].args[0].args[1]
+    return restrictor_cn, scope_cn
+
+
+def _build_fracas_202(roles: dict) -> "tuple[str, str, str]":
+    """"Every mammal is an animal." -> "Every four-legged mammal is a
+    four-legged animal." Confirmed by reading the real theorem's own
+    stated type directly (`(∀x, mammal x -> animal x) -> ∀x, (mammal x ∧
+    fourLegged x) -> (animal x ∧ fourLegged x)`) - an intersective
+    adjective ("four-legged") distributes across an already-narrower
+    class staying narrower; the hypothesis's own `AdjCN` is split into
+    its separate adjective/noun conjuncts (not fused into one name),
+    matching the real theorem's own conjunction shape. Returns (binders,
+    arrow_chain, proof)."""
+    p = parse_tree(roles["_premise"])
+    hyp = parse_tree(roles["_hypothesis"])
+    p_restrictor_cn = p.args[0].args[1]
+    p_scope_cn = p.args[1].args[0].args[0].args[1]
+    mammal = camel_name(_leaf_words(p_restrictor_cn))
+    animal = camel_name(_leaf_words(p_scope_cn))
+    h_restrictor_cn = hyp.args[0].args[1]
+    fourLegged = camel_name(_leaf_words(h_restrictor_cn.args[0]))
+    arrow_chain = (
+        f"(∀ x, {mammal} x → {animal} x) → "
+        f"∀ x, ({mammal} x ∧ {fourLegged} x) → ({animal} x ∧ {fourLegged} x)"
+    )
+    binders = f"{{A : Type*}} ({mammal} {animal} {fourLegged} : A → Prop)"
+    proof = "fun h => fracas_202 _ _ _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_204(roles: dict) -> "tuple[str, str, str]":
+    """"Mickey is a small animal." -> not "Mickey is a large animal."
+    Confirmed by reading the real theorem's own stated type directly
+    (`(∀x, small x -> ¬ large x) -> small mickey -> ¬ large mickey`) -
+    "small"/"large" are contrary (not contradictory), an assumed fact
+    this project states as an extra hypothesis rather than deriving it
+    (`Adjectives.lean`'s own comment). "large" isn't in 204's own
+    premise at all, so its name is read from fracas_205's own premise
+    tree (`fracas_204_hypothesis` in run_gf_tests.py - same reuse-for-
+    naming-only convention as 183/186/187's own premise reuses).
+    Returns (binders, arrow_chain, proof)."""
+    p = parse_tree(roles["_premise"])
+    h = parse_tree(roles["_hypothesis"])
+    subj, p_cn = _comp_cn(p)
+    small = camel_name(_leaf_words(p_cn.args[0]))
+    _h_subj, h_cn = _comp_cn(h)
+    large = camel_name(_leaf_words(h_cn.args[0]))
+    aux = f"∀ x, {small} x → ¬ {large} x"
+    arrow_chain = f"({aux}) → {small} {subj} → ¬ {large} {subj}"
+    binders = f"{{A : Type*}} ({small} {large} : A → Prop) ({subj} : A)"
+    proof = "fun h1 h2 => fracas_204 _ _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_205(roles: dict) -> "tuple[str, str, str]":
+    """Symmetric to 204: "Dumbo is a large animal." -> not "Dumbo is a
+    small animal." Confirmed by reading the real theorem's own stated
+    type directly (`(∀x, large x -> ¬ small x) -> large dumbo -> ¬ small
+    dumbo`) - "small" is read from fracas_204's own premise tree
+    (`fracas_205_hypothesis`). Returns (binders, arrow_chain, proof)."""
+    p = parse_tree(roles["_premise"])
+    h = parse_tree(roles["_hypothesis"])
+    subj, p_cn = _comp_cn(p)
+    large = camel_name(_leaf_words(p_cn.args[0]))
+    _h_subj, h_cn = _comp_cn(h)
+    small = camel_name(_leaf_words(h_cn.args[0]))
+    aux = f"∀ x, {large} x → ¬ {small} x"
+    arrow_chain = f"({aux}) → {large} {subj} → ¬ {small} {subj}"
+    binders = f"{{A : Type*}} ({small} {large} : A → Prop) ({subj} : A)"
+    proof = "fun h1 h2 => fracas_205 _ _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_208(roles: dict) -> "tuple[str, str, str]":
+    """"Mickey is a small animal. Dumbo is a large animal." -> "Mickey
+    is smaller than Dumbo." Confirmed by reading the real theorem's own
+    stated type directly (`(∀x y, small x -> large y -> smallerThan x y)
+    -> small mickey -> large dumbo -> smallerThan mickey dumbo`) - the
+    comparative relation between the two base gradable adjectives is an
+    assumed fact (`Adjectives.lean`'s own comment), not derived; both
+    premises reuse fracas_204's/205's own already-confirmed trees
+    (`fracas_208_premise1`/`fracas_208_premise2`). Returns (binders,
+    arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    hyp = parse_tree(roles["_hypothesis"])
+    mickey, p1_cn = _comp_cn(p1)
+    small = camel_name(_leaf_words(p1_cn.args[0]))
+    dumbo, p2_cn = _comp_cn(p2)
+    large = camel_name(_leaf_words(p2_cn.args[0]))
+    compar = hyp.args[1].args[0].args[0]
+    adj = camel_name(_leaf_words(compar.args[0]))
+    relation = adj + "Than"
+    aux = f"∀ x y, {small} x → {large} y → {relation} x y"
+    arrow_chain = (
+        f"({aux}) → {small} {mickey} → {large} {dumbo} → {relation} {mickey} {dumbo}"
+    )
+    binders = (
+        f"{{A : Type*}} ({small} {large} : A → Prop) ({relation} : A → A → Prop) "
+        f"({mickey} {dumbo} : A)"
+    )
+    proof = "fun h hs hl => fracas_208 _ _ _ _ _ h hs hl"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_209(roles: dict) -> "tuple[str, str, str]":
+    """Same antecedent as 208: "Mickey is a small animal. Dumbo is a
+    large animal." -> not "Mickey is larger than Dumbo." Confirmed by
+    reading the real theorem's own stated type directly (`(∀x y, small x
+    -> large y -> ¬ largerThan x y) -> small mickey -> large dumbo -> ¬
+    largerThan mickey dumbo`) - same assumed-comparative-relation shape
+    as 208, with the opposite relation and verdict; both premises reuse
+    the same fracas_204/205 trees again (`fracas_209_premise1`/
+    `fracas_209_premise2`). Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    hyp = parse_tree(roles["_hypothesis"])
+    mickey, p1_cn = _comp_cn(p1)
+    small = camel_name(_leaf_words(p1_cn.args[0]))
+    dumbo, p2_cn = _comp_cn(p2)
+    large = camel_name(_leaf_words(p2_cn.args[0]))
+    compar = hyp.args[1].args[0].args[0]
+    adj = camel_name(_leaf_words(compar.args[0]))
+    relation = adj + "Than"
+    aux = f"∀ x y, {small} x → {large} y → ¬ {relation} x y"
+    arrow_chain = (
+        f"({aux}) → {small} {mickey} → {large} {dumbo} → ¬ {relation} {mickey} {dumbo}"
+    )
+    binders = (
+        f"{{A : Type*}} ({small} {large} : A → Prop) ({relation} : A → A → Prop) "
+        f"({mickey} {dumbo} : A)"
+    )
+    proof = "fun h hs hl => fracas_209 _ _ _ _ _ h hs hl"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_210(roles: dict) -> "tuple[str, str, str]":
+    """"All mice are small animals. Mickey is a large mouse." -> not
+    "Mickey is a large animal." Confirmed by reading the real theorem's
+    own stated type directly (`(∀x, mouse x -> animal x ∧ smallAnimal x)
+    -> (∀x, smallAnimal x -> ¬ largeAnimal x) -> mouse mickey ∧
+    largeMouse mickey -> ¬ largeAnimal mickey`) - comparison-class shift
+    between a subclass (mouse) and superclass (animal): "small animal"
+    fuses into ONE predicate `smallAnimal` here (unlike 204's bare
+    `small`), alongside a separate `animal`, per this id's own real
+    theorem; the contrary-pair aux fact (`smallAnimal`/`largeAnimal`)
+    is assumed again, same role as 204/205's own. "largeAnimal" isn't in
+    210's own two premises at all, so it's read from fracas_205's own
+    premise tree (`fracas_210_hypothesis`). Returns (binders,
+    arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    h = parse_tree(roles["_hypothesis"])
+    r1_cn, s1_cn = _predet_restrictor_scope(p1)
+    mouse = camel_name(_leaf_words(r1_cn))
+    animal = camel_name(_leaf_words(s1_cn.args[1]))
+    smallAnimal = camel_name(_leaf_words(s1_cn))
+    mickey, p2_cn = _comp_cn(p2)
+    largeMouse = camel_name(_leaf_words(p2_cn))
+    _h_subj, h_cn = _comp_cn(h)
+    largeAnimal = camel_name(_leaf_words(h_cn))
+    fact1 = f"∀ x, {mouse} x → {animal} x ∧ {smallAnimal} x"
+    fact2 = f"∀ x, {smallAnimal} x → ¬ {largeAnimal} x"
+    fact3 = f"{mouse} {mickey} ∧ {largeMouse} {mickey}"
+    conclusion = f"¬ {largeAnimal} {mickey}"
+    arrow_chain = f"({fact1}) → ({fact2}) → ({fact3}) → {conclusion}"
+    binders = (
+        f"{{A : Type*}} ({mouse} {animal} {smallAnimal} {largeMouse} {largeAnimal} : "
+        f"A → Prop) ({mickey} : A)"
+    )
+    proof = "fun h1 h2 h3 => fracas_210 _ _ _ _ _ _ h1 h2 h3"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_211(roles: dict) -> "tuple[str, str, str]":
+    """Symmetric to 210: "All elephants are large animals. Dumbo is a
+    small elephant." -> not "Dumbo is a small animal." Confirmed by
+    reading the real theorem's own stated type directly (`(∀x, elephant
+    x -> animal x ∧ largeAnimal x) -> (∀x, largeAnimal x -> ¬
+    smallAnimal x) -> elephant dumbo ∧ smallElephant dumbo -> ¬
+    smallAnimal dumbo`) - "smallAnimal" is read from fracas_204's own
+    premise tree (`fracas_211_hypothesis`). Returns (binders,
+    arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    h = parse_tree(roles["_hypothesis"])
+    r1_cn, s1_cn = _predet_restrictor_scope(p1)
+    elephant = camel_name(_leaf_words(r1_cn))
+    animal = camel_name(_leaf_words(s1_cn.args[1]))
+    largeAnimal = camel_name(_leaf_words(s1_cn))
+    dumbo, p2_cn = _comp_cn(p2)
+    smallElephant = camel_name(_leaf_words(p2_cn))
+    _h_subj, h_cn = _comp_cn(h)
+    smallAnimal = camel_name(_leaf_words(h_cn))
+    fact1 = f"∀ x, {elephant} x → {animal} x ∧ {largeAnimal} x"
+    fact2 = f"∀ x, {largeAnimal} x → ¬ {smallAnimal} x"
+    fact3 = f"{elephant} {dumbo} ∧ {smallElephant} {dumbo}"
+    conclusion = f"¬ {smallAnimal} {dumbo}"
+    arrow_chain = f"({fact1}) → ({fact2}) → ({fact3}) → {conclusion}"
+    binders = (
+        f"{{A : Type*}} ({elephant} {animal} {largeAnimal} {smallElephant} "
+        f"{smallAnimal} : A → Prop) ({dumbo} : A)"
+    )
+    proof = "fun h1 h2 h3 => fracas_211 _ _ _ _ _ _ h1 h2 h3"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_212(roles: dict) -> "tuple[str, str, str]":
+    """Combining 210/211's setup with 208's comparative-assumption
+    pattern: "All mice are small animals. All elephants are large
+    animals. Mickey is a large mouse. Dumbo is a small elephant." ->
+    "Dumbo is larger than Mickey." Confirmed by reading the real
+    theorem's own stated type directly (`(∀x, mouse x -> animal x ∧
+    smallAnimal x) -> (∀x, elephant x -> animal x ∧ largeAnimal x) ->
+    mouse mickey ∧ largeMouse mickey -> elephant dumbo ∧ smallElephant
+    dumbo -> (∀x y, smallAnimal x -> largeAnimal y -> largerThan y x) ->
+    largerThan dumbo mickey`) - all four premises reuse fracas_210's/
+    fracas_211's own already-confirmed trees (`fracas_212_premise1..4`).
+    Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    p3 = parse_tree(roles["_premise3"])
+    p4 = parse_tree(roles["_premise4"])
+    hyp = parse_tree(roles["_hypothesis"])
+
+    r1_cn, s1_cn = _predet_restrictor_scope(p1)
+    mouse = camel_name(_leaf_words(r1_cn))
+    animal = camel_name(_leaf_words(s1_cn.args[1]))
+    smallAnimal = camel_name(_leaf_words(s1_cn))
+
+    r2_cn, s2_cn = _predet_restrictor_scope(p2)
+    elephant = camel_name(_leaf_words(r2_cn))
+    largeAnimal = camel_name(_leaf_words(s2_cn))
+
+    mickey, p3_cn = _comp_cn(p3)
+    largeMouse = camel_name(_leaf_words(p3_cn))
+
+    dumbo, p4_cn = _comp_cn(p4)
+    smallElephant = camel_name(_leaf_words(p4_cn))
+
+    compar = hyp.args[1].args[0].args[0]
+    adj = camel_name(_leaf_words(compar.args[0]))
+    relation = adj + "Than"
+
+    fact1 = f"∀ x, {mouse} x → {animal} x ∧ {smallAnimal} x"
+    fact2 = f"∀ x, {elephant} x → {animal} x ∧ {largeAnimal} x"
+    fact3 = f"{mouse} {mickey} ∧ {largeMouse} {mickey}"
+    fact4 = f"{elephant} {dumbo} ∧ {smallElephant} {dumbo}"
+    aux = f"∀ x y, {smallAnimal} x → {largeAnimal} y → {relation} y x"
+    conclusion = f"{relation} {dumbo} {mickey}"
+    arrow_chain = f"({fact1}) → ({fact2}) → ({fact3}) → ({fact4}) → ({aux}) → {conclusion}"
+    binders = (
+        f"{{A : Type*}} ({mouse} {elephant} {animal} {smallAnimal} {largeAnimal} "
+        f"{largeMouse} {smallElephant} : A → Prop) ({relation} : A → A → Prop) "
+        f"({mickey} {dumbo} : A)"
+    )
+    proof = "fun h1 h2 h3 h4 h5 => fracas_212 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_214(roles: dict) -> "tuple[str, str, str]":
+    """"All legal authorities are law lecturers. All law lecturers are
+    legal authorities." -> "All fat legal authorities are fat law
+    lecturers." Confirmed by reading the real theorem's own stated type
+    directly (`(∀x, legalAuth x -> lawLect x) -> (∀x, lawLect x ->
+    legalAuth x) -> ∀x, (legalAuth x ∧ fat x) -> (lawLect x ∧ fat x)`) -
+    "fat" is extensional (coextensive classes give the same "fat X"
+    extension), the hypothesis's own doubly-nested `AdjCN` split into
+    its separate adjective/outer-CN conjuncts (not fused). Returns
+    (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    hyp = parse_tree(roles["_hypothesis"])
+    r1_cn, s1_cn = _predet_restrictor_scope(p1)
+    legalAuth = camel_name(_leaf_words(r1_cn))
+    lawLect = camel_name(_leaf_words(s1_cn))
+    h_r_cn, _h_s_cn = _predet_restrictor_scope(hyp)
+    fat = camel_name(_leaf_words(h_r_cn.args[0]))
+    fact1 = f"∀ x, {legalAuth} x → {lawLect} x"
+    fact2 = f"∀ x, {lawLect} x → {legalAuth} x"
+    conclusion = f"∀ x, ({legalAuth} x ∧ {fat} x) → ({lawLect} x ∧ {fat} x)"
+    arrow_chain = f"({fact1}) → ({fact2}) → {conclusion}"
+    binders = f"{{A : Type*}} ({legalAuth} {lawLect} {fat} : A → Prop)"
+    proof = "fun h1 h2 => fracas_214 _ _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
@@ -1355,17 +1648,28 @@ def _build_fracas_218(roles: dict) -> "tuple[str, str, str]":
 # first glance (same adjective-drop shape as 203) but its own `variable`
 # block is actually two-sorted (`{Person Thing}`), the same structural
 # blocker as 127/134/135/150-153/196 - caught by reading its stated type
-# directly before building, not after. Not yet attempted: 202/204/205/
-# 208/209/210/211/212/214 each need a genuinely new "assumed world-
-# knowledge fact" mechanism (a contrary-adjective pair, a comparative
-# relation, or comparison-class-shift bundling) - and, confirmed by
-# reading their own stated types, two DIFFERENT real-theorem conventions
-# for "Adj N": some drop the noun entirely (204's bare `small`/`large`,
-# domain implicitly animals) while others fuse adjective+noun into one
-# predicate (210's `smallAnimal`, alongside a separate `animal`) - left
-# for a future round rather than templated over that difference.
-# 200/201/206/207/213/215/217/219 are countermodel-only, already
-# excluded automatically (no bare theorem to cross-check).
+# directly before building, not after.
+#
+# The remaining 9 (202/204/205/208/209/210/211/212/214) each needed a
+# genuinely new "assumed world-knowledge fact" mechanism confirmed by
+# reading their own stated types directly, across two DIFFERENT real-
+# theorem conventions for "Adj N" that don't generalize over each other:
+# 202/214 split an `AdjCN` into its separate adjective/noun conjuncts
+# (an intersective adjective distributing, or an extensional one
+# transferring across coextensive classes); 204/205 are a contrary-
+# adjective pair stated as a bare `small`/`large` fact with the noun
+# dropped entirely (domain implicitly animals); 208/209 chain in an
+# assumed comparative relation between those same bare adjectives,
+# reusing 204's/205's own premise trees; 210/211/212 instead FUSE
+# adjective+noun into one predicate (`smallAnimal`, alongside a separate
+# `animal`) for a comparison-class shift between a subclass and
+# superclass, 212 combining 210's and 211's own setups with 208's
+# comparative-assumption pattern on top. Several needed a GF tree reused
+# purely to NAME a predicate absent from their own two registered trees
+# (e.g. 204's own "large" comes from 205's premise, not 204's own) - see
+# each builder's own comment and the matching reuse comment in
+# run_gf_tests.py. 200/201/206/207/213/215/217/219 are countermodel-
+# only, already excluded automatically (no bare theorem to cross-check).
 CUSTOM_BUILD = {
     120: _build_fracas_120,
     121: _build_fracas_121,
@@ -1407,6 +1711,15 @@ CUSTOM_BUILD = {
     203: _build_fracas_203,
     216: _build_fracas_216,
     218: _build_fracas_218,
+    202: _build_fracas_202,
+    204: _build_fracas_204,
+    205: _build_fracas_205,
+    208: _build_fracas_208,
+    209: _build_fracas_209,
+    210: _build_fracas_210,
+    211: _build_fracas_211,
+    212: _build_fracas_212,
+    214: _build_fracas_214,
 }
 
 
@@ -1625,6 +1938,25 @@ def main() -> None:
         "tree or an `AdvS`-headed conditional top level not yet built,",
         "left for a future round); and 143/156/158/161/174/177/181/184/",
         "188/192/194 (countermodel-only, already excluded automatically).",
+        "Section 5 (adjectives, 197-219) adds 14 more ids, all via",
+        "`CUSTOM_BUILD` again: per Adjectives.lean's own approach note, this",
+        "project treats adjective-noun predication directly (not via MTT's",
+        "Intersective/SubsCN subtype machinery), so most ids are either a",
+        "trivial noun-/adjective-drop projection (197/203), a bare-`Prop`-",
+        "atom restatement (199/216/218), or a genuinely assumed \"world-",
+        "knowledge\" fact chained in as an extra hypothesis - a privative-",
+        "adjective entailment (198), a contrary-adjective pair (204/205), a",
+        "comparative relation (208/209/212), or comparison-class-shift",
+        "bundling (210/211/212) - across two DIFFERENT real-theorem",
+        "conventions for \"Adj N\" that don't generalize over each other: some",
+        "drop the noun entirely (204's bare `small`/`large`, domain",
+        "implicitly animals) while others fuse adjective+noun into one",
+        "predicate (210's `smallAnimal`, alongside a separate `animal`).",
+        "Not covered: 197 (looked like 203's own adjective-drop shape at",
+        "first glance, but its own stated type is actually two-sorted",
+        "`{Person Thing}`, the same blocker as 127/134/135/150-153/196);",
+        "200/201/206/207/213/215/217/219 (countermodel-only, already",
+        "excluded automatically).",
         "`scripts/gen_gf_cross_check.py` documents the non-obvious",
         "exclusions it found rather than silently omitting them, including",
         "earlier rounds': problems 31 and 46 each need an aux hypothesis (like",
