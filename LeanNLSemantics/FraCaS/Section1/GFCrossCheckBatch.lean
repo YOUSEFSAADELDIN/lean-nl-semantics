@@ -13,6 +13,8 @@ import LeanNLSemantics.FraCaS.Section4.Batch1
 import LeanNLSemantics.FraCaS.Section4.Batch2
 import LeanNLSemantics.FraCaS.Section4.Batch3
 import LeanNLSemantics.FraCaS.Section4.Batch4
+import LeanNLSemantics.FraCaS.Section5.Batch1
+import LeanNLSemantics.FraCaS.Section5.Batch2
 
 /-!
 # GF cross-check, batch 2
@@ -100,7 +102,7 @@ both) - a real semantic modeling choice a literal, compositional
 translator correctly does not reproduce on its own.
 -/
 
-open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4
+open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5
 
 -- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per
 -- predicate/conjunction they apply to - a real theorem's own
@@ -435,3 +437,23 @@ theorem fracas_189_from_gf {A : Type*} (represent : A → A → Prop) (companyOf
 theorem fracas_190_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (john mary : A) (man woman : A → Prop) :
     (man john ∧ woman mary) → (represent john (companyOf john) ∧ represent mary (companyOf john)) → represent mary (companyOf john) :=
   fun hd h => fracas_190 _ _ _ _ _ _ hd h
+
+theorem fracas_198_from_gf {A : Type*} (formerUniversityStudent universityStudent : A → Prop) (john : A) :
+    (∀ x, formerUniversityStudent x → ¬ universityStudent x) → formerUniversityStudent john → ¬ universityStudent john :=
+  fun h1 h2 => fracas_198 _ _ _ h1 h2
+
+theorem fracas_199_from_gf (johnSuccessful : Prop) :
+    johnSuccessful → johnSuccessful :=
+  fun h => fracas_199 _ h
+
+theorem fracas_203_from_gf {A : Type*} (fourLegged animal : A → Prop) (dumbo : A) :
+    fourLegged dumbo ∧ animal dumbo → fourLegged dumbo :=
+  fun h => fracas_203 _ _ _ h
+
+theorem fracas_216_from_gf (johnFatBill : Prop) :
+    johnFatBill → johnFatBill :=
+  fun h => fracas_216 _ h
+
+theorem fracas_218_from_gf (kimClever : Prop) :
+    kimClever → kimClever :=
+  fun h => fracas_218 _ h

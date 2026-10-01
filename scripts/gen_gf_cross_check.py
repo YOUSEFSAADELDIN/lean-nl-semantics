@@ -1191,6 +1191,115 @@ def _build_fracas_190(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+# ---------------------------------------------------------------------
+# Section 5 (adjectives, 197-219): per Adjectives.lean's own approach
+# note, this project treats adjective-noun predication directly (not via
+# MTT's Intersective/SubsCN subtype machinery), so most ids are either a
+# trivial noun-/adjective-drop projection, or need a genuinely assumed
+# "world-knowledge" fact (privative-adjective entailment, a contrary-
+# adjective pair, or a comparative relation) chained in as an extra
+# hypothesis - none of this is a quantifier-shape translate_cl already
+# handles. This first pass covers the straightforward subset only
+# (197/198/199/203/216/218); see CUSTOM_BUILD's own comment for the rest.
+# ---------------------------------------------------------------------
+
+
+def _comp_cn(p):
+    """PredVP subj (UseComp (CompNP (DetCN det cn))) -> (subj_name, cn) -
+    the copular "X is a (adj) N" shape 198/203 share."""
+    subj = camel_name(_leaf_words(p.args[0]))
+    cn = p.args[1].args[0].args[0].args[1]
+    return subj, cn
+
+
+def _build_fracas_198(roles: dict) -> "tuple[str, str, str]":
+    """"John is a former university student." -> not "John is a
+    university student." Confirmed by reading the real theorem's own
+    stated type directly (`(∀x, formerUnivStudent x -> ¬ univStudent x)
+    -> formerUnivStudent john -> ¬ univStudent john`) - "former" is
+    privative (the opposite of noun-drop's affirmative case), an assumed
+    fact this project states as an extra hypothesis rather than deriving
+    it, the same role `Adjectives.lean`'s `fake_not_real` plays for
+    "fake" - fused directly from the premise's own "former university
+    student" CN and the hypothesis's own bare "university student" CN.
+    Returns (binders, arrow_chain, proof)."""
+    p = parse_tree(roles["_premise"])
+    hyp = parse_tree(roles["_hypothesis"])
+    subj, p_cn = _comp_cn(p)
+    _subj2, h_cn = _comp_cn(hyp)
+    premise_name = camel_name(_leaf_words(p_cn))
+    hyp_name = camel_name(_leaf_words(h_cn))
+    aux = f"∀ x, {premise_name} x → ¬ {hyp_name} x"
+    arrow_chain = f"({aux}) → {premise_name} {subj} → ¬ {hyp_name} {subj}"
+    binders = f"{{A : Type*}} ({premise_name} {hyp_name} : A → Prop) ({subj} : A)"
+    proof = "fun h1 h2 => fracas_198 _ _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_199(roles: dict) -> "tuple[str, str, str]":
+    """"John is a successful former university student." -> "John is
+    successful." Confirmed by reading the real theorem's own `:= id`
+    proof directly (`successful -> successful`) - "successful" is
+    outermost in the adjective stack, so it predicates of John directly
+    regardless of "former"'s privativity underneath; the premise's own
+    tree is never touched at all (a pure distractor once resolved this
+    way) - only the hypothesis's own bare adjective predication is fused
+    into one atomic `Prop`, same `_atomic_name` convention as Section 4's
+    bare-Prop ids. Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles["_hypothesis"])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_199 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_203(roles: dict) -> "tuple[str, str, str]":
+    """"Dumbo is a four-legged animal." -> "Dumbo is four-legged."
+    Confirmed by reading the real theorem's own `:= fun h => h.1` proof
+    directly (`fourLegged dumbo ∧ animal dumbo -> fourLegged dumbo`) -
+    adjective-drop for an intersective adjective, splitting the
+    premise's own `AdjCN` into its separate adjective/noun conjuncts
+    rather than fusing them into one predicate name. Returns (binders,
+    arrow_chain, proof)."""
+    p = parse_tree(roles["_premise"])
+    subj, cn = _comp_cn(p)
+    adj = camel_name(_leaf_words(cn.args[0]))
+    noun = camel_name(_leaf_words(cn.args[1]))
+    arrow_chain = f"{adj} {subj} ∧ {noun} {subj} → {adj} {subj}"
+    binders = f"{{A : Type*}} ({adj} {noun} : A → Prop) ({subj} : A)"
+    proof = "fun h => fracas_203 _ _ _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_216(roles: dict) -> "tuple[str, str, str]":
+    """"John is a fatter politician than Bill." -> "John is fatter than
+    Bill." Confirmed by reading the real theorem's own `:= id` proof
+    directly (`fatterThanBill -> fatterThanBill`) - "fatter" is
+    extensional (doesn't depend on the profession-relative comparison
+    class "politician"), so the premise's own tree is never touched at
+    all - both the (implicit) premise and the hypothesis fuse to the
+    SAME atomic `Prop`, read only from the hypothesis's own `ComparA`
+    tree. Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles["_hypothesis"])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_216 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_218(roles: dict) -> "tuple[str, str, str]":
+    """"Kim is a clever person." -> "Kim is clever." Confirmed by
+    reading the real theorem's own `:= id` proof directly (`cleverKim ->
+    cleverKim`) - "person" is the default/generic comparison class, so
+    "clever person" just is bare "clever"; same bare-`Prop`-atom
+    restatement as 199/216. Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles["_hypothesis"])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_218 _ h"
+    return binders, arrow_chain, proof
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
@@ -1234,6 +1343,29 @@ def _build_fracas_190(roles: dict) -> "tuple[str, str, str]":
 # been shaped for yet - left for a future round rather than rushed).
 # 143/156/158/161/174/177/181/184/188/192/194 are countermodel-only,
 # already excluded automatically (no bare theorem to cross-check).
+#
+# Section 5 (adjectives, 197-219) adds 5 more ids this round - the
+# straightforward subset only, deliberately paced after Section 4's two
+# CI failures (missing imports, a discarded distractor hypothesis) made
+# clear this corpus rewards caution: 198 (privative-adjective entailment
+# as an assumed fact, same shape id 124's aux fact already established);
+# 199/216/218 (bare-`Prop`-atom restatements, reusing `_atomic_name`);
+# 203 (adjective-drop, splitting an `AdjCN` into separate adjective/noun
+# conjuncts rather than fusing them). fracas_197 looked tractable at
+# first glance (same adjective-drop shape as 203) but its own `variable`
+# block is actually two-sorted (`{Person Thing}`), the same structural
+# blocker as 127/134/135/150-153/196 - caught by reading its stated type
+# directly before building, not after. Not yet attempted: 202/204/205/
+# 208/209/210/211/212/214 each need a genuinely new "assumed world-
+# knowledge fact" mechanism (a contrary-adjective pair, a comparative
+# relation, or comparison-class-shift bundling) - and, confirmed by
+# reading their own stated types, two DIFFERENT real-theorem conventions
+# for "Adj N": some drop the noun entirely (204's bare `small`/`large`,
+# domain implicitly animals) while others fuse adjective+noun into one
+# predicate (210's `smallAnimal`, alongside a separate `animal`) - left
+# for a future round rather than templated over that difference.
+# 200/201/206/207/213/215/217/219 are countermodel-only, already
+# excluded automatically (no bare theorem to cross-check).
 CUSTOM_BUILD = {
     120: _build_fracas_120,
     121: _build_fracas_121,
@@ -1270,6 +1402,11 @@ CUSTOM_BUILD = {
     187: _build_fracas_187,
     189: _build_fracas_189,
     190: _build_fracas_190,
+    198: _build_fracas_198,
+    199: _build_fracas_199,
+    203: _build_fracas_203,
+    216: _build_fracas_216,
+    218: _build_fracas_218,
 }
 
 
@@ -1319,13 +1456,13 @@ def load_answers():
 
 def load_bare_theorem_ids() -> set:
     """Which fracas_NNN ids have an actual bare (non-suffixed) theorem
-    declaration anywhere in Section1/Section2/Section3 - several ids
+    declaration anywhere in Section1-5's own Batch*.lean files - several ids
     with full GF coverage turn out to be countermodel-only
     (`fracas_NNN_dir1`/`_dir2`, from this session's own earlier many/
     both/neither work), and would otherwise generate a reference to a
     theorem that doesn't exist at all, not just a shape mismatch."""
     ids = set()
-    for section in ("Section1", "Section2", "Section3", "Section4"):
+    for section in ("Section1", "Section2", "Section3", "Section4", "Section5"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             for m in re.finditer(r"theorem fracas_(\d+) ", path.read_text()):
                 ids.add(int(m.group(1)))
@@ -1350,7 +1487,7 @@ def real_theorem_arrow_count(idn: int) -> "int | None":
     match here (not just a plausible-looking premise count) makes a
     problem eligible - confirmed by reading the actual Lean source, not
     assumed from Problems.lean's own premise list length. """
-    for section in ("Section1", "Section2", "Section3", "Section4"):
+    for section in ("Section1", "Section2", "Section3", "Section4", "Section5"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             text = path.read_text()
             m = re.search(rf"theorem fracas_{idn:03d} :\s*(.*?):=", text, re.S)
@@ -1425,6 +1562,8 @@ def main() -> None:
         "import LeanNLSemantics.FraCaS.Section4.Batch2",
         "import LeanNLSemantics.FraCaS.Section4.Batch3",
         "import LeanNLSemantics.FraCaS.Section4.Batch4",
+        "import LeanNLSemantics.FraCaS.Section5.Batch1",
+        "import LeanNLSemantics.FraCaS.Section5.Batch2",
         "",
         "/-!",
         "# GF cross-check, batch 2",
@@ -1512,7 +1651,7 @@ def main() -> None:
         "translator correctly does not reproduce on its own.",
         "-/",
         "",
-        "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4",
+        "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5",
         "",
         "-- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per",
         "-- predicate/conjunction they apply to - a real theorem's own",
@@ -1527,11 +1666,12 @@ def main() -> None:
     ]
 
     for idn in sorted(by_id):
-        # Section 3 scoped to 114-141, Section 4 to 142-196 (see
-        # CUSTOM_BUILD's own comment for exactly which ids in each range
-        # are covered, countermodel-excluded, or structurally/not-yet
-        # attempted) - raise this bound again when extending past 196.
-        if idn > 196:
+        # Section 3 scoped to 114-141, Section 4 to 142-196, Section 5
+        # to 197-219 so far (see CUSTOM_BUILD's own comment for exactly
+        # which ids in each range are covered, countermodel-excluded, or
+        # structurally/not-yet attempted) - raise this bound again when
+        # extending past 219.
+        if idn > 219:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)
@@ -1556,25 +1696,27 @@ def main() -> None:
         if idn >= 142:
             # Section 4's own defining move (Ellipsis.lean's header) is
             # that the ellipsis site is hand-resolved BEFORE it's stated
-            # as a Lean premise - so a real theorem's own top-level
-            # arrow count matching this script's generic expectation is
-            # necessary but not sufficient evidence translate_cl's
-            # literal compositional reading would agree with it; unlike
-            # Section 1-3, where that arrow-count/shape check was the
-            # real gate, here it can (and did: fracas_150/196, caught by
-            # inspecting their own generated output before this guard
-            # was added) silently pass structurally WRONG theorems - an
-            # `{A} (A -> Prop)`-shaped guess at a sentence whose real
-            # theorem needs a THREE-sorted `{Person City Vehicle}`
-            # domain, or a `Some`/`Exactly`-quantified guess at a
-            # sentence whose real theorem is a direct `∃`/`∀` over a
-            # TWO-sorted `{Person Report}` domain - without ever
-            # comparing against the real theorem's own stated type at
-            # all. So every Section 4 id (142+) goes through
-            # CUSTOM_BUILD or not at all; see CUSTOM_BUILD's own comment
-            # for exactly which ids are covered, countermodel-excluded,
-            # or not yet attempted.
-            skipped[idn] = "Section 4 id not in CUSTOM_BUILD - translate_cl's normal pipeline isn't safe for ellipsis-resolved content (see this script's own comment just above)"
+            # as a Lean premise, and Section 5's (Adjectives.lean) is
+            # that adjective entailments are stated as assumed "world-
+            # knowledge" facts rather than derived - either way, a real
+            # theorem's own top-level arrow count matching this script's
+            # generic expectation is necessary but not sufficient
+            # evidence translate_cl's literal compositional reading
+            # would agree with it; unlike Section 1-3, where that arrow-
+            # count/shape check was the real gate, here it can (and did:
+            # fracas_150/196, caught by inspecting their own generated
+            # output before this guard was added) silently pass
+            # structurally WRONG theorems - an `{A} (A -> Prop)`-shaped
+            # guess at a sentence whose real theorem needs a THREE-sorted
+            # `{Person City Vehicle}` domain, or a `Some`/`Exactly`-
+            # quantified guess at a sentence whose real theorem is a
+            # direct `∃`/`∀` over a TWO-sorted `{Person Report}` domain -
+            # without ever comparing against the real theorem's own
+            # stated type at all. So every Section 4+ id (142+) goes
+            # through CUSTOM_BUILD or not at all; see CUSTOM_BUILD's own
+            # comment for exactly which ids are covered, countermodel-
+            # excluded, or not yet attempted.
+            skipped[idn] = "Section 4+ id not in CUSTOM_BUILD - translate_cl's normal pipeline isn't safe for this content (see this script's own comment just above)"
             continue
         if idn in (101, 102):
             # Confirmed locally (not just guessed): these are Section 2's
