@@ -404,6 +404,26 @@ def _resolve_subject(subject):
         return _resolve_quantifier(det), cn
     if subject.head == "PredetNP" and len(subject.args) == 2:
         predet, np = subject.args
+        if predet.head == "only_Predet":
+            # Unlike every other predeterminer here, "only" is NOT
+            # semantically vacuous - the wrapped NP's own numeral
+            # determiner carries the real count ("only one accountant" =
+            # "exactly one accountant", FraCaS 105-110's shared premise),
+            # so it's read off via the normal numeral-decoding path
+            # (_resolve_quantifier) instead of being discarded the way
+            # all_Predet's own vacuous `DetQuant IndefArt NumPl` wrapper
+            # is. Confirmed directly against Batch2.lean: 105-110 are all
+            # stated as `Exactly 1 accountant attended`, never a bare
+            # existential.
+            det, cn = _det_and_restrictor(np)
+            quant = _resolve_quantifier(det)
+            if not quant.startswith("Exactly"):
+                raise NotImplementedError(
+                    f"'only_Predet' wrapping determiner {det.head!r} (quantifier "
+                    f"{quant!r}) isn't a known exact count - only a bare counted "
+                    "numeral under only_Predet is handled so far"
+                )
+            return quant, cn
         if predet.head not in _QUANTIFIER_BY_PREDET:
             raise NotImplementedError(
                 f"predeterminer {predet.head!r} has no known Lean mapping yet "
@@ -1352,12 +1372,20 @@ if __name__ == "__main__":
         # quasi-universal ambiguity translate_cl already can't resolve
         # from syntax alone (same reason as problem 13's RelCN case,
         # documented in translate_cl's own comment); 104 is a
-        # countermodel; 105-110 need Section2.Plurals' own `Exactly`
-        # quantifier, not built here (same deferral as 85/86); 111-113
-        # are named-individual cumulative/distributive "and" facts, a
-        # different shape entirely (same "not this translator's shape"
-        # reason as 81-86). Every sentence's own GF tree is still
-        # confirmed independently via run_gf_tests.py regardless.
+        # countermodel; 105/106/107/108/110 ARE now handled generically
+        # (see `only_Predet`'s own handling in `_resolve_subject` above -
+        # "only one accountant" reads its exact count off the wrapped
+        # NP's own numeral, not vacuous the way "all" is); 109 stays
+        # excluded even though it shares 107's own premise AND hypothesis
+        # text verbatim ("some accountants attended the meeting") - 107
+        # and 109 are deliberately given DIFFERENT gold formalizations of
+        # the identical sentence (Batch2.lean's own comment on 109), and
+        # no single translate_cl output can agree with two divergent
+        # readings of the same text; 111-113 are named-individual
+        # cumulative/distributive "and" facts, a different shape
+        # entirely (same "not this translator's shape" reason as 81-86).
+        # Every sentence's own GF tree is still confirmed independently
+        # via run_gf_tests.py regardless.
         "fracas_099 (premise1)": (
             "PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN client_N)) "
             "(PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN demonstration_N))))) "

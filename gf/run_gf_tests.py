@@ -1263,6 +1263,57 @@ _SECTION2_BATCH2_TENSED_CHECKS = [
         "(ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
         "some accountant attended the meeting",
     ),
+    # 106/107/108/110 all share 105's own premise verbatim ("Just one
+    # accountant attended the meeting", FraCaS's own text for all five
+    # of 105-110) - reused byte-identical under each id's own role name
+    # (same reuse convention as every other sibling-tree reuse in this
+    # file) so `scripts/gen_gf_cross_check.py`'s per-id premise lookup
+    # finds one, rather than only being registered once under 105.
+    # 110's own hypothesis ("Some accountant attended the meeting") is
+    # separately byte-identical to 108's own - confirmed directly
+    # against the real FraCaS corpus (LeanNLSemantics/FraCaS/Data/fracas.xml):
+    # 108 and 110 are textually IDENTICAL premise/hypothesis pairs, both
+    # with gold answer "yes" (`some_of_exactly 1 ...` in Batch2.lean for
+    # both) - unlike 107 vs 109, which are ALSO textually identical but
+    # deliberately given DIFFERENT gold answers/formalizations (the
+    # presupposition-ambiguity pair Batch2.lean's own comment on 109
+    # documents) - so 109 is correctly excluded (no single translate_cl
+    # output can agree with two divergent readings of the same text),
+    # while 110 isn't: nothing about it diverges from 108's own reading.
+    (
+        "fracas_106_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP only_Predet "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "only one accountant attended the meeting",
+    ),
+    (
+        "fracas_107_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP only_Predet "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "only one accountant attended the meeting",
+    ),
+    (
+        "fracas_108_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP only_Predet "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "only one accountant attended the meeting",
+    ),
+    (
+        "fracas_110_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP only_Predet "
+        "(DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) "
+        "(UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "only one accountant attended the meeting",
+    ),
+    (
+        "fracas_110_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN someSg_Det (UseN accountant_N)) "
+        "(ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "some accountant attended the meeting",
+    ),
     (
         "fracas_111_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a sign_V2) "
