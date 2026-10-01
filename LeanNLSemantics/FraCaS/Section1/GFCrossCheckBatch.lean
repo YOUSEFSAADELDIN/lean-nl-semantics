@@ -247,6 +247,18 @@ theorem fracas_119_from_gf {A : Type*} (student : A → Prop) (use : A → A →
     (∀ x, student x → ¬ use x (workstationOf x)) → student mary → ¬ (use mary (workstationOf mary)) :=
   fun h1 h2 => fracas_119 _ _ _ _ h1 h2
 
+theorem fracas_120_from_gf {A : Type*} (smith : A) (attend chair : A → A → Prop) :
+    (∃ m, attend smith m ∧ chair smith m) → ∃ m, chair smith m :=
+  fun h1 => fracas_120 _ _ _ h1
+
+theorem fracas_121_from_gf {A : Type*} (smith itel report invoice projectProposal : A) (deliver : A → A → A → Prop) :
+    (deliver smith itel report ∧ deliver smith itel invoice ∧ deliver smith itel projectProposal) → (deliver smith itel report ∧ deliver smith itel invoice ∧ deliver smith itel projectProposal) :=
+  fun h => fracas_121 _ _ _ _ _ _ h
+
+theorem fracas_122_from_gf {A : Type*} (committee : A → Prop) (chairman appointMember : A → A → Prop) :
+    (∀ c, committee c → ∃ ch, chairman ch c ∧ appointMember ch c) → (∀ c, committee c → ∃ ch, chairman ch c ∧ appointMember ch c) :=
+  fun h => fracas_122 _ _ _ h
+
 theorem fracas_123_from_gf {A : Type*} [Fintype A] (reportSmithNeed sendItel smithDesk : A → Prop) :
     Most reportSmithNeed sendItel → (∀ x, sendItel x → smithDesk x) → Some reportSmithNeed smithDesk :=
   fun h1 h2 => fracas_123 _ _ _ h1 h2

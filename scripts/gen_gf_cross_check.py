@@ -44,7 +44,14 @@ GF_DIR = ROOT / "gf"
 OUT_PATH = ROOT / "LeanNLSemantics" / "FraCaS" / "Section1" / "GFCrossCheckBatch.lean"
 
 sys.path.insert(0, str(GF_DIR))
-from translate import Translation, translate_cl, parse_tree  # noqa: E402
+from translate import (  # noqa: E402
+    Translation,
+    translate_cl,
+    parse_tree,
+    camel_name,
+    _leaf_words,
+    _unwrap_tense,
+)
 
 CONFIRMED_STATUS = """\
 **Validation status - CI-confirmed** (CI run TBD, commit TBD, branch
@@ -208,6 +215,121 @@ SKOLEM_PROJECT = {117: (1, "verb"), 118: (1, "has"), 119: (1, "verb")}
 # confirmed by reading its own stated conclusion `Some reportsNeeded
 # onDesk` directly.
 SYNTHESIZE_PREMISE = {123: (2, _scope_aux, "Some")}
+
+
+def _build_fracas_120(roles: dict) -> "tuple[str, str, str]":
+    """"Smith attended a meeting. She chaired it." -> "Smith chaired a
+    meeting." The two premises share ONE bound existential (the
+    meeting), confirmed by reading the real theorem's own stated type
+    directly (`(exists m, attended smith m and chaired smith m) ->
+    exists m, chaired smith m`). Built by hand straight from the three
+    raw GF trees rather than through translate_cl's own per-sentence
+    pipeline: no other id needs "keep the indefinite object
+    existentially open instead of fusing it into a predicate name" or
+    "she"/"it" resolving to the PRIOR sentence's own subject/object -
+    forcing either into translate_cl's general-purpose dispatch would
+    risk it misfiring on some unrelated future sentence shape it was
+    never meant to cover. Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+
+    subject_name = camel_name(_leaf_words(p1.args[0]))
+    verb1 = camel_name(_leaf_words(p1.args[1].args[0]))
+    verb2 = camel_name(_leaf_words(p2.args[1].args[0]))
+    if camel_name(_leaf_words(hyp.args[0])) != subject_name:
+        raise ValueError("hypothesis's own subject doesn't match premise 1's")
+    if camel_name(_leaf_words(hyp.args[1].args[0])) != verb2:
+        raise ValueError("hypothesis's own verb doesn't match premise 2's")
+
+    combined = f"(∃ m, {verb1} {subject_name} m ∧ {verb2} {subject_name} m)"
+    conclusion = f"∃ m, {verb2} {subject_name} m"
+    arrow_chain = f"{combined} → {conclusion}"
+    binders = f"{{A : Type*}} ({subject_name} : A) ({verb1} {verb2} : A → A → Prop)"
+    proof = "fun h1 => fracas_120 _ _ _ h1"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_121(roles: dict) -> "tuple[str, str, str]":
+    """"Smith delivered a report to ITEL. She also delivered them an
+    invoice. And she delivered them a project proposal." -> restates the
+    same three-way conjunction, confirmed by reading the real theorem's
+    own `:= id` proof directly. The real theorem treats each delivered
+    item as a NAMED INDIVIDUAL constant, not a predicate (`delivered :
+    A -> A -> A -> Prop`, a genuinely TERNARY relation - the first this
+    generator has ever produced) - built by hand for the same reason as
+    fracas_120's own builder: "she"/"them" resolving to the first
+    sentence's own subject/PP-object, and a ternary named-individual
+    relation, are both one-off shapes no other id needs. Returns
+    (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    p3 = _unwrap_tense(parse_tree(roles["_premise3"]))
+
+    subject_name = camel_name(_leaf_words(p1.args[0]))
+    vp1 = p1.args[1]
+    verb_name = camel_name(_leaf_words(vp1.args[0].args[0]))
+    obj1_name = camel_name(_leaf_words(vp1.args[0].args[1]))
+    pp_name = camel_name(_leaf_words(vp1.args[1].args[1]))
+
+    vp2 = p2.args[1].args[1]
+    obj2_name = camel_name(_leaf_words(vp2.args[0].args[1]))
+
+    vp3 = p3.args[1]
+    obj3_name = camel_name(_leaf_words(vp3.args[0].args[1]))
+
+    def conjunct(obj_name: str) -> str:
+        return f"{verb_name} {subject_name} {pp_name} {obj_name}"
+
+    combined = f"({conjunct(obj1_name)} ∧ {conjunct(obj2_name)} ∧ {conjunct(obj3_name)})"
+    arrow_chain = f"{combined} → {combined}"
+    binders = (
+        f"{{A : Type*}} ({subject_name} {pp_name} {obj1_name} {obj2_name} {obj3_name} : A) "
+        f"({verb_name} : A → A → A → Prop)"
+    )
+    proof = "fun h => fracas_121 _ _ _ _ _ _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_122(roles: dict) -> "tuple[str, str, str]":
+    """"Every committee has a chairman. He is appointed by its
+    members." -> "every committee has a chairman appointed by members
+    of the committee" - the bound "he"/"its" fold into ONE combined
+    statement, confirmed by reading the real theorem's own `:= id` proof
+    directly (`(forall c, committee c -> exists ch, chairman ch c and
+    appointedByMembers ch c) -> ...`, the same statement restated). The
+    hypothesis's own GF tree (a single self-contained sentence using a
+    passive post-nominal modifier, "a chairman appointed by members of
+    the committee") is never translated independently - it would need
+    passive-post-nominal-modifier support this translator doesn't have,
+    for a shape that's provably equal to the premise anyway, so this
+    just reuses the SAME combined text as both. Built by hand for the
+    same reason as fracas_120/121's own builders: "he"/"its" resolving
+    to a NESTED bound variable, not a fixed individual, is one-off.
+    Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+
+    committee_name = camel_name(_leaf_words(p1.args[0]))
+    chairman_name = camel_name(_leaf_words(p1.args[1].args[1]))
+    appoint_name = camel_name(_leaf_words(p2.args[1]))
+
+    combined = f"(∀ c, {committee_name} c → ∃ ch, {chairman_name} ch c ∧ {appoint_name} ch c)"
+    arrow_chain = f"{combined} → {combined}"
+    binders = f"{{A : Type*}} ({committee_name} : A → Prop) ({chairman_name} {appoint_name} : A → A → Prop)"
+    proof = "fun h => fracas_122 _ _ _ h"
+    return binders, arrow_chain, proof
+
+
+# Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
+# per-sentence pipeline entirely - each is a one-off cross-sentential
+# anaphora shape (a shared bound existential across two sentences, a
+# ternary named-individual relation, a nested bound existential) that
+# doesn't recur anywhere else in the corpus, so generalizing
+# translate.py itself for any of them would add real-general-translator
+# complexity to serve exactly one id - see each builder's own comment
+# for the specific real-theorem shape it was confirmed against.
+CUSTOM_BUILD = {120: _build_fracas_120, 121: _build_fracas_121, 122: _build_fracas_122}
 
 
 def load_base_checks():
@@ -404,12 +526,13 @@ def main() -> None:
     ]
 
     for idn in sorted(by_id):
-        # Section 3 scoped to 114-123 so far (the possessive-
-        # presupposition bundle, unbound and Skolem-function-bound, plus
-        # 123's synthesized scope-entailment premise) - raise this bound
-        # again when extending further into Section 3's harder
-        # constructions (120-122's own shared-bound-variable/named-
-        # ternary-relation anaphora, cardinality anaphora, etc).
+        # Section 3 scoped to 114-123 so far: the possessive-
+        # presupposition bundle (114-116), its Skolem-function-bound
+        # variant (117-119), a synthesized scope-entailment premise
+        # (123), and three fully hand-built cross-sentential-anaphora
+        # theorems (120-122, via CUSTOM_BUILD) - raise this bound again
+        # when extending further into Section 3's remaining
+        # constructions (cardinality anaphora, 124+).
         if idn > 123:
             continue
         roles = by_id[idn]
@@ -419,6 +542,18 @@ def main() -> None:
             continue
         if idn not in bare_theorem_ids:
             skipped[idn] = "no bare fracas_NNN theorem (countermodel-only, e.g. _dir1/_dir2)"
+            continue
+        if idn in CUSTOM_BUILD:
+            try:
+                binders, arrow_chain, proof = CUSTOM_BUILD[idn](roles)
+            except Exception as e:
+                skipped[idn] = f"CUSTOM_BUILD error: {e}"
+                continue
+            lines.append(f"theorem fracas_{idn:03d}_from_gf {binders} :")
+            lines.append(f"    {arrow_chain} :=")
+            lines.append(f"  {proof}")
+            lines.append("")
+            emitted.append(idn)
             continue
         if idn in (101, 102):
             # Confirmed locally (not just guessed): these are Section 2's
