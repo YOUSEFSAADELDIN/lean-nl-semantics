@@ -49,19 +49,22 @@ OUT_PATH = FRACAS_DIR / "AssumptionAudit.lean"
 # regenerating that file (e.g. after adding new FraCaS theorems) can't
 # silently wipe it the way a hand-edit there would.
 CONFIRMED_STATUS = """\
-**Validation status - PENDING RE-CONFIRMATION.** The last CI-confirmed
-run (CI run 36480666845, commit 8004f6c, branch fracas-assumption-audit)
-covered 472 theorems, all resolved (0 missing, 0 elaboration failures),
-0 depending on anything beyond Lean/Mathlib's own standard three
-(`propext`, `Classical.choice`, `Quot.sound`), 0 using `sorryAx` - see
-`assumption_audit_result.json` (committed alongside this file, produced
-by `scripts/parse_fracas_assumption_audit.py` against that run's real
-log) for that run's full per-theorem breakdown. This file's own theorem
-count has since grown past 472 (every later FraCaS section's own
-GF-cross-check and bare theorems included), so that result no longer
-covers the full corpus below - re-run the CI step and
-`parse_fracas_assumption_audit.py` against a fresh log, then replace
-this paragraph by hand with the new CI-confirmed result."""
+**Validation status - CI-confirmed** (CI run 36931384884, commit
+41fc6bd, branch blind-eval-section1): all 628 expected theorems
+resolved (0 missing, 0 elaboration failures) - every theorem in every
+FraCaS section (1-9) plus every `_from_gf` GF-cross-check theorem. 485
+fully axiom-free ("does not depend on any axioms" at all); the
+remaining 143 depend on exactly Lean/Mathlib's own standard three
+(`propext`, `Classical.choice`, `Quot.sound`), the ones essentially any
+nontrivial Mathlib-based proof uses. Zero depend on anything beyond
+that - zero custom, per-problem, or otherwise nonstandard axioms
+anywhere in the corpus. Zero use `sorryAx`. See
+`assumption_audit_result.json` (committed alongside this file,
+produced by `scripts/parse_fracas_assumption_audit.py` against that
+run's real log) for the full per-theorem breakdown this summary was
+computed from. If this file's own theorem count above no longer reads
+628, this status is stale - re-run the CI step and
+`parse_fracas_assumption_audit.py`, then update this constant by hand."""
 
 THEOREM_RE = re.compile(r"^theorem\s+(fracas_\d+(?:_\w+)?)\s", re.MULTILINE)
 NAMESPACE_RE = re.compile(r"^namespace\s+(\S+)", re.MULTILINE)
