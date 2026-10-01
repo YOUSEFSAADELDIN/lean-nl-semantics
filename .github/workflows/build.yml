@@ -52,6 +52,11 @@ jobs:
       - name: Monotonicity fragment coverage scan
         run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/Coverage.lean
 
+      # BlindEval.lean is deliberately not imported by anything either
+      # (same circularity reason as Coverage.lean just above) - run
+      # directly, reusing the oleans `lake build` already produced.
+      - name: Blind evaluation (Sections 1-2)
+        run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/BlindEval.lean
       # AssumptionAudit.lean is deliberately not imported by anything
       # either, same reason as Coverage.lean above (it imports the root
       # LeanNLSemantics umbrella, so importing it back would be

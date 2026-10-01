@@ -298,28 +298,54 @@ theorem fracas_076 :
 
 end P076
 
-/-! ## Problem 77: `Every`, restrictor-narrowing — genuinely `.yes` (see problem 61) -/
+/-! ## Problem 77: `Both`, restrictor-narrowing — `.undef` (see `GQ.lean`'s `Both`) -/
 
 section P077
-variable {A : Type*} (commissioner usedToBeInBusiness femaleCommissioner : A → Prop)
 
-theorem fracas_077 :
-    Every commissioner usedToBeInBusiness → Every femaleCommissioner commissioner →
-      Every femaleCommissioner usedToBeInBusiness :=
-  every_restrict femaleCommissioner usedToBeInBusiness commissioner
+/-- FraCaS marks this `.undef`: "both" presupposes exactly two `P`s
+(`GQ.lean`'s `Both`), and nothing about "female commissioners" pins their
+own count at two just because "commissioners"' is - problem 61 is the
+reverse (narrow-to-wide) direction, already independently invalid even
+under a bare `Every` reading. Direction 1: two commissioners total, one
+of them female - "both female commissioners" is false outright, its own
+cardinality presupposition already failing. Direction 2: both
+commissioners are female, so the presupposition and the claim both hold.
+Supersedes a `every_restrict`-based proof that (correctly, under a
+presupposition-free "both = Every" reading) proved this direction
+outright - genuinely valid under that simplification, but exactly the
+simplification `GQ.lean`'s `Every` doc comment now flags as wrong for
+this specific problem. -/
+theorem fracas_077_dir1 :
+    Both (fun x : Fin 3 => x.val < 2) (fun _ : Fin 3 => True) ∧
+      ¬ Both (fun x : Fin 3 => x.val < 1) (fun _ : Fin 3 => True) := by
+  refine ⟨⟨by decide, fun _ _ => trivial⟩, ?_⟩
+  rintro ⟨hcard, -⟩
+  exact absurd hcard (by decide)
+
+theorem fracas_077_dir2 :
+    Both (fun x : Fin 3 => x.val < 2) (fun _ : Fin 3 => True) ∧
+      Both (fun x : Fin 3 => x.val < 2) (fun _ : Fin 3 => True) :=
+  ⟨⟨by decide, fun _ _ => trivial⟩, ⟨by decide, fun _ _ => trivial⟩⟩
 
 end P077
 
-/-! ## Problem 78: `No` restricted downward — genuinely refutes (see problem 62) -/
+/-! ## Problem 78: `Neither`, restrictor-narrowing — `.undef` (see `GQ.lean`'s `Neither`) -/
 
 section P078
-variable {A : Type*} (commissioner lotOfTime femaleCommissioner : A → Prop)
 
-theorem fracas_078 :
-    No commissioner lotOfTime → Every femaleCommissioner commissioner →
-      ¬ Some femaleCommissioner lotOfTime :=
-  fun hno hsub hsome =>
-    (no_iff_not_some commissioner lotOfTime).mp hno (some_restrict femaleCommissioner lotOfTime commissioner hsome hsub)
+/-- `No`'s counterpart to problem 77, same reasoning (problem 62 is the
+reverse direction, already independently invalid). -/
+theorem fracas_078_dir1 :
+    Neither (fun x : Fin 3 => x.val < 2) (fun _ : Fin 3 => False) ∧
+      ¬ Neither (fun x : Fin 3 => x.val < 1) (fun _ : Fin 3 => False) := by
+  refine ⟨⟨by decide, fun _ _ h => h⟩, ?_⟩
+  rintro ⟨hcard, -⟩
+  exact absurd hcard (by decide)
+
+theorem fracas_078_dir2 :
+    Neither (fun x : Fin 3 => x.val < 2) (fun _ : Fin 3 => False) ∧
+      Neither (fun x : Fin 3 => x.val < 2) (fun _ : Fin 3 => False) :=
+  ⟨⟨by decide, fun _ _ h => h⟩, ⟨by decide, fun _ _ h => h⟩⟩
 
 end P078
 

@@ -134,15 +134,19 @@ theorem fracas_107 : Exactly 1 accountant attended → Some accountant attended 
 theorem fracas_108 : Exactly 1 accountant attended → Some accountant attended :=
   some_of_exactly 1 accountant attended (by decide)
 
-/-- FraCaS reads plural "some accountants" as presupposing *more than
-one* (hence "No, just one" — a nonstandard answer, flagged
-`fracas_nonstandard` in the source). This project's `Some` is a plain
-existential with no such plurality presupposition, so under this
-project's own stated semantics (documented in `GQ.lean`) this is the
-same provable statement as 107/108/110, not a refutation — a documented
-divergence, the same kind as Section 1's problem 56. -/
-theorem fracas_109 : Exactly 1 accountant attended → Some accountant attended :=
-  some_of_exactly 1 accountant attended (by decide)
+/-- Textually identical premise/hypothesis to 107, deliberately given a
+*different* formalization: FraCaS pairs 107 and 109 to test the same
+sentence's two readings ("some accountants" as a bare existential vs.
+as presupposing *more than one*, "No, just one" - flagged
+`fracas_nonstandard` in the source), and no single Prop can entail under
+one reading while failing under the other for the same text - the
+ambiguity has to be resolved by choosing which *problem* gets which
+formalization, not by choosing one Prop for the sentence. 107 keeps the
+bare-existential reading (`Some`, matching its own gold `.yes`); 109
+gets the plurality-presupposing reading directly, `AtLeast 2`, whose
+correct refutation from `Exactly 1` matches its own gold `.no`. -/
+theorem fracas_109 : Exactly 1 accountant attended → ¬ AtLeast 2 accountant attended :=
+  fun h hal => by omega
 
 theorem fracas_110 : Exactly 1 accountant attended → Some accountant attended :=
   some_of_exactly 1 accountant attended (by decide)

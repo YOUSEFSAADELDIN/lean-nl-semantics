@@ -954,6 +954,18 @@ BASE_CHECKS += [
         "six accountants sign the contract",
     ),
     (
+        # fracas_086's own gold premise text is identical to fracas_085's
+        # ("Exactly two lawyers and three accountants signed the
+        # contract.") - reusing 085's own already-confirmed tree rather
+        # than re-linearizing the same sentence under a new label.
+        "fracas_086_premise",
+        "linearize PredVP (ConjNP and_Conj (BaseNP "
+        "(DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2))))))))) (UseN lawyer_N)) "
+        "(DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN accountant_N)))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "exactly two lawyers and exactly three accountants sign the contract",
+    ),
+    (
         "fracas_088_premise",
         "linearize PredVP (DetCN every_Det (ConjCN and_Conj (BaseCN (UseN representativeMasc_N) (UseN client_N)))) "
         "(UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
@@ -1388,6 +1400,20 @@ BASE_CHECKS += [
         "Mary is a student",
     ),
     (
+        # fracas_118/119's own gold premise text (second premise, "Mary
+        # is a student") is identical to fracas_117's own - reusing its
+        # already-confirmed tree rather than re-linearizing it twice
+        # more under new labels.
+        "fracas_118_premise2",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN student_N))))",
+        "Mary is a student",
+    ),
+    (
+        "fracas_119_premise2",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN student_N))))",
+        "Mary is a student",
+    ),
+    (
         "fracas_122_premise1",
         "linearize PredVP (DetCN every_Det (UseN committee_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (UseN chairman_N)))",
         "every committee has a chairman",
@@ -1419,6 +1445,14 @@ BASE_CHECKS += [
     ),
     (
         "fracas_131_premise1",
+        "linearize PredVP (DetCN each_Det (UseN department_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA dedicated_A) (UseN line_N))))",
+        "each department has a dedicated line",
+    ),
+    (
+        # fracas_132's own gold premise 1 is identical to fracas_131's
+        # ("Each department has a dedicated line.") - reusing 131's own
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_132_premise1",
         "linearize PredVP (DetCN each_Det (UseN department_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA dedicated_A) (UseN line_N))))",
         "each department has a dedicated line",
     ),
@@ -1512,7 +1546,28 @@ _SECTION3_TENSED_CHECKS = [
         "Mary's workstation was used",
     ),
     (
+        # fracas_115/116's own gold premise text is identical to
+        # fracas_114's ("Mary used her workstation.") - reusing 114's
+        # own already-confirmed tree rather than re-linearizing the
+        # same sentence under a new label.
+        "fracas_115_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "Mary used her workstation",
+    ),
+    (
+        "fracas_116_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "Mary used her workstation",
+    ),
+    (
         "fracas_117_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN every_Det (UseN student_N)) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "every student used her workstation",
+    ),
+    (
+        # fracas_118's own gold premise text (first premise) is
+        # identical to fracas_117's - reusing its already-confirmed tree.
+        "fracas_118_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN every_Det (UseN student_N)) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
         "every student used her workstation",
     ),
@@ -1607,6 +1662,14 @@ _SECTION3_TENSED_CHECKS = [
         "they hated it",
     ),
     (
+        # fracas_129's own gold premise 1 is identical to fracas_128's
+        # ("John and his colleagues went to a meeting.") - reusing 128's
+        # own already-confirmed tree rather than re-linearizing it.
+        "fracas_129_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN john_PN) (DetCN (DetQuant (PossPron he_Pron) NumPl) (UseN colleague_N)))) (AdvVP (UseV go_V) (PrepNP to_Prep (DetCN (DetQuant IndefArt NumSg) (UseN meeting_N))))))",
+        "John and his colleagues went to a meeting",
+    ),
+    (
         "fracas_128_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant (GenNP (UsePN john_PN)) NumPl) (UseN colleague_N)) (ComplSlash (SlashV2a hate_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
         "John's colleagues hated the meeting",
@@ -1655,6 +1718,22 @@ _SECTION3_TENSED_CHECKS = [
         "fracas_141_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP somebody_NP (ComplVS say_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN john_PN) (PassV2 hurt_V2))))))",
         "somebody said that John had been hurt",
+    ),
+    (
+        # Paraphrased as the passive "most reports that Smith needs have
+        # been sent by ITEL" (truth-conditionally identical to the gold
+        # active-voice "ITEL has sent most of the reports Smith needs") -
+        # same accepted-paraphrase convention as this section's other
+        # five documented near-misses (see this file's own comment on
+        # problems 121/122/126/136/139 above): this grammar's quantifier
+        # convention always treats the quantified NP as subject, so the
+        # object-position "most of the reports..." needs the passive
+        # voice to become the grammatical subject.
+        "fracas_123_premise1",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (DetCN most_Det (RelCN (UseN report_N) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (StrandRelSlash IdRP (SlashVP (UsePN smith_PN) (SlashV2a need_V2)))))) "
+        "(AdvVP (PassV2 send_V2) (PrepNP by8agent_Prep (UsePN itel_PN)))))",
+        "most reports that Smith needs have been sent by ITEL",
     ),
 ]
 
@@ -1756,9 +1835,22 @@ BASE_CHECKS += [
         "Bill owns a fast car",
     ),
     (
+        # fracas_159's/160's own gold premise 1 ("John owns a red car")
+        # is identical to fracas_157's own premise 1 - reusing its
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_159_premise1",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA red_A) (UseN car_N))))",
+        "John owns a red car",
+    ),
+    (
         "fracas_160_hypothesis",
         "linearize PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA fast_A) (AdjCN (PositA red_A) (UseN car_N)))))",
         "Bill owns a fast red car",
+    ),
+    (
+        "fracas_160_premise1",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA red_A) (UseN car_N))))",
+        "John owns a red car",
     ),
     (
         "fracas_162_premise1",
@@ -1806,6 +1898,14 @@ BASE_CHECKS += [
         "Jones represents Smith's company",
     ),
     (
+        # fracas_183's own gold premise ("Smith represents his company")
+        # is identical to fracas_182's own premise - reusing its
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_183_premise",
+        "linearize PredVP (UsePN smith_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN company_N)))",
+        "Smith represents his company",
+    ),
+    (
         "fracas_184_hypothesis",
         "linearize PredVP (UsePN smith_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN jones_PN)) NumSg) (UseN company_N)))",
         "Smith represents Jones's company",
@@ -1829,6 +1929,20 @@ BASE_CHECKS += [
         "fracas_190_hypothesis",
         "linearize PredVP (UsePN mary_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN john_PN)) NumSg) (UseN company_N)))",
         "Mary represents John's company",
+    ),
+    (
+        # fracas_190's own gold premise 1a/1b ("John is a man"/"Mary is
+        # a woman", the gender-agreement distractor) is identical to
+        # fracas_189's own - reusing its already-confirmed trees rather
+        # than re-linearizing them.
+        "fracas_190_premise1a",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN man_N))))",
+        "John is a man",
+    ),
+    (
+        "fracas_190_premise1b",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN woman_N))))",
+        "Mary is a woman",
     ),
 ]
 
@@ -1932,6 +2046,28 @@ _SECTION4_TENSED_CHECKS = [
         "John spoke to Mary on Thursday",
     ),
     (
+        # fracas_164's/165's own gold premise 1 ("John spoke to Mary", the
+        # unelided antecedent both ellipses resolve against) is identical
+        # to fracas_142's own premise 1 - reusing its already-confirmed
+        # tree rather than re-linearizing it.
+        "fracas_164_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "John spoke to Mary",
+    ),
+    (
+        "fracas_165_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "John spoke to Mary",
+    ),
+    (
+        # fracas_166's own gold hypothesis ("John spoke to Mary on
+        # Friday") is identical to fracas_165's own hypothesis - reusing
+        # its already-confirmed tree rather than re-linearizing it.
+        "fracas_166_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) onFriday_Adv)))",
+        "John spoke to Mary on Friday",
+    ),
+    (
         "fracas_169",
         "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a find_V2) (UsePN mary_PN))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a find_V2) (UsePN mary_PN)))))",
         "before Bill found Mary John found Mary",
@@ -1977,9 +2113,23 @@ _SECTION4_TENSED_CHECKS = [
         "Jones claimed that he had costed Smith's proposal",
     ),
     (
+        # fracas_186's/187's own gold premise ("Smith claimed that he
+        # had costed his proposal") is identical to fracas_185's own
+        # premise - reusing its already-confirmed tree rather than
+        # re-linearizing it.
+        "fracas_186_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN proposal_N))))))))",
+        "Smith claimed that he had costed his proposal",
+    ),
+    (
         "fracas_187_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (GenNP (UsePN smith_PN)) NumSg) (UseN proposal_N))))))))",
         "Jones claimed that Smith had costed Smith's proposal",
+    ),
+    (
+        "fracas_187_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN proposal_N))))))))",
+        "Smith claimed that he had costed his proposal",
     ),
     (
         "fracas_196_premise1",
@@ -2094,14 +2244,56 @@ BASE_CHECKS += [
         "Dumbo is a large animal",
     ),
     (
+        # fracas_204's own contrary-adjective aux fact needs BOTH "small"
+        # and "large" named - "large" isn't in 204's own premise at all,
+        # so this reuses fracas_205's own already-confirmed premise tree
+        # purely to name it (the subject, Dumbo, is irrelevant here).
+        "fracas_204_hypothesis",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
+    ),
+    (
+        # Symmetric reuse: fracas_205 needs "small" named too, from
+        # fracas_204's own already-confirmed premise tree.
+        "fracas_205_hypothesis",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
         "fracas_208_hypothesis",
         "linearize PredVP (UsePN mickey_PN) (UseComp (CompAP (ComparA small_A (UsePN dumbo_PN))))",
         "Mickey is smaller than Dumbo",
     ),
     (
+        # fracas_208's own two premises ("Mickey is a small animal"/
+        # "Dumbo is a large animal") are identical to fracas_204's/205's
+        # own premises - reusing those already-confirmed trees rather
+        # than re-linearizing them.
+        "fracas_208_premise1",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
+        "fracas_208_premise2",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
+    ),
+    (
         "fracas_209_hypothesis",
         "linearize PredVP (UsePN mickey_PN) (UseComp (CompAP (ComparA large_A (UsePN dumbo_PN))))",
         "Mickey is larger than Dumbo",
+    ),
+    (
+        # Same reuse as fracas_208's own premises - fracas_209 shares the
+        # identical antecedent (only the hypothesis differs).
+        "fracas_209_premise1",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
+        "fracas_209_premise2",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
     ),
     (
         "fracas_210_premise1",
@@ -2114,6 +2306,15 @@ BASE_CHECKS += [
         "Mickey is a large mouse",
     ),
     (
+        # fracas_210's own conclusion needs "largeAnimal" (fused
+        # adjective+noun) named - not present in 210's own two premises
+        # at all, so this reuses fracas_205's own already-confirmed
+        # premise tree purely to name it.
+        "fracas_210_hypothesis",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "Dumbo is a large animal",
+    ),
+    (
         "fracas_211_premise1",
         "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN elephant_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA large_A) (UseN animal_N)))))",
         "all elephants are large animals",
@@ -2124,9 +2325,40 @@ BASE_CHECKS += [
         "Dumbo is a small elephant",
     ),
     (
+        # Symmetric to 210's own reuse: fracas_211 needs "smallAnimal"
+        # named, from fracas_204's own already-confirmed premise tree.
+        "fracas_211_hypothesis",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "Mickey is a small animal",
+    ),
+    (
         "fracas_212_hypothesis",
         "linearize PredVP (UsePN dumbo_PN) (UseComp (CompAP (ComparA large_A (UsePN mickey_PN))))",
         "Dumbo is larger than Mickey",
+    ),
+    (
+        # fracas_212's own four premises are identical to fracas_210's/
+        # fracas_211's own two premises each (it combines both problems'
+        # setups) - reusing those already-confirmed trees rather than
+        # re-linearizing them.
+        "fracas_212_premise1",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN mouse_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA small_A) (UseN animal_N)))))",
+        "all mice are small animals",
+    ),
+    (
+        "fracas_212_premise2",
+        "linearize PredVP (PredetNP all_Predet (DetCN (DetQuant IndefArt NumPl) (UseN elephant_N))) (UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA large_A) (UseN animal_N)))))",
+        "all elephants are large animals",
+    ),
+    (
+        "fracas_212_premise3",
+        "linearize PredVP (UsePN mickey_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA large_A) (UseN mouse_N)))))",
+        "Mickey is a large mouse",
+    ),
+    (
+        "fracas_212_premise4",
+        "linearize PredVP (UsePN dumbo_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN elephant_N)))))",
+        "Dumbo is a small elephant",
     ),
     (
         "fracas_213_hypothesis",
@@ -2266,9 +2498,25 @@ BASE_CHECKS += [
         "the PC-6082 is fast",
     ),
     (
+        # fracas_223's own premise 1 ("PC-6082 is faster than ITEL-XZ")
+        # is identical to fracas_220's own premise 1 - reusing its
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_223_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (UsePN itelXZ_PN))))",
+        "the PC-6082 is faster than the ITEL-XZ",
+    ),
+    (
         "fracas_223_premise2",
         "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (PositA slow_A)))",
         "the PC-6082 is slow",
+    ),
+    (
+        # fracas_223's own hypothesis, resolved (before negation), is
+        # "the ITEL-XZ is fast" - identical to fracas_220's own premise
+        # 2, reused for naming "fast" rather than re-linearizing it.
+        "fracas_223_hypothesis",
+        "linearize PredVP (UsePN itelXZ_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the ITEL-XZ is fast",
     ),
     (
         "fracas_224_premise1",
@@ -2276,9 +2524,43 @@ BASE_CHECKS += [
         "the PC-6082 is as fast as the ITEL-XZ",
     ),
     (
+        # fracas_224's own premise 2 ("ITEL-XZ is fast") is identical to
+        # fracas_220's own premise 2 - reused rather than re-linearized.
+        "fracas_224_premise2",
+        "linearize PredVP (UsePN itelXZ_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the ITEL-XZ is fast",
+    ),
+    (
+        # fracas_227's own three roles are each identical to an
+        # already-confirmed sibling id's own tree: premise 1 to
+        # fracas_224's, premise 2 to fracas_223's, and the hypothesis
+        # (resolved, before negation) to fracas_220's own premise 2.
+        "fracas_227_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (CAdvAP as_CAdv (PositA fast_A) (UsePN itelXZ_PN))))",
+        "the PC-6082 is as fast as the ITEL-XZ",
+    ),
+    (
+        "fracas_227_premise2",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (PositA slow_A)))",
+        "the PC-6082 is slow",
+    ),
+    (
+        "fracas_227_hypothesis",
+        "linearize PredVP (UsePN itelXZ_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the ITEL-XZ is fast",
+    ),
+    (
         "fracas_229_hypothesis",
         "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA slow_A (UsePN itelXZ_PN))))",
         "the PC-6082 is slower than the ITEL-XZ",
+    ),
+    (
+        # fracas_229's own premise ("PC-6082 is as fast as ITEL-XZ") is
+        # identical to fracas_224's own premise 1 - reused rather than
+        # re-linearized.
+        "fracas_229_premise",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (CAdvAP as_CAdv (PositA fast_A) (UsePN itelXZ_PN))))",
+        "the PC-6082 is as fast as the ITEL-XZ",
     ),
     (
         "fracas_242_premise1",
@@ -2309,6 +2591,22 @@ BASE_CHECKS += [
         "fracas_247_premise1",
         "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N)))))",
         "the PC-6082 is faster than an ITEL computer",
+    ),
+    (
+        # fracas_248's own "faster than any ITEL computer" gets the same
+        # universal formalization as fracas_246's own "every" (per
+        # Comparatives.lean's own approach note: "any" is universal here,
+        # not an NPI) - reusing its own premise 1/2 trees rather than
+        # building a fresh "any_Det" tree for truth-conditionally
+        # identical content.
+        "fracas_248_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN every_Det (UseN itelComputer_N)))))",
+        "the PC-6082 is faster than every ITEL computer",
+    ),
+    (
+        "fracas_248_premise2",
+        "linearize PredVP (UsePN itelZX_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N))))",
+        "the ITEL-ZX is an ITEL computer",
     ),
     (
         "fracas_249_premise",
@@ -2482,6 +2780,21 @@ _SECTION7_TENSED_CHECKS = [
         "ITEL made a loss in 1993",
     ),
     (
+        # 257 has no own premise/hypothesis sentence in FraCaS's corpus at
+        # all - Batch1.lean's own comment on 257 ("formally identical with
+        # preceding") confirms it's the exact same sentence as 255, just
+        # given `.yes` instead of `.unknown`; reused verbatim here under
+        # 257's own role name so it gets its own by_id entry.
+        "fracas_257_premise",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumSg) (UseN loss_N))) since1992_Adv)))",
+        "ITEL has made a loss since 1992",
+    ),
+    (
+        "fracas_257_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumSg) (UseN loss_N))) in1993_Adv)))",
+        "ITEL made a loss in 1993",
+    ),
+    (
         "fracas_258_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (AdvVP (ComplSlash (SlashV2a found_V2) (UsePN itel_PN)) inMarch1993_Adv)))",
         "APCOM founded ITEL in March 1993",
@@ -2490,6 +2803,18 @@ _SECTION7_TENSED_CHECKS = [
         "fracas_258_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (UseV exist_V) in1992_Adv)))",
         "ITEL existed in 1992",
+    ),
+    (
+        # Bare "APCOM signed the contract", no "yesterday" adverbial - the
+        # real theorem's own `signedOn (todayDay - 1)`/`signedOn 13`
+        # relates this predicate to literal day numbers (14, 13) read
+        # directly off Problems.lean's own English ("Today is Saturday,
+        # July 14th"), not derived from any GF tree (same move as 252's
+        # own hardcoded "1996" literal) - this tree supplies only the
+        # predicate's name, not the day arithmetic itself.
+        "fracas_260_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
+        "APCOM signed the contract",
     ),
     (
         "fracas_261_premise1",
@@ -2502,9 +2827,25 @@ _SECTION7_TENSED_CHECKS = [
         "before Anderson left Smith left",
     ),
     (
+        # 261's own second premise - "Jones left before Anderson left" -
+        # was missing from this suite even though it's a real, independent
+        # FraCaS premise (not a synthesized fact): main=Jones (earlier),
+        # embedded=Anderson, same before_Subj convention as premise1.
+        "fracas_261_premise2",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN anderson_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V))))",
+        "before Anderson left Jones left",
+    ),
+    (
         "fracas_262_premise1",
         "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
         "after Jones left Smith left",
+    ),
+    (
+        # Likewise 262's own real second premise - "Jones left after
+        # Anderson left" - previously missing.
+        "fracas_262_premise2",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN anderson_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V))))",
+        "after Anderson left Jones left",
     ),
     (
         "fracas_262_hypothesis",
@@ -2532,6 +2873,31 @@ _SECTION7_TENSED_CHECKS = [
         "Jones left",
     ),
     (
+        # Reused verbatim from fracas_261_premise1 ("Smith left before Jones
+        # left" paraphrased as "before Jones left Smith left") - byte-
+        # identical tree, already GF-toolchain-confirmed under that id.
+        "fracas_264_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "before Jones left Smith left",
+    ),
+    (
+        # Reused verbatim from fracas_262_premise1 ("Smith left after Jones
+        # left" paraphrased as "after Jones left Smith left") - byte-
+        # identical tree, already GF-toolchain-confirmed under that id.
+        "fracas_265_premise3",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "after Jones left Smith left",
+    ),
+    (
+        # "Jones left before Smith left" (main=Jones, earlier; subordinate
+        # =Smith) - a genuinely new tree (not a byte-identical reuse of
+        # any sibling's own), confirmed via direct GF-toolchain linearize
+        # before being registered.
+        "fracas_266_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V))))",
+        "before Smith left Jones left",
+    ),
+    (
         "fracas_267_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
         "Jones revised the contract",
@@ -2552,6 +2918,15 @@ _SECTION7_TENSED_CHECKS = [
         "after Jones revised the contract Smith revised the contract",
     ),
     (
+        # "Jones revised the contract after Smith did" (main=Jones, later;
+        # subordinate=Smith) - same subject arrangement as 267's own
+        # premise3, connective flipped to after_Subj; genuinely new,
+        # confirmed via direct GF-toolchain linearize before registering.
+        "fracas_268_premise3",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))))))",
+        "after Smith revised the contract Jones revised the contract",
+    ),
+    (
         "fracas_269_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V)))",
         "Smith swam",
@@ -2562,9 +2937,19 @@ _SECTION7_TENSED_CHECKS = [
         "Jones swam",
     ),
     (
+        # "Smith swam before Jones swam" (main=Smith, earlier; subordinate=
+        # Jones) - this grammar's AdvS/SubjS combinator always fronts the
+        # before/after-marked clause, so the correct tree puts the TRUE
+        # subordinate subject (Jones) in SubjS and the TRUE main subject
+        # (Smith) in the outer slot, even though that reorders the surface
+        # text relative to Problems.lean's own (matrix-first) wording - the
+        # same paraphrase-not-transcription convention already used by
+        # 267's own premise3 (confirmed by direct GF-toolchain linearize
+        # cross-check against the real theorem's own stated hypothesis
+        # direction for 270, the sibling that does have a real theorem).
         "fracas_269_premise3",
-        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV swim_V))))",
-        "before Smith swam Jones swam",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV swim_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V))))",
+        "before Jones swam Smith swam",
     ),
     (
         "fracas_269_hypothesis",
@@ -2577,9 +2962,13 @@ _SECTION7_TENSED_CHECKS = [
         "Smith swam to the shore",
     ),
     (
+        # "Smith swam to the shore before Jones swam to the shore" (main=
+        # Smith, earlier; subordinate=Jones) - see 269_premise3's own
+        # comment just above for why Jones (the true subordinate) goes in
+        # SubjS and Smith (the true main subject) goes in the outer slot.
         "fracas_270_premise3",
-        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N))))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N)))))))",
-        "before Smith swam to the shore Jones swam to the shore",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N))))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N)))))))",
+        "before Jones swam to the shore Smith swam to the shore",
     ),
     (
         "fracas_270_hypothesis",
@@ -2677,9 +3066,21 @@ _SECTION7_TENSED_CHECKS = [
         "Smith wrote a report in two hours",
     ),
     (
+        # Reused verbatim from fracas_284_premise1 - same sentence.
+        "fracas_286_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inTwoHours_Adv)))",
+        "Smith wrote a report in two hours",
+    ),
+    (
         "fracas_287_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inOneHour_Adv)))",
         "Smith wrote a report in one hour",
+    ),
+    (
+        # Reused verbatim from fracas_284_premise1 - same sentence.
+        "fracas_288_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inTwoHours_Adv)))",
+        "Smith wrote a report in two hours",
     ),
     (
         "fracas_288_hypothesis",
@@ -2712,6 +3113,13 @@ _SECTION7_TENSED_CHECKS = [
         "Smith ran his business",
     ),
     (
+        # Reused verbatim from fracas_294_hypothesis - 302's own hypothesis
+        # ("Smith ran his own business.") is the same bare restatement.
+        "fracas_302_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN business_N)))))",
+        "Smith ran his business",
+    ),
+    (
         "fracas_295_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN chain_N) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (UseN business_N)))))) inTwoYears_Adv)))",
         "Smith owned a chain of businesses in two years",
@@ -2728,6 +3136,24 @@ _SECTION7_TENSED_CHECKS = [
     ),
     (
         "fracas_298_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forAYear_Adv)))",
+        "Smith lived in Birmingham for a year",
+    ),
+    (
+        # Reused verbatim from fracas_298_premise - 299's own premise is
+        # the same sentence.
+        "fracas_299_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forTwoYears_Adv)))",
+        "Smith lived in Birmingham for two years",
+    ),
+    (
+        # Reused verbatim from fracas_298_hypothesis - 299's own hypothesis
+        # ("for exactly a year") isn't separately modeled (no combinator
+        # for "exactly" on a measure-phrase adverbial), but the duration
+        # literal (1) this id's own arithmetic needs is the same either
+        # way, matching this generator's existing precedent of reusing a
+        # tree purely for a literal/name it doesn't itself supply.
+        "fracas_299_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forAYear_Adv)))",
         "Smith lived in Birmingham for a year",
     ),
@@ -2780,6 +3206,38 @@ _SECTION7_TENSED_CHECKS = [
         "fracas_308_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV write_V) (PrepNP to_Prep (DetCN (DetQuant IndefArt NumSg) (UseN representativeMasc_N)))) everyWeek_Adv)))",
         "Smith wrote to a representative every week",
+    ),
+    (
+        # Added in a later round (problem 319): "paid the mortgage
+        # interest on the office for eight years" - drops the "before
+        # APCOM bought its present office building" event-anchoring
+        # entirely (the real theorem never ties yearsPrev/yearsPresent to
+        # any event-ordering structure, only to these two literal
+        # durations), same "ignore the premise's extra wrapper" move as
+        # 258's own event-anchoring simplification.
+        "fracas_319_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (AdvVP (ComplSlash (SlashV2a pay_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (CompoundCN (UseN mortgage_N) (UseN interest_N)) (PrepNP on_Prep (DetCN (DetQuant DefArt NumSg) (UseN office_N)))))) forEightYears_Adv)))",
+        "APCOM paid the mortgage interest on the office for eight years",
+    ),
+    (
+        "fracas_319_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN apcom_PN) (AdvVP (ComplSlash (SlashV2a pay_V2) (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN mortgage_N) (UseN interest_N)))) forMoreThanTenYears_Adv)))",
+        "APCOM has paid the mortgage interest for more than ten years",
+    ),
+    (
+        # Added in a later round (problem 321): "has visited Florence
+        # twice" / "will visit Florence twice" - "visit" stands in for
+        # the idiomatic "been to" (`be_V` isn't in scope as a plain
+        # intransitive in this dictionary, checked directly), semantically
+        # equivalent for this id's own purposes.
+        "fracas_321_premise",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a visit_V2) (UsePN florence_PN)) twice_Adv)))",
+        "Smith has visited Florence twice",
+    ),
+    (
+        "fracas_321_hypothesis",
+        "linearize UttS (UseCl (TTAnt TFut ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a visit_V2) (UsePN florence_PN)) twice_Adv)))",
+        "Smith will visit Florence twice",
     ),
 ]
 
@@ -2839,6 +3297,13 @@ _SECTION8_TENSED_CHECKS = [
         "fracas_331_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
         "Smith left the meeting",
+    ),
+    (
+        # Reused verbatim from fracas_331_premise - 332's own premise is
+        # the same sentence.
+        "fracas_332_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN jones_PN))) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "Smith and Jones left the meeting",
     ),
     (
         "fracas_332_hypothesis",
@@ -2923,6 +3388,13 @@ _SECTION9_TENSED_CHECKS = [
         "ITEL managed to win the contract in 1992",
     ),
     (
+        # Reused verbatim from fracas_334_hypothesis - 336's own
+        # hypothesis is the same sentence.
+        "fracas_336_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) in1992_Adv)))",
+        "ITEL won the contract in 1992",
+    ),
+    (
         "fracas_337_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplVV try_VV (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) in1992_Adv)))",
         "ITEL tried to win the contract in 1992",
@@ -2958,9 +3430,23 @@ _SECTION9_TENSED_CHECKS = [
         "Smith saw Jones's heart to beat",
     ),
     (
+        # Reused verbatim from fracas_340_premise1 - 342's own (sole)
+        # premise is the same sentence.
+        "fracas_342_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN))))",
+        "Smith saw Jones to sign the contract",
+    ),
+    (
         "fracas_342_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
         "Jones signed the contract",
+    ),
+    (
+        # Reused verbatim from fracas_340_premise1 - 343's own premise1 is
+        # the same sentence.
+        "fracas_343_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN))))",
+        "Smith saw Jones to sign the contract",
     ),
     (
         "fracas_343_premise2",
@@ -2991,6 +3477,265 @@ _SECTION9_TENSED_CHECKS = [
         "fracas_346_premise",
         "linearize UttS (ConjS or_Conj (BaseS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a cross_out_V2) (DetCN (DetQuant DefArt NumSg) (AdjCN (PositA crucial_A) (UseN clause_N))))) (UsePN jones_PN))))))",
         "Smith saw Jones to sign the contract or Smith saw Jones to cross out the crucial clause",
+    ),
+]
+
+# Hypothesis trees for problems whose premise(s) already had a
+# confirmed tree above but whose hypothesis never did - closing that
+# gap is what scripts/gen_gf_cross_check.py's own generated file
+# (GFCrossCheckBatch.lean) needs to cross-check more problems fully
+# end to end, rather than just their premises. Each one reuses the
+# exact restrictor/VP subtrees the corresponding premise(s) already
+# confirmed above (so translate.py's own predicate naming - a pure
+# function of an English-word subtree - comes out identical on both
+# sides), recombined with whichever quantifier/subject the real
+# fracas_NNN theorem's own hypothesis actually needs. Confirmed via
+# this project's local GF toolchain before being added here (not
+# merely asserted) - see gf/NOTES.md for how that toolchain was set up.
+BASE_CHECKS += [
+    (
+        "fracas_001_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN italian_N)) "
+        "(ComplSlash (SlashV2a become_V2) (DetCN worlds_Det (AdjCN (PositA greatest_A) (UseN tenor_N))))",
+        "an Italian becomes the world's greatest tenor",
+    ),
+    (
+        "fracas_004_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN tenor_N))) "
+        "(ComplVV want_VV (UseComp (CompAP (PositA great_A))))",
+        "some Italian tenors want to be great",
+    ),
+    (
+        "fracas_007_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA swedish_A)))",
+        "some great tenors are Swedish",
+    ),
+    (
+        "fracas_008_hypothesis",
+        "linearize PredVP (DetCN many_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA german_A)))",
+        "many great tenors are German",
+    ),
+    (
+        "fracas_009_hypothesis",
+        "linearize PredVP (DetCN several_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA british_A)))",
+        "several great tenors are British",
+    ),
+    (
+        "fracas_010_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA italian_A)))",
+        "some great tenors are Italian",
+    ),
+    (
+        "fracas_011_hypothesis",
+        "linearize PredVP (DetCN aFew_Det (AdjCN (PositA great_A) (UseN tenor_N))) "
+        "(ComplSlash (SlashV2a sing_V2) (MassNP (AdjCN (PositA popular_A) (UseN music_N))))",
+        "a few great tenors sing popular music",
+    ),
+    (
+        "fracas_015_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN tenor_N)) "
+        "(ComplSlash (SlashV2a take_V2) (AdvNP (MassNP (UseN part_N)) "
+        "(PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))",
+        "some tenors take part in the concert",
+    ),
+    (
+        "fracas_018_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_021_hypothesis",
+        "linearize PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN member_N) (UseN state_N)))))) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "all residents of member states can travel freely within Europe",
+    ),
+    (
+        "fracas_026_hypothesis",
+        "linearize PredVP (DetCN most_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "most Europeans can travel freely within Europe",
+    ),
+    (
+        "fracas_027_hypothesis",
+        "linearize PredVP (DetCN aFew_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "a few committee members are from Scandinavia",
+    ),
+    (
+        "fracas_049_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN scandinavian_N)) "
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "some Scandinavians win a Nobel prize",
+    ),
+    (
+        "fracas_097_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumPl) (CompoundCN (UseN software_N) (UseN fault_N))) "
+        "(AdvVP (PassV2 blame_V2) (PrepNP for_Prep (DetCN (DetQuant DefArt NumSg) "
+        "(CompoundCN (UseN system_N) (UseN failure_N)))))",
+        "software faults are blamed for the system failure",
+    ),
+    (
+        "fracas_006_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (AdAP really_AdA (PositA great_A)) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA modest_A)))",
+        "some really great tenors are modest",
+    ),
+    (
+        "fracas_014_hypothesis",
+        "linearize PredVP (UsePN pavarotti_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) "
+        "(RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (AdvVP (UseV come_V) cheap_Adv)))))))",
+        "Pavarotti is a leading tenor that comes cheap",
+    ),
+    (
+        "fracas_002_premise2",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men are great tenors",
+    ),
+    (
+        "fracas_002_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men want to be great tenors",
+    ),
+    (
+        "fracas_003_premise2",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men are great tenors",
+    ),
+    (
+        "fracas_003_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (PositA italian_A) (UseN man_N))) "
+        "(ComplVV want_VV (UseComp (CompCN (AdjCN (PositA great_A) (UseN tenor_N)))))",
+        "some Italian men want to be great tenors",
+    ),
+    (
+        "fracas_005_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (AdjCN (AdAP really_AdA (PositA ambitious_A)) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA italian_A)))",
+        "some really ambitious tenors are Italian",
+    ),
+    (
+        "fracas_013_premise1",
+        "linearize PredVP (DetCN every_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA excellent_A)))",
+        "every leading tenor is excellent",
+    ),
+    (
+        "fracas_013_hypothesis",
+        "linearize PredVP (DetCN every_Det (AdjCN (PositA leading_A) (UseN tenor_N))) "
+        "(UseComp (CompAP (PositA indispensable_A)))",
+        "every leading tenor is indispensable",
+    ),
+    (
+        "fracas_017_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt NumSg) (UseN irishman_N)) "
+        "(ComplSlash (SlashV2a win_V2) (DetCN (DetQuant IndefArt NumSg) (UseN nobelPrize_N)))",
+        "an Irishman wins a Nobel prize",
+    ),
+    (
+        "fracas_019_premise2",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) (UseComp (CompCN (UseN person_N)))",
+        "every European is a person",
+    ),
+    (
+        "fracas_019_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'person_N')} {_CAN_TRAVEL_FREELY_VP}",
+        "every person that has the right to live in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_019_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_020_premise2",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) (UseComp (CompCN (UseN person_N)))",
+        "every European is a person",
+    ),
+    (
+        "fracas_020_premise3",
+        f"linearize PredVP {_relative_subject('every_Det', 'person_N')} {_CAN_TRAVEL_FREELY_VP}",
+        "every person that has the right to live in Europe can travel freely within Europe",
+    ),
+    (
+        "fracas_020_hypothesis",
+        "linearize PredVP (DetCN every_Det (UseN european_N)) "
+        "(ComplVV can_VV (AdvVP (AdvVP (UseV travel_V) (PositAdvAdj free_A)) (PrepNP within_Prep (UsePN europe_PN))))",
+        "every European can travel freely within Europe",
+    ),
+    (
+        "fracas_055_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN survey_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some delegates finish the survey on time",
+    ),
+    (
+        "fracas_057_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a get_V2) (AdvNP (PPartNP (DetCN (DetQuant DefArt NumPl) (UseN result_N)) publish_V2) "
+        "(PrepNP in_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) "
+        "(AdjCN (PositA national_A) (UseN newspaper_N)))))))",
+        "some delegates get the results published in major national newspapers",
+    ),
+    (
+        "fracas_059_hypothesis",
+        "linearize PredVP (DetCN somePl_Det (CompoundCN (UseN committee_N) (UseN member_N))) "
+        "(UseComp (CompAdv (PrepNP from_Prep (UsePN scandinavia_PN))))",
+        "some committee members are from Scandinavia",
+    ),
+    (
+        "fracas_063_hypothesis",
+        "linearize PredVP (DetCN (DetQuant IndefArt (NumCard (AdNum at_least_AdN "
+        "(NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN commissioner_N)) "
+        "(AdvVP (ComplSlash (SlashV2a spend_V2) (MassNP (UseN time_N))) (PrepNP at_Prep (MassNP (UseN home_N))))",
+        "at least three commissioners spend time at home",
+    ),
+    (
+        "fracas_069_premise2",
+        "linearize PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) "
+        "(AdjCN (PositA western_A) (UseN country_N))))))) "
+        "(UseComp (CompNP (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+        "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N)))))))",
+        "all residents of major Western countries are residents of Western countries",
+    ),
+    (
+        "fracas_038_premise",
+        "linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))",
+        "no delegate finishes the report",
+    ),
+    (
+        "fracas_038_hypothesis",
+        "linearize PredVP (DetCN someSg_Det (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some delegate finishes the report on time",
+    ),
+    (
+        "fracas_070_premise",
+        "linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "no delegate finishes the report on time",
+    ),
+    (
+        "fracas_070_hypothesis",
+        "linearize PredVP (DetCN someSg_Det (AdjCN (PositA scandinavian_A) (UseN delegate_N))) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some Scandinavian delegate finishes the report on time",
     ),
 ]
 
