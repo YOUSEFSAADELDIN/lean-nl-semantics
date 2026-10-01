@@ -45,10 +45,34 @@ also here yesterday", no corresponding FraCaS sentence); and
 127/134/135 (two-sorted `{Person Machine}`/`{A B}` domains - this
 generator hardcodes a single domain `{A : Type*}` throughout) and 137
 (needs a `Fintype.card` premise plus one predicate bundling five
-separate FraCaS sentences) are structurally blocked - see
-`scripts/gen_gf_cross_check.py` for exactly how, including the
-non-obvious exclusions it found and documents rather than silently
-omitting: problems 31 and 46 each need an aux hypothesis (like
+separate FraCaS sentences) are structurally blocked. Section 4
+(ellipsis, 142-196) adds 23 more ids, all via `CUSTOM_BUILD`: per
+Ellipsis.lean's own approach note, this project never models
+ellipsis RESOLUTION itself, only the already-resolved content, so
+almost every real theorem is a trivial restatement or conjunction-
+projection over bare `Prop` atoms (one per whole resolved
+sentence - "John spoke to Mary" fuses to one nullary fact, not a
+domain-quantified predicate at all) or a Skolemized/ternary single-
+domain shape already established by Section 3's own builders.
+Because that arrow-count check alone isn't sufficient evidence here
+(it let two structurally WRONG theorems through before this was
+caught - a single-domain guess at fracas_150's own three-sorted
+`{Person City Vehicle}` domain, and a `Some`/`Exactly`-quantified
+guess at fracas_196's own direct `∃`/`∀` over a two-sorted
+`{Person Report}` domain), every Section 4 id goes through
+`CUSTOM_BUILD` or not at all. Not covered: 150/151/152/153/196
+(three- or two-sorted domains, the same blocker as 127/134/135);
+163/171/172/173/174/191-195 (genuine grammar gaps - embedded
+questions, relativizing a quantificational pronoun NP, a passive-
+impersonal-plus-reciprocal construction with no combinator -
+confirmed via `run_gf_tests.py`'s own comment on exactly these
+ids); 168/169/170/175/176/179/180 (each needs a genuinely new GF
+tree or an `AdvS`-headed conditional top level not yet built,
+left for a future round); and 143/156/158/161/174/177/181/184/
+188/192/194 (countermodel-only, already excluded automatically).
+`scripts/gen_gf_cross_check.py` documents the non-obvious
+exclusions it found rather than silently omitting them, including
+earlier rounds': problems 31 and 46 each need an aux hypothesis (like
 17/23-25/29, or 38/70's reverse-direction variant) but are excluded
 because their own premise and hypothesis trees collide on the same
 generated predicate name (`translate.py` doesn't read determiners
@@ -232,6 +256,10 @@ theorem fracas_097_from_gf {A : Type*} (softwareFault blameSystemFailure : A →
     Some softwareFault blameSystemFailure → Some softwareFault blameSystemFailure :=
   fun h1 => fracas_097 _ _ h1
 
+theorem fracas_099_from_gf {A : Type*} (clientDemonstration impressSystemPerformance : A → Prop) (smith : A) :
+    Every clientDemonstration impressSystemPerformance → clientDemonstration smith → impressSystemPerformance smith :=
+  fun h1 h2 => fracas_099 _ _ _ h1 h2
+
 theorem fracas_103_from_gf {A : Type*} (apcomManager haveCompanyCar : A → Prop) (jones : A) :
     Every apcomManager haveCompanyCar → apcomManager jones → haveCompanyCar jones :=
   fun h1 h2 => fracas_103 _ _ _ h1 h2
@@ -311,3 +339,95 @@ theorem fracas_139_from_gf {A : Type*} (awardLargePayrise : A → A → Prop) :
 theorem fracas_140_from_gf {A : Type*} (john bill : A) (said : A → Prop → Prop) (hurt : A → A → Prop) :
     said john (hurt bill bill) → said john (hurt bill bill) :=
   fun h => fracas_140 _ _ _ _ h
+
+theorem fracas_142_from_gf (johnSpeakMary billSpeakMary : Prop) :
+    johnSpeakMary ∧ billSpeakMary → billSpeakMary :=
+  fun h => fracas_142 _ _ h
+
+theorem fracas_145_from_gf (billSpeakMaryAtFiveOClock : Prop) :
+    billSpeakMaryAtFiveOClock → billSpeakMaryAtFiveOClock :=
+  fun h => fracas_145 _ h
+
+theorem fracas_146_from_gf (billSpeakMary : Prop) :
+    billSpeakMary → billSpeakMary :=
+  fun h => fracas_146 _ h
+
+theorem fracas_147_from_gf (billSpeakMaryOnMonday : Prop) :
+    ¬ billSpeakMaryOnMonday → ¬ billSpeakMaryOnMonday :=
+  fun h => fracas_147 _ h
+
+theorem fracas_148_from_gf (billSpeakMary : Prop) :
+    billSpeakMary → billSpeakMary :=
+  fun h => fracas_148 _ h
+
+theorem fracas_149_from_gf {A : Type*} (student speakMary : A → Prop) :
+    Every student speakMary → Every student speakMary :=
+  fun h => fracas_149 _ _ h
+
+theorem fracas_155_from_gf {A : Type*} (car : A → Prop) (own : A → A → Prop) (john bill : A) :
+    (∃ c, car c ∧ own john c) ∧ (∃ c, car c ∧ own bill c) → ∃ c, car c ∧ own bill c :=
+  fun h => fracas_155 _ _ _ _ h
+
+theorem fracas_157_from_gf {A : Type*} (car red blue : A → Prop) (own : A → A → Prop) (john bill : A) :
+    (∃ c, car c ∧ red c ∧ own john c) ∧ (∃ c, car c ∧ blue c ∧ own bill c) → ∃ c, car c ∧ blue c ∧ own bill c :=
+  fun h => fracas_157 _ _ _ _ _ _ h
+
+theorem fracas_159_from_gf {A : Type*} (car red fast : A → Prop) (own : A → A → Prop) (john bill : A) :
+    (∃ c, car c ∧ red c ∧ own john c) ∧ (∃ c, car c ∧ fast c ∧ own bill c) → ∃ c, car c ∧ fast c ∧ own bill c :=
+  fun h => fracas_159 _ _ _ _ _ _ h
+
+theorem fracas_160_from_gf {A : Type*} (car red fast : A → Prop) (own : A → A → Prop) (john bill : A) :
+    (∃ c, car c ∧ red c ∧ own john c) ∧ (∃ c, car c ∧ fast c ∧ red c ∧ own bill c) → ∃ c, car c ∧ fast c ∧ red c ∧ own bill c :=
+  fun h => fracas_160 _ _ _ _ _ _ h
+
+theorem fracas_162_from_gf {A : Type*} (car fast red slow : A → Prop) (own : A → A → Prop) (john bill : A) :
+    (∃ c, car c ∧ fast c ∧ red c ∧ own john c) ∧ (∃ c, car c ∧ slow c ∧ red c ∧ own bill c) → ∃ c, car c ∧ slow c ∧ red c ∧ own bill c :=
+  fun h => fracas_162 _ _ _ _ _ _ _ h
+
+theorem fracas_164_from_gf (johnSpeakMary johnSpeakSue : Prop) :
+    johnSpeakMary ∧ johnSpeakSue → johnSpeakSue :=
+  fun h => fracas_164 _ _ h
+
+theorem fracas_165_from_gf (johnSpeakMary johnSpeakMaryOnFriday : Prop) :
+    johnSpeakMary ∧ johnSpeakMaryOnFriday → johnSpeakMaryOnFriday :=
+  fun h => fracas_165 _ _ h
+
+theorem fracas_166_from_gf (johnSpeakMaryOnThursday johnSpeakMaryOnFriday : Prop) :
+    johnSpeakMaryOnThursday ∧ johnSpeakMaryOnFriday → johnSpeakMaryOnFriday :=
+  fun h => fracas_166 _ _ h
+
+theorem fracas_167_from_gf {A : Type*} [Fintype A] (womanWorkSalesDepartment : A → Prop) :
+    Exactly 1 (fun _ : A => True) womanWorkSalesDepartment → ¬ Exactly 2 (fun _ : A => True) womanWorkSalesDepartment :=
+  fun h => fracas_167 _ h
+
+theorem fracas_178_from_gf (johnWriteReport billPeterWriteReport : Prop) :
+    johnWriteReport ∧ billPeterWriteReport → billPeterWriteReport :=
+  fun h => fracas_178 _ _ h
+
+theorem fracas_182_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (smith jones : A) :
+    (represent smith (companyOf smith)) ∧ (represent jones (companyOf jones)) → represent jones (companyOf jones) :=
+  fun h => fracas_182 _ _ _ _ h
+
+theorem fracas_183_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (smith jones : A) :
+    (represent smith (companyOf smith)) ∧ (represent jones (companyOf smith)) → represent jones (companyOf smith) :=
+  fun h => fracas_183 _ _ _ _ h
+
+theorem fracas_185_from_gf {A : Type*} (claimedCosted : A → A → A → Prop) (smith jones : A) :
+    (claimedCosted smith smith smith) ∧ (claimedCosted jones jones jones) → claimedCosted jones jones jones :=
+  fun h => fracas_185 _ _ _ h
+
+theorem fracas_186_from_gf {A : Type*} (claimedCosted : A → A → A → Prop) (smith jones : A) :
+    (claimedCosted smith smith smith) ∧ (claimedCosted jones jones smith) → claimedCosted jones jones smith :=
+  fun h => fracas_186 _ _ _ h
+
+theorem fracas_187_from_gf {A : Type*} (claimedCosted : A → A → A → Prop) (smith jones : A) :
+    (claimedCosted smith smith smith) ∧ (claimedCosted jones smith smith) → claimedCosted jones smith smith :=
+  fun h => fracas_187 _ _ _ h
+
+theorem fracas_189_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (john mary : A) (man woman : A → Prop) :
+    (man john ∧ woman mary) → (represent john (companyOf john) ∧ represent mary (companyOf mary)) → represent mary (companyOf mary) :=
+  fun _ h => fracas_189 _ _ _ _ _ _ h
+
+theorem fracas_190_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (john mary : A) (man woman : A → Prop) :
+    (man john ∧ woman mary) → (represent john (companyOf john) ∧ represent mary (companyOf john)) → represent mary (companyOf john) :=
+  fun _ h => fracas_190 _ _ _ _ _ _ h

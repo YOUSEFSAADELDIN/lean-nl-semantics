@@ -1835,9 +1835,22 @@ BASE_CHECKS += [
         "Bill owns a fast car",
     ),
     (
+        # fracas_159's/160's own gold premise 1 ("John owns a red car")
+        # is identical to fracas_157's own premise 1 - reusing its
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_159_premise1",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA red_A) (UseN car_N))))",
+        "John owns a red car",
+    ),
+    (
         "fracas_160_hypothesis",
         "linearize PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA fast_A) (AdjCN (PositA red_A) (UseN car_N)))))",
         "Bill owns a fast red car",
+    ),
+    (
+        "fracas_160_premise1",
+        "linearize PredVP (UsePN john_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA red_A) (UseN car_N))))",
+        "John owns a red car",
     ),
     (
         "fracas_162_premise1",
@@ -1885,6 +1898,14 @@ BASE_CHECKS += [
         "Jones represents Smith's company",
     ),
     (
+        # fracas_183's own gold premise ("Smith represents his company")
+        # is identical to fracas_182's own premise - reusing its
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_183_premise",
+        "linearize PredVP (UsePN smith_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN company_N)))",
+        "Smith represents his company",
+    ),
+    (
         "fracas_184_hypothesis",
         "linearize PredVP (UsePN smith_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN jones_PN)) NumSg) (UseN company_N)))",
         "Smith represents Jones's company",
@@ -1908,6 +1929,20 @@ BASE_CHECKS += [
         "fracas_190_hypothesis",
         "linearize PredVP (UsePN mary_PN) (ComplSlash (SlashV2a represent_V2) (DetCN (DetQuant (GenNP (UsePN john_PN)) NumSg) (UseN company_N)))",
         "Mary represents John's company",
+    ),
+    (
+        # fracas_190's own gold premise 1a/1b ("John is a man"/"Mary is
+        # a woman", the gender-agreement distractor) is identical to
+        # fracas_189's own - reusing its already-confirmed trees rather
+        # than re-linearizing them.
+        "fracas_190_premise1a",
+        "linearize PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN man_N))))",
+        "John is a man",
+    ),
+    (
+        "fracas_190_premise1b",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN woman_N))))",
+        "Mary is a woman",
     ),
 ]
 
@@ -2011,6 +2046,28 @@ _SECTION4_TENSED_CHECKS = [
         "John spoke to Mary on Thursday",
     ),
     (
+        # fracas_164's/165's own gold premise 1 ("John spoke to Mary", the
+        # unelided antecedent both ellipses resolve against) is identical
+        # to fracas_142's own premise 1 - reusing its already-confirmed
+        # tree rather than re-linearizing it.
+        "fracas_164_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "John spoke to Mary",
+    ),
+    (
+        "fracas_165_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN)))))",
+        "John spoke to Mary",
+    ),
+    (
+        # fracas_166's own gold hypothesis ("John spoke to Mary on
+        # Friday") is identical to fracas_165's own hypothesis - reusing
+        # its already-confirmed tree rather than re-linearizing it.
+        "fracas_166_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV speak_V) (PrepNP to_Prep (UsePN mary_PN))) onFriday_Adv)))",
+        "John spoke to Mary on Friday",
+    ),
+    (
         "fracas_169",
         "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a find_V2) (UsePN mary_PN))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a find_V2) (UsePN mary_PN)))))",
         "before Bill found Mary John found Mary",
@@ -2056,9 +2113,23 @@ _SECTION4_TENSED_CHECKS = [
         "Jones claimed that he had costed Smith's proposal",
     ),
     (
+        # fracas_186's/187's own gold premise ("Smith claimed that he
+        # had costed his proposal") is identical to fracas_185's own
+        # premise - reusing its already-confirmed tree rather than
+        # re-linearizing it.
+        "fracas_186_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN proposal_N))))))))",
+        "Smith claimed that he had costed his proposal",
+    ),
+    (
         "fracas_187_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (GenNP (UsePN smith_PN)) NumSg) (UseN proposal_N))))))))",
         "Jones claimed that Smith had costed Smith's proposal",
+    ),
+    (
+        "fracas_187_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplVS claim_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePron he_Pron) (ComplSlash (SlashV2a cost_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN proposal_N))))))))",
+        "Smith claimed that he had costed his proposal",
     ),
     (
         "fracas_196_premise1",
