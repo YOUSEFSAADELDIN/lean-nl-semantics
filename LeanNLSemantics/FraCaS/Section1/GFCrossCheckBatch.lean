@@ -223,8 +223,26 @@ comment on exactly this range); 323/324/325 (fully abstract
 `{A : Type*}` facts with no literal number or tie to any specific
 named individual in their own Lean content at all - structurally
 blocked the same way the two-sorted-domain problems are, not just
-hard). The rest of Section 7 (307-310 aside, already excluded) is
-not yet surveyed.
+hard). 307 (a universal instantiated at a specific month) adds one
+more id, reusing `Every` from `FraCaS.Section1.GQ` the same
+quantified-standard shape as Section 6's 246/248, generalized to
+an abstract `Month` domain; its own restrictor name is hand-
+assembled from the premise's literal year (translate_cl's own
+pipeline has no notion of a month-typed restrictor), but every
+piece is still genuinely read off the real trees, the same
+discipline as 288's own invented shape. 308's own wide-scope
+reading (`existsRepWrittenEveryWeek`) is confirmed structurally
+blocked rather than just hard: its own comment states the premise
+is "stipulated as the premise's content directly" - the same
+sentence as the narrow reading, under a non-compositional scope
+assignment no GF tree distinguishes, the same class as problems
+101/102's own non-compositional identification. 309/310 are
+FraCaS's own degenerate problems, already skipped by
+`FraCaS/Types.lean`. This completes this generator's own pass over
+all of Section 7 (251-325): every id is now either emitted,
+countermodel-excluded, a skipped degenerate problem, or
+individually confirmed structurally/grammatically blocked rather
+than merely unattempted.
 `scripts/gen_gf_cross_check.py` documents the non-obvious
 exclusions it found rather than silently omitting them, including
 earlier rounds': problems 31 and 46 each need an aux hypothesis (like
@@ -802,6 +820,10 @@ theorem fracas_303_from_gf (hours : Nat) :
 theorem fracas_306_from_gf (smithDiscoverNewSpecies : Prop) :
     smithDiscoverNewSpecies → smithDiscoverNewSpecies :=
   fun h => fracas_306 _ h
+
+theorem fracas_307_from_gf {Month : Type*} (inYear1994 itelSendProgressReport : Month → Prop) (july1994 : Month) :
+    Every inYear1994 itelSendProgressReport → inYear1994 july1994 → itelSendProgressReport july1994 :=
+  fun h hj => fracas_307 _ _ _ h hj
 
 theorem fracas_319_from_gf (yearsPrev yearsPresent : Nat) :
     yearsPrev = 8 → yearsPresent > 10 → yearsPrev + yearsPresent ≥ 15 :=

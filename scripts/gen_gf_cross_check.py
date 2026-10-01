@@ -2478,6 +2478,43 @@ def _build_fracas_321(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+def _build_fracas_307(roles: dict) -> "tuple[str, str, str]":
+    """"In 1994 ITEL sent a progress report every month." -> "ITEL sent a
+    progress report in July 1994." Confirmed by reading the real
+    theorem's own stated type directly (`Every inYear1994 sentReport ->
+    inYear1994 july1994 -> sentReport july1994`) - a universal
+    instantiated at a specific month, the same `Every`-quantified-
+    standard shape as Section 6's 246/248 (reusing `Every` from
+    `FraCaS.Section1.GQ`), generalized from a named individual to an
+    abstract `Month` domain. `sentReport`'s own name comes straight from
+    the premise's core clause (stripped of both adverbials, same move as
+    288's own core-clause reassembly); the individual name comes from the
+    hypothesis's own "in July 1994" adverb; the restrictor name
+    (`inYear1994`) is built from the literal year read off the premise's
+    own "in 1994" adverb via `_year_from_adv` - a hand-assembled name
+    (translate_cl's own generic pipeline has no notion of a month-typed
+    restrictor), but every piece of it is still genuinely read off the
+    real premise/hypothesis trees, the same discipline as 288's own
+    invented shape. Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    core = p.args[1].args[0].args[0]
+    core_cl = App("PredVP", [p.args[0], core])
+    scope_name = camel_name(_leaf_words(core_cl))
+    year = _year_from_adv(p.args[1].args[1].head)
+    restrictor_name = f"inYear{year}"
+    m = re.match(r"^(?:in|on|for)(\w+)_Adv$", hyp.args[1].args[1].head)
+    raw = m.group(1)
+    individual_name = raw[:1].lower() + raw[1:]
+    binders = f"{{Month : Type*}} ({restrictor_name} {scope_name} : Month → Prop) ({individual_name} : Month)"
+    arrow_chain = (
+        f"Every {restrictor_name} {scope_name} → {restrictor_name} {individual_name} → "
+        f"{scope_name} {individual_name}"
+    )
+    proof = "fun h hj => fracas_307 _ _ _ h hj"
+    return binders, arrow_chain, proof
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
@@ -2675,6 +2712,7 @@ CUSTOM_BUILD = {
     306: _build_fracas_306,
     319: _build_fracas_319,
     321: _build_fracas_321,
+    307: _build_fracas_307,
 }
 
 
@@ -3040,8 +3078,26 @@ def main() -> None:
         "`{A : Type*}` facts with no literal number or tie to any specific",
         "named individual in their own Lean content at all - structurally",
         "blocked the same way the two-sorted-domain problems are, not just",
-        "hard). The rest of Section 7 (307-310 aside, already excluded) is",
-        "not yet surveyed.",
+        "hard). 307 (a universal instantiated at a specific month) adds one",
+        "more id, reusing `Every` from `FraCaS.Section1.GQ` the same",
+        "quantified-standard shape as Section 6's 246/248, generalized to",
+        "an abstract `Month` domain; its own restrictor name is hand-",
+        "assembled from the premise's literal year (translate_cl's own",
+        "pipeline has no notion of a month-typed restrictor), but every",
+        "piece is still genuinely read off the real trees, the same",
+        "discipline as 288's own invented shape. 308's own wide-scope",
+        "reading (`existsRepWrittenEveryWeek`) is confirmed structurally",
+        "blocked rather than just hard: its own comment states the premise",
+        "is \"stipulated as the premise's content directly\" - the same",
+        "sentence as the narrow reading, under a non-compositional scope",
+        "assignment no GF tree distinguishes, the same class as problems",
+        "101/102's own non-compositional identification. 309/310 are",
+        "FraCaS's own degenerate problems, already skipped by",
+        "`FraCaS/Types.lean`. This completes this generator's own pass over",
+        "all of Section 7 (251-325): every id is now either emitted,",
+        "countermodel-excluded, a skipped degenerate problem, or",
+        "individually confirmed structurally/grammatically blocked rather",
+        "than merely unattempted.",
         "`scripts/gen_gf_cross_check.py` documents the non-obvious",
         "exclusions it found rather than silently omitting them, including",
         "earlier rounds': problems 31 and 46 each need an aux hypothesis (like",
