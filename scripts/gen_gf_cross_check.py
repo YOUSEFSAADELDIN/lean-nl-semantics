@@ -188,6 +188,27 @@ BUNDLE_PROJECT = {114: 2, 115: 1, 116: 0}
 # "Mary has a workstation" was).
 SKOLEM_PROJECT = {117: (1, "verb"), 118: (1, "has"), 119: (1, "verb")}
 
+# fracas_123's own premise 2 ("They are on her desk") is, read on its
+# own, an un-translatable bare-pronoun subject ("they" has no
+# antecedent a single-sentence translator can resolve) - but its real
+# semantic content is exactly `_scope_aux`'s own shape: "they [=the
+# ones ITEL sent] are on her [=Smith's] desk" bridges premise 1's own
+# scope ("sent by ITEL") to the hypothesis's own scope ("on Smith's
+# desk"), confirmed by reading fracas_123's own stated type directly
+# (`Most reportsNeeded sentByItel -> (forall x, sentByItel x -> onDesk
+# x) -> Some reportsNeeded onDesk`). Maps an id to (which premise
+# position to synthesize, 1-based; which of _scope_aux/_restrict_aux/
+# their *_rev variants to synthesize it with) - synthesized from the
+# PRIOR premises and the hypothesis, the same two aux-fact builders
+# AUX_HYPOTHESIS already uses, just inserted as a PREMISE of its own
+# instead of appended before the hypothesis. The premise's own GF tree
+# (when one exists at all, as fracas_123_premise2 does) is never fed to
+# translate_cl for these ids. The third element is the quantifier word
+# the FINAL hypothesis is rebuilt with (see below) - "Some" for 123,
+# confirmed by reading its own stated conclusion `Some reportsNeeded
+# onDesk` directly.
+SYNTHESIZE_PREMISE = {123: (2, _scope_aux, "Some")}
+
 
 def load_base_checks():
     spec = importlib.util.spec_from_file_location(
@@ -383,12 +404,13 @@ def main() -> None:
     ]
 
     for idn in sorted(by_id):
-        # Section 3 scoped to 114-119 so far (the possessive-
-        # presupposition bundle, unbound and Skolem-function-bound) -
-        # raise this bound again when extending further into Section
-        # 3's harder constructions (cross-sentential variable sharing,
-        # cardinality anaphora, etc).
-        if idn > 119:
+        # Section 3 scoped to 114-123 so far (the possessive-
+        # presupposition bundle, unbound and Skolem-function-bound, plus
+        # 123's synthesized scope-entailment premise) - raise this bound
+        # again when extending further into Section 3's harder
+        # constructions (120-122's own shared-bound-variable/named-
+        # ternary-relation anaphora, cardinality anaphora, etc).
+        if idn > 123:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)
@@ -497,8 +519,12 @@ def main() -> None:
             )
             continue
 
+        synth_i = SYNTHESIZE_PREMISE[idn][0] if idn in SYNTHESIZE_PREMISE else None
         try:
-            translated_premises = [translate_cl(parse_tree(premise_trees[i])) for i in range(1, n + 1)]
+            translated_premises = [
+                None if i == synth_i else translate_cl(parse_tree(premise_trees[i]))
+                for i in range(1, n + 1)
+            ]
             if idn in CONJUNCT_IDS:
                 conjuncts = [translate_cl(parse_tree(roles[r])) for r in CONJUNCT_IDS[idn]]
                 conj_preds: list[str] = []
@@ -590,6 +616,39 @@ def main() -> None:
                     free_individuals=[individual_name],
                     binary_predicates=[tmpl["verb"]],
                 )
+
+        if idn in SYNTHESIZE_PREMISE:
+            synth_i, synth_fn, hyp_quant = SYNTHESIZE_PREMISE[idn]
+            prior = translated_premises[: synth_i - 1]
+            if any(p is None for p in prior):
+                skipped[idn] = (
+                    f"SYNTHESIZE_PREMISE for premise {synth_i} needs every prior premise "
+                    "already resolved, but an earlier one is itself synthesized - not supported"
+                )
+                continue
+            translated_premises[synth_i - 1] = Translation(
+                lean_prop=synth_fn(prior, translated_hyp),
+                free_predicates=[],
+            )
+            # The hypothesis's own independent translation names its
+            # restrictor from its OWN surface wording ("reports from
+            # ITEL"), a different predicate than the one the synthesized
+            # premise bridges FROM ("reports Smith needs", premise 1's
+            # own restrictor) - but the real theorem's own conclusion
+            # reuses premise 1's restrictor directly (`Some reportsNeeded
+            # onDesk`, not a fresh one), confirmed by reading its stated
+            # type. Rebuilt here rather than independently re-derived,
+            # same "reuse an established name instead of guessing a
+            # fresh one matches" principle as BUNDLE_PROJECT/
+            # SKOLEM_PROJECT - only the hypothesis's own SCOPE (its
+            # free_predicates' own LAST entry, by translate_cl's uniform
+            # [*restrictor_preds, scope_name] convention) is kept.
+            hyp_scope = translated_hyp.free_predicates[-1]
+            restrictor = prior[-1].free_predicates[0]
+            translated_hyp = Translation(
+                lean_prop=f"{hyp_quant} {restrictor} {hyp_scope}",
+                free_predicates=[restrictor, hyp_scope],
+            )
 
         # A `.no` gold answer means the real theorem proves premises ->
         # NOT hypothesis, not premises -> hypothesis (Batch1.lean's own

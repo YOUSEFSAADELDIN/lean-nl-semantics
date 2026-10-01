@@ -1703,6 +1703,22 @@ _SECTION3_TENSED_CHECKS = [
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP somebody_NP (ComplVS say_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN john_PN) (PassV2 hurt_V2))))))",
         "somebody said that John had been hurt",
     ),
+    (
+        # Paraphrased as the passive "most reports that Smith needs have
+        # been sent by ITEL" (truth-conditionally identical to the gold
+        # active-voice "ITEL has sent most of the reports Smith needs") -
+        # same accepted-paraphrase convention as this section's other
+        # five documented near-misses (see this file's own comment on
+        # problems 121/122/126/136/139 above): this grammar's quantifier
+        # convention always treats the quantified NP as subject, so the
+        # object-position "most of the reports..." needs the passive
+        # voice to become the grammatical subject.
+        "fracas_123_premise1",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (DetCN most_Det (RelCN (UseN report_N) "
+        "(UseRCl (TTAnt TPres ASimul) PPos (StrandRelSlash IdRP (SlashVP (UsePN smith_PN) (SlashV2a need_V2)))))) "
+        "(AdvVP (PassV2 send_V2) (PrepNP by8agent_Prep (UsePN itel_PN)))))",
+        "most reports that Smith needs have been sent by ITEL",
+    ),
 ]
 
 # FraCaS Section 4 (Ellipsis), problems 142-196 (Section4/Batch1-4.lean).

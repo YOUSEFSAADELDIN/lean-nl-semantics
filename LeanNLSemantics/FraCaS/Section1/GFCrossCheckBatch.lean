@@ -246,3 +246,7 @@ theorem fracas_118_from_gf {A : Type*} (student female : A → Prop) (has use : 
 theorem fracas_119_from_gf {A : Type*} (student : A → Prop) (use : A → A → Prop) (mary : A) (workstationOf : A → A) :
     (∀ x, student x → ¬ use x (workstationOf x)) → student mary → ¬ (use mary (workstationOf mary)) :=
   fun h1 h2 => fracas_119 _ _ _ _ h1 h2
+
+theorem fracas_123_from_gf {A : Type*} [Fintype A] (reportSmithNeed sendItel smithDesk : A → Prop) :
+    Most reportSmithNeed sendItel → (∀ x, sendItel x → smithDesk x) → Some reportSmithNeed smithDesk :=
+  fun h1 h2 => fracas_123 _ _ _ h1 h2
