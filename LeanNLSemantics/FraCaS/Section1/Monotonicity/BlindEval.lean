@@ -64,6 +64,28 @@ than forced), this file:
    distinction here rather than claiming a resolution this procedure
    cannot make).
 
+**Validation status - CI-confirmed** (CI run 36931384884, commit
+41fc6bd, branch blind-eval-section1): **47/47 (100%) automated verdicts
+match FraCaS's own gold answer** - 37/37 in Section 1, 10/10 in
+Section 2 - with 0 mismatches, 0 contradictions, and 0 theorems missing
+a gold entry in either section. This is the real count this file's own
+`#blind_eval_section1`/`#blind_eval_section2` commands print each CI
+run, read directly off that run's own log, not predicted. It is a
+narrower number than "82 Section-1 problems" might suggest: of every
+declared name in `FraCaS.Section1`/`FraCaS.Section2` (bare theorems plus
+every `_dir1`/`_via_mono_nl`/... suffixed variant), 113 were skipped as
+out of this procedure's own scope (82 in Section 1 - 77 suffixed/non-
+bare, 5 not entailment-shaped; 31 in Section 2 - 16 suffixed/non-bare,
+15 not entailment-shaped) - mostly the countermodel-pair (`_dir1`/
+`_dir2`) method FraCaS's own `.unknown`/`.undef` problems use, which a
+binary yes/no/unknown procedure has no single entailment-shaped
+statement to pose a question about in the first place. The 47 are
+exactly the bare, single-direction theorems this procedure *could*
+evaluate, and it got all of them right. If this file's own section
+scope grows past Sections 1-2, or its tactic chain changes, this status
+is stale - re-run the CI step and replace this paragraph by hand with
+the new CI-confirmed result.
+
 Deliberately not imported by anything (imports the root `LeanNLSemantics`
 umbrella to see every already-proved theorem, so importing it back would
 be circular) - run directly, the same way `Coverage.lean` already is.

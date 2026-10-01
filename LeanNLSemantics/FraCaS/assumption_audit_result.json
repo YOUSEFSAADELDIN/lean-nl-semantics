@@ -1,898 +1,1186 @@
 {
  "summary": {
-  "expectedTheorems": 472,
-  "resolvedTheorems": 472,
+  "expectedTheorems": 628,
+  "resolvedTheorems": 628,
   "missingFromLog": [],
-  "fullyAxiomFree": 370,
-  "standardOnly": 102,
+  "fullyAxiomFree": 485,
+  "standardOnly": 143,
   "nonstandardAxioms": {},
   "usesSorry": []
  },
  "theorems": {
-  "fracas_001": [],
-  "fracas_002": [],
-  "fracas_002_from_gf": [],
-  "fracas_002_via_exist_nl": [],
-  "fracas_003": [],
-  "fracas_004": [],
-  "fracas_004_via_exist_nl": [],
-  "fracas_005": [],
-  "fracas_005_via_exist_nl": [],
-  "fracas_006": [],
-  "fracas_007": [],
-  "fracas_008": [],
-  "fracas_009": [],
-  "fracas_010": [
+  "FraCaS.Section1.Monotonicity.fracas_002_via_exist_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_004_via_exist_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_005_via_exist_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_010_via_exist_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_010_via_exist_nl": [
+  "FraCaS.Section1.Monotonicity.fracas_013_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_015_via_exist_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_011": [],
-  "fracas_012_dir1": [
+  "FraCaS.Section1.Monotonicity.fracas_018_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_021_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_027_via_mono_nl_compose": [],
+  "FraCaS.Section1.Monotonicity.fracas_029_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_031_via_mono_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_012_dir2": [
+  "FraCaS.Section1.Monotonicity.fracas_044_via_mono_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_013": [],
-  "fracas_013_via_mono_nl": [],
-  "fracas_014": [],
-  "fracas_015": [
+  "FraCaS.Section1.Monotonicity.fracas_048_via_mono_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_015_via_exist_nl": [
+  "FraCaS.Section1.Monotonicity.fracas_049_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_055_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_057_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_059_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_063_via_mono_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_016_dir1": [
+  "FraCaS.Section1.Monotonicity.fracas_066_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_069_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_076_via_mono_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_016_dir2": [
+  "FraCaS.Section1.Monotonicity.fracas_077_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_107_via_exist_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_017": [],
-  "fracas_018": [],
-  "fracas_018_via_mono_nl": [],
-  "fracas_019": [],
-  "fracas_020": [],
-  "fracas_021": [],
-  "fracas_021_via_mono_nl": [],
-  "fracas_022_dir1": [],
-  "fracas_022_dir2": [],
-  "fracas_023": [],
-  "fracas_024": [],
-  "fracas_025": [],
-  "fracas_026": [
+  "FraCaS.Section1.Monotonicity.fracas_123_via_mono_nl_compose": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_027": [],
-  "fracas_027_via_mono_nl_compose": [],
-  "fracas_028_dir1": [
+  "FraCaS.Section1.Monotonicity.fracas_124_via_mono_nl_compose": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "fracas_028_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_029": [],
-  "fracas_029_via_mono_nl": [],
-  "fracas_030_dir1": [],
-  "fracas_030_dir2": [],
-  "fracas_031": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_031_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_032_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_032_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_033_dir1": [],
-  "fracas_033_dir2": [],
-  "fracas_034_dir1": [],
-  "fracas_034_dir2": [],
-  "fracas_035_dir1": [],
-  "fracas_035_dir2": [],
-  "fracas_036_dir1": [],
-  "fracas_036_dir2": [],
-  "fracas_037_dir1": [],
-  "fracas_037_dir2": [],
-  "fracas_038": [],
-  "fracas_039_dir1": [],
-  "fracas_039_dir2": [],
-  "fracas_040_dir1": [],
-  "fracas_040_dir2": [],
-  "fracas_041_dir1": [],
-  "fracas_041_dir2": [],
-  "fracas_042_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_042_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_043_dir1": [],
-  "fracas_043_dir2": [],
-  "fracas_044": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_044_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_045_dir1": [],
-  "fracas_045_dir2": [],
-  "fracas_046": [],
-  "fracas_047_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_047_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_048": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_048_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_049": [],
-  "fracas_049_via_mono_nl": [],
-  "fracas_050_dir1": [],
-  "fracas_050_dir2": [],
-  "fracas_051_dir1": [],
-  "fracas_051_dir2": [],
-  "fracas_052_dir1": [],
-  "fracas_052_dir2": [],
-  "fracas_053_dir1": [],
-  "fracas_053_dir2": [],
-  "fracas_054_dir1": [],
-  "fracas_054_dir2": [],
-  "fracas_055": [],
-  "fracas_055_via_mono_nl": [],
-  "fracas_056": [],
-  "fracas_057": [],
-  "fracas_057_via_mono_nl": [],
-  "fracas_058_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_058_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_059": [],
-  "fracas_059_via_mono_nl": [],
-  "fracas_060_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_060_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_061_dir1": [],
-  "fracas_061_dir2": [],
-  "fracas_062_dir1": [],
-  "fracas_062_dir2": [],
-  "fracas_063": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_063_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_064_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_064_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_065_dir1": [],
-  "fracas_065_dir2": [],
-  "fracas_066": [],
-  "fracas_066_via_mono_nl": [],
-  "fracas_067": [],
-  "fracas_068": [],
-  "fracas_069": [],
-  "fracas_069_via_mono_nl": [],
-  "fracas_070": [],
-  "fracas_071_dir1": [],
-  "fracas_071_dir2": [],
-  "fracas_072_dir1": [],
-  "fracas_072_dir2": [],
-  "fracas_073_dir1": [],
-  "fracas_073_dir2": [],
-  "fracas_074_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_074_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_075_dir1": [],
-  "fracas_075_dir2": [],
-  "fracas_076": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_076_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_077": [],
-  "fracas_077_via_mono_nl": [],
-  "fracas_078": [],
-  "fracas_079_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_079_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_080": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_081": [],
-  "fracas_082": [],
-  "fracas_083_dir1": [],
-  "fracas_083_dir2": [],
-  "fracas_084": [],
-  "fracas_085": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_086": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_087": [],
-  "fracas_088_dir1": [],
-  "fracas_088_dir2": [],
-  "fracas_089": [],
-  "fracas_090": [],
-  "fracas_091_dir1": [],
-  "fracas_091_dir2": [],
-  "fracas_092": [],
-  "fracas_093": [],
-  "fracas_094_dir1": [],
-  "fracas_094_dir2": [],
-  "fracas_095_dir1": [],
-  "fracas_095_dir2": [],
-  "fracas_096": [],
-  "fracas_097": [],
-  "fracas_098_dir1": [],
-  "fracas_098_dir2": [],
-  "fracas_099": [],
-  "fracas_100": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_101": [],
-  "fracas_102_dir1": [],
-  "fracas_102_dir2": [],
-  "fracas_103": [],
-  "fracas_104_dir1": [],
-  "fracas_104_dir2": [],
-  "fracas_105": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_106": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_107": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_107_via_exist_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_108": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_109": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_110": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_111": [],
-  "fracas_112": [],
-  "fracas_113": [],
-  "fracas_114": [],
-  "fracas_115": [],
-  "fracas_116": [],
-  "fracas_117": [],
-  "fracas_118": [],
-  "fracas_119": [],
-  "fracas_120": [],
-  "fracas_121": [],
-  "fracas_122": [],
-  "fracas_123": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_123_via_mono_nl_compose": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_124": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_124_via_mono_nl_compose": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_125_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_125_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_126": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_127": [],
-  "fracas_128": [],
-  "fracas_129": [],
-  "fracas_130_dir1": [],
-  "fracas_130_dir2": [],
-  "fracas_131": [],
-  "fracas_132": [],
-  "fracas_133": [],
-  "fracas_134": [],
-  "fracas_135": [],
-  "fracas_136_dir1": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_136_dir2": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_137": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_138": [],
-  "fracas_139": [],
-  "fracas_140": [],
-  "fracas_141_dir1": [],
-  "fracas_141_dir2": [],
-  "fracas_142": [],
-  "fracas_143_dir1": [],
-  "fracas_143_dir2": [],
-  "fracas_144": [],
-  "fracas_145": [],
-  "fracas_146": [],
-  "fracas_147": [],
-  "fracas_148": [],
-  "fracas_149": [],
-  "fracas_150": [],
-  "fracas_151": [],
-  "fracas_152": [],
-  "fracas_153": [],
-  "fracas_154": [],
-  "fracas_155": [],
-  "fracas_156_dir1": [],
-  "fracas_156_dir2": [],
-  "fracas_157": [],
-  "fracas_158_dir1": [],
-  "fracas_158_dir2": [],
-  "fracas_159": [],
-  "fracas_160": [],
-  "fracas_161_dir1": [],
-  "fracas_161_dir2": [],
-  "fracas_162": [],
-  "fracas_163": [],
-  "fracas_164": [],
-  "fracas_165": [],
-  "fracas_166": [],
-  "fracas_167": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "fracas_168": [],
-  "fracas_169": [],
-  "fracas_170": [],
-  "fracas_171": [],
-  "fracas_172": [],
-  "fracas_173": [],
-  "fracas_174_dir1": [],
-  "fracas_174_dir2": [],
-  "fracas_175": [],
-  "fracas_176": [],
-  "fracas_177_dir1": [],
-  "fracas_177_dir2": [],
-  "fracas_178": [],
-  "fracas_179": [],
-  "fracas_180": [],
-  "fracas_181_dir1": [],
-  "fracas_181_dir2": [],
-  "fracas_182": [],
-  "fracas_183": [],
-  "fracas_184_dir1": [],
-  "fracas_184_dir2": [],
-  "fracas_185": [],
-  "fracas_186": [],
-  "fracas_187": [],
-  "fracas_188_dir1": [],
-  "fracas_188_dir2": [],
-  "fracas_189": [],
-  "fracas_190": [],
-  "fracas_191": [],
-  "fracas_192_dir1": [],
-  "fracas_192_dir2": [],
-  "fracas_193": [],
-  "fracas_194_dir1": [],
-  "fracas_194_dir2": [],
-  "fracas_195": [],
-  "fracas_196": [],
-  "fracas_197": [],
-  "fracas_198": [],
-  "fracas_199": [],
-  "fracas_200_dir1": [],
-  "fracas_200_dir2": [],
-  "fracas_201_dir1": [],
-  "fracas_201_dir2": [],
-  "fracas_202": [],
-  "fracas_203": [],
-  "fracas_204": [],
-  "fracas_205": [],
-  "fracas_206_dir1": [],
-  "fracas_206_dir2": [],
-  "fracas_207_dir1": [],
-  "fracas_207_dir2": [],
-  "fracas_208": [],
-  "fracas_209": [],
-  "fracas_210": [],
-  "fracas_211": [],
-  "fracas_212": [],
-  "fracas_213_dir1": [],
-  "fracas_213_dir2": [],
-  "fracas_214": [],
-  "fracas_215_dir1": [],
-  "fracas_215_dir2": [],
-  "fracas_216": [],
-  "fracas_217_dir1": [],
-  "fracas_217_dir2": [],
-  "fracas_218": [],
-  "fracas_219_dir1": [],
-  "fracas_219_dir2": [],
-  "fracas_220": [],
-  "fracas_221_dir1": [],
-  "fracas_221_dir2": [],
-  "fracas_222_dir1": [],
-  "fracas_222_dir2": [],
-  "fracas_223": [],
-  "fracas_224": [],
-  "fracas_225_dir1": [],
-  "fracas_225_dir2": [],
-  "fracas_226_dir1": [],
-  "fracas_226_dir2": [],
-  "fracas_227": [],
-  "fracas_228_dir1": [],
-  "fracas_228_dir2": [],
-  "fracas_229": [],
-  "fracas_230": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_231_dir1": [],
-  "fracas_231_dir2": [],
-  "fracas_232": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_233": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_234_dir1": [],
-  "fracas_234_dir2": [],
-  "fracas_235": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_236": [],
-  "fracas_237": [],
-  "fracas_238": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_239": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_240_dir1": [],
-  "fracas_240_dir2": [],
-  "fracas_241": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_242": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_243": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_244": [],
-  "fracas_245": [],
-  "fracas_246": [],
-  "fracas_247_dir1": [],
-  "fracas_247_dir2": [],
-  "fracas_248": [],
-  "fracas_249": [],
-  "fracas_250": [],
-  "fracas_251": [],
-  "fracas_252": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_253_dir1": [],
-  "fracas_253_dir2": [],
-  "fracas_254_dir1": [],
-  "fracas_254_dir2": [],
-  "fracas_255": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_256_dir1": [],
-  "fracas_256_dir2": [],
-  "fracas_257": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_258": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_259": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_260": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_261": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_262": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_263_dir1": [],
-  "fracas_263_dir2": [],
-  "fracas_264": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_265": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_266": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_267": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_268": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_269_dir1": [],
-  "fracas_269_dir2": [],
-  "fracas_270": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_271_dir1": [],
-  "fracas_271_dir2": [],
-  "fracas_272_dir1": [],
-  "fracas_272_dir2": [],
-  "fracas_273_dir1": [],
-  "fracas_273_dir2": [],
-  "fracas_274_dir1": [],
-  "fracas_274_dir2": [],
-  "fracas_275_dir1": [],
-  "fracas_275_dir2": [],
-  "fracas_277_dir1": [],
-  "fracas_277_dir2": [],
-  "fracas_278": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_279": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_280_dir1": [],
-  "fracas_280_dir2": [],
-  "fracas_281_dir1": [],
-  "fracas_281_dir2": [],
-  "fracas_282": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_283_dir1": [],
-  "fracas_283_dir2": [],
-  "fracas_284": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_285_dir1": [],
-  "fracas_285_dir2": [],
-  "fracas_286": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_287_dir1": [],
-  "fracas_287_dir2": [],
-  "fracas_288": [],
-  "fracas_289": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_290": [],
-  "fracas_291": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_292_dir1": [],
-  "fracas_292_dir2": [],
-  "fracas_293_dir1": [],
-  "fracas_293_dir2": [],
-  "fracas_294": [],
-  "fracas_295_dir1": [],
-  "fracas_295_dir2": [],
-  "fracas_296_dir1": [],
-  "fracas_296_dir2": [],
-  "fracas_297": [],
-  "fracas_298": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_299": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_300": [],
-  "fracas_301": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_302": [],
-  "fracas_303": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_304_dir1": [],
-  "fracas_304_dir2": [],
-  "fracas_306": [],
-  "fracas_307": [],
-  "fracas_308_narrow_dir1": [],
-  "fracas_308_narrow_dir2": [],
-  "fracas_308_wide": [],
-  "fracas_311": [],
-  "fracas_312": [],
-  "fracas_313": [],
-  "fracas_314": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_315": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_316": [
-   "propext"
-  ],
-  "fracas_317": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_318": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_319": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_320": [],
-  "fracas_321": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_322": [],
-  "fracas_323": [],
-  "fracas_324": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_325": [],
-  "fracas_326": [],
-  "fracas_327_dir1": [],
-  "fracas_327_dir2": [],
-  "fracas_328": [],
-  "fracas_329_dir1": [],
-  "fracas_329_dir2": [],
-  "fracas_330": [
-   "propext",
-   "Quot.sound"
-  ],
-  "fracas_331": [],
-  "fracas_332": [],
-  "fracas_333": [],
-  "fracas_334": [],
-  "fracas_335_dir1": [],
-  "fracas_335_dir2": [],
-  "fracas_336": [],
-  "fracas_337_dir1": [],
-  "fracas_337_dir2": [],
-  "fracas_338": [],
-  "fracas_339": [],
-  "fracas_340_dir1": [],
-  "fracas_340_dir2": [],
-  "fracas_341_dir1": [],
-  "fracas_341_dir2": [],
-  "fracas_342": [],
-  "fracas_343": [],
-  "fracas_344": [],
-  "fracas_345": [],
-  "fracas_346": []
- },
- "allLogEntries": {
-  "MTT.every_anti": [],
-  "MTT.some_mono": [],
-  "MTT.judgment_to_prop": [],
-  "MTT.intersective_iff": [],
-  "MTT.intersective_every_iff": [],
-  "MTT.subsective_not_transferable": [],
-  "MTT.fake_not_real": [],
-  "MTT.gun_partition": [],
-  "MTT.noncommittal_witness": [],
-  "MTT.adv_veridical": [],
-  "MTT.two_books_phy": [],
-  "MTT.not_two_books_info": [],
-  "MTT.nli_black_man_walks": [],
   "FraCaS.Section1.fracas_001": [],
   "FraCaS.Section1.fracas_002": [],
   "FraCaS.Section1.fracas_002_from_gf": [],
-  "FraCaS.Section1.Monotonicity.fracas_002_via_exist_nl": [],
   "FraCaS.Section1.fracas_003": [],
   "FraCaS.Section1.fracas_004": [],
-  "FraCaS.Section1.Monotonicity.fracas_004_via_exist_nl": [],
   "FraCaS.Section1.fracas_005": [],
+  "FraCaS.Section1.fracas_006": [],
+  "FraCaS.Section1.fracas_007": [],
+  "FraCaS.Section1.fracas_008": [],
+  "FraCaS.Section1.fracas_009": [],
+  "FraCaS.Section1.fracas_010": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_011": [],
+  "FraCaS.Section1.fracas_012_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_012_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_013": [],
+  "FraCaS.Section1.fracas_014": [],
+  "FraCaS.Section1.fracas_015": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_016_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_016_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_017": [],
+  "FraCaS.Section1.fracas_018": [],
+  "FraCaS.Section1.fracas_019": [],
+  "FraCaS.Section1.fracas_020": [],
+  "FraCaS.Section1.fracas_021": [],
+  "FraCaS.Section1.fracas_022_dir1": [],
+  "FraCaS.Section1.fracas_022_dir2": [],
+  "FraCaS.Section1.fracas_023": [],
+  "FraCaS.Section1.fracas_024": [],
+  "FraCaS.Section1.fracas_025": [],
+  "FraCaS.Section1.fracas_026": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_027": [],
+  "FraCaS.Section1.fracas_028_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_028_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_029": [],
+  "FraCaS.Section1.fracas_030_dir1": [],
+  "FraCaS.Section1.fracas_030_dir2": [],
+  "FraCaS.Section1.fracas_031": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_032_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_032_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_033_dir1": [],
+  "FraCaS.Section1.fracas_033_dir2": [],
+  "FraCaS.Section1.fracas_034_dir1": [],
+  "FraCaS.Section1.fracas_034_dir2": [],
+  "FraCaS.Section1.fracas_035_dir1": [],
+  "FraCaS.Section1.fracas_035_dir2": [],
+  "FraCaS.Section1.fracas_036_dir1": [],
+  "FraCaS.Section1.fracas_036_dir2": [],
+  "FraCaS.Section1.fracas_037_dir1": [],
+  "FraCaS.Section1.fracas_037_dir2": [],
+  "FraCaS.Section1.fracas_038": [],
+  "FraCaS.Section1.fracas_039_dir1": [],
+  "FraCaS.Section1.fracas_039_dir2": [],
+  "FraCaS.Section1.fracas_040_dir1": [],
+  "FraCaS.Section1.fracas_040_dir2": [],
+  "FraCaS.Section1.fracas_041_dir1": [],
+  "FraCaS.Section1.fracas_041_dir2": [],
+  "FraCaS.Section1.fracas_042_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_042_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_043_dir1": [],
+  "FraCaS.Section1.fracas_043_dir2": [],
+  "FraCaS.Section1.fracas_044": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_045_dir1": [],
+  "FraCaS.Section1.fracas_045_dir2": [],
+  "FraCaS.Section1.fracas_046": [],
+  "FraCaS.Section1.fracas_047_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_047_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_048": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_049": [],
+  "FraCaS.Section1.fracas_050_dir1": [],
+  "FraCaS.Section1.fracas_050_dir2": [],
+  "FraCaS.Section1.fracas_051_dir1": [],
+  "FraCaS.Section1.fracas_051_dir2": [],
+  "FraCaS.Section1.fracas_052_dir1": [],
+  "FraCaS.Section1.fracas_052_dir2": [],
+  "FraCaS.Section1.fracas_053_dir1": [],
+  "FraCaS.Section1.fracas_053_dir2": [],
+  "FraCaS.Section1.fracas_054_dir1": [],
+  "FraCaS.Section1.fracas_054_dir2": [],
+  "FraCaS.Section1.fracas_055": [],
+  "FraCaS.Section1.fracas_056_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_056_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_057": [],
+  "FraCaS.Section1.fracas_058_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_058_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_059": [],
+  "FraCaS.Section1.fracas_060_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_060_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_061_dir1": [],
+  "FraCaS.Section1.fracas_061_dir2": [],
+  "FraCaS.Section1.fracas_062_dir1": [],
+  "FraCaS.Section1.fracas_062_dir2": [],
+  "FraCaS.Section1.fracas_063": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_064_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_064_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_065_dir1": [],
+  "FraCaS.Section1.fracas_065_dir2": [],
+  "FraCaS.Section1.fracas_066": [],
+  "FraCaS.Section1.fracas_067": [],
+  "FraCaS.Section1.fracas_068": [],
+  "FraCaS.Section1.fracas_069": [],
+  "FraCaS.Section1.fracas_070": [],
+  "FraCaS.Section1.fracas_071_dir1": [],
+  "FraCaS.Section1.fracas_071_dir2": [],
+  "FraCaS.Section1.fracas_072_dir1": [],
+  "FraCaS.Section1.fracas_072_dir2": [],
+  "FraCaS.Section1.fracas_073_dir1": [],
+  "FraCaS.Section1.fracas_073_dir2": [],
+  "FraCaS.Section1.fracas_074_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_074_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_075_dir1": [],
+  "FraCaS.Section1.fracas_075_dir2": [],
+  "FraCaS.Section1.fracas_076": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_077_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_077_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_078_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_078_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_079_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_079_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_080": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_081": [],
+  "FraCaS.Section2.fracas_082": [],
+  "FraCaS.Section2.fracas_083_dir1": [],
+  "FraCaS.Section2.fracas_083_dir2": [],
+  "FraCaS.Section2.fracas_084": [],
+  "FraCaS.Section2.fracas_085": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_086": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_087": [],
+  "FraCaS.Section2.fracas_088_dir1": [],
+  "FraCaS.Section2.fracas_088_dir2": [],
+  "FraCaS.Section2.fracas_089": [],
+  "FraCaS.Section2.fracas_090": [],
+  "FraCaS.Section2.fracas_091_dir1": [],
+  "FraCaS.Section2.fracas_091_dir2": [],
+  "FraCaS.Section2.fracas_092": [],
+  "FraCaS.Section2.fracas_093": [],
+  "FraCaS.Section2.fracas_094_dir1": [],
+  "FraCaS.Section2.fracas_094_dir2": [],
+  "FraCaS.Section2.fracas_095_dir1": [],
+  "FraCaS.Section2.fracas_095_dir2": [],
+  "FraCaS.Section2.fracas_096": [],
+  "FraCaS.Section2.fracas_097": [],
+  "FraCaS.Section2.fracas_098_dir1": [],
+  "FraCaS.Section2.fracas_098_dir2": [],
+  "FraCaS.Section2.fracas_099": [],
+  "FraCaS.Section2.fracas_100": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_101": [],
+  "FraCaS.Section2.fracas_102_dir1": [],
+  "FraCaS.Section2.fracas_102_dir2": [],
+  "FraCaS.Section2.fracas_103": [],
+  "FraCaS.Section2.fracas_104_dir1": [],
+  "FraCaS.Section2.fracas_104_dir2": [],
+  "FraCaS.Section2.fracas_105": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_106": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_107": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_108": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_109": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_110": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section2.fracas_111": [],
+  "FraCaS.Section2.fracas_112": [],
+  "FraCaS.Section2.fracas_113": [],
+  "FraCaS.Section3.fracas_114": [],
+  "FraCaS.Section3.fracas_115": [],
+  "FraCaS.Section3.fracas_116": [],
+  "FraCaS.Section3.fracas_117": [],
+  "FraCaS.Section3.fracas_118": [],
+  "FraCaS.Section3.fracas_119": [],
+  "FraCaS.Section3.fracas_120": [],
+  "FraCaS.Section3.fracas_121": [],
+  "FraCaS.Section3.fracas_122": [],
+  "FraCaS.Section3.fracas_123": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_124": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_125_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_125_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_126": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_127": [],
+  "FraCaS.Section3.fracas_128": [],
+  "FraCaS.Section3.fracas_129": [],
+  "FraCaS.Section3.fracas_130_dir1": [],
+  "FraCaS.Section3.fracas_130_dir2": [],
+  "FraCaS.Section3.fracas_131": [],
+  "FraCaS.Section3.fracas_132": [],
+  "FraCaS.Section3.fracas_133": [],
+  "FraCaS.Section3.fracas_134": [],
+  "FraCaS.Section3.fracas_135": [],
+  "FraCaS.Section3.fracas_136_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_136_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_137": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section3.fracas_138": [],
+  "FraCaS.Section3.fracas_139": [],
+  "FraCaS.Section3.fracas_140": [],
+  "FraCaS.Section3.fracas_141_dir1": [],
+  "FraCaS.Section3.fracas_141_dir2": [],
+  "FraCaS.Section4.fracas_142": [],
+  "FraCaS.Section4.fracas_143_dir1": [],
+  "FraCaS.Section4.fracas_143_dir2": [],
+  "FraCaS.Section4.fracas_144": [],
+  "FraCaS.Section4.fracas_145": [],
+  "FraCaS.Section4.fracas_146": [],
+  "FraCaS.Section4.fracas_147": [],
+  "FraCaS.Section4.fracas_148": [],
+  "FraCaS.Section4.fracas_149": [],
+  "FraCaS.Section4.fracas_150": [],
+  "FraCaS.Section4.fracas_151": [],
+  "FraCaS.Section4.fracas_152": [],
+  "FraCaS.Section4.fracas_153": [],
+  "FraCaS.Section4.fracas_154": [],
+  "FraCaS.Section4.fracas_155": [],
+  "FraCaS.Section4.fracas_156_dir1": [],
+  "FraCaS.Section4.fracas_156_dir2": [],
+  "FraCaS.Section4.fracas_157": [],
+  "FraCaS.Section4.fracas_158_dir1": [],
+  "FraCaS.Section4.fracas_158_dir2": [],
+  "FraCaS.Section4.fracas_159": [],
+  "FraCaS.Section4.fracas_160": [],
+  "FraCaS.Section4.fracas_161_dir1": [],
+  "FraCaS.Section4.fracas_161_dir2": [],
+  "FraCaS.Section4.fracas_162": [],
+  "FraCaS.Section4.fracas_163": [],
+  "FraCaS.Section4.fracas_164": [],
+  "FraCaS.Section4.fracas_165": [],
+  "FraCaS.Section4.fracas_166": [],
+  "FraCaS.Section4.fracas_167": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section4.fracas_168": [],
+  "FraCaS.Section4.fracas_169": [],
+  "FraCaS.Section4.fracas_170": [],
+  "FraCaS.Section4.fracas_171": [],
+  "FraCaS.Section4.fracas_172": [],
+  "FraCaS.Section4.fracas_173": [],
+  "FraCaS.Section4.fracas_174_dir1": [],
+  "FraCaS.Section4.fracas_174_dir2": [],
+  "FraCaS.Section4.fracas_175": [],
+  "FraCaS.Section4.fracas_176": [],
+  "FraCaS.Section4.fracas_177_dir1": [],
+  "FraCaS.Section4.fracas_177_dir2": [],
+  "FraCaS.Section4.fracas_178": [],
+  "FraCaS.Section4.fracas_179": [],
+  "FraCaS.Section4.fracas_180": [],
+  "FraCaS.Section4.fracas_181_dir1": [],
+  "FraCaS.Section4.fracas_181_dir2": [],
+  "FraCaS.Section4.fracas_182": [],
+  "FraCaS.Section4.fracas_183": [],
+  "FraCaS.Section4.fracas_184_dir1": [],
+  "FraCaS.Section4.fracas_184_dir2": [],
+  "FraCaS.Section4.fracas_185": [],
+  "FraCaS.Section4.fracas_186": [],
+  "FraCaS.Section4.fracas_187": [],
+  "FraCaS.Section4.fracas_188_dir1": [],
+  "FraCaS.Section4.fracas_188_dir2": [],
+  "FraCaS.Section4.fracas_189": [],
+  "FraCaS.Section4.fracas_190": [],
+  "FraCaS.Section4.fracas_191": [],
+  "FraCaS.Section4.fracas_192_dir1": [],
+  "FraCaS.Section4.fracas_192_dir2": [],
+  "FraCaS.Section4.fracas_193": [],
+  "FraCaS.Section4.fracas_194_dir1": [],
+  "FraCaS.Section4.fracas_194_dir2": [],
+  "FraCaS.Section4.fracas_195": [],
+  "FraCaS.Section4.fracas_196": [],
+  "FraCaS.Section5.fracas_197": [],
+  "FraCaS.Section5.fracas_198": [],
+  "FraCaS.Section5.fracas_199": [],
+  "FraCaS.Section5.fracas_200_dir1": [],
+  "FraCaS.Section5.fracas_200_dir2": [],
+  "FraCaS.Section5.fracas_201_dir1": [],
+  "FraCaS.Section5.fracas_201_dir2": [],
+  "FraCaS.Section5.fracas_202": [],
+  "FraCaS.Section5.fracas_203": [],
+  "FraCaS.Section5.fracas_204": [],
+  "FraCaS.Section5.fracas_205": [],
+  "FraCaS.Section5.fracas_206_dir1": [],
+  "FraCaS.Section5.fracas_206_dir2": [],
+  "FraCaS.Section5.fracas_207_dir1": [],
+  "FraCaS.Section5.fracas_207_dir2": [],
+  "FraCaS.Section5.fracas_208": [],
+  "FraCaS.Section5.fracas_209": [],
+  "FraCaS.Section5.fracas_210": [],
+  "FraCaS.Section5.fracas_211": [],
+  "FraCaS.Section5.fracas_212": [],
+  "FraCaS.Section5.fracas_213_dir1": [],
+  "FraCaS.Section5.fracas_213_dir2": [],
+  "FraCaS.Section5.fracas_214": [],
+  "FraCaS.Section5.fracas_215_dir1": [],
+  "FraCaS.Section5.fracas_215_dir2": [],
+  "FraCaS.Section5.fracas_216": [],
+  "FraCaS.Section5.fracas_217_dir1": [],
+  "FraCaS.Section5.fracas_217_dir2": [],
+  "FraCaS.Section5.fracas_218": [],
+  "FraCaS.Section5.fracas_219_dir1": [],
+  "FraCaS.Section5.fracas_219_dir2": [],
+  "FraCaS.Section6.fracas_220": [],
+  "FraCaS.Section6.fracas_221_dir1": [],
+  "FraCaS.Section6.fracas_221_dir2": [],
+  "FraCaS.Section6.fracas_222_dir1": [],
+  "FraCaS.Section6.fracas_222_dir2": [],
+  "FraCaS.Section6.fracas_223": [],
+  "FraCaS.Section6.fracas_224": [],
+  "FraCaS.Section6.fracas_225_dir1": [],
+  "FraCaS.Section6.fracas_225_dir2": [],
+  "FraCaS.Section6.fracas_226_dir1": [],
+  "FraCaS.Section6.fracas_226_dir2": [],
+  "FraCaS.Section6.fracas_227": [],
+  "FraCaS.Section6.fracas_228_dir1": [],
+  "FraCaS.Section6.fracas_228_dir2": [],
+  "FraCaS.Section6.fracas_229": [],
+  "FraCaS.Section6.fracas_230": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_231_dir1": [],
+  "FraCaS.Section6.fracas_231_dir2": [],
+  "FraCaS.Section6.fracas_232": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_233": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_234_dir1": [],
+  "FraCaS.Section6.fracas_234_dir2": [],
+  "FraCaS.Section6.fracas_235": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_236": [],
+  "FraCaS.Section6.fracas_237": [],
+  "FraCaS.Section6.fracas_238": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_239": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_240_dir1": [],
+  "FraCaS.Section6.fracas_240_dir2": [],
+  "FraCaS.Section6.fracas_241": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_242": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_243": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section6.fracas_244": [],
+  "FraCaS.Section6.fracas_245": [],
+  "FraCaS.Section6.fracas_246": [],
+  "FraCaS.Section6.fracas_247_dir1": [],
+  "FraCaS.Section6.fracas_247_dir2": [],
+  "FraCaS.Section6.fracas_248": [],
+  "FraCaS.Section6.fracas_249": [],
+  "FraCaS.Section6.fracas_250": [],
+  "FraCaS.Section7.fracas_251": [],
+  "FraCaS.Section7.fracas_252": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_253_dir1": [],
+  "FraCaS.Section7.fracas_253_dir2": [],
+  "FraCaS.Section7.fracas_254_dir1": [],
+  "FraCaS.Section7.fracas_254_dir2": [],
+  "FraCaS.Section7.fracas_255": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_256_dir1": [],
+  "FraCaS.Section7.fracas_256_dir2": [],
+  "FraCaS.Section7.fracas_257": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_258": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_259": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_260": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_261": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_262": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_263_dir1": [],
+  "FraCaS.Section7.fracas_263_dir2": [],
+  "FraCaS.Section7.fracas_264": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_265": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_266": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_267": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_268": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_269_dir1": [],
+  "FraCaS.Section7.fracas_269_dir2": [],
+  "FraCaS.Section7.fracas_270": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_271_dir1": [],
+  "FraCaS.Section7.fracas_271_dir2": [],
+  "FraCaS.Section7.fracas_272_dir1": [],
+  "FraCaS.Section7.fracas_272_dir2": [],
+  "FraCaS.Section7.fracas_273_dir1": [],
+  "FraCaS.Section7.fracas_273_dir2": [],
+  "FraCaS.Section7.fracas_274_dir1": [],
+  "FraCaS.Section7.fracas_274_dir2": [],
+  "FraCaS.Section7.fracas_275_dir1": [],
+  "FraCaS.Section7.fracas_275_dir2": [],
+  "FraCaS.Section7.fracas_277_dir1": [],
+  "FraCaS.Section7.fracas_277_dir2": [],
+  "FraCaS.Section7.fracas_278": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_279": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_280_dir1": [],
+  "FraCaS.Section7.fracas_280_dir2": [],
+  "FraCaS.Section7.fracas_281_dir1": [],
+  "FraCaS.Section7.fracas_281_dir2": [],
+  "FraCaS.Section7.fracas_282": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_283_dir1": [],
+  "FraCaS.Section7.fracas_283_dir2": [],
+  "FraCaS.Section7.fracas_284": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_285_dir1": [],
+  "FraCaS.Section7.fracas_285_dir2": [],
+  "FraCaS.Section7.fracas_286": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_287_dir1": [],
+  "FraCaS.Section7.fracas_287_dir2": [],
+  "FraCaS.Section7.fracas_288": [],
+  "FraCaS.Section7.fracas_289": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_290": [],
+  "FraCaS.Section7.fracas_291": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_292_dir1": [],
+  "FraCaS.Section7.fracas_292_dir2": [],
+  "FraCaS.Section7.fracas_293_dir1": [],
+  "FraCaS.Section7.fracas_293_dir2": [],
+  "FraCaS.Section7.fracas_294": [],
+  "FraCaS.Section7.fracas_295_dir1": [],
+  "FraCaS.Section7.fracas_295_dir2": [],
+  "FraCaS.Section7.fracas_296_dir1": [],
+  "FraCaS.Section7.fracas_296_dir2": [],
+  "FraCaS.Section7.fracas_297": [],
+  "FraCaS.Section7.fracas_298": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_299": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_300": [],
+  "FraCaS.Section7.fracas_301": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_302": [],
+  "FraCaS.Section7.fracas_303": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_304_dir1": [],
+  "FraCaS.Section7.fracas_304_dir2": [],
+  "FraCaS.Section7.fracas_306": [],
+  "FraCaS.Section7.fracas_307": [],
+  "FraCaS.Section7.fracas_308_narrow_dir1": [],
+  "FraCaS.Section7.fracas_308_narrow_dir2": [],
+  "FraCaS.Section7.fracas_308_wide": [],
+  "FraCaS.Section7.fracas_311": [],
+  "FraCaS.Section7.fracas_312": [],
+  "FraCaS.Section7.fracas_313": [],
+  "FraCaS.Section7.fracas_314": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_315": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_316": [
+   "propext"
+  ],
+  "FraCaS.Section7.fracas_317": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_318": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_319": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_320": [],
+  "FraCaS.Section7.fracas_321": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_322": [],
+  "FraCaS.Section7.fracas_323": [],
+  "FraCaS.Section7.fracas_324": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section7.fracas_325": [],
+  "FraCaS.Section8.fracas_326": [],
+  "FraCaS.Section8.fracas_327_dir1": [],
+  "FraCaS.Section8.fracas_327_dir2": [],
+  "FraCaS.Section8.fracas_328": [],
+  "FraCaS.Section8.fracas_329_dir1": [],
+  "FraCaS.Section8.fracas_329_dir2": [],
+  "FraCaS.Section8.fracas_330": [
+   "propext",
+   "Quot.sound"
+  ],
+  "FraCaS.Section8.fracas_331": [],
+  "FraCaS.Section8.fracas_332": [],
+  "FraCaS.Section8.fracas_333": [],
+  "FraCaS.Section9.fracas_334": [],
+  "FraCaS.Section9.fracas_335_dir1": [],
+  "FraCaS.Section9.fracas_335_dir2": [],
+  "FraCaS.Section9.fracas_336": [],
+  "FraCaS.Section9.fracas_337_dir1": [],
+  "FraCaS.Section9.fracas_337_dir2": [],
+  "FraCaS.Section9.fracas_338": [],
+  "FraCaS.Section9.fracas_339": [],
+  "FraCaS.Section9.fracas_340_dir1": [],
+  "FraCaS.Section9.fracas_340_dir2": [],
+  "FraCaS.Section9.fracas_341_dir1": [],
+  "FraCaS.Section9.fracas_341_dir2": [],
+  "FraCaS.Section9.fracas_342": [],
+  "FraCaS.Section9.fracas_343": [],
+  "FraCaS.Section9.fracas_344": [],
+  "FraCaS.Section9.fracas_345": [],
+  "FraCaS.Section9.fracas_346": [],
+  "fracas_001_from_gf": [],
+  "fracas_002_from_gf": [],
+  "fracas_003_from_gf": [],
+  "fracas_004_from_gf": [],
+  "fracas_006_from_gf": [],
+  "fracas_007_from_gf": [],
+  "fracas_008_from_gf": [],
+  "fracas_009_from_gf": [],
+  "fracas_010_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_011_from_gf": [],
+  "fracas_013_from_gf": [],
+  "fracas_014_from_gf": [],
+  "fracas_015_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_017_from_gf": [],
+  "fracas_018_from_gf": [],
+  "fracas_019_from_gf": [],
+  "fracas_020_from_gf": [],
+  "fracas_021_from_gf": [],
+  "fracas_023_from_gf": [],
+  "fracas_024_from_gf": [],
+  "fracas_025_from_gf": [],
+  "fracas_026_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_027_from_gf": [],
+  "fracas_029_from_gf": [],
+  "fracas_038_from_gf": [],
+  "fracas_049_from_gf": [],
+  "fracas_055_from_gf": [],
+  "fracas_057_from_gf": [],
+  "fracas_059_from_gf": [],
+  "fracas_063_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_070_from_gf": [],
+  "fracas_085_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_086_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_089_from_gf": [],
+  "fracas_090_from_gf": [],
+  "fracas_096_from_gf": [],
+  "fracas_097_from_gf": [],
+  "fracas_099_from_gf": [],
+  "fracas_103_from_gf": [],
+  "fracas_114_from_gf": [],
+  "fracas_115_from_gf": [],
+  "fracas_116_from_gf": [],
+  "fracas_117_from_gf": [],
+  "fracas_118_from_gf": [],
+  "fracas_119_from_gf": [],
+  "fracas_120_from_gf": [],
+  "fracas_121_from_gf": [],
+  "fracas_122_from_gf": [],
+  "fracas_123_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_124_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_128_from_gf": [],
+  "fracas_129_from_gf": [],
+  "fracas_131_from_gf": [],
+  "fracas_132_from_gf": [],
+  "fracas_133_from_gf": [],
+  "fracas_138_from_gf": [],
+  "fracas_139_from_gf": [],
+  "fracas_140_from_gf": [],
+  "fracas_142_from_gf": [],
+  "fracas_145_from_gf": [],
+  "fracas_146_from_gf": [],
+  "fracas_147_from_gf": [],
+  "fracas_148_from_gf": [],
+  "fracas_149_from_gf": [],
+  "fracas_155_from_gf": [],
+  "fracas_157_from_gf": [],
+  "fracas_159_from_gf": [],
+  "fracas_160_from_gf": [],
+  "fracas_162_from_gf": [],
+  "fracas_164_from_gf": [],
+  "fracas_165_from_gf": [],
+  "fracas_166_from_gf": [],
+  "fracas_167_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_178_from_gf": [],
+  "fracas_182_from_gf": [],
+  "fracas_183_from_gf": [],
+  "fracas_185_from_gf": [],
+  "fracas_186_from_gf": [],
+  "fracas_187_from_gf": [],
+  "fracas_189_from_gf": [],
+  "fracas_190_from_gf": [],
+  "fracas_198_from_gf": [],
+  "fracas_199_from_gf": [],
+  "fracas_202_from_gf": [],
+  "fracas_203_from_gf": [],
+  "fracas_204_from_gf": [],
+  "fracas_205_from_gf": [],
+  "fracas_208_from_gf": [],
+  "fracas_209_from_gf": [],
+  "fracas_210_from_gf": [],
+  "fracas_211_from_gf": [],
+  "fracas_212_from_gf": [],
+  "fracas_214_from_gf": [],
+  "fracas_216_from_gf": [],
+  "fracas_218_from_gf": [],
+  "fracas_220_from_gf": [],
+  "fracas_223_from_gf": [],
+  "fracas_224_from_gf": [],
+  "fracas_227_from_gf": [],
+  "fracas_229_from_gf": [],
+  "fracas_242_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_246_from_gf": [],
+  "fracas_248_from_gf": [],
+  "fracas_249_from_gf": [],
+  "fracas_250_from_gf": [],
+  "fracas_251_from_gf": [],
+  "fracas_252_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_255_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_257_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_258_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_260_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_261_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_262_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_264_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_265_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_266_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_267_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_268_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_270_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_278_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_279_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_282_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_286_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_288_from_gf": [],
+  "fracas_289_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_290_from_gf": [],
+  "fracas_294_from_gf": [],
+  "fracas_297_from_gf": [],
+  "fracas_298_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_299_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_300_from_gf": [],
+  "fracas_301_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_302_from_gf": [],
+  "fracas_303_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_306_from_gf": [],
+  "fracas_307_from_gf": [],
+  "fracas_319_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_321_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_326_from_gf": [],
+  "fracas_328_from_gf": [],
+  "fracas_330_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_331_from_gf": [],
+  "fracas_332_from_gf": [],
+  "fracas_333_from_gf": [],
+  "fracas_334_from_gf": [],
+  "fracas_336_from_gf": [],
+  "fracas_338_from_gf": [],
+  "fracas_339_from_gf": [],
+  "fracas_342_from_gf": [],
+  "fracas_343_from_gf": [],
+  "fracas_344_from_gf": [],
+  "fracas_345_from_gf": [],
+  "fracas_346_from_gf": []
+ },
+ "allLogEntries": {
+  "FraCaS.Section1.Monotonicity.fracas_002_via_exist_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_004_via_exist_nl": [],
   "FraCaS.Section1.Monotonicity.fracas_005_via_exist_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_013_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_018_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_021_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_027_via_mono_nl_compose": [],
+  "FraCaS.Section1.Monotonicity.fracas_029_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_049_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_055_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_057_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_059_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_066_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_069_via_mono_nl": [],
+  "FraCaS.Section1.Monotonicity.fracas_077_via_mono_nl": [],
+  "FraCaS.Section1.fracas_001": [],
+  "FraCaS.Section1.fracas_002": [],
+  "FraCaS.Section1.fracas_002_from_gf": [],
+  "FraCaS.Section1.fracas_003": [],
+  "FraCaS.Section1.fracas_004": [],
+  "FraCaS.Section1.fracas_005": [],
   "FraCaS.Section1.fracas_006": [],
   "FraCaS.Section1.fracas_007": [],
   "FraCaS.Section1.fracas_008": [],
   "FraCaS.Section1.fracas_009": [],
   "FraCaS.Section1.fracas_011": [],
   "FraCaS.Section1.fracas_013": [],
-  "FraCaS.Section1.Monotonicity.fracas_013_via_mono_nl": [],
   "FraCaS.Section1.fracas_014": [],
   "FraCaS.Section1.fracas_017": [],
   "FraCaS.Section1.fracas_018": [],
-  "FraCaS.Section1.Monotonicity.fracas_018_via_mono_nl": [],
   "FraCaS.Section1.fracas_019": [],
   "FraCaS.Section1.fracas_020": [],
   "FraCaS.Section1.fracas_021": [],
-  "FraCaS.Section1.Monotonicity.fracas_021_via_mono_nl": [],
   "FraCaS.Section1.fracas_022_dir1": [],
   "FraCaS.Section1.fracas_022_dir2": [],
   "FraCaS.Section1.fracas_023": [],
   "FraCaS.Section1.fracas_024": [],
   "FraCaS.Section1.fracas_025": [],
   "FraCaS.Section1.fracas_027": [],
-  "FraCaS.Section1.Monotonicity.fracas_027_via_mono_nl_compose": [],
   "FraCaS.Section1.fracas_029": [],
-  "FraCaS.Section1.Monotonicity.fracas_029_via_mono_nl": [],
   "FraCaS.Section1.fracas_030_dir1": [],
   "FraCaS.Section1.fracas_030_dir2": [],
   "FraCaS.Section1.fracas_033_dir1": [],
@@ -918,7 +1206,6 @@
   "FraCaS.Section1.fracas_045_dir2": [],
   "FraCaS.Section1.fracas_046": [],
   "FraCaS.Section1.fracas_049": [],
-  "FraCaS.Section1.Monotonicity.fracas_049_via_mono_nl": [],
   "FraCaS.Section1.fracas_050_dir1": [],
   "FraCaS.Section1.fracas_050_dir2": [],
   "FraCaS.Section1.fracas_051_dir1": [],
@@ -930,12 +1217,8 @@
   "FraCaS.Section1.fracas_054_dir1": [],
   "FraCaS.Section1.fracas_054_dir2": [],
   "FraCaS.Section1.fracas_055": [],
-  "FraCaS.Section1.Monotonicity.fracas_055_via_mono_nl": [],
-  "FraCaS.Section1.fracas_056": [],
   "FraCaS.Section1.fracas_057": [],
-  "FraCaS.Section1.Monotonicity.fracas_057_via_mono_nl": [],
   "FraCaS.Section1.fracas_059": [],
-  "FraCaS.Section1.Monotonicity.fracas_059_via_mono_nl": [],
   "FraCaS.Section1.fracas_061_dir1": [],
   "FraCaS.Section1.fracas_061_dir2": [],
   "FraCaS.Section1.fracas_062_dir1": [],
@@ -943,11 +1226,9 @@
   "FraCaS.Section1.fracas_065_dir1": [],
   "FraCaS.Section1.fracas_065_dir2": [],
   "FraCaS.Section1.fracas_066": [],
-  "FraCaS.Section1.Monotonicity.fracas_066_via_mono_nl": [],
   "FraCaS.Section1.fracas_067": [],
   "FraCaS.Section1.fracas_068": [],
   "FraCaS.Section1.fracas_069": [],
-  "FraCaS.Section1.Monotonicity.fracas_069_via_mono_nl": [],
   "FraCaS.Section1.fracas_070": [],
   "FraCaS.Section1.fracas_071_dir1": [],
   "FraCaS.Section1.fracas_071_dir2": [],
@@ -957,9 +1238,6 @@
   "FraCaS.Section1.fracas_073_dir2": [],
   "FraCaS.Section1.fracas_075_dir1": [],
   "FraCaS.Section1.fracas_075_dir2": [],
-  "FraCaS.Section1.fracas_077": [],
-  "FraCaS.Section1.Monotonicity.fracas_077_via_mono_nl": [],
-  "FraCaS.Section1.fracas_078": [],
   "FraCaS.Section2.fracas_081": [],
   "FraCaS.Section2.fracas_082": [],
   "FraCaS.Section2.fracas_083_dir1": [],
@@ -1230,16 +1508,175 @@
   "FraCaS.Section9.fracas_344": [],
   "FraCaS.Section9.fracas_345": [],
   "FraCaS.Section9.fracas_346": [],
-  "MTT.copred_some": [
-   "MTT.Informational",
-   "MTT.Physical"
-  ],
-  "FraCaS.Section1.fracas_010": [
+  "fracas_001_from_gf": [],
+  "fracas_002_from_gf": [],
+  "fracas_003_from_gf": [],
+  "fracas_004_from_gf": [],
+  "fracas_006_from_gf": [],
+  "fracas_007_from_gf": [],
+  "fracas_008_from_gf": [],
+  "fracas_009_from_gf": [],
+  "fracas_011_from_gf": [],
+  "fracas_013_from_gf": [],
+  "fracas_014_from_gf": [],
+  "fracas_017_from_gf": [],
+  "fracas_018_from_gf": [],
+  "fracas_019_from_gf": [],
+  "fracas_020_from_gf": [],
+  "fracas_021_from_gf": [],
+  "fracas_023_from_gf": [],
+  "fracas_024_from_gf": [],
+  "fracas_025_from_gf": [],
+  "fracas_027_from_gf": [],
+  "fracas_029_from_gf": [],
+  "fracas_038_from_gf": [],
+  "fracas_049_from_gf": [],
+  "fracas_055_from_gf": [],
+  "fracas_057_from_gf": [],
+  "fracas_059_from_gf": [],
+  "fracas_070_from_gf": [],
+  "fracas_089_from_gf": [],
+  "fracas_090_from_gf": [],
+  "fracas_096_from_gf": [],
+  "fracas_097_from_gf": [],
+  "fracas_099_from_gf": [],
+  "fracas_103_from_gf": [],
+  "fracas_114_from_gf": [],
+  "fracas_115_from_gf": [],
+  "fracas_116_from_gf": [],
+  "fracas_117_from_gf": [],
+  "fracas_118_from_gf": [],
+  "fracas_119_from_gf": [],
+  "fracas_120_from_gf": [],
+  "fracas_121_from_gf": [],
+  "fracas_122_from_gf": [],
+  "fracas_128_from_gf": [],
+  "fracas_129_from_gf": [],
+  "fracas_131_from_gf": [],
+  "fracas_132_from_gf": [],
+  "fracas_133_from_gf": [],
+  "fracas_138_from_gf": [],
+  "fracas_139_from_gf": [],
+  "fracas_140_from_gf": [],
+  "fracas_142_from_gf": [],
+  "fracas_145_from_gf": [],
+  "fracas_146_from_gf": [],
+  "fracas_147_from_gf": [],
+  "fracas_148_from_gf": [],
+  "fracas_149_from_gf": [],
+  "fracas_155_from_gf": [],
+  "fracas_157_from_gf": [],
+  "fracas_159_from_gf": [],
+  "fracas_160_from_gf": [],
+  "fracas_162_from_gf": [],
+  "fracas_164_from_gf": [],
+  "fracas_165_from_gf": [],
+  "fracas_166_from_gf": [],
+  "fracas_178_from_gf": [],
+  "fracas_182_from_gf": [],
+  "fracas_183_from_gf": [],
+  "fracas_185_from_gf": [],
+  "fracas_186_from_gf": [],
+  "fracas_187_from_gf": [],
+  "fracas_189_from_gf": [],
+  "fracas_190_from_gf": [],
+  "fracas_198_from_gf": [],
+  "fracas_199_from_gf": [],
+  "fracas_202_from_gf": [],
+  "fracas_203_from_gf": [],
+  "fracas_204_from_gf": [],
+  "fracas_205_from_gf": [],
+  "fracas_208_from_gf": [],
+  "fracas_209_from_gf": [],
+  "fracas_210_from_gf": [],
+  "fracas_211_from_gf": [],
+  "fracas_212_from_gf": [],
+  "fracas_214_from_gf": [],
+  "fracas_216_from_gf": [],
+  "fracas_218_from_gf": [],
+  "fracas_220_from_gf": [],
+  "fracas_223_from_gf": [],
+  "fracas_224_from_gf": [],
+  "fracas_227_from_gf": [],
+  "fracas_229_from_gf": [],
+  "fracas_246_from_gf": [],
+  "fracas_248_from_gf": [],
+  "fracas_249_from_gf": [],
+  "fracas_250_from_gf": [],
+  "fracas_251_from_gf": [],
+  "fracas_288_from_gf": [],
+  "fracas_290_from_gf": [],
+  "fracas_294_from_gf": [],
+  "fracas_297_from_gf": [],
+  "fracas_300_from_gf": [],
+  "fracas_302_from_gf": [],
+  "fracas_306_from_gf": [],
+  "fracas_307_from_gf": [],
+  "fracas_326_from_gf": [],
+  "fracas_328_from_gf": [],
+  "fracas_331_from_gf": [],
+  "fracas_332_from_gf": [],
+  "fracas_333_from_gf": [],
+  "fracas_334_from_gf": [],
+  "fracas_336_from_gf": [],
+  "fracas_338_from_gf": [],
+  "fracas_339_from_gf": [],
+  "fracas_342_from_gf": [],
+  "fracas_343_from_gf": [],
+  "fracas_344_from_gf": [],
+  "fracas_345_from_gf": [],
+  "fracas_346_from_gf": [],
+  "FraCaS.Section1.Monotonicity.fracas_010_via_exist_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_010_via_exist_nl": [
+  "FraCaS.Section1.Monotonicity.fracas_015_via_exist_nl": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_031_via_mono_nl": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_044_via_mono_nl": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_048_via_mono_nl": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_063_via_mono_nl": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_076_via_mono_nl": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_107_via_exist_nl": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_123_via_mono_nl_compose": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.Monotonicity.fracas_124_via_mono_nl_compose": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_010": [
    "propext",
    "Classical.choice",
    "Quot.sound"
@@ -1255,11 +1692,6 @@
    "Quot.sound"
   ],
   "FraCaS.Section1.fracas_015": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "FraCaS.Section1.Monotonicity.fracas_015_via_exist_nl": [
    "propext",
    "Classical.choice",
    "Quot.sound"
@@ -1294,11 +1726,6 @@
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_031_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
   "FraCaS.Section1.fracas_032_dir1": [
    "propext",
    "Classical.choice",
@@ -1324,11 +1751,6 @@
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_044_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
   "FraCaS.Section1.fracas_047_dir1": [
    "propext",
    "Classical.choice",
@@ -1344,7 +1766,12 @@
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_048_via_mono_nl": [
+  "FraCaS.Section1.fracas_056_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_056_dir2": [
    "propext",
    "Classical.choice",
    "Quot.sound"
@@ -1374,11 +1801,6 @@
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_063_via_mono_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
   "FraCaS.Section1.fracas_064_dir1": [
    "propext",
    "Classical.choice",
@@ -1404,7 +1826,22 @@
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_076_via_mono_nl": [
+  "FraCaS.Section1.fracas_077_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_077_dir2": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_078_dir1": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "FraCaS.Section1.fracas_078_dir2": [
    "propext",
    "Classical.choice",
    "Quot.sound"
@@ -1454,11 +1891,6 @@
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_107_via_exist_nl": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
   "FraCaS.Section2.fracas_108": [
    "propext",
    "Classical.choice",
@@ -1479,17 +1911,7 @@
    "Classical.choice",
    "Quot.sound"
   ],
-  "FraCaS.Section1.Monotonicity.fracas_123_via_mono_nl_compose": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
   "FraCaS.Section3.fracas_124": [
-   "propext",
-   "Classical.choice",
-   "Quot.sound"
-  ],
-  "FraCaS.Section1.Monotonicity.fracas_124_via_mono_nl_compose": [
    "propext",
    "Classical.choice",
    "Quot.sound"
@@ -1697,6 +2119,155 @@
    "Quot.sound"
   ],
   "FraCaS.Section8.fracas_330": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_010_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_015_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_026_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_063_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_085_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_086_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_123_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_124_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_167_from_gf": [
+   "propext",
+   "Classical.choice",
+   "Quot.sound"
+  ],
+  "fracas_242_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_252_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_255_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_257_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_258_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_260_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_261_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_262_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_264_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_265_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_266_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_267_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_268_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_270_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_278_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_279_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_282_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_286_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_289_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_298_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_299_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_301_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_303_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_319_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_321_from_gf": [
+   "propext",
+   "Quot.sound"
+  ],
+  "fracas_330_from_gf": [
    "propext",
    "Quot.sound"
   ]
