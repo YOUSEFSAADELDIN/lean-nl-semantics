@@ -262,3 +262,7 @@ theorem fracas_122_from_gf {A : Type*} (committee : A → Prop) (chairman appoin
 theorem fracas_123_from_gf {A : Type*} [Fintype A] (reportSmithNeed sendItel smithDesk : A → Prop) :
     Most reportSmithNeed sendItel → (∀ x, sendItel x → smithDesk x) → Some reportSmithNeed smithDesk :=
   fun h1 h2 => fracas_123 _ _ _ h1 h2
+
+theorem fracas_124_from_gf {A : Type*} [Fintype A] (missing remove : A → Prop) :
+    Exactly 2 (fun _ : A => True) missing → (∀ x, missing x → remove x) → AtLeast 2 (fun _ : A => True) remove :=
+  fun h1 h2 => fracas_124 _ _ h1 h2

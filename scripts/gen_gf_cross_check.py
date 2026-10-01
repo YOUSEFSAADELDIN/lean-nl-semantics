@@ -51,6 +51,7 @@ from translate import (  # noqa: E402
     camel_name,
     _leaf_words,
     _unwrap_tense,
+    _decode_card,
 )
 
 CONFIRMED_STATUS = """\
@@ -321,15 +322,72 @@ def _build_fracas_122(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+def _build_fracas_124(roles: dict) -> "tuple[str, str, str]":
+    """"Two out of ten machines are missing. They have been removed." ->
+    "Two machines have been removed." Confirmed by reading the real
+    theorem's own stated type directly (`Exactly 2 (fun _ : A => True)
+    missing -> (forall x, missing x -> removed x) -> AtLeast 2 (fun _ :
+    A => True) removed`): the "ten" in "out of ten machines" carries NO
+    information in the real theorem's own type at all - the whole
+    domain A is treated as being exactly the ten machines via a
+    trivial `fun _ => True` restrictor, not a named one (unlike every
+    other restrictor this generator has ever produced) - only fracas_126
+    (excluded separately, see CUSTOM_BUILD's own comment) needs that
+    cardinality made explicit. Premise 2 ("They have been removed") is
+    never translated at all (no tree needed): its only real content is
+    an aux scope-entailment fact bridging premise 1's own scope
+    ("missing") to the hypothesis's own ("removed"), built directly the
+    same way SYNTHESIZE_PREMISE's own `_scope_aux` already does, just
+    inlined here since the trivial restrictor doesn't fit that
+    mechanism's generic "reuse free_predicates[0]" hypothesis rebuild
+    (there IS no such free predicate to reuse). Returns (binders,
+    arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+
+    if (
+        p1.args[0].head != "AdvNP"
+        or p1.args[0].args[1].head != "PrepNP"
+        or p1.args[0].args[1].args[0].head != "out_of_Prep"
+    ):
+        raise ValueError("premise 1's subject isn't the expected 'N out of M Xs' shape")
+    det_np = p1.args[0].args[0]
+    count, approx = _decode_card(det_np.args[0].args[1].args[0])
+    if approx is not None:
+        raise ValueError("premise 1's own count is AdNum-wrapped, expected a bare numeral")
+    p1_scope = camel_name(_leaf_words(p1.args[1]))
+    hyp_scope = camel_name(_leaf_words(hyp.args[1]))
+
+    combined_premise = f"Exactly {count} (fun _ : A => True) {p1_scope}"
+    aux = f"(∀ x, {p1_scope} x → {hyp_scope} x)"
+    conclusion = f"AtLeast {count} (fun _ : A => True) {hyp_scope}"
+    arrow_chain = f"{combined_premise} → {aux} → {conclusion}"
+    binders = f"{{A : Type*}} [Fintype A] ({p1_scope} {hyp_scope} : A → Prop)"
+    proof = "fun h1 h2 => fracas_124 _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
-# ternary named-individual relation, a nested bound existential) that
-# doesn't recur anywhere else in the corpus, so generalizing
-# translate.py itself for any of them would add real-general-translator
-# complexity to serve exactly one id - see each builder's own comment
-# for the specific real-theorem shape it was confirmed against.
-CUSTOM_BUILD = {120: _build_fracas_120, 121: _build_fracas_121, 122: _build_fracas_122}
+# ternary named-individual relation, a nested bound existential, a
+# trivial-domain-wide "N out of M" restrictor) that doesn't recur
+# anywhere else in the corpus, so generalizing translate.py itself for
+# any of them would add real-general-translator complexity to serve
+# exactly one id - see each builder's own comment for the specific
+# real-theorem shape it was confirmed against. fracas_126 (same 124-126
+# "dependent-plural/cardinal anaphora" cluster) is NOT here: its own
+# real theorem needs an extra premise ("the other eight machines were
+# also here yesterday") with no corresponding FraCaS sentence at all -
+# confirmed by reading its stated type directly - the same "genuinely
+# unstated background premise" gap as id 5's `hNonempty`, not fixable
+# by any translation mechanism.
+CUSTOM_BUILD = {
+    120: _build_fracas_120,
+    121: _build_fracas_121,
+    122: _build_fracas_122,
+    124: _build_fracas_124,
+}
 
 
 def load_base_checks():
@@ -526,14 +584,15 @@ def main() -> None:
     ]
 
     for idn in sorted(by_id):
-        # Section 3 scoped to 114-123 so far: the possessive-
+        # Section 3 scoped to 114-126 so far: the possessive-
         # presupposition bundle (114-116), its Skolem-function-bound
         # variant (117-119), a synthesized scope-entailment premise
-        # (123), and three fully hand-built cross-sentential-anaphora
-        # theorems (120-122, via CUSTOM_BUILD) - raise this bound again
-        # when extending further into Section 3's remaining
-        # constructions (cardinality anaphora, 124+).
-        if idn > 123:
+        # (123), and four fully hand-built cross-sentential-anaphora
+        # theorems (120-122/124, via CUSTOM_BUILD; 125 is countermodel-
+        # only, already excluded automatically; 126 needs a genuinely
+        # unstated extra premise, see CUSTOM_BUILD's own comment) -
+        # raise this bound again when extending past 126.
+        if idn > 126:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)
