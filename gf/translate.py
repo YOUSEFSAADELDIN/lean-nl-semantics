@@ -458,6 +458,31 @@ def _scope_name(vp) -> str:
     return camel_name(_leaf_words(vp))
 
 
+# FraCaS Section 5's own adjectives whose entailment behavior this
+# translator represents by SPLITTING an `AdjCN` into two conjoined
+# predicates rather than fusing it into one opaque name - the real
+# Lean theorems these feed (fracas_202/fracas_214) are stated directly
+# over the split conjunction (`mammal x ∧ fourLegged x`), not a fused
+# `fourLeggedMammal`, so faithfully matching them means not fusing here
+# either. Each entry is an independent, citable fact about the WORD,
+# not reverse-engineered from either problem's own proof:
+# "four-legged" is a textbook INTERSECTIVE adjective (a four-legged
+# mammal is exactly something that is both four-legged and a mammal);
+# "fat" is SUBSECTIVE but, per FraCaS's own problem 214 (and the
+# extensional/intensional subsective split this project's `Adjectives.lean`
+# documents, the same fat/competent contrast as Barbara Partee's own
+# running example in the literature), EXTENSIONAL - it doesn't matter
+# which coextensive description names the comparison class, so it
+# still distributes across a noun bi-implication the same way an
+# intersective adjective does. Deliberately NOT every adjective this
+# project's grammar has: an intensional subsective adjective like
+# "competent" (fracas_215, FraCaS's own contrasting case) must NOT be
+# added here - its entailment does NOT distribute this way, confirmed
+# directly by fracas_215 being a countermodel/independence pair, not a
+# real theorem with this shape at all.
+_SPLITTING_ADJECTIVES = {"fourLegged_A", "fat_A"}
+
+
 def _restrictor_expr(cn):
     """Returns (expr, free_predicates) for a Cl's restrictor CN. Most
     CNs name a single free predicate over the whole CN's own lexical
@@ -469,6 +494,24 @@ def _restrictor_expr(cn):
     (`fun x => person x ∧ right x`), not one fused name - matching that
     shape exactly is what "faithfully as possible" means here, the same
     principle behind `_try_translate_partitive_identity`'s inversion."""
+    if (
+        cn.head == "AdjCN"
+        and len(cn.args) == 2
+        and cn.args[0].head == "PositA"
+        and len(cn.args[0].args) == 1
+        and cn.args[0].args[0].head in _SPLITTING_ADJECTIVES
+    ):
+        adj_name = camel_name(_leaf_words(cn.args[0]))
+        base_name = camel_name(_leaf_words(cn.args[1]))
+        # Noun-then-adjective, matching fracas_202's/fracas_214's own
+        # stated conjunction order directly (`mammal x ∧ fourLegged x`,
+        # `legalAuth x ∧ fat x`) - not a fixed universal convention (this
+        # project's own fracas_203 states the OPPOSITE order for its
+        # single conjunction, `fourLegged dumbo ∧ animal dumbo`, which is
+        # why 203 stays on its own hand-built CUSTOM_BUILD path instead
+        # of this generic one: `∧` isn't definitionally commutative, so
+        # a single fixed order here can't match every real theorem).
+        return f"(fun x => {base_name} x ∧ {adj_name} x)", [base_name, adj_name]
     if (
         cn.head == "RelCN"
         and len(cn.args) == 2
@@ -507,6 +550,38 @@ def _restrictor_expr(cn):
         right_name = camel_name(_leaf_words(right_cn))
         return f"(fun x => {left_name} x {op} {right_name} x)", [left_name, right_name]
     name = camel_name(_leaf_words(cn))
+    return name, [name]
+
+
+def _scope_expr(vp):
+    """Returns (expr, free_predicates) for a Cl's scope VP - mirrors
+    `_restrictor_expr`'s own (expr, preds) convention, since a quantified
+    sentence's SCOPE can need exactly the same AdjCN-splitting treatment
+    its RESTRICTOR already does: "every four-legged mammal is a
+    four-legged animal" (fracas_202) splits BOTH the subject's own
+    restrictor ("four-legged mammal") and the copula complement's own
+    scope ("a four-legged animal") into the same `N x ∧ Adj x`
+    conjunction, not one fused name on either side. A copula
+    predication over a determiner-quantified CN (`UseComp (CompNP
+    (DetCN det cn))`, "is a/an CN") delegates straight to
+    `_restrictor_expr(cn)` - safe to share, since for every CN shape
+    `_restrictor_expr` doesn't special-case, it already reduces to the
+    exact same `camel_name(_leaf_words(cn))` fusion `_scope_name` itself
+    uses (confirmed directly: a `DetCN`'s own determiner contributes no
+    lexical leaves `_leaf_words` ever collects, so the two converge).
+    Every other VP shape keeps `_scope_name`'s own single-fused-name
+    behavior unchanged."""
+    if (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompNP"
+        and len(vp.args[0].args) == 1
+        and vp.args[0].args[0].head == "DetCN"
+        and len(vp.args[0].args[0].args) == 2
+    ):
+        cn = vp.args[0].args[0].args[1]
+        return _restrictor_expr(cn)
+    name = _scope_name(vp)
     return name, [name]
 
 
@@ -958,11 +1033,11 @@ def translate_cl(t) -> Translation:
         quant = "Every"
 
     restrictor_expr, restrictor_preds = _restrictor_expr(cn)
-    scope_name = _scope_name(vp)
+    scope_expr, scope_preds = _scope_expr(vp)
 
     return Translation(
-        lean_prop=f"{quant} {restrictor_expr} {scope_name}",
-        free_predicates=[*restrictor_preds, scope_name],
+        lean_prop=f"{quant} {restrictor_expr} {scope_expr}",
+        free_predicates=[*restrictor_preds, *scope_preds],
     )
 
 

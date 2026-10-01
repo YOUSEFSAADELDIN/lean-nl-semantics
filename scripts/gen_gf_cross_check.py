@@ -139,6 +139,56 @@ AUX_HYPOTHESIS = {
     70: _restrict_aux_rev,
 }
 
+
+def _privative_aux(ps, h) -> str:
+    """`(forall x, <premise's own fused name> x -> not <hypothesis's own
+    fused name> x)` - a privative adjective's own assumed fact ("a
+    former N is not a N", `Adjectives.lean`'s own `fake_not_real`-style
+    role for "former"), read directly off fracas_198's own stated type.
+    Unlike every `AUX_HYPOTHESIS` entry above, this is a NAMED-INDIVIDUAL
+    fact's own single fused predicate (`_try_translate_named_individual_fact`'s
+    own `free_predicates`, always a one-element list), not
+    `_resolve_subject`'s restrictor/scope pair - `free_predicates[-1]` is
+    still correct either way, since a one-element list's only entry IS
+    its last one."""
+    return f"(∀ x, {ps[-1].free_predicates[-1]} x → ¬ {h.free_predicates[-1]} x)"
+
+
+# Ids needing their one AUX_HYPOTHESIS-style extra fact BEFORE their real
+# FraCaS premise instead of after it, matching each one's own real
+# argument order directly (fracas_198's own stated type is `(forall x,
+# formerUnivStudent x -> not univStudent x) -> formerUnivStudent john ->
+# not univStudent john` - the privative fact FIRST, not last, unlike
+# every `AUX_HYPOTHESIS` id above).
+AUX_HYPOTHESIS_PREPEND = {198: _privative_aux}
+
+# Ids at 142+ allowed through the generic translate_cl pipeline despite
+# the blanket "Section 4+ needs CUSTOM_BUILD or nothing" guard below -
+# each one individually hand-verified (not just arrow-counted) to
+# produce translate_cl output structurally identical to its own real
+# theorem (see AUX_HYPOTHESIS_PREPEND's own `_privative_aux` for 198,
+# and `translate.py`'s `_SPLITTING_ADJECTIVES` for 202/214) before being
+# added here - the exact due-diligence step the guard itself exists to
+# force, just done by hand for these three instead of trusted from
+# arrow-count alone.
+GENERIC_PIPELINE_ALLOWED_142_PLUS = {198, 202, 214}
+
+# Ids whose real theorem's own HYPOTHESIS is itself stated as a bare,
+# unparenthesized `forall x, P x -> Q x` (never wrapped in `Every`/`Some`/
+# parens) rather than this project's usual single GQ-quantifier-headed
+# Prop - `real_theorem_arrow_count`'s own paren-depth-0 `->` counter
+# can't tell that arrow apart from a genuinely separate top-level
+# premise, so it overcounts by exactly one for these two ids (confirmed
+# directly by reading fracas_202's/fracas_214's own stated types: each
+# has one more depth-0 `->` than its own real FraCaS premise count).
+# This is a pure text-counting artifact, not an extra premise or aux
+# fact - nothing is inserted into the arrow chain for these ids, the
+# expected-arrows count is just adjusted to match. `GQ.lean`'s own
+# `Every P Q` unfolds (it's a plain reducible `def`, `forall x, P x ->
+# Q x`) to exactly this shape, so this generator's usual
+# `Every`-wrapped hypothesis still typechecks against it directly.
+BARE_FORALL_HYPOTHESIS = {202, 214}
+
 # Ids whose own single FraCaS premise translates to a CONJUNCTION (via
 # `translate.py`'s `_try_translate_conjnp_subject`, "exactly two lawyers
 # and three accountants signed" read distributively) but whose real
@@ -1201,7 +1251,17 @@ def _build_fracas_190(roles: dict) -> "tuple[str, str, str]":
 # adjective pair, or a comparative relation) chained in as an extra
 # hypothesis - none of this is a quantifier-shape translate_cl already
 # handles. This first pass covers the straightforward subset only
-# (197/198/199/203/216/218); see CUSTOM_BUILD's own comment for the rest.
+# (199/203/216/218); see CUSTOM_BUILD's own comment for the rest. 198 WAS
+# here too (a privative-adjective aux fact) but moved to the generic
+# path - `translate.py`'s own `_try_translate_named_individual_fact`
+# already produces the same two fused names this builder did by hand,
+# so only the assumed privative fact itself needed a home
+# (`AUX_HYPOTHESIS_PREPEND`'s own `_privative_aux`), not a whole
+# CUSTOM_BUILD function. 202/214 moved the same way: `translate.py`'s
+# `_restrictor_expr`/`_scope_expr` now split an AdjCN headed by an
+# intersective or extensional-subsective adjective (`_SPLITTING_ADJECTIVES`)
+# into its own conjunction directly, covering what these two builders
+# used to assemble by hand.
 # ---------------------------------------------------------------------
 
 
@@ -1211,30 +1271,6 @@ def _comp_cn(p):
     subj = camel_name(_leaf_words(p.args[0]))
     cn = p.args[1].args[0].args[0].args[1]
     return subj, cn
-
-
-def _build_fracas_198(roles: dict) -> "tuple[str, str, str]":
-    """"John is a former university student." -> not "John is a
-    university student." Confirmed by reading the real theorem's own
-    stated type directly (`(∀x, formerUnivStudent x -> ¬ univStudent x)
-    -> formerUnivStudent john -> ¬ univStudent john`) - "former" is
-    privative (the opposite of noun-drop's affirmative case), an assumed
-    fact this project states as an extra hypothesis rather than deriving
-    it, the same role `Adjectives.lean`'s `fake_not_real` plays for
-    "fake" - fused directly from the premise's own "former university
-    student" CN and the hypothesis's own bare "university student" CN.
-    Returns (binders, arrow_chain, proof)."""
-    p = parse_tree(roles["_premise"])
-    hyp = parse_tree(roles["_hypothesis"])
-    subj, p_cn = _comp_cn(p)
-    _subj2, h_cn = _comp_cn(hyp)
-    premise_name = camel_name(_leaf_words(p_cn))
-    hyp_name = camel_name(_leaf_words(h_cn))
-    aux = f"∀ x, {premise_name} x → ¬ {hyp_name} x"
-    arrow_chain = f"({aux}) → {premise_name} {subj} → ¬ {hyp_name} {subj}"
-    binders = f"{{A : Type*}} ({premise_name} {hyp_name} : A → Prop) ({subj} : A)"
-    proof = "fun h1 h2 => fracas_198 _ _ _ h1 h2"
-    return binders, arrow_chain, proof
 
 
 def _build_fracas_199(roles: dict) -> "tuple[str, str, str]":
@@ -1308,33 +1344,6 @@ def _predet_restrictor_scope(p):
     restrictor_cn = p.args[0].args[1].args[1]
     scope_cn = p.args[1].args[0].args[0].args[1]
     return restrictor_cn, scope_cn
-
-
-def _build_fracas_202(roles: dict) -> "tuple[str, str, str]":
-    """"Every mammal is an animal." -> "Every four-legged mammal is a
-    four-legged animal." Confirmed by reading the real theorem's own
-    stated type directly (`(∀x, mammal x -> animal x) -> ∀x, (mammal x ∧
-    fourLegged x) -> (animal x ∧ fourLegged x)`) - an intersective
-    adjective ("four-legged") distributes across an already-narrower
-    class staying narrower; the hypothesis's own `AdjCN` is split into
-    its separate adjective/noun conjuncts (not fused into one name),
-    matching the real theorem's own conjunction shape. Returns (binders,
-    arrow_chain, proof)."""
-    p = parse_tree(roles["_premise"])
-    hyp = parse_tree(roles["_hypothesis"])
-    p_restrictor_cn = p.args[0].args[1]
-    p_scope_cn = p.args[1].args[0].args[0].args[1]
-    mammal = camel_name(_leaf_words(p_restrictor_cn))
-    animal = camel_name(_leaf_words(p_scope_cn))
-    h_restrictor_cn = hyp.args[0].args[1]
-    fourLegged = camel_name(_leaf_words(h_restrictor_cn.args[0]))
-    arrow_chain = (
-        f"(∀ x, {mammal} x → {animal} x) → "
-        f"∀ x, ({mammal} x ∧ {fourLegged} x) → ({animal} x ∧ {fourLegged} x)"
-    )
-    binders = f"{{A : Type*}} ({mammal} {animal} {fourLegged} : A → Prop)"
-    proof = "fun h => fracas_202 _ _ _ h"
-    return binders, arrow_chain, proof
 
 
 def _build_fracas_204(roles: dict) -> "tuple[str, str, str]":
@@ -1564,33 +1573,6 @@ def _build_fracas_212(roles: dict) -> "tuple[str, str, str]":
         f"({mickey} {dumbo} : A)"
     )
     proof = "fun h1 h2 h3 h4 h5 => fracas_212 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_214(roles: dict) -> "tuple[str, str, str]":
-    """"All legal authorities are law lecturers. All law lecturers are
-    legal authorities." -> "All fat legal authorities are fat law
-    lecturers." Confirmed by reading the real theorem's own stated type
-    directly (`(∀x, legalAuth x -> lawLect x) -> (∀x, lawLect x ->
-    legalAuth x) -> ∀x, (legalAuth x ∧ fat x) -> (lawLect x ∧ fat x)`) -
-    "fat" is extensional (coextensive classes give the same "fat X"
-    extension), the hypothesis's own doubly-nested `AdjCN` split into
-    its separate adjective/outer-CN conjuncts (not fused). Returns
-    (binders, arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    hyp = parse_tree(roles["_hypothesis"])
-    r1_cn, s1_cn = _predet_restrictor_scope(p1)
-    legalAuth = camel_name(_leaf_words(r1_cn))
-    lawLect = camel_name(_leaf_words(s1_cn))
-    h_r_cn, _h_s_cn = _predet_restrictor_scope(hyp)
-    fat = camel_name(_leaf_words(h_r_cn.args[0]))
-    fact1 = f"∀ x, {legalAuth} x → {lawLect} x"
-    fact2 = f"∀ x, {lawLect} x → {legalAuth} x"
-    conclusion = f"∀ x, ({legalAuth} x ∧ {fat} x) → ({lawLect} x ∧ {fat} x)"
-    arrow_chain = f"({fact1}) → ({fact2}) → {conclusion}"
-    binders = f"{{A : Type*}} ({legalAuth} {lawLect} {fat} : A → Prop)"
-    proof = "fun h1 h2 => fracas_214 _ _ _ h1 h2"
     return binders, arrow_chain, proof
 
 
@@ -2967,12 +2949,10 @@ CUSTOM_BUILD = {
     187: _build_fracas_187,
     189: _build_fracas_189,
     190: _build_fracas_190,
-    198: _build_fracas_198,
     199: _build_fracas_199,
     203: _build_fracas_203,
     216: _build_fracas_216,
     218: _build_fracas_218,
-    202: _build_fracas_202,
     204: _build_fracas_204,
     205: _build_fracas_205,
     208: _build_fracas_208,
@@ -2980,7 +2960,6 @@ CUSTOM_BUILD = {
     210: _build_fracas_210,
     211: _build_fracas_211,
     212: _build_fracas_212,
-    214: _build_fracas_214,
     220: _build_fracas_220,
     223: _build_fracas_223,
     224: _build_fracas_224,
@@ -3516,7 +3495,48 @@ def main() -> None:
         "quasi-universal ambiguity as 101/102 (confirmed by running",
         "`translate_cl` on it directly - it returns `Some`, but the real",
         "theorem needs `Every`), not a mere arrow-count gap an",
-        "`AUX_HYPOTHESIS` entry could paper over.",
+        "`AUX_HYPOTHESIS` entry could paper over. A full audit of every",
+        "remaining Section 1-2 id (81/82/84/87/92/111/112/113 included)",
+        "found nothing else safely closeable this way: each one needs",
+        "either a naming convention (`jonesSigned`, a bare fused Prop, vs.",
+        "`impressed smith`, a predicate applied to an individual) that",
+        "isn't recoverable from one sentence's own GF tree in isolation -",
+        "it depends on whether the SAME predicate is also reused by",
+        "another premise elsewhere in the same problem - or genuinely new",
+        "sentence-level architecture (conditional/negation parsing for 84,",
+        "real cross-premise look-ahead for the rest) well beyond a single",
+        "classification fact's reach.",
+        "",
+        "A further pass pilots Section 5 (adjectives, 197-219): per",
+        "Adjectives.lean's own approach note, this section's whole point",
+        "is PER-ADJECTIVE entailment behavior, which `_restrictor_expr`/",
+        "`_scope_name`'s own generic CN/VP-fusion would normally collapse",
+        "into one opaque name - so most of Section 5 still goes through",
+        "`CUSTOM_BUILD` (14 ids). Three move to the generic pipeline",
+        "instead, each citing an independent, established fact about the",
+        "WORD involved rather than reverse-engineering its own problem's",
+        "proof: 198's privative adjective (\"former\") gets its assumed",
+        "`∀x, formerN x → ¬ N x` fact via a new `AUX_HYPOTHESIS_PREPEND`",
+        "mechanism (the same \"world-knowledge fact, confirmed off the real",
+        "theorem's own stated type\" discipline as `AUX_HYPOTHESIS`, just",
+        "needing its fact FIRST rather than last, matching fracas_198's own",
+        "argument order); 202/214's intersective (\"four-legged\") and",
+        "EXTENSIONAL-subsective (\"fat\", per FraCaS's own 214/215 contrast -",
+        "the same fat/competent running example from the formal-semantics",
+        "literature) adjectives now split an `AdjCN` into its own",
+        "`N x ∧ Adj x` conjunction via `translate.py`'s new",
+        "`_SPLITTING_ADJECTIVES`/`_scope_expr`, rather than fusing it into",
+        "one name. 203 deliberately STAYS on `CUSTOM_BUILD`: its own real",
+        "theorem states the opposite conjunct order (`fourLegged dumbo ∧",
+        "animal dumbo`, adjective first) from 202's/214's shared",
+        "noun-then-adjective convention, and `∧` isn't definitionally",
+        "commutative - one fixed order can't match both, so this round",
+        "doesn't force it rather than guess. `GENERIC_PIPELINE_ALLOWED_142_PLUS`",
+        "and `BARE_FORALL_HYPOTHESIS` mark 198/202/214 as the exception to",
+        "this file's own blanket \"Section 4+ needs CUSTOM_BUILD or",
+        "nothing\" rule - each individually hand-verified against its own",
+        "real theorem's stated type first, the same due-diligence the rule",
+        "itself exists to force.",
         "-/",
         "",
         "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9",
@@ -3562,7 +3582,7 @@ def main() -> None:
             lines.append("")
             emitted.append(idn)
             continue
-        if idn >= 142:
+        if idn >= 142 and idn not in GENERIC_PIPELINE_ALLOWED_142_PLUS:
             # Section 4's own defining move (Ellipsis.lean's header) is
             # that the ellipsis site is hand-resolved BEFORE it's stated
             # as a Lean premise, and Section 5's (Adjectives.lean) is
@@ -3582,10 +3602,14 @@ def main() -> None:
             # direct `∃`/`∀` over a TWO-sorted `{Person Report}` domain -
             # without ever comparing against the real theorem's own
             # stated type at all. So every Section 4+ id (142+) goes
-            # through CUSTOM_BUILD or not at all; see CUSTOM_BUILD's own
-            # comment for exactly which ids are covered, countermodel-
-            # excluded, or not yet attempted.
-            skipped[idn] = "Section 4+ id not in CUSTOM_BUILD - translate_cl's normal pipeline isn't safe for this content (see this script's own comment just above)"
+            # through CUSTOM_BUILD or not at all, UNLESS it's in
+            # `GENERIC_PIPELINE_ALLOWED_142_PLUS` (198/202/214 - each
+            # individually hand-verified, not just arrow-counted, to
+            # produce translate_cl output structurally identical to its
+            # own real theorem before being added there); see
+            # CUSTOM_BUILD's own comment for exactly which other ids are
+            # covered, countermodel-excluded, or not yet attempted.
+            skipped[idn] = "Section 4+ id not in CUSTOM_BUILD/GENERIC_PIPELINE_ALLOWED_142_PLUS - translate_cl's normal pipeline isn't safe for this content (see this script's own comment just above)"
             continue
         if idn in (101, 102):
             # Confirmed locally (not just guessed): these are Section 2's
@@ -3676,12 +3700,18 @@ def main() -> None:
             skipped[idn] = f"needs {n} premises, has {sorted(premise_trees)}"
             continue
         real_arrows = real_theorem_arrow_count(idn)
-        expected_arrows = n + (1 if idn in AUX_HYPOTHESIS else 0)
+        expected_arrows = (
+            n
+            + (1 if idn in AUX_HYPOTHESIS else 0)
+            + (1 if idn in AUX_HYPOTHESIS_PREPEND else 0)
+            + (1 if idn in BARE_FORALL_HYPOTHESIS else 0)
+        )
         if real_arrows != expected_arrows:
             skipped[idn] = (
                 f"real theorem has {real_arrows} top-level arrows, expected {expected_arrows} "
-                "(one per premise, chaining into the hypothesis, plus one more if this id "
-                "is in AUX_HYPOTHESIS) - likely an extra world-knowledge hypothesis not "
+                "(one per premise, chaining into the hypothesis, plus one more for an "
+                "AUX_HYPOTHESIS/AUX_HYPOTHESIS_PREPEND fact or a BARE_FORALL_HYPOTHESIS "
+                "counting artifact) - likely an extra world-knowledge hypothesis not "
                 "sourced from any FraCaS premise and not yet accounted for"
             )
             continue
@@ -3865,11 +3895,22 @@ def main() -> None:
                 )
                 continue
 
-        chain_parts = [p.lean_prop for p in translated_premises]
+        chain_parts = []
+        if idn in AUX_HYPOTHESIS_PREPEND:
+            chain_parts.append(AUX_HYPOTHESIS_PREPEND[idn](translated_premises, translated_hyp))
+        chain_parts += [p.lean_prop for p in translated_premises]
         if idn in AUX_HYPOTHESIS:
             chain_parts.append(AUX_HYPOTHESIS[idn](translated_premises, translated_hyp))
         chain_parts.append(translated_hyp.lean_prop)
         arrow_chain = " → ".join(chain_parts)
+        # The number of explicit arguments THIS generated wrapper's own
+        # statement takes - one per `chain_parts` entry before the last
+        # (the conclusion). Not the same as `expected_arrows` for a
+        # `BARE_FORALL_HYPOTHESIS` id: that count includes an arrow
+        # that's really INSIDE the hypothesis's own un-destructured text
+        # (a counting artifact against the REAL theorem's source, not a
+        # chain element this wrapper's own statement ever introduces).
+        my_arrows = len(chain_parts) - 1
 
         # Most/AtLeast/AtMost/Exactly need [Fintype A] (a real structural
         # fact - classical logic can't manufacture one for an abstract A)
@@ -3911,7 +3952,7 @@ def main() -> None:
         # (predicates supplied), generalized to also thread the
         # hypotheses through the same application instead of applying
         # them after.
-        hyp_names = [f"h{i}" for i in range(1, expected_arrows + 1)]
+        hyp_names = [f"h{i}" for i in range(1, my_arrows + 1)]
 
         # A handful of ids (85/86) translate their own single FraCaS
         # premise to a CONJUNCTION (`_try_translate_conjnp_subject`'s own

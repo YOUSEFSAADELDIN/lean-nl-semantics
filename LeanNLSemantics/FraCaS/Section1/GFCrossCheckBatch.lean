@@ -335,7 +335,48 @@ impressed...", no "all") is the SAME unresolvable bare-plural/
 quasi-universal ambiguity as 101/102 (confirmed by running
 `translate_cl` on it directly - it returns `Some`, but the real
 theorem needs `Every`), not a mere arrow-count gap an
-`AUX_HYPOTHESIS` entry could paper over.
+`AUX_HYPOTHESIS` entry could paper over. A full audit of every
+remaining Section 1-2 id (81/82/84/87/92/111/112/113 included)
+found nothing else safely closeable this way: each one needs
+either a naming convention (`jonesSigned`, a bare fused Prop, vs.
+`impressed smith`, a predicate applied to an individual) that
+isn't recoverable from one sentence's own GF tree in isolation -
+it depends on whether the SAME predicate is also reused by
+another premise elsewhere in the same problem - or genuinely new
+sentence-level architecture (conditional/negation parsing for 84,
+real cross-premise look-ahead for the rest) well beyond a single
+classification fact's reach.
+
+A further pass pilots Section 5 (adjectives, 197-219): per
+Adjectives.lean's own approach note, this section's whole point
+is PER-ADJECTIVE entailment behavior, which `_restrictor_expr`/
+`_scope_name`'s own generic CN/VP-fusion would normally collapse
+into one opaque name - so most of Section 5 still goes through
+`CUSTOM_BUILD` (14 ids). Three move to the generic pipeline
+instead, each citing an independent, established fact about the
+WORD involved rather than reverse-engineering its own problem's
+proof: 198's privative adjective ("former") gets its assumed
+`∀x, formerN x → ¬ N x` fact via a new `AUX_HYPOTHESIS_PREPEND`
+mechanism (the same "world-knowledge fact, confirmed off the real
+theorem's own stated type" discipline as `AUX_HYPOTHESIS`, just
+needing its fact FIRST rather than last, matching fracas_198's own
+argument order); 202/214's intersective ("four-legged") and
+EXTENSIONAL-subsective ("fat", per FraCaS's own 214/215 contrast -
+the same fat/competent running example from the formal-semantics
+literature) adjectives now split an `AdjCN` into its own
+`N x ∧ Adj x` conjunction via `translate.py`'s new
+`_SPLITTING_ADJECTIVES`/`_scope_expr`, rather than fusing it into
+one name. 203 deliberately STAYS on `CUSTOM_BUILD`: its own real
+theorem states the opposite conjunct order (`fourLegged dumbo ∧
+animal dumbo`, adjective first) from 202's/214's shared
+noun-then-adjective convention, and `∧` isn't definitionally
+commutative - one fixed order can't match both, so this round
+doesn't force it rather than guess. `GENERIC_PIPELINE_ALLOWED_142_PLUS`
+and `BARE_FORALL_HYPOTHESIS` mark 198/202/214 as the exception to
+this file's own blanket "Section 4+ needs CUSTOM_BUILD or
+nothing" rule - each individually hand-verified against its own
+real theorem's stated type first, the same due-diligence the rule
+itself exists to force.
 -/
 
 open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9
@@ -695,7 +736,7 @@ theorem fracas_190_from_gf {A : Type*} (represent : A → A → Prop) (companyOf
   fun hd h => fracas_190 _ _ _ _ _ _ hd h
 
 theorem fracas_198_from_gf {A : Type*} (formerUniversityStudent universityStudent : A → Prop) (john : A) :
-    (∀ x, formerUniversityStudent x → ¬ universityStudent x) → formerUniversityStudent john → ¬ universityStudent john :=
+    (∀ x, formerUniversityStudent x → ¬ universityStudent x) → formerUniversityStudent john → ¬ (universityStudent john) :=
   fun h1 h2 => fracas_198 _ _ _ h1 h2
 
 theorem fracas_199_from_gf (johnSuccessful : Prop) :
@@ -703,8 +744,8 @@ theorem fracas_199_from_gf (johnSuccessful : Prop) :
   fun h => fracas_199 _ h
 
 theorem fracas_202_from_gf {A : Type*} (mammal animal fourLegged : A → Prop) :
-    (∀ x, mammal x → animal x) → ∀ x, (mammal x ∧ fourLegged x) → (animal x ∧ fourLegged x) :=
-  fun h => fracas_202 _ _ _ h
+    Every mammal animal → Every (fun x => mammal x ∧ fourLegged x) (fun x => animal x ∧ fourLegged x) :=
+  fun h1 => fracas_202 _ _ _ h1
 
 theorem fracas_203_from_gf {A : Type*} (fourLegged animal : A → Prop) (dumbo : A) :
     fourLegged dumbo ∧ animal dumbo → fourLegged dumbo :=
@@ -739,7 +780,7 @@ theorem fracas_212_from_gf {A : Type*} (mouse elephant animal smallAnimal largeA
   fun h1 h2 h3 h4 h5 => fracas_212 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5
 
 theorem fracas_214_from_gf {A : Type*} (legalAuthority lawLecturer fat : A → Prop) :
-    (∀ x, legalAuthority x → lawLecturer x) → (∀ x, lawLecturer x → legalAuthority x) → ∀ x, (legalAuthority x ∧ fat x) → (lawLecturer x ∧ fat x) :=
+    Every legalAuthority lawLecturer → Every lawLecturer legalAuthority → Every (fun x => legalAuthority x ∧ fat x) (fun x => lawLecturer x ∧ fat x) :=
   fun h1 h2 => fracas_214 _ _ _ h1 h2
 
 theorem fracas_216_from_gf (johnFatBill : Prop) :
