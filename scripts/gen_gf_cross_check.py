@@ -2132,6 +2132,238 @@ def _build_fracas_270(roles: dict) -> "tuple[str, str, str]":
     return _build_fracas_264(roles)
 
 
+def _build_fracas_266(roles: dict) -> "tuple[str, str, str]":
+    """"Smith left." + "Jones left." + "Jones left before Smith left." ->
+    "Smith left after Jones left." Confirmed by reading the real
+    theorem's own stated type directly - same converse-of-premise3 shape
+    as 264's own, main/embedded roles swapped relative to 264's own
+    (`tJones < tSmith -> tSmith > tJones`); `fracas_266_premise3` is a
+    genuinely new tree (not a byte-identical reuse), confirmed via direct
+    GF-toolchain linearize before being registered. Returns (binders,
+    arrow_chain, proof)."""
+    return _build_fracas_264(roles)
+
+
+def _build_fracas_268(roles: dict) -> "tuple[str, str, str]":
+    """"Jones revised the contract." + "Smith revised the contract." +
+    "Jones revised the contract after Smith did." -> "Smith revised the
+    contract before Jones did." Confirmed by reading the real theorem's
+    own stated type directly - same converse-of-premise3 shape as 264's
+    own, main/embedded roles swapped relative to 267's own (`tJones >
+    tSmith -> tSmith < tJones`); `fracas_268_premise3` is a genuinely new
+    tree (not a byte-identical reuse), confirmed via direct GF-toolchain
+    linearize before being registered. Returns (binders, arrow_chain,
+    proof)."""
+    return _build_fracas_264(roles)
+
+
+_DURATION_WORDS = {"One": 1, "Two": 2, "A": 1, "An": 1}
+
+
+def _duration_from_adv(head: str) -> int:
+    """Section 7's self-declared duration adverbials (`inTwoHours_Adv`,
+    `forAYear_Adv`, etc. - fixed one-off tokens, not compositional
+    numerals, same reasoning as `in1991_Adv`) spell the number out in the
+    adverb's own name rather than using a digit; this just reads it back
+    off, the same move as `_year_from_adv` for calendar years."""
+    m = re.match(r"(?:in|for)(One|Two|A|An)(?:Hour|Hours|Year|Years)_Adv$", head)
+    return _DURATION_WORDS[m.group(1)]
+
+
+def _year_pair(roles: dict, idn: int, var: str) -> "tuple[str, str, str]":
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    y1 = _year_from_adv(p.args[1].args[1].head)
+    y2 = _year_from_adv(hyp.args[1].args[1].head)
+    binders = f"({var} : Nat)"
+    arrow_chain = f"{var} = {y1} → {var} ≠ {y2}"
+    proof = f"fun h => fracas_{idn} _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_278(roles: dict) -> "tuple[str, str, str]":
+    """"Smith wrote his first novel in 1991." -> NOT "Smith wrote his
+    first novel in 1992." Confirmed by reading the real theorem's own
+    stated type directly (`novelYear = 1991 -> novelYear ≠ 1992`, proved
+    `by omega`) - an unrepeatable accomplishment with a unique referent
+    ("his first novel") pins down one year only; both literal years are
+    read directly off the real premise/hypothesis trees via
+    `_year_from_adv`. Returns (binders, arrow_chain, proof)."""
+    return _year_pair(roles, 278, "novelYear")
+
+
+def _build_fracas_279(roles: dict) -> "tuple[str, str, str]":
+    """"Smith wrote a novel in 1991." -> NOT "Smith wrote it in 1992."
+    Confirmed by reading the real theorem's own stated type directly -
+    identical shape to 278's own; "it" anaphorically pins the same unique
+    referent as 278's "his first novel". Returns (binders, arrow_chain,
+    proof)."""
+    return _year_pair(roles, 279, "novelYear")
+
+
+def _build_fracas_282(roles: dict) -> "tuple[str, str, str]":
+    """"Smith discovered a new species in 1991." -> NOT "Smith discovered
+    it in 1992." Confirmed by reading the real theorem's own stated type
+    directly - identical shape to 278/279's own, an achievement instead
+    of an accomplishment. Returns (binders, arrow_chain, proof)."""
+    return _year_pair(roles, 282, "discoveryYear")
+
+
+def _build_fracas_286(roles: dict) -> "tuple[str, str, str]":
+    """"Smith wrote a report in two hours." -> NOT "Smith spent more than
+    two hours writing the report." Confirmed by reading the real
+    theorem's own stated type directly (`spentHours ≤ 2 -> ¬ spentHours >
+    2`, proved `by omega`) - "in N hours" upper-bounds duration; the
+    bound is read directly off the real premise tree via
+    `_duration_from_adv`. `fracas_286_premise` reuses
+    `fracas_284_premise1`'s own tree verbatim (same sentence). Returns
+    (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    bound = _duration_from_adv(p.args[1].args[1].head)
+    binders = "(spentHours : Nat)"
+    arrow_chain = f"spentHours ≤ {bound} → ¬ spentHours > {bound}"
+    proof = "fun h => fracas_286 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_289(roles: dict) -> "tuple[str, str, str]":
+    """"Smith discovered a new species in two hours." -> NOT "Smith spent
+    two hours discovering the new species." Confirmed by reading the real
+    theorem's own stated type directly (`discoveryDuration = 0 ->
+    discoveryDuration ≠ 2`, proved `by omega`) - an achievement's
+    near-zero duration (`= 0`, an assumed world-knowledge fact, the same
+    move as 258's founding-date bound) directly refutes "spent two hours
+    discovering"; the "2" is read directly off the real premise tree via
+    `_duration_from_adv`. Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    bound = _duration_from_adv(p.args[1].args[1].head)
+    binders = "(discoveryDuration : Nat)"
+    arrow_chain = f"discoveryDuration = 0 → discoveryDuration ≠ {bound}"
+    proof = "fun h => fracas_289 _ h"
+    return binders, arrow_chain, proof
+
+
+def _trivial_from_hyp(roles: dict, idn: int) -> "tuple[str, str, str]":
+    n = _atomic_name(roles["_hypothesis"])
+    binders = f"({n} : Prop)"
+    arrow_chain = f"{n} → {n}"
+    proof = f"fun h => fracas_{idn} _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_290(roles: dict) -> "tuple[str, str, str]":
+    """"Smith discovered a new species in two hours." -> "Smith
+    discovered a new species." Confirmed by reading the real theorem's
+    own stated type directly (`discovered -> discovered`, proved `id`) -
+    existential closure over the duration adverbial: the premise's own
+    "in two hours" content is dropped entirely (same "ignore the
+    premise's extra content" move as 264's own distractors), using only
+    the hypothesis's own bare-restatement atom (`_atomic_name`) on both
+    sides. Returns (binders, arrow_chain, proof)."""
+    return _trivial_from_hyp(roles, 290)
+
+
+def _build_fracas_294(roles: dict) -> "tuple[str, str, str]":
+    """"Smith was running his own business in two years." -> "Smith ran
+    his own business." Confirmed by reading the real theorem's own stated
+    type directly - same existential-closure shape as 290's own. Returns
+    (binders, arrow_chain, proof)."""
+    return _trivial_from_hyp(roles, 294)
+
+
+def _build_fracas_297(roles: dict) -> "tuple[str, str, str]":
+    """"In two years Smith owned a chain of businesses." -> "Smith owned
+    a chain of businesses." Confirmed by reading the real theorem's own
+    stated type directly - same existential-closure shape as 290's own.
+    Returns (binders, arrow_chain, proof)."""
+    return _trivial_from_hyp(roles, 297)
+
+
+def _build_fracas_300(roles: dict) -> "tuple[str, str, str]":
+    """"Smith lived in Birmingham for two years." -> "Smith lived in
+    Birmingham." Confirmed by reading the real theorem's own stated type
+    directly - same existential-closure shape as 290's own. Returns
+    (binders, arrow_chain, proof)."""
+    return _trivial_from_hyp(roles, 300)
+
+
+def _build_fracas_302(roles: dict) -> "tuple[str, str, str]":
+    """"Smith ran his own business for two years." -> "Smith ran his own
+    business." Confirmed by reading the real theorem's own stated type
+    directly - same existential-closure shape as 290's own.
+    `fracas_302_hypothesis` reuses `fracas_294_hypothesis`'s own tree
+    verbatim (same bare restatement). Returns (binders, arrow_chain,
+    proof)."""
+    return _trivial_from_hyp(roles, 302)
+
+
+def _build_fracas_306(roles: dict) -> "tuple[str, str, str]":
+    """"Smith discovered new species for two years." -> "Smith discovered
+    new species." Confirmed by reading the real theorem's own stated type
+    directly - same existential-closure shape as 290's own, a repeated
+    achievement instead of a state/activity. Returns (binders,
+    arrow_chain, proof)."""
+    return _trivial_from_hyp(roles, 306)
+
+
+def _duration_downward(roles: dict, idn: int, var: str) -> "tuple[str, str, str]":
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    d1 = _duration_from_adv(p.args[1].args[1].head)
+    d2 = _duration_from_adv(hyp.args[1].args[1].head)
+    binders = f"({var} : Nat)"
+    arrow_chain = f"{var} = {d1} → {d2} ≤ {var}"
+    proof = f"fun h => fracas_{idn} _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_298(roles: dict) -> "tuple[str, str, str]":
+    """"Smith lived in Birmingham for two years." -> "Smith lived in
+    Birmingham for a year." Confirmed by reading the real theorem's own
+    stated type directly (`years = 2 -> 1 ≤ years`, proved `by omega`) - a
+    state, downward-entailing "for N years"; both literal durations read
+    directly off the real premise/hypothesis trees via
+    `_duration_from_adv`. Returns (binders, arrow_chain, proof)."""
+    return _duration_downward(roles, 298, "years")
+
+
+def _build_fracas_301(roles: dict) -> "tuple[str, str, str]":
+    """"Smith ran his own business for two years." -> "Smith ran his own
+    business for a year." Confirmed by reading the real theorem's own
+    stated type directly - same downward-entailing shape as 298's own, an
+    activity instead of a state. Returns (binders, arrow_chain, proof)."""
+    return _duration_downward(roles, 301, "years")
+
+
+def _build_fracas_303(roles: dict) -> "tuple[str, str, str]":
+    """"Smith wrote a report for two hours." -> "Smith wrote a report for
+    an hour." Confirmed by reading the real theorem's own stated type
+    directly - same downward-entailing shape as 298's own, an
+    accomplishment coerced into a bounded-activity reading. Returns
+    (binders, arrow_chain, proof)."""
+    return _duration_downward(roles, 303, "hours")
+
+
+def _build_fracas_299(roles: dict) -> "tuple[str, str, str]":
+    """"Smith lived in Birmingham for two years." -> NOT "Smith lived in
+    Birmingham for exactly a year." Confirmed by reading the real
+    theorem's own stated type directly (`years = 2 -> ¬ years = 1`,
+    proved `by omega`) - "for N" doesn't entail "for exactly N".
+    `fracas_299_premise`/`fracas_299_hypothesis` both reuse
+    `fracas_298`'s own trees verbatim: "exactly" has no combinator over a
+    measure-phrase adverbial in this grammar, but the duration literal
+    (1) this id's own arithmetic needs is the same either way. Returns
+    (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    d1 = _duration_from_adv(p.args[1].args[1].head)
+    d2 = _duration_from_adv(hyp.args[1].args[1].head)
+    binders = "(years : Nat)"
+    arrow_chain = f"years = {d1} → ¬ years = {d2}"
+    proof = "fun h => fracas_299 _ h"
+    return binders, arrow_chain, proof
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
@@ -2306,8 +2538,25 @@ CUSTOM_BUILD = {
     262: _build_fracas_262,
     264: _build_fracas_264,
     265: _build_fracas_265,
+    266: _build_fracas_266,
     267: _build_fracas_267,
+    268: _build_fracas_268,
     270: _build_fracas_270,
+    278: _build_fracas_278,
+    279: _build_fracas_279,
+    282: _build_fracas_282,
+    286: _build_fracas_286,
+    289: _build_fracas_289,
+    290: _build_fracas_290,
+    294: _build_fracas_294,
+    297: _build_fracas_297,
+    298: _build_fracas_298,
+    299: _build_fracas_299,
+    300: _build_fracas_300,
+    301: _build_fracas_301,
+    302: _build_fracas_302,
+    303: _build_fracas_303,
+    306: _build_fracas_306,
 }
 
 
@@ -2469,6 +2718,8 @@ def main() -> None:
         "import LeanNLSemantics.FraCaS.Section6.Batch2",
         "import LeanNLSemantics.FraCaS.Section7.Batch1",
         "import LeanNLSemantics.FraCaS.Section7.Batch2",
+        "import LeanNLSemantics.FraCaS.Section7.Batch3",
+        "import LeanNLSemantics.FraCaS.Section7.Batch4",
         "",
         "/-!",
         "# GF cross-check, batch 2",
@@ -2579,15 +2830,17 @@ def main() -> None:
         "bounding fact (the same \"world-knowledge\" move as Section 5's",
         "204/205/208/209/212 and Section 6's 220/223/224/227/229) around",
         "two literal years read off its own real premise/hypothesis trees.",
-        "261/262/264/265/267/270 are before/after chains, continuing 242's",
-        "own literal-`Nat`-arithmetic shape rather than `{A : Type*}`",
-        "predicates: 261/262 chain two real, independent premises (not a",
-        "synthesized fact - `fracas_261_premise2`/`fracas_262_premise2`",
-        "were missing from run_gf_tests.py and added this round); 264/265/",
-        "267/270 each ignore FraCaS's own bare \"X left\"/\"Y left\"",
-        "existence-assertion premises as distractors, using only the real",
-        "theorem's own actual before/after comparison premise, whose",
-        "conclusion is mechanically its converse. Confirming the `AdvS`/",
+        "261/262/264/265/266/267/268/270 are before/after chains,",
+        "continuing 242's own literal-`Nat`-arithmetic shape rather than",
+        "`{A : Type*}` predicates: 261/262 chain two real, independent",
+        "premises (not a synthesized fact - `fracas_261_premise2`/",
+        "`fracas_262_premise2` were missing from run_gf_tests.py and added",
+        "this round); 264/265/266/267/268/270 each ignore FraCaS's own bare",
+        "\"X left\"/\"Y left\" existence-assertion premises as distractors,",
+        "using only the real theorem's own actual before/after comparison",
+        "premise, whose conclusion is mechanically its converse (266/268",
+        "needed a genuinely new premise tree each, main/embedded roles",
+        "swapped relative to 264's/267's own). Confirming the `AdvS`/",
         "`SubjS` main-versus-embedded-clause convention this whole cluster",
         "depends on took a direct local GF-toolchain linearize cross-check",
         "(not just an assumption) - which caught a real transcription slip",
@@ -2596,10 +2849,34 @@ def main() -> None:
         "this round. Not yet attempted: 253/254 (a non-stative predicate",
         "coerced into \"since\", countermodel-only, excluded automatically",
         "like the rest of this paragraph's unlisted ids); 259/260 (date/",
-        "duration arithmetic needing fresh premise trees); 266/268 (same",
-        "before/after-chain shape as 264/265/267/270 but with main and",
-        "embedded roles swapped relative to this round's already-",
-        "registered trees, left unattempted rather than guessed).",
+        "duration arithmetic needing fresh premise trees, left for a",
+        "future round). 271-325 (277-325 in Batch3-5's own numbering) adds",
+        "15 more ids, a mix of two shapes: 278/279/282 (an unrepeatable",
+        "accomplishment/achievement with a unique referent pins down one",
+        "year only, both literal years read off the real trees); 286/289",
+        "(\"in N hours\" upper-bounds duration / achievements are near-",
+        "instantaneous, chaining in an assumed bound); 298/301/303 (\"for N",
+        "years/hours\" is downward-entailing, both literal durations read",
+        "off the real trees - 299 reuses 298's own trees verbatim, since",
+        "\"exactly\" has no combinator over a measure-phrase adverbial but",
+        "needs the same duration literal either way); 290/294/297/300/302/",
+        "306 (existential closure over a duration adverbial, a trivial",
+        "restatement using only the hypothesis's own bare-atom content,",
+        "the premise's \"in/for N\" content dropped entirely - 302 reuses",
+        "294's own hypothesis tree verbatim, same bare restatement). Two",
+        "new self-declared duration-adverbial tokens needed a dedicated",
+        "`_duration_from_adv` reader (`inTwoHours_Adv`, `forAYear_Adv`,",
+        "etc. spell the number out in the adverb's own name, the same",
+        "move as `_year_from_adv` for calendar years) - genuinely general",
+        "over every id in this paragraph, not a one-off. 288 (a hand-",
+        "invented existential-over-duration encoding with no natural",
+        "compositional source), 311/320/322 (each needs either \"then\"-",
+        "sequencing world knowledge or deeply embedded factive-attitude",
+        "clauses this generator isn't shaped for) are deliberately left",
+        "unattempted rather than guessed. 271-277/280/281/283/285/287/",
+        "291-293/295/296/304/305/308-310 are countermodel-only or skipped",
+        "degenerate problems, already excluded automatically. The rest of",
+        "Section 7 (307-325) is not yet attempted.",
         "`scripts/gen_gf_cross_check.py` documents the non-obvious",
         "exclusions it found rather than silently omitting them, including",
         "earlier rounds': problems 31 and 46 each need an aux hypothesis (like",
@@ -2642,12 +2919,13 @@ def main() -> None:
 
     for idn in sorted(by_id):
         # Section 3 scoped to 114-141, Section 4 to 142-196, Section 5
-        # to 197-219, Section 6 to 220-250, Section 7 so far piloted only
-        # to 251-270 (see CUSTOM_BUILD's own comment for exactly which
-        # ids in each range are covered, countermodel-excluded, or
-        # structurally/not-yet attempted) - raise this bound again when
-        # extending further into Section 7's 271-325 range.
-        if idn > 270:
+        # to 197-219, Section 6 to 220-250, Section 7 so far covers
+        # 251-270 plus the easy subset of 271-306 (see CUSTOM_BUILD's own
+        # comment for exactly which ids in each range are covered,
+        # countermodel-excluded, or structurally/not-yet attempted) -
+        # raise this bound again when extending further into Section 7's
+        # 307-325 range.
+        if idn > 306:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)

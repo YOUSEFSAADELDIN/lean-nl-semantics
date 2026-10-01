@@ -2877,6 +2877,15 @@ _SECTION7_TENSED_CHECKS = [
         "after Jones left Smith left",
     ),
     (
+        # "Jones left before Smith left" (main=Jones, earlier; subordinate
+        # =Smith) - a genuinely new tree (not a byte-identical reuse of
+        # any sibling's own), confirmed via direct GF-toolchain linearize
+        # before being registered.
+        "fracas_266_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V))))",
+        "before Smith left Jones left",
+    ),
+    (
         "fracas_267_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
         "Jones revised the contract",
@@ -2895,6 +2904,15 @@ _SECTION7_TENSED_CHECKS = [
         "fracas_267_hypothesis",
         "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))))))",
         "after Jones revised the contract Smith revised the contract",
+    ),
+    (
+        # "Jones revised the contract after Smith did" (main=Jones, later;
+        # subordinate=Smith) - same subject arrangement as 267's own
+        # premise3, connective flipped to after_Subj; genuinely new,
+        # confirmed via direct GF-toolchain linearize before registering.
+        "fracas_268_premise3",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a revise_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))))))",
+        "after Smith revised the contract Jones revised the contract",
     ),
     (
         "fracas_269_premise1",
@@ -3036,6 +3054,12 @@ _SECTION7_TENSED_CHECKS = [
         "Smith wrote a report in two hours",
     ),
     (
+        # Reused verbatim from fracas_284_premise1 - same sentence.
+        "fracas_286_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inTwoHours_Adv)))",
+        "Smith wrote a report in two hours",
+    ),
+    (
         "fracas_287_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inOneHour_Adv)))",
         "Smith wrote a report in one hour",
@@ -3071,6 +3095,13 @@ _SECTION7_TENSED_CHECKS = [
         "Smith ran his business",
     ),
     (
+        # Reused verbatim from fracas_294_hypothesis - 302's own hypothesis
+        # ("Smith ran his own business.") is the same bare restatement.
+        "fracas_302_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (UseN business_N)))))",
+        "Smith ran his business",
+    ),
+    (
         "fracas_295_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN chain_N) (PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (UseN business_N)))))) inTwoYears_Adv)))",
         "Smith owned a chain of businesses in two years",
@@ -3087,6 +3118,24 @@ _SECTION7_TENSED_CHECKS = [
     ),
     (
         "fracas_298_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forAYear_Adv)))",
+        "Smith lived in Birmingham for a year",
+    ),
+    (
+        # Reused verbatim from fracas_298_premise - 299's own premise is
+        # the same sentence.
+        "fracas_299_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forTwoYears_Adv)))",
+        "Smith lived in Birmingham for two years",
+    ),
+    (
+        # Reused verbatim from fracas_298_hypothesis - 299's own hypothesis
+        # ("for exactly a year") isn't separately modeled (no combinator
+        # for "exactly" on a measure-phrase adverbial), but the duration
+        # literal (1) this id's own arithmetic needs is the same either
+        # way, matching this generator's existing precedent of reusing a
+        # tree purely for a literal/name it doesn't itself supply.
+        "fracas_299_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forAYear_Adv)))",
         "Smith lived in Birmingham for a year",
     ),

@@ -19,6 +19,8 @@ import LeanNLSemantics.FraCaS.Section6.Batch1
 import LeanNLSemantics.FraCaS.Section6.Batch2
 import LeanNLSemantics.FraCaS.Section7.Batch1
 import LeanNLSemantics.FraCaS.Section7.Batch2
+import LeanNLSemantics.FraCaS.Section7.Batch3
+import LeanNLSemantics.FraCaS.Section7.Batch4
 
 /-!
 # GF cross-check, batch 2
@@ -129,15 +131,17 @@ existence by a founding date, chaining in an assumed universal
 bounding fact (the same "world-knowledge" move as Section 5's
 204/205/208/209/212 and Section 6's 220/223/224/227/229) around
 two literal years read off its own real premise/hypothesis trees.
-261/262/264/265/267/270 are before/after chains, continuing 242's
-own literal-`Nat`-arithmetic shape rather than `{A : Type*}`
-predicates: 261/262 chain two real, independent premises (not a
-synthesized fact - `fracas_261_premise2`/`fracas_262_premise2`
-were missing from run_gf_tests.py and added this round); 264/265/
-267/270 each ignore FraCaS's own bare "X left"/"Y left"
-existence-assertion premises as distractors, using only the real
-theorem's own actual before/after comparison premise, whose
-conclusion is mechanically its converse. Confirming the `AdvS`/
+261/262/264/265/266/267/268/270 are before/after chains,
+continuing 242's own literal-`Nat`-arithmetic shape rather than
+`{A : Type*}` predicates: 261/262 chain two real, independent
+premises (not a synthesized fact - `fracas_261_premise2`/
+`fracas_262_premise2` were missing from run_gf_tests.py and added
+this round); 264/265/266/267/268/270 each ignore FraCaS's own bare
+"X left"/"Y left" existence-assertion premises as distractors,
+using only the real theorem's own actual before/after comparison
+premise, whose conclusion is mechanically its converse (266/268
+needed a genuinely new premise tree each, main/embedded roles
+swapped relative to 264's/267's own). Confirming the `AdvS`/
 `SubjS` main-versus-embedded-clause convention this whole cluster
 depends on took a direct local GF-toolchain linearize cross-check
 (not just an assumption) - which caught a real transcription slip
@@ -146,10 +150,34 @@ already present in run_gf_tests.py's own `fracas_270_premise3`
 this round. Not yet attempted: 253/254 (a non-stative predicate
 coerced into "since", countermodel-only, excluded automatically
 like the rest of this paragraph's unlisted ids); 259/260 (date/
-duration arithmetic needing fresh premise trees); 266/268 (same
-before/after-chain shape as 264/265/267/270 but with main and
-embedded roles swapped relative to this round's already-
-registered trees, left unattempted rather than guessed).
+duration arithmetic needing fresh premise trees, left for a
+future round). 271-325 (277-325 in Batch3-5's own numbering) adds
+15 more ids, a mix of two shapes: 278/279/282 (an unrepeatable
+accomplishment/achievement with a unique referent pins down one
+year only, both literal years read off the real trees); 286/289
+("in N hours" upper-bounds duration / achievements are near-
+instantaneous, chaining in an assumed bound); 298/301/303 ("for N
+years/hours" is downward-entailing, both literal durations read
+off the real trees - 299 reuses 298's own trees verbatim, since
+"exactly" has no combinator over a measure-phrase adverbial but
+needs the same duration literal either way); 290/294/297/300/302/
+306 (existential closure over a duration adverbial, a trivial
+restatement using only the hypothesis's own bare-atom content,
+the premise's "in/for N" content dropped entirely - 302 reuses
+294's own hypothesis tree verbatim, same bare restatement). Two
+new self-declared duration-adverbial tokens needed a dedicated
+`_duration_from_adv` reader (`inTwoHours_Adv`, `forAYear_Adv`,
+etc. spell the number out in the adverb's own name, the same
+move as `_year_from_adv` for calendar years) - genuinely general
+over every id in this paragraph, not a one-off. 288 (a hand-
+invented existential-over-duration encoding with no natural
+compositional source), 311/320/322 (each needs either "then"-
+sequencing world knowledge or deeply embedded factive-attitude
+clauses this generator isn't shaped for) are deliberately left
+unattempted rather than guessed. 271-277/280/281/283/285/287/
+291-293/295/296/304/305/308-310 are countermodel-only or skipped
+degenerate problems, already excluded automatically. The rest of
+Section 7 (307-325) is not yet attempted.
 `scripts/gen_gf_cross_check.py` documents the non-obvious
 exclusions it found rather than silently omitting them, including
 earlier rounds': problems 31 and 46 each need an aux hypothesis (like
@@ -644,10 +672,78 @@ theorem fracas_265_from_gf (tSmith tJones : Nat) :
     tSmith > tJones → tJones < tSmith :=
   by omega
 
+theorem fracas_266_from_gf (tJones tSmith : Nat) :
+    tJones < tSmith → tSmith > tJones :=
+  by omega
+
 theorem fracas_267_from_gf (tJones tSmith : Nat) :
     tJones < tSmith → tSmith > tJones :=
+  by omega
+
+theorem fracas_268_from_gf (tJones tSmith : Nat) :
+    tJones > tSmith → tSmith < tJones :=
   by omega
 
 theorem fracas_270_from_gf (tSmith tJones : Nat) :
     tSmith < tJones → tJones > tSmith :=
   by omega
+
+theorem fracas_278_from_gf (novelYear : Nat) :
+    novelYear = 1991 → novelYear ≠ 1992 :=
+  fun h => fracas_278 _ h
+
+theorem fracas_279_from_gf (novelYear : Nat) :
+    novelYear = 1991 → novelYear ≠ 1992 :=
+  fun h => fracas_279 _ h
+
+theorem fracas_282_from_gf (discoveryYear : Nat) :
+    discoveryYear = 1991 → discoveryYear ≠ 1992 :=
+  fun h => fracas_282 _ h
+
+theorem fracas_286_from_gf (spentHours : Nat) :
+    spentHours ≤ 2 → ¬ spentHours > 2 :=
+  fun h => fracas_286 _ h
+
+theorem fracas_289_from_gf (discoveryDuration : Nat) :
+    discoveryDuration = 0 → discoveryDuration ≠ 2 :=
+  fun h => fracas_289 _ h
+
+theorem fracas_290_from_gf (smithDiscoverNewSpecies : Prop) :
+    smithDiscoverNewSpecies → smithDiscoverNewSpecies :=
+  fun h => fracas_290 _ h
+
+theorem fracas_294_from_gf (smithRunBusiness : Prop) :
+    smithRunBusiness → smithRunBusiness :=
+  fun h => fracas_294 _ h
+
+theorem fracas_297_from_gf (smithOwnChainBusiness : Prop) :
+    smithOwnChainBusiness → smithOwnChainBusiness :=
+  fun h => fracas_297 _ h
+
+theorem fracas_298_from_gf (years : Nat) :
+    years = 2 → 1 ≤ years :=
+  fun h => fracas_298 _ h
+
+theorem fracas_299_from_gf (years : Nat) :
+    years = 2 → ¬ years = 1 :=
+  fun h => fracas_299 _ h
+
+theorem fracas_300_from_gf (smithLiveBirmingham : Prop) :
+    smithLiveBirmingham → smithLiveBirmingham :=
+  fun h => fracas_300 _ h
+
+theorem fracas_301_from_gf (years : Nat) :
+    years = 2 → 1 ≤ years :=
+  fun h => fracas_301 _ h
+
+theorem fracas_302_from_gf (smithRunBusiness : Prop) :
+    smithRunBusiness → smithRunBusiness :=
+  fun h => fracas_302 _ h
+
+theorem fracas_303_from_gf (hours : Nat) :
+    hours = 2 → 1 ≤ hours :=
+  fun h => fracas_303 _ h
+
+theorem fracas_306_from_gf (smithDiscoverNewSpecies : Prop) :
+    smithDiscoverNewSpecies → smithDiscoverNewSpecies :=
+  fun h => fracas_306 _ h
