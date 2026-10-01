@@ -1156,7 +1156,7 @@ def _build_fracas_189(roles: dict) -> "tuple[str, str, str]":
         f"{{A : Type*}} ({verb} : A → A → Prop) ({skolem} : A → A) "
         f"({john} {mary} : A) ({man} {woman} : A → Prop)"
     )
-    proof = "fun _ h => fracas_189 _ _ _ _ _ _ h"
+    proof = "fun hd h => fracas_189 _ _ _ _ _ _ hd h"
     return binders, arrow_chain, proof
 
 
@@ -1187,7 +1187,7 @@ def _build_fracas_190(roles: dict) -> "tuple[str, str, str]":
         f"{{A : Type*}} ({verb} : A → A → Prop) ({skolem} : A → A) "
         f"({john} {mary} : A) ({man} {woman} : A → Prop)"
     )
-    proof = "fun _ h => fracas_190 _ _ _ _ _ _ h"
+    proof = "fun hd h => fracas_190 _ _ _ _ _ _ hd h"
     return binders, arrow_chain, proof
 
 

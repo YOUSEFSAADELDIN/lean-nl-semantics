@@ -430,8 +430,8 @@ theorem fracas_187_from_gf {A : Type*} (claimedCosted : A → A → A → Prop) 
 
 theorem fracas_189_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (john mary : A) (man woman : A → Prop) :
     (man john ∧ woman mary) → (represent john (companyOf john) ∧ represent mary (companyOf mary)) → represent mary (companyOf mary) :=
-  fun _ h => fracas_189 _ _ _ _ _ _ h
+  fun hd h => fracas_189 _ _ _ _ _ _ hd h
 
 theorem fracas_190_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (john mary : A) (man woman : A → Prop) :
     (man john ∧ woman mary) → (represent john (companyOf john) ∧ represent mary (companyOf john)) → represent mary (companyOf john) :=
-  fun _ h => fracas_190 _ _ _ _ _ _ h
+  fun hd h => fracas_190 _ _ _ _ _ _ hd h
