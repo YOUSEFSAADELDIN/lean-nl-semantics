@@ -1195,7 +1195,7 @@ def _build_fracas_190(roles: dict) -> "tuple[str, str, str]":
 # Section 5 (adjectives, 197-219): per Adjectives.lean's own approach
 # note, this project treats adjective-noun predication directly (not via
 # MTT's Intersective/SubsCN subtype machinery), so most ids are either a
-# trivial noun-/adjective-drop projection, or need a genuinely assumed
+# trivial noun- or adjective-drop projection, or need a genuinely assumed
 # "world-knowledge" fact (privative-adjective entailment, a contrary-
 # adjective pair, or a comparative relation) chained in as an extra
 # hypothesis - none of this is a quantifier-shape translate_cl already
@@ -1942,7 +1942,7 @@ def main() -> None:
         "`CUSTOM_BUILD` again: per Adjectives.lean's own approach note, this",
         "project treats adjective-noun predication directly (not via MTT's",
         "Intersective/SubsCN subtype machinery), so most ids are either a",
-        "trivial noun-/adjective-drop projection (197/203), a bare-`Prop`-",
+        "trivial noun- or adjective-drop projection (197/203), a bare-`Prop`-",
         "atom restatement (199/216/218), or a genuinely assumed \"world-",
         "knowledge\" fact chained in as an extra hypothesis - a privative-",
         "adjective entailment (198), a contrary-adjective pair (204/205), a",
