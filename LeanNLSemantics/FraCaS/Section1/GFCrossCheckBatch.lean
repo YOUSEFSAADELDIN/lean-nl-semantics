@@ -22,6 +22,8 @@ import LeanNLSemantics.FraCaS.Section7.Batch2
 import LeanNLSemantics.FraCaS.Section7.Batch3
 import LeanNLSemantics.FraCaS.Section7.Batch4
 import LeanNLSemantics.FraCaS.Section7.Batch5
+import LeanNLSemantics.FraCaS.Section8.Batch1
+import LeanNLSemantics.FraCaS.Section9.Batch1
 
 /-!
 # GF cross-check, batch 2
@@ -243,6 +245,46 @@ all of Section 7 (251-325): every id is now either emitted,
 countermodel-excluded, a skipped degenerate problem, or
 individually confirmed structurally/grammatically blocked rather
 than merely unattempted.
+Section 8 (Verbs, 326-333) adds 6 more ids, all reusing already-
+established shapes: 326/328 are perfective-accomplishment/
+achievement culmination chains (the same assumed-connecting-fact
+move as Section 7's own, Nat-indexed by year); 330 is interval
+containment for a bounded state (both bounds read off a single
+`from1988to1992_Adv`-style compound token via a dedicated regex,
+the same move as `_year_from_adv`); 331/332 split a plural-
+subject conjunction (`ConjNP and_Conj (BaseNP ...)`) into its two
+named conjuncts (the subject-side analogue of 249/250's own
+object-conjunction split); 333 is a collective predicate's
+existential closure, fusing a three-way conjoined subject into
+one `Group`-typed individual name directly from the premise's own
+tree. 327/329 are countermodel-only, already excluded
+automatically. Section 9 (Attitudes, 334-346, FraCaS's own final
+section) adds 9 more ids: 334/336/342 are factive/implicative/
+perception-verb entailment chains over bare Props (the same
+assumed-connecting-fact move as 326/328's own, un-indexed since
+there's no shared individual/year to key by); 338/339 are literal
+truth-functional embedding ("it is true/false that P" simply IS
+P/¬P - a dedicated reader navigates past `SentAP`'s own "true"/
+"false" wrapper straight to the embedded clause, rather than
+fusing the operator itself into the name); 343/344 are
+perception-verb extensionality and existential generalization,
+each hand-assembling a Person-indexed predicate name by dropping
+the premise's own object out of its `SlashV2V`-headed clause
+before naming it (the same invented-shape move as 288's/307's
+own, since translate_cl's generic pipeline always fuses the
+complete sentence including its object into one atom); 345/346
+split a conjoined/disjoined `ConjS` sentence into its two
+conjuncts (the sentential analogue of 331's own NP-conjunction
+split). 335/337/340/341 are countermodel-only, already excluded
+automatically; 344's own hypothesis ("there is someone whom Helen
+saw answer the phone") needs relativizing a quantificational
+pronoun NP, the same gap as Section 4's 173/174 and Section 7's
+308, so this id's hypothesis is built directly from the premise's
+own content instead, not translated separately. This completes
+the GF cross-check across the ENTIRE FraCaS corpus (Sections
+1-9): every problem in every section is now either emitted,
+countermodel-excluded, a skipped degenerate problem, or
+individually confirmed structurally/grammatically blocked.
 `scripts/gen_gf_cross_check.py` documents the non-obvious
 exclusions it found rather than silently omitting them, including
 earlier rounds': problems 31 and 46 each need an aux hypothesis (like
@@ -269,7 +311,7 @@ both) - a real semantic modeling choice a literal, compositional
 translator correctly does not reproduce on its own.
 -/
 
-open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7
+open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9
 
 -- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per
 -- predicate/conjunction they apply to - a real theorem's own
@@ -832,3 +874,63 @@ theorem fracas_319_from_gf (yearsPrev yearsPresent : Nat) :
 theorem fracas_321_from_gf (pastVisits futureVisits : Nat) :
     pastVisits = 2 → futureVisits = 2 → pastVisits + futureVisits ≥ 4 :=
   fun h1 h2 => fracas_321 _ _ h1 h2
+
+theorem fracas_326_from_gf (itelBuildMtalk itelFinishMtalk : Nat → Prop) :
+    (∀ y, itelBuildMtalk y → itelFinishMtalk y) → itelBuildMtalk 1993 → itelFinishMtalk 1993 :=
+  fun hfact hp => fracas_326 _ _ hfact hp
+
+theorem fracas_328_from_gf (itelWinContractApcom itelWinContract : Nat → Prop) :
+    (∀ y, itelWinContractApcom y → itelWinContract y) → itelWinContractApcom 1993 → itelWinContract 1993 :=
+  fun hfact hp => fracas_328 _ _ hfact hp
+
+theorem fracas_330_from_gf (itelOwnApcom : Nat → Prop) :
+    (∀ y, 1988 ≤ y → y ≤ 1992 → itelOwnApcom y) → itelOwnApcom 1990 :=
+  fun h => fracas_330 _ h
+
+theorem fracas_331_from_gf (smithLeaveMeeting jonesLeaveMeeting : Prop) :
+    smithLeaveMeeting ∧ jonesLeaveMeeting → smithLeaveMeeting :=
+  fun h => fracas_331 _ _ h
+
+theorem fracas_332_from_gf (smithLeaveMeeting jonesLeaveMeeting : Prop) :
+    smithLeaveMeeting ∧ jonesLeaveMeeting → jonesLeaveMeeting :=
+  fun h => fracas_332 _ _ h
+
+theorem fracas_333_from_gf {Group : Type*} (smithAndersonJones : Group) (meet : Group → Prop) :
+    meet smithAndersonJones → ∃ g, meet g :=
+  fun h => fracas_333 _ _ h
+
+theorem fracas_334_from_gf (smithItelWinContractIn1992 itelWinContractIn1992 : Prop) :
+    (smithItelWinContractIn1992 → itelWinContractIn1992) → smithItelWinContractIn1992 → itelWinContractIn1992 :=
+  fun hfact hp => fracas_334 _ _ hfact hp
+
+theorem fracas_336_from_gf (itelManageWinContractIn1992 itelWinContractIn1992 : Prop) :
+    (itelManageWinContractIn1992 → itelWinContractIn1992) → itelManageWinContractIn1992 → itelWinContractIn1992 :=
+  fun hfact hp => fracas_336 _ _ hfact hp
+
+theorem fracas_338_from_gf (itelWinContractIn1992 : Prop) :
+    itelWinContractIn1992 → itelWinContractIn1992 :=
+  fun h => fracas_338 _ h
+
+theorem fracas_339_from_gf (itelWinContractIn1992 : Prop) :
+    ¬ itelWinContractIn1992 → ¬ itelWinContractIn1992 :=
+  fun h => fracas_339 _ h
+
+theorem fracas_342_from_gf (smithSignContractJones jonesSignContract : Prop) :
+    (smithSignContractJones → jonesSignContract) → smithSignContractJones → jonesSignContract :=
+  fun hfact hp => fracas_342 _ _ hfact hp
+
+theorem fracas_343_from_gf {Person : Type*} (smithSignContract : Person → Prop) (jones chairmanItel : Person) :
+    smithSignContract jones → jones = chairmanItel → smithSignContract chairmanItel :=
+  fun h heq => fracas_343 _ _ _ h heq
+
+theorem fracas_344_from_gf {Person : Type*} (helenAnswerPhone : Person → Prop) (chairmanDepartment : Person) :
+    helenAnswerPhone chairmanDepartment → ∃ x, helenAnswerPhone x :=
+  fun h => fracas_344 _ _ h
+
+theorem fracas_345_from_gf (smithSignContractJones smithMakeCopySecretary : Prop) :
+    smithSignContractJones ∧ smithMakeCopySecretary → smithSignContractJones :=
+  fun h => fracas_345 _ _ h
+
+theorem fracas_346_from_gf (smithSignContractJones smithCross_outCrucialClauseJones : Prop) :
+    (smithSignContractJones ∨ smithCross_outCrucialClauseJones) → (smithSignContractJones ∨ smithCross_outCrucialClauseJones) :=
+  fun h => fracas_346 _ _ h

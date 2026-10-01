@@ -3299,6 +3299,13 @@ _SECTION8_TENSED_CHECKS = [
         "Smith left the meeting",
     ),
     (
+        # Reused verbatim from fracas_331_premise - 332's own premise is
+        # the same sentence.
+        "fracas_332_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN jones_PN))) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
+        "Smith and Jones left the meeting",
+    ),
+    (
         "fracas_332_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
         "Jones left the meeting",
@@ -3381,6 +3388,13 @@ _SECTION9_TENSED_CHECKS = [
         "ITEL managed to win the contract in 1992",
     ),
     (
+        # Reused verbatim from fracas_334_hypothesis - 336's own
+        # hypothesis is the same sentence.
+        "fracas_336_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) in1992_Adv)))",
+        "ITEL won the contract in 1992",
+    ),
+    (
         "fracas_337_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplVV try_VV (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) in1992_Adv)))",
         "ITEL tried to win the contract in 1992",
@@ -3416,9 +3430,23 @@ _SECTION9_TENSED_CHECKS = [
         "Smith saw Jones's heart to beat",
     ),
     (
+        # Reused verbatim from fracas_340_premise1 - 342's own (sole)
+        # premise is the same sentence.
+        "fracas_342_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN))))",
+        "Smith saw Jones to sign the contract",
+    ),
+    (
         "fracas_342_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
         "Jones signed the contract",
+    ),
+    (
+        # Reused verbatim from fracas_340_premise1 - 343's own premise1 is
+        # the same sentence.
+        "fracas_343_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V see_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN))))",
+        "Smith saw Jones to sign the contract",
     ),
     (
         "fracas_343_premise2",
