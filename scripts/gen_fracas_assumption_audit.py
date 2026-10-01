@@ -13,14 +13,22 @@ Data/Problems.lean is: 472 `#print axioms` lines would be tedious and
 error-prone to keep in sync by hand as the corpus grows. Re-run this
 script after adding new FraCaS theorems; do not hand-edit the output.
 
-Theorem names are extracted with the same regex
-export_fracas_manifest.py already uses and has already proven correct
-(`theorem\\s+(fracas_\\d+(?:_\\w+)?)\\s`), but over a recursive glob
-(`FraCaS/**/*.lean`, not `FraCaS/Section*/*.lean`) - the single-level
-glob export_fracas_manifest.py uses would silently miss every theorem
-under Section1/Monotonicity/ (CrossCheck.lean's *_via_mono_nl/
-*_via_exist_nl theorems included), which is exactly the reasoner-
-derived subset this audit most needs to cover.
+Theorem names are extracted with a regex close to the one
+export_fracas_manifest.py already uses
+(`theorem\\s+(fracas_\\d+(?:_\\w+)?)\\s`), but anchored to the start of
+a line (`^theorem...`, `re.MULTILINE`) - the unanchored version matches
+a `theorem fracas_NNN ...` mention anywhere, including inside a prose
+doc comment (confirmed directly: BlindEval.lean's own header comment
+illustrates what a hand-proved theorem looks like by literally writing
+out `theorem fracas_002 : ...` as an example mid-sentence, which the
+unanchored regex happily "found" as if it were a real declaration - a
+real one is always written at the start of its own line, this project's
+style throughout). Also over a recursive glob (`FraCaS/**/*.lean`, not
+`FraCaS/Section*/*.lean`) - the single-level glob export_fracas_manifest.py
+uses would silently miss every theorem under Section1/Monotonicity/
+(CrossCheck.lean's *_via_mono_nl/*_via_exist_nl theorems included),
+which is exactly the reasoner-derived subset this audit most needs to
+cover.
 """
 from __future__ import annotations
 
@@ -55,7 +63,7 @@ covers the full corpus below - re-run the CI step and
 `parse_fracas_assumption_audit.py` against a fresh log, then replace
 this paragraph by hand with the new CI-confirmed result."""
 
-THEOREM_RE = re.compile(r"theorem\s+(fracas_\d+(?:_\w+)?)\s")
+THEOREM_RE = re.compile(r"^theorem\s+(fracas_\d+(?:_\w+)?)\s", re.MULTILINE)
 NAMESPACE_RE = re.compile(r"^namespace\s+(\S+)", re.MULTILINE)
 
 

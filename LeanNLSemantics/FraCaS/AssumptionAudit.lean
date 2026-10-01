@@ -9,7 +9,7 @@ Extends `LeanNLSemantics/MTT/AssumptionAudit.lean`'s own methodology -
 a faithful port of `atlas/mtt_ranta/MTT.v` Part 9, Coq's `Print
 Assumptions` becoming Lean's `#print axioms` - from the 14 MTT example
 theorems that file already covers to every `fracas_*` theorem in the
-FraCaS corpus: 629 theorems as of this generation, extracted
+FraCaS corpus: 628 theorems as of this generation, extracted
 automatically (see scripts/gen_fracas_assumption_audit.py), not
 hand-picked.
 
@@ -46,7 +46,6 @@ covers the full corpus below - re-run the CI step and
 this paragraph by hand with the new CI-confirmed result.
 -/
 
-#print axioms FraCaS.Section1.Monotonicity.BlindEval.fracas_002
 #print axioms FraCaS.Section1.Monotonicity.fracas_002_via_exist_nl
 #print axioms FraCaS.Section1.Monotonicity.fracas_004_via_exist_nl
 #print axioms FraCaS.Section1.Monotonicity.fracas_005_via_exist_nl
