@@ -169,6 +169,25 @@ PROJECT_CONJUNCT = {85: (1, 0), 86: (1, 1)}
 # incompatible with the bundle's own binary `has owner possessed`).
 BUNDLE_PROJECT = {114: 2, 115: 1, 116: 0}
 
+# fracas_117/118's shared premise 1 ("every student used her
+# workstation") and fracas_119's own premise 1 ("no student used her
+# workstation") translate (via `translate.py`'s
+# `_try_translate_bound_possessive_presupposition`) to a universally-
+# quantified bundle whose parts are parameterized by the bound student
+# variable, not concrete - exposed via that Translation's own
+# `template`. Each id's real theorem instantiates ONE part at the
+# SPECIFIC individual introduced by its OTHER premise ("Mary is a
+# student") - 117 the verb part, 118 the has part, 119 the (negated)
+# verb part again - confirmed by reading each real theorem's own stated
+# type directly. Maps an id to (which premise holds the template,
+# 1-based; which part: "gender"/"has"/"verb"). Like BUNDLE_PROJECT, the
+# generated hypothesis is built directly from the template rather than
+# independently re-translating each id's own differently-shaped
+# hypothesis sentence ("Mary used her workstation"/"Mary used a
+# workstation", both exactly as ambiguous in isolation as fracas_115's
+# "Mary has a workstation" was).
+SKOLEM_PROJECT = {117: (1, "verb"), 118: (1, "has"), 119: (1, "verb")}
+
 
 def load_base_checks():
     spec = importlib.util.spec_from_file_location(
@@ -364,11 +383,12 @@ def main() -> None:
     ]
 
     for idn in sorted(by_id):
-        # Section 3 pilot scoped to 114-116 only (the possessive-
-        # presupposition bundle) for now - raise this bound again when
-        # extending further into Section 3's harder constructions
-        # (Skolem functions, cross-sentential variable sharing, etc).
-        if idn > 116:
+        # Section 3 scoped to 114-119 so far (the possessive-
+        # presupposition bundle, unbound and Skolem-function-bound) -
+        # raise this bound again when extending further into Section
+        # 3's harder constructions (cross-sentential variable sharing,
+        # cardinality anaphora, etc).
+        if idn > 119:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)
@@ -450,7 +470,17 @@ def main() -> None:
         if not ok:
             skipped[idn] = "a/b premise variant present - ambiguous, skipped"
             continue
-        if not has_hyp or (idn not in CONJUNCT_IDS and "_hypothesis" not in roles):
+        if (
+            not has_hyp
+            and idn not in BUNDLE_PROJECT
+            and idn not in SKOLEM_PROJECT
+            or (
+                idn not in CONJUNCT_IDS
+                and idn not in BUNDLE_PROJECT
+                and idn not in SKOLEM_PROJECT
+                and "_hypothesis" not in roles
+            )
+        ):
             skipped[idn] = "no hypothesis tree"
             continue
         if sorted(premise_trees) != list(range(1, n + 1)):
@@ -485,15 +515,16 @@ def main() -> None:
                     free_predicates=conj_preds,
                     free_individuals=conj_individuals,
                 )
-            elif idn in BUNDLE_PROJECT:
-                # Overridden below from the premise's own bundle - its
-                # hypothesis tree is a differently-shaped sentence
-                # (e.g. 114's own passive-possessive "Mary's workstation
-                # was used") not meant to be translated independently,
-                # and in 114's own case doesn't even translate at all
-                # (GenNP subjects aren't handled elsewhere in this
-                # translator - no need to extend that just to immediately
-                # discard the result).
+            elif idn in BUNDLE_PROJECT or idn in SKOLEM_PROJECT:
+                # Overridden below from the premise's own bundle/template -
+                # its hypothesis tree (when one even exists at all - several
+                # SKOLEM_PROJECT ids have none) is a differently-shaped
+                # sentence (e.g. 114's own passive-possessive "Mary's
+                # workstation was used") not meant to be translated
+                # independently, and in 114's own case doesn't even
+                # translate at all (GenNP subjects aren't handled elsewhere
+                # in this translator - no need to extend that just to
+                # immediately discard the result).
                 translated_hyp = None
             else:
                 translated_hyp = translate_cl(parse_tree(roles["_hypothesis"]))
@@ -511,6 +542,54 @@ def main() -> None:
                 )
                 continue
             translated_hyp = bundle.conjuncts[conjunct_idx]
+
+        if idn in SKOLEM_PROJECT:
+            tmpl_i, part = SKOLEM_PROJECT[idn]
+            tmpl_premise = translated_premises[tmpl_i - 1]
+            if tmpl_premise.template is None:
+                skipped[idn] = (
+                    f"SKOLEM_PROJECT names premise {tmpl_i} as holding a template, "
+                    "but its own translation has none - tree or mapping is stale"
+                )
+                continue
+            tmpl = tmpl_premise.template
+            if part == "gender" and tmpl["negated"]:
+                skipped[idn] = "SKOLEM_PROJECT asks for the gender part of a negated template, which has none"
+                continue
+            individual_candidates = [
+                v
+                for i, t in enumerate(translated_premises)
+                if i != tmpl_i - 1
+                for v in t.free_individuals
+            ]
+            if len(individual_candidates) != 1:
+                skipped[idn] = (
+                    f"SKOLEM_PROJECT needs exactly one named individual from this id's "
+                    f"OTHER premises to instantiate the template at, found {individual_candidates}"
+                )
+                continue
+            individual_name = individual_candidates[0]
+            skolem_name = tmpl["skolem"]
+            if part == "gender":
+                translated_hyp = Translation(
+                    lean_prop=f"{tmpl['gender']} {individual_name}",
+                    free_predicates=[tmpl["gender"]],
+                    free_individuals=[individual_name],
+                )
+            elif part == "has":
+                translated_hyp = Translation(
+                    lean_prop=f"has {individual_name} ({skolem_name} {individual_name})",
+                    free_predicates=["has"],
+                    free_individuals=[individual_name],
+                    binary_predicates=["has"],
+                )
+            else:
+                translated_hyp = Translation(
+                    lean_prop=f"{tmpl['verb']} {individual_name} ({skolem_name} {individual_name})",
+                    free_predicates=[tmpl["verb"]],
+                    free_individuals=[individual_name],
+                    binary_predicates=[tmpl["verb"]],
+                )
 
         # A `.no` gold answer means the real theorem proves premises ->
         # NOT hypothesis, not premises -> hypothesis (Batch1.lean's own
@@ -534,6 +613,7 @@ def main() -> None:
         preds: list[str] = []
         individuals: list[str] = []
         binary_preds: list[str] = []
+        functions: list[str] = []
         for t in [*translated_premises, translated_hyp]:
             for p in t.free_predicates:
                 if p not in preds:
@@ -544,6 +624,9 @@ def main() -> None:
             for p in t.binary_predicates:
                 if p not in binary_preds:
                     binary_preds.append(p)
+            for f in t.free_functions:
+                if f not in functions:
+                    functions.append(f)
         unary_preds = [p for p in preds if p not in binary_preds]
 
         if idn in PROJECT_CONJUNCT:
@@ -581,6 +664,8 @@ def main() -> None:
             binder_parts.append(f"({' '.join(binary_preds)} : A → A → Prop)")
         for v in individuals:
             binder_parts.append(f"({v} : A)")
+        if functions:
+            binder_parts.append(f"({' '.join(functions)} : A → A)")
         binders = " ".join(binder_parts)
 
         # `apply fracas_NNN <;> assumption` (this generator's first
@@ -635,7 +720,7 @@ def main() -> None:
         else:
             real_preds, real_individuals = preds, individuals
 
-        underscores = " ".join(["_"] * (len(real_preds) + len(real_individuals)))
+        underscores = " ".join(["_"] * (len(real_preds) + len(real_individuals) + len(functions)))
         proof_hyp_args = list(hyp_names)
         if idn in PROJECT_CONJUNCT:
             proj_i, conjunct_idx = PROJECT_CONJUNCT[idn]

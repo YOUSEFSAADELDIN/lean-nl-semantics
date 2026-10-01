@@ -510,6 +510,22 @@ class Translation:
     # assumed it uniformly; this field lets them keep doing that for
     # every OTHER predicate while declaring these few correctly.
     binary_predicates: list = field(default_factory=list)
+    # Free SKOLEM FUNCTIONS (`A -> A`, as opposed to every other free
+    # variable this translator produces, which is either a predicate
+    # or a bare individual) - set only by
+    # `_try_translate_bound_possessive_presupposition`, for a bound
+    # possessive pronoun ("every student used HER workstation": one
+    # workstation per student, not one fixed individual).
+    free_functions: list = field(default_factory=list)
+    # Set only by `_try_translate_bound_possessive_presupposition`: the
+    # raw, UNINSTANTIATED components of a universally-quantified
+    # presupposition bundle (restrictor/gender/skolem/verb names, and
+    # whether negated) - unlike `conjuncts` (already-concrete sub-
+    # Translations), these are all parameterized by the bound variable,
+    # so a caller (gen_gf_cross_check.py's SKOLEM_PROJECT) instantiates
+    # ONE part at a SPECIFIC individual itself, rather than projecting
+    # an already-built piece.
+    template: "dict | None" = None
 
 
 def _try_translate_partitive_identity(subject, vp):
@@ -760,6 +776,104 @@ def _try_translate_possessive_presupposition(subject, vp):
     )
 
 
+def _try_translate_bound_possessive_presupposition(subject, vp):
+    """Handles a QUANTIFIED subject with a possessive-pronoun-object VP
+    - "every/no student used her workstation" (fracas_117/118's shared
+    premise 1, fracas_119's own premise 1) - the BOUND-pronoun analogue
+    of `_try_translate_possessive_presupposition`: "her" here is bound
+    by the quantifier, not a fixed individual, so it becomes a Skolem
+    function `workstationOf : A -> A` (one workstation per student)
+    rather than one fixed named individual - matching Batch1.lean's own
+    fracas_117 comment directly ("the bound possessive 'her' becomes a
+    Skolem function... the standard way to formalize a bound pronoun
+    without building general anaphora machinery").
+
+    Only `every_Det` (positive) and a bare `DetQuant no_Quant NumSg`
+    (negative) are handled - confirmed needed by 117/118 and 119
+    respectively. The negative case DROPS the gender/has conjuncts
+    entirely (matching fracas_119's own narrower stated type, which
+    never mentions `female`/`hasA` at all - confirmed by reading
+    Batch1.lean's own separate `variable` block for P119 directly, not
+    assumed from the positive case's shape), producing just the bare
+    negated verb relation.
+
+    Exposes its own raw components via `template` (not a flat lean_prop
+    breakdown like `conjuncts`, since every part here is parameterized
+    by the bound variable, not concrete) so a caller
+    (scripts/gen_gf_cross_check.py's SKOLEM_PROJECT) can instantiate
+    ONE part at a SPECIFIC individual - needed because "Mary used her
+    workstation" or "Mary used a workstation", read on their own with
+    no explicit link back to THIS premise's own Skolem function, are
+    exactly as ambiguous as fracas_115's "Mary has a workstation" was
+    (see `_try_translate_possessive_presupposition`'s own comment): the
+    correspondence is a fact about this specific problem's own two
+    premises together, not something a compositional, single-sentence
+    reading of the hypothesis recovers on its own. Returns None when the
+    shape doesn't match."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if det.head == "every_Det" and not det.args:
+        negated = False
+    elif (
+        det.head == "DetQuant"
+        and len(det.args) == 2
+        and det.args[0].head == "no_Quant"
+        and not det.args[0].args
+    ):
+        negated = True
+    else:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    obj_det, obj_cn = obj.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "PossPron"
+        or len(obj_det.args[0].args) != 1
+        or obj_det.args[0].args[0].head not in _GENDER_BY_POSS_PRON
+    ):
+        return None
+    gender_name = _GENDER_BY_POSS_PRON[obj_det.args[0].args[0].head]
+    restrictor_name = camel_name(_leaf_words(cn))
+    noun_name = camel_name(_leaf_words(obj_cn))
+    skolem_name = noun_name + "Of"
+    verb_name = camel_name(_leaf_words(vp.args[0]))
+    verb_expr = f"{verb_name} x ({skolem_name} x)"
+    if negated:
+        body = f"¬ {verb_expr}"
+        preds = [restrictor_name, verb_name]
+        binary_preds = [verb_name]
+    else:
+        body = f"({gender_name} x ∧ has x ({skolem_name} x) ∧ {verb_expr})"
+        preds = [restrictor_name, gender_name, "has", verb_name]
+        binary_preds = ["has", verb_name]
+    template = {
+        "restrictor": restrictor_name,
+        "gender": gender_name,
+        "skolem": skolem_name,
+        "verb": verb_name,
+        "negated": negated,
+    }
+    return Translation(
+        lean_prop=f"(∀ x, {restrictor_name} x → {body})",
+        free_predicates=preds,
+        free_individuals=[],
+        binary_predicates=binary_preds,
+        free_functions=[skolem_name],
+        template=template,
+    )
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:
@@ -780,6 +894,15 @@ def translate_cl(t) -> Translation:
     possessive_bundle = _try_translate_possessive_presupposition(subject, vp)
     if possessive_bundle is not None:
         return possessive_bundle
+
+    # Same reasoning, for a QUANTIFIED subject with this same possessive-
+    # pronoun-object shape ("every/no student used her workstation") -
+    # checked before the general `_resolve_subject` path, which would
+    # otherwise fuse the whole VP (object included) into one unary scope
+    # predicate, same wrong shape the unbound case guards against above.
+    bound_bundle = _try_translate_bound_possessive_presupposition(subject, vp)
+    if bound_bundle is not None:
+        return bound_bundle
 
     named_fact = _try_translate_named_individual_fact(subject, vp)
     if named_fact is not None:

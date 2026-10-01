@@ -1400,6 +1400,20 @@ BASE_CHECKS += [
         "Mary is a student",
     ),
     (
+        # fracas_118/119's own gold premise text (second premise, "Mary
+        # is a student") is identical to fracas_117's own - reusing its
+        # already-confirmed tree rather than re-linearizing it twice
+        # more under new labels.
+        "fracas_118_premise2",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN student_N))))",
+        "Mary is a student",
+    ),
+    (
+        "fracas_119_premise2",
+        "linearize PredVP (UsePN mary_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN student_N))))",
+        "Mary is a student",
+    ),
+    (
         "fracas_122_premise1",
         "linearize PredVP (DetCN every_Det (UseN committee_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (UseN chairman_N)))",
         "every committee has a chairman",
@@ -1539,6 +1553,13 @@ _SECTION3_TENSED_CHECKS = [
     ),
     (
         "fracas_117_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN every_Det (UseN student_N)) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "every student used her workstation",
+    ),
+    (
+        # fracas_118's own gold premise text (first premise) is
+        # identical to fracas_117's - reusing its already-confirmed tree.
+        "fracas_118_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN every_Det (UseN student_N)) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
         "every student used her workstation",
     ),

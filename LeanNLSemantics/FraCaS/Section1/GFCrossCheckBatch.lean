@@ -234,3 +234,15 @@ theorem fracas_115_from_gf {A : Type*} (female : A → Prop) (has use : A → A 
 theorem fracas_116_from_gf {A : Type*} (female : A → Prop) (has use : A → A → Prop) (mary : A) (maryWorkstation : A) :
     (female mary ∧ has mary maryWorkstation ∧ use mary maryWorkstation) → female mary :=
   fun h1 => fracas_116 _ _ _ _ _ h1
+
+theorem fracas_117_from_gf {A : Type*} (student female : A → Prop) (has use : A → A → Prop) (mary : A) (workstationOf : A → A) :
+    (∀ x, student x → (female x ∧ has x (workstationOf x) ∧ use x (workstationOf x))) → student mary → use mary (workstationOf mary) :=
+  fun h1 h2 => fracas_117 _ _ _ _ _ _ h1 h2
+
+theorem fracas_118_from_gf {A : Type*} (student female : A → Prop) (has use : A → A → Prop) (mary : A) (workstationOf : A → A) :
+    (∀ x, student x → (female x ∧ has x (workstationOf x) ∧ use x (workstationOf x))) → student mary → has mary (workstationOf mary) :=
+  fun h1 h2 => fracas_118 _ _ _ _ _ _ h1 h2
+
+theorem fracas_119_from_gf {A : Type*} (student : A → Prop) (use : A → A → Prop) (mary : A) (workstationOf : A → A) :
+    (∀ x, student x → ¬ use x (workstationOf x)) → student mary → ¬ (use mary (workstationOf mary)) :=
+  fun h1 h2 => fracas_119 _ _ _ _ h1 h2
