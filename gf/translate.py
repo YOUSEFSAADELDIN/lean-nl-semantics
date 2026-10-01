@@ -281,6 +281,14 @@ def _decode_sub100(t) -> int:
 def _decode_sub1000(t) -> int:
     if t.head == "pot1as2" and len(t.args) == 1:
         return _decode_sub100(t.args[0])
+    # `pot2` is the hundreds digit itself (a Sub10 tree, e.g. `pot2 (pot0
+    # n5)` for "five hundred") - a real, general completion of this same
+    # numeral hierarchy, not a one-off fact (same reasoning as pot110/
+    # pot111's own earlier addition for "ten"/"eleven"); problem 242's
+    # "500 MIPS" is the first tree fed through this translator that
+    # actually needs a hundreds digit.
+    if t.head == "pot2" and len(t.args) == 1:
+        return 100 * _decode_sub10(t.args[0])
     raise NotImplementedError(f"unrecognized Sub1000 numeral shape: {t.head!r}")
 
 

@@ -2498,9 +2498,25 @@ BASE_CHECKS += [
         "the PC-6082 is fast",
     ),
     (
+        # fracas_223's own premise 1 ("PC-6082 is faster than ITEL-XZ")
+        # is identical to fracas_220's own premise 1 - reusing its
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_223_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (UsePN itelXZ_PN))))",
+        "the PC-6082 is faster than the ITEL-XZ",
+    ),
+    (
         "fracas_223_premise2",
         "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (PositA slow_A)))",
         "the PC-6082 is slow",
+    ),
+    (
+        # fracas_223's own hypothesis, resolved (before negation), is
+        # "the ITEL-XZ is fast" - identical to fracas_220's own premise
+        # 2, reused for naming "fast" rather than re-linearizing it.
+        "fracas_223_hypothesis",
+        "linearize PredVP (UsePN itelXZ_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the ITEL-XZ is fast",
     ),
     (
         "fracas_224_premise1",
@@ -2508,9 +2524,43 @@ BASE_CHECKS += [
         "the PC-6082 is as fast as the ITEL-XZ",
     ),
     (
+        # fracas_224's own premise 2 ("ITEL-XZ is fast") is identical to
+        # fracas_220's own premise 2 - reused rather than re-linearized.
+        "fracas_224_premise2",
+        "linearize PredVP (UsePN itelXZ_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the ITEL-XZ is fast",
+    ),
+    (
+        # fracas_227's own three roles are each identical to an
+        # already-confirmed sibling id's own tree: premise 1 to
+        # fracas_224's, premise 2 to fracas_223's, and the hypothesis
+        # (resolved, before negation) to fracas_220's own premise 2.
+        "fracas_227_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (CAdvAP as_CAdv (PositA fast_A) (UsePN itelXZ_PN))))",
+        "the PC-6082 is as fast as the ITEL-XZ",
+    ),
+    (
+        "fracas_227_premise2",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (PositA slow_A)))",
+        "the PC-6082 is slow",
+    ),
+    (
+        "fracas_227_hypothesis",
+        "linearize PredVP (UsePN itelXZ_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the ITEL-XZ is fast",
+    ),
+    (
         "fracas_229_hypothesis",
         "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA slow_A (UsePN itelXZ_PN))))",
         "the PC-6082 is slower than the ITEL-XZ",
+    ),
+    (
+        # fracas_229's own premise ("PC-6082 is as fast as ITEL-XZ") is
+        # identical to fracas_224's own premise 1 - reused rather than
+        # re-linearized.
+        "fracas_229_premise",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (CAdvAP as_CAdv (PositA fast_A) (UsePN itelXZ_PN))))",
+        "the PC-6082 is as fast as the ITEL-XZ",
     ),
     (
         "fracas_242_premise1",
@@ -2541,6 +2591,22 @@ BASE_CHECKS += [
         "fracas_247_premise1",
         "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N)))))",
         "the PC-6082 is faster than an ITEL computer",
+    ),
+    (
+        # fracas_248's own "faster than any ITEL computer" gets the same
+        # universal formalization as fracas_246's own "every" (per
+        # Comparatives.lean's own approach note: "any" is universal here,
+        # not an NPI) - reusing its own premise 1/2 trees rather than
+        # building a fresh "any_Det" tree for truth-conditionally
+        # identical content.
+        "fracas_248_premise1",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN every_Det (UseN itelComputer_N)))))",
+        "the PC-6082 is faster than every ITEL computer",
+    ),
+    (
+        "fracas_248_premise2",
+        "linearize PredVP (UsePN itelZX_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N))))",
+        "the ITEL-ZX is an ITEL computer",
     ),
     (
         "fracas_249_premise",

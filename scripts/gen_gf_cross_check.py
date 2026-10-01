@@ -1593,6 +1593,309 @@ def _build_fracas_214(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+# ---------------------------------------------------------------------
+# Section 6 (comparatives, 220-250): per Comparatives.lean's own approach
+# note, "Adj-er than"/"as Adj as" license or refute a bare Adj
+# predication via an assumed connecting fact (the same move as Section
+# 5's 208/209/212), cardinal comparatives are real `Nat` arithmetic, and
+# quantified comparative standards reuse `Every`/`Some`. Genuinely
+# skipped (confirmed via run_gf_tests.py's own comment): FraCaS's "more N
+# than NP" cardinal-comparative-quantifier construction ("ITEL won more
+# orders than APCOM(did)", "twice as many orders", "3000 more computers")
+# has no combinator in this grammar at all, so 230/232/233/235/238/239/
+# 241/243 (each needs that exact construction for their own DEFINING
+# premise) and 236/237/244/245 (comparative-ellipsis readings whose own
+# premise is the same unbuilt construction) are NOT attempted here -
+# a real, pre-existing gap, not just unattempted (same class as Section
+# 1's 44/81/82/92). 242 is NOT affected (it's a plain `ComparA` taking a
+# number phrase, an already-supported construction, confirmed by its own
+# full tree coverage).
+# ---------------------------------------------------------------------
+
+
+def _comp_ap(p):
+    """PredVP subj (UseComp (CompAP ap)) -> (subj_name, ap) - the
+    copular "X is Adj(-er (than Y))" shape every id in this section
+    shares; callers then destructure `ap` by its own head (`PositA`,
+    `ComparA`, or `CAdvAP`)."""
+    subj = camel_name(_leaf_words(p.args[0]))
+    ap = p.args[1].args[0].args[0]
+    return subj, ap
+
+
+def _build_fracas_220(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is faster than the ITEL-XZ. The ITEL-XZ is fast."
+    -> "The PC-6082 is fast." Confirmed by reading the real theorem's
+    own stated type directly (`(∀x y, fasterThan x y -> fast y -> fast
+    x) -> fasterThan pc itel -> fast itel -> fast pc`) - the comparative
+    licenses a bare "fast" predication via an assumed connecting fact,
+    same move as Section 5's 208/209. Returns (binders, arrow_chain,
+    proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    pc, ap1 = _comp_ap(p1)
+    adj = camel_name(_leaf_words(ap1.args[0]))
+    itel = camel_name(_leaf_words(ap1.args[1]))
+    relation = adj + "Than"
+    _itel2, ap2 = _comp_ap(p2)
+    fast = camel_name(_leaf_words(ap2))
+    arrow_chain = (
+        f"(∀ x y, {relation} x y → {fast} y → {fast} x) → "
+        f"{relation} {pc} {itel} → {fast} {itel} → {fast} {pc}"
+    )
+    binders = f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} : A → Prop) ({pc} {itel} : A)"
+    proof = "fun h hf hi => fracas_220 _ _ _ _ h hf hi"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_223(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is faster than the ITEL-XZ. The PC-6082 is slow."
+    -> not "The ITEL-XZ is fast." Confirmed by reading the real
+    theorem's own stated type directly (`(∀x y, fasterThan x y -> slow x
+    -> ¬ fast y) -> fasterThan pc itel -> slow pc -> ¬ fast itel`) - if
+    the faster one is already slow, the slower one certainly isn't fast.
+    premise 1 reuses fracas_220's own premise 1 (identical text); the
+    hypothesis, resolved before negation, reuses fracas_220's own
+    premise 2 (`fracas_223_premise1`/`fracas_223_hypothesis` in
+    run_gf_tests.py). Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    hyp = parse_tree(roles["_hypothesis"])
+    pc, ap1 = _comp_ap(p1)
+    adj = camel_name(_leaf_words(ap1.args[0]))
+    itel = camel_name(_leaf_words(ap1.args[1]))
+    relation = adj + "Than"
+    _pc2, ap2 = _comp_ap(p2)
+    slow = camel_name(_leaf_words(ap2))
+    _itel2, ap3 = _comp_ap(hyp)
+    fast = camel_name(_leaf_words(ap3))
+    aux = f"∀ x y, {relation} x y → {slow} x → ¬ {fast} y"
+    arrow_chain = f"({aux}) → {relation} {pc} {itel} → {slow} {pc} → ¬ {fast} {itel}"
+    binders = (
+        f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} {slow} : A → Prop) "
+        f"({pc} {itel} : A)"
+    )
+    proof = "fun h hf hs => fracas_223 _ _ _ _ _ h hf hs"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_224(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is as fast as the ITEL-XZ. The ITEL-XZ is fast." ->
+    "The PC-6082 is fast." Confirmed by reading the real theorem's own
+    stated type directly (`(∀x y, asFastAs x y -> fast y -> fast x) ->
+    asFastAs pc itel -> fast itel -> fast pc`) - same shape as 220, via
+    the equative `CAdvAP`/`as_CAdv` construction instead of `ComparA`;
+    premise 2 reuses fracas_220's own premise 2 (identical text,
+    `fracas_224_premise2`). Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    pc, ap1 = _comp_ap(p1)
+    adj = camel_name(_leaf_words(ap1.args[1]))
+    itel = camel_name(_leaf_words(ap1.args[2]))
+    relation = adj + "As"
+    _itel2, ap2 = _comp_ap(p2)
+    fast = camel_name(_leaf_words(ap2))
+    arrow_chain = (
+        f"(∀ x y, {relation} x y → {fast} y → {fast} x) → "
+        f"{relation} {pc} {itel} → {fast} {itel} → {fast} {pc}"
+    )
+    binders = f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} : A → Prop) ({pc} {itel} : A)"
+    proof = "fun h hf hi => fracas_224 _ _ _ _ h hf hi"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_227(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is as fast as the ITEL-XZ. The PC-6082 is slow." ->
+    not "The ITEL-XZ is fast." Confirmed by reading the real theorem's
+    own stated type directly (`(∀x y, asFastAs x y -> slow x -> ¬ fast
+    y) -> asFastAs pc itel -> slow pc -> ¬ fast itel`) - same shape as
+    223, via the equative construction; all three roles reuse
+    fracas_224's/223's/220's own already-confirmed trees
+    (`fracas_227_premise1`/`fracas_227_premise2`/
+    `fracas_227_hypothesis`). Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    hyp = parse_tree(roles["_hypothesis"])
+    pc, ap1 = _comp_ap(p1)
+    adj = camel_name(_leaf_words(ap1.args[1]))
+    itel = camel_name(_leaf_words(ap1.args[2]))
+    relation = adj + "As"
+    _pc2, ap2 = _comp_ap(p2)
+    slow = camel_name(_leaf_words(ap2))
+    _itel2, ap3 = _comp_ap(hyp)
+    fast = camel_name(_leaf_words(ap3))
+    aux = f"∀ x y, {relation} x y → {slow} x → ¬ {fast} y"
+    arrow_chain = f"({aux}) → {relation} {pc} {itel} → {slow} {pc} → ¬ {fast} {itel}"
+    binders = (
+        f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} {slow} : A → Prop) "
+        f"({pc} {itel} : A)"
+    )
+    proof = "fun h hf hs => fracas_227 _ _ _ _ _ h hf hs"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_229(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is as fast as the ITEL-XZ." -> not "The PC-6082 is
+    slower than the ITEL-XZ." Confirmed by reading the real theorem's
+    own stated type directly (`(∀x y, asFastAs x y -> ¬ slowerThan x y)
+    -> asFastAs pc itel -> ¬ slowerThan pc itel`) - "as fast as" (an "at
+    least as fast" lower bound) directly refutes "slower than", an
+    assumed fact connecting the two comparatives; the premise reuses
+    fracas_224's own premise 1 (identical text, `fracas_229_premise`).
+    Returns (binders, arrow_chain, proof)."""
+    p = parse_tree(roles["_premise"])
+    hyp = parse_tree(roles["_hypothesis"])
+    pc, ap1 = _comp_ap(p)
+    asFastAsAdj = camel_name(_leaf_words(ap1.args[1]))
+    itel = camel_name(_leaf_words(ap1.args[2]))
+    asFastAs = asFastAsAdj + "As"
+    _pc2, ap2 = _comp_ap(hyp)
+    slowAdj = camel_name(_leaf_words(ap2.args[0]))
+    slowerThan = slowAdj + "Than"
+    aux = f"∀ x y, {asFastAs} x y → ¬ {slowerThan} x y"
+    arrow_chain = f"({aux}) → {asFastAs} {pc} {itel} → ¬ {slowerThan} {pc} {itel}"
+    binders = f"{{A : Type*}} ({asFastAs} {slowerThan} : A → A → Prop) ({pc} {itel} : A)"
+    proof = "fun h ha => fracas_229 _ _ _ _ h ha"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_242(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is faster than 500 MIPS. The ITEL-ZX is slower than
+    500 MIPS." -> "The PC-6082 is faster than the ITEL-ZX." Confirmed by
+    reading the real theorem's own stated type directly (`speedPC > 500
+    -> speedITELZX < 500 -> speedPC > speedITELZX`, proved `by omega`) -
+    unlike 220-229's assumed-relation pattern, this project formalizes
+    cardinal comparatives as literal `Nat` inequalities (per
+    Comparatives.lean's own approach note), so no domain `{A : Type*}`
+    or `fracas_242` reapplication is involved at all - the arrow chain
+    is independently re-proved via `omega` directly, genuinely cross-
+    checked against the real `ComparA`+number-phrase trees (an already-
+    supported construction, unlike 230-243's unbuilt "more N than NP"
+    one - see this section's own comment). The adjective's own polarity
+    picks the inequality direction ("faster than N" -> `> N`, "slower
+    than N" -> `< N`). Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+
+    def speed_fact(p):
+        subj = camel_name(_leaf_words(p.args[0]))
+        ap = p.args[1].args[0].args[0]
+        adj_word = ap.args[0].head
+        num_cn = ap.args[1]
+        det = num_cn.args[0]
+        count, _approx = _decode_card(det.args[1].args[0])
+        direction = ">" if adj_word == "fast_A" else "<"
+        speed_name = "speed" + subj[0].upper() + subj[1:]
+        return speed_name, direction, count
+
+    speed1, dir1, count1 = speed_fact(p1)
+    speed2, dir2, count2 = speed_fact(p2)
+    fact1 = f"{speed1} {dir1} {count1}"
+    fact2 = f"{speed2} {dir2} {count2}"
+    conclusion = f"{speed1} > {speed2}"
+    arrow_chain = f"{fact1} → {fact2} → {conclusion}"
+    binders = f"({speed1} {speed2} : Nat)"
+    proof = "by omega"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_246(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is faster than every ITEL computer. The ITEL-ZX is
+    an ITEL computer." -> "The PC-6082 is faster than the ITEL-ZX."
+    Confirmed by reading the real theorem's own stated type directly
+    (`Every itelComputer (fasterThan pc) -> itelComputer itelzx ->
+    fasterThan pc itelzx`) - a quantified comparative standard, reusing
+    `Every` from `FraCaS.Section1.GQ` exactly as Sections 1-5 do
+    throughout. Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    pc, ap1 = _comp_ap(p1)
+    adj = camel_name(_leaf_words(ap1.args[0]))
+    relation = adj + "Than"
+    restrictor_cn = ap1.args[1].args[1]
+    restrictor = camel_name(_leaf_words(restrictor_cn))
+    itelzx = camel_name(_leaf_words(p2.args[0]))
+    arrow_chain = (
+        f"Every {restrictor} ({relation} {pc}) → {restrictor} {itelzx} → "
+        f"{relation} {pc} {itelzx}"
+    )
+    binders = (
+        f"{{A : Type*}} ({relation} : A → A → Prop) ({restrictor} : A → Prop) "
+        f"({pc} {itelzx} : A)"
+    )
+    proof = "fun h hz => fracas_246 _ _ _ _ h hz"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_248(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is faster than any ITEL computer. The ITEL-ZX is an
+    ITEL computer." -> "The PC-6082 is faster than the ITEL-ZX."
+    Confirmed by reading the real theorem's own stated type directly
+    (identical to fracas_246's own: `Every itelComputer (fasterThan pc)
+    -> itelComputer itelzx -> fasterThan pc itelzx`) - "any" is
+    universal here (not an NPI under negation), same shape as 246;
+    both premises reuse fracas_246's own already-confirmed trees
+    (`fracas_248_premise1`/`fracas_248_premise2` in run_gf_tests.py).
+    Returns (binders, arrow_chain, proof)."""
+    p1 = parse_tree(roles["_premise1"])
+    p2 = parse_tree(roles["_premise2"])
+    pc, ap1 = _comp_ap(p1)
+    adj = camel_name(_leaf_words(ap1.args[0]))
+    relation = adj + "Than"
+    restrictor_cn = ap1.args[1].args[1]
+    restrictor = camel_name(_leaf_words(restrictor_cn))
+    itelzx = camel_name(_leaf_words(p2.args[0]))
+    arrow_chain = (
+        f"Every {restrictor} ({relation} {pc}) → {restrictor} {itelzx} → "
+        f"{relation} {pc} {itelzx}"
+    )
+    binders = (
+        f"{{A : Type*}} ({relation} : A → A → Prop) ({restrictor} : A → Prop) "
+        f"({pc} {itelzx} : A)"
+    )
+    proof = "fun h hz => fracas_248 _ _ _ _ h hz"
+    return binders, arrow_chain, proof
+
+
+def _conj_fact(roles: dict, idn: int) -> "tuple[str, str, str]":
+    p = parse_tree(roles["_premise"])
+    pc, ap = _comp_ap(p)
+    adj = camel_name(_leaf_words(ap.args[0]))
+    relation = adj + "Than"
+    conj = ap.args[1]
+    basenp = conj.args[1]
+    itelzx = camel_name(_leaf_words(basenp.args[0]))
+    itelzy = camel_name(_leaf_words(basenp.args[1]))
+    fact = f"{relation} {pc} {itelzx} ∧ {relation} {pc} {itelzy}"
+    conclusion = f"{relation} {pc} {itelzx}"
+    arrow_chain = f"{fact} → {conclusion}"
+    binders = f"{{A : Type*}} ({relation} : A → A → Prop) ({pc} {itelzx} {itelzy} : A)"
+    proof = f"fun h => fracas_{idn} _ _ _ _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_249(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is faster than the ITEL-ZX and the ITEL-ZY." ->
+    "The PC-6082 is faster than the ITEL-ZX." Confirmed by reading the
+    real theorem's own `:= fun h => h.1` proof directly (`fasterThan pc
+    itelzx ∧ fasterThan pc itelzy -> fasterThan pc itelzx`) - a plain
+    conjunction-drop, splitting the premise's own `ConjNP and_Conj
+    (BaseNP ...)` into its two conjuncts. Returns (binders, arrow_chain,
+    proof)."""
+    return _conj_fact(roles, 249)
+
+
+def _build_fracas_250(roles: dict) -> "tuple[str, str, str]":
+    """"The PC-6082 is faster than the ITEL-ZX or the ITEL-ZY." -> "The
+    PC-6082 is faster than the ITEL-ZX." Confirmed by reading the real
+    theorem's own `:= fun h => h.1` proof directly (`fasterThan pc
+    itelzx ∧ fasterThan pc itelzy -> fasterThan pc itelzx`) - FraCaS's
+    own "or" read conjunctively (faster than both), the same bundled
+    reading as 249's "and", per FraCaS's own "on one reading of the
+    premise". Returns (binders, arrow_chain, proof)."""
+    return _conj_fact(roles, 250)
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
@@ -1670,6 +1973,34 @@ def _build_fracas_214(roles: dict) -> "tuple[str, str, str]":
 # each builder's own comment and the matching reuse comment in
 # run_gf_tests.py. 200/201/206/207/213/215/217/219 are countermodel-
 # only, already excluded automatically (no bare theorem to cross-check).
+#
+# Section 6 (comparatives, 220-250) adds 10 more ids: 220/223/224/227/
+# 229 chain in an assumed comparative-relation fact (the same move as
+# 208/209/212), reusing each other's own premise/hypothesis trees
+# heavily (220's own two premises cover most of what 223/224/227/229
+# each need, confirmed by reading each one's own stated type directly);
+# 246/248 reuse `Every` for a quantified comparative standard (248's own
+# "any" gets the exact same universal formalization as 246's "every",
+# so it reuses 246's own trees rather than building a fresh "any_Det"
+# one); 249/250 are a plain conjunction-drop. 242 is a genuinely
+# different shape from the rest of this file: cardinal comparatives are
+# formalized as literal `Nat` arithmetic (not `{A : Type*}` predicates
+# at all), proved `by omega` directly rather than reapplying
+# `fracas_242` - this also needed a real, general completion of
+# `translate.py`'s own numeral decoder (`_decode_sub1000` didn't handle
+# the hundreds digit at all, the first tree this translator has ever
+# fed through it needing one; fixed the same way `pot110`/`pot111` were
+# added for "ten"/"eleven" in an earlier round - a genuine gap in the
+# numeral hierarchy itself, not a one-off fact). NOT attempted:
+# 230/232/233/235/238/239/241/243 (each needs FraCaS's own "more N than
+# NP" cardinal-comparative-quantifier construction - "ITEL won more
+# orders than APCOM(did)" - which has NO combinator in this grammar at
+# all, confirmed via run_gf_tests.py's own comment recording this as a
+# real, pre-existing gap, the same class as Section 1's 44/81/82/92,
+# not just unattempted) and 236/237/244/245 (comparative-ellipsis
+# readings whose own premise is that same unbuilt construction).
+# 221/222/225/226/228/231/234/240/247 are countermodel-only, already
+# excluded automatically.
 CUSTOM_BUILD = {
     120: _build_fracas_120,
     121: _build_fracas_121,
@@ -1720,6 +2051,16 @@ CUSTOM_BUILD = {
     211: _build_fracas_211,
     212: _build_fracas_212,
     214: _build_fracas_214,
+    220: _build_fracas_220,
+    223: _build_fracas_223,
+    224: _build_fracas_224,
+    227: _build_fracas_227,
+    229: _build_fracas_229,
+    242: _build_fracas_242,
+    246: _build_fracas_246,
+    248: _build_fracas_248,
+    249: _build_fracas_249,
+    250: _build_fracas_250,
 }
 
 
@@ -1775,7 +2116,7 @@ def load_bare_theorem_ids() -> set:
     both/neither work), and would otherwise generate a reference to a
     theorem that doesn't exist at all, not just a shape mismatch."""
     ids = set()
-    for section in ("Section1", "Section2", "Section3", "Section4", "Section5"):
+    for section in ("Section1", "Section2", "Section3", "Section4", "Section5", "Section6"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             for m in re.finditer(r"theorem fracas_(\d+) ", path.read_text()):
                 ids.add(int(m.group(1)))
@@ -1800,7 +2141,7 @@ def real_theorem_arrow_count(idn: int) -> "int | None":
     match here (not just a plausible-looking premise count) makes a
     problem eligible - confirmed by reading the actual Lean source, not
     assumed from Problems.lean's own premise list length. """
-    for section in ("Section1", "Section2", "Section3", "Section4", "Section5"):
+    for section in ("Section1", "Section2", "Section3", "Section4", "Section5", "Section6"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             text = path.read_text()
             m = re.search(rf"theorem fracas_{idn:03d} :\s*(.*?):=", text, re.S)
@@ -1877,6 +2218,8 @@ def main() -> None:
         "import LeanNLSemantics.FraCaS.Section4.Batch4",
         "import LeanNLSemantics.FraCaS.Section5.Batch1",
         "import LeanNLSemantics.FraCaS.Section5.Batch2",
+        "import LeanNLSemantics.FraCaS.Section6.Batch1",
+        "import LeanNLSemantics.FraCaS.Section6.Batch2",
         "",
         "/-!",
         "# GF cross-check, batch 2",
@@ -1956,7 +2299,24 @@ def main() -> None:
         "first glance, but its own stated type is actually two-sorted",
         "`{Person Thing}`, the same blocker as 127/134/135/150-153/196);",
         "200/201/206/207/213/215/217/219 (countermodel-only, already",
-        "excluded automatically).",
+        "excluded automatically). Section 6 (comparatives, 220-250) adds 10",
+        "more ids: 220/223/224/227/229 chain in an assumed comparative-",
+        "relation fact (the same move as 208/209/212), reusing each other's",
+        "own trees heavily; 246/248 reuse `Every` for a quantified",
+        "comparative standard; 249/250 are a plain conjunction-drop. 242 is",
+        "a genuinely different shape: cardinal comparatives are formalized",
+        "as literal `Nat` arithmetic, proved by `omega` directly rather",
+        "than reapplying the real theorem - this also needed a real,",
+        "general completion of translate.py's own numeral decoder (the",
+        "hundreds digit, not handled at all before this round, fixed the",
+        "same way \"ten\"/\"eleven\" were added in an earlier round). NOT",
+        "attempted: 230/232/233/235/238/239/241/243 and 236/237/244/245,",
+        "each needing FraCaS's own \"more N than NP\" cardinal-comparative-",
+        "quantifier construction, which has NO combinator in this grammar",
+        "at all - a real, pre-existing gap (the same class as problems",
+        "44/81/82/92), confirmed via run_gf_tests.py's own comment, not",
+        "just unattempted. 221/222/225/226/228/231/234/240/247 are",
+        "countermodel-only, already excluded automatically.",
         "`scripts/gen_gf_cross_check.py` documents the non-obvious",
         "exclusions it found rather than silently omitting them, including",
         "earlier rounds': problems 31 and 46 each need an aux hypothesis (like",
@@ -1983,7 +2343,7 @@ def main() -> None:
         "translator correctly does not reproduce on its own.",
         "-/",
         "",
-        "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5",
+        "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6",
         "",
         "-- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per",
         "-- predicate/conjunction they apply to - a real theorem's own",
@@ -1999,11 +2359,11 @@ def main() -> None:
 
     for idn in sorted(by_id):
         # Section 3 scoped to 114-141, Section 4 to 142-196, Section 5
-        # to 197-219 so far (see CUSTOM_BUILD's own comment for exactly
-        # which ids in each range are covered, countermodel-excluded, or
-        # structurally/not-yet attempted) - raise this bound again when
-        # extending past 219.
-        if idn > 219:
+        # to 197-219, Section 6 to 220-250 so far (see CUSTOM_BUILD's
+        # own comment for exactly which ids in each range are covered,
+        # countermodel-excluded, or structurally/not-yet attempted) -
+        # raise this bound again when extending past 250.
+        if idn > 250:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)

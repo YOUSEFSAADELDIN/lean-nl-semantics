@@ -15,6 +15,8 @@ import LeanNLSemantics.FraCaS.Section4.Batch3
 import LeanNLSemantics.FraCaS.Section4.Batch4
 import LeanNLSemantics.FraCaS.Section5.Batch1
 import LeanNLSemantics.FraCaS.Section5.Batch2
+import LeanNLSemantics.FraCaS.Section6.Batch1
+import LeanNLSemantics.FraCaS.Section6.Batch2
 
 /-!
 # GF cross-check, batch 2
@@ -94,7 +96,24 @@ Not covered: 197 (looked like 203's own adjective-drop shape at
 first glance, but its own stated type is actually two-sorted
 `{Person Thing}`, the same blocker as 127/134/135/150-153/196);
 200/201/206/207/213/215/217/219 (countermodel-only, already
-excluded automatically).
+excluded automatically). Section 6 (comparatives, 220-250) adds 10
+more ids: 220/223/224/227/229 chain in an assumed comparative-
+relation fact (the same move as 208/209/212), reusing each other's
+own trees heavily; 246/248 reuse `Every` for a quantified
+comparative standard; 249/250 are a plain conjunction-drop. 242 is
+a genuinely different shape: cardinal comparatives are formalized
+as literal `Nat` arithmetic, proved by `omega` directly rather
+than reapplying the real theorem - this also needed a real,
+general completion of translate.py's own numeral decoder (the
+hundreds digit, not handled at all before this round, fixed the
+same way "ten"/"eleven" were added in an earlier round). NOT
+attempted: 230/232/233/235/238/239/241/243 and 236/237/244/245,
+each needing FraCaS's own "more N than NP" cardinal-comparative-
+quantifier construction, which has NO combinator in this grammar
+at all - a real, pre-existing gap (the same class as problems
+44/81/82/92), confirmed via run_gf_tests.py's own comment, not
+just unattempted. 221/222/225/226/228/231/234/240/247 are
+countermodel-only, already excluded automatically.
 `scripts/gen_gf_cross_check.py` documents the non-obvious
 exclusions it found rather than silently omitting them, including
 earlier rounds': problems 31 and 46 each need an aux hypothesis (like
@@ -121,7 +140,7 @@ both) - a real semantic modeling choice a literal, compositional
 translator correctly does not reproduce on its own.
 -/
 
-open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5
+open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6
 
 -- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per
 -- predicate/conjunction they apply to - a real theorem's own
@@ -512,3 +531,43 @@ theorem fracas_216_from_gf (johnFatBill : Prop) :
 theorem fracas_218_from_gf (kimClever : Prop) :
     kimClever → kimClever :=
   fun h => fracas_218 _ h
+
+theorem fracas_220_from_gf {A : Type*} (fastThan : A → A → Prop) (fast : A → Prop) (pc6082 itelXZ : A) :
+    (∀ x y, fastThan x y → fast y → fast x) → fastThan pc6082 itelXZ → fast itelXZ → fast pc6082 :=
+  fun h hf hi => fracas_220 _ _ _ _ h hf hi
+
+theorem fracas_223_from_gf {A : Type*} (fastThan : A → A → Prop) (fast slow : A → Prop) (pc6082 itelXZ : A) :
+    (∀ x y, fastThan x y → slow x → ¬ fast y) → fastThan pc6082 itelXZ → slow pc6082 → ¬ fast itelXZ :=
+  fun h hf hs => fracas_223 _ _ _ _ _ h hf hs
+
+theorem fracas_224_from_gf {A : Type*} (fastAs : A → A → Prop) (fast : A → Prop) (pc6082 itelXZ : A) :
+    (∀ x y, fastAs x y → fast y → fast x) → fastAs pc6082 itelXZ → fast itelXZ → fast pc6082 :=
+  fun h hf hi => fracas_224 _ _ _ _ h hf hi
+
+theorem fracas_227_from_gf {A : Type*} (fastAs : A → A → Prop) (fast slow : A → Prop) (pc6082 itelXZ : A) :
+    (∀ x y, fastAs x y → slow x → ¬ fast y) → fastAs pc6082 itelXZ → slow pc6082 → ¬ fast itelXZ :=
+  fun h hf hs => fracas_227 _ _ _ _ _ h hf hs
+
+theorem fracas_229_from_gf {A : Type*} (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A) :
+    (∀ x y, fastAs x y → ¬ slowThan x y) → fastAs pc6082 itelXZ → ¬ slowThan pc6082 itelXZ :=
+  fun h ha => fracas_229 _ _ _ _ h ha
+
+theorem fracas_242_from_gf (speedPc6082 speedItelZX : Nat) :
+    speedPc6082 > 500 → speedItelZX < 500 → speedPc6082 > speedItelZX :=
+  by omega
+
+theorem fracas_246_from_gf {A : Type*} (fastThan : A → A → Prop) (itelComputer : A → Prop) (pc6082 itelZX : A) :
+    Every itelComputer (fastThan pc6082) → itelComputer itelZX → fastThan pc6082 itelZX :=
+  fun h hz => fracas_246 _ _ _ _ h hz
+
+theorem fracas_248_from_gf {A : Type*} (fastThan : A → A → Prop) (itelComputer : A → Prop) (pc6082 itelZX : A) :
+    Every itelComputer (fastThan pc6082) → itelComputer itelZX → fastThan pc6082 itelZX :=
+  fun h hz => fracas_248 _ _ _ _ h hz
+
+theorem fracas_249_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A) :
+    fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY → fastThan pc6082 itelZX :=
+  fun h => fracas_249 _ _ _ _ h
+
+theorem fracas_250_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A) :
+    fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY → fastThan pc6082 itelZX :=
+  fun h => fracas_250 _ _ _ _ h
