@@ -7,6 +7,8 @@ import LeanNLSemantics.FraCaS.Section1.Batch4
 import LeanNLSemantics.FraCaS.Section1.Batch5
 import LeanNLSemantics.FraCaS.Section2.Batch1
 import LeanNLSemantics.FraCaS.Section2.Batch2
+import LeanNLSemantics.FraCaS.Section3.Batch1
+import LeanNLSemantics.FraCaS.Section3.Batch2
 
 /-!
 # GF cross-check, batch 2
@@ -17,7 +19,20 @@ already has a real, linearize-confirmed GF tree (`gf/run_gf_tests.py`)
 that `gf/translate.py` translates cleanly, where the real theorem's
 own top-level arrow count exactly matches (one arrow per premise,
 chaining into the hypothesis, plus a "world-knowledge" auxiliary
-hypothesis for ids in `AUX_HYPOTHESIS`) - see
+hypothesis for ids in `AUX_HYPOTHESIS`) - now extended into Section 3
+as a pilot (ids 114-116 only - see `BUNDLE_PROJECT`): "Mary used her
+workstation" translates to a three-way presupposition bundle
+(`translate.py`'s `_try_translate_possessive_presupposition`),
+matching Batch1.lean's own comment that 114/115/116 are "just
+projections out of the same bundle" - each id's own generated
+hypothesis is that SAME bundle's matching conjunct, not an
+independent translation of its own (differently-shaped) hypothesis
+sentence, since that sentence read in isolation is genuinely
+ambiguous between this bundle's own specific reading and this
+project's usual fused-unary-predicate one (see `BUNDLE_PROJECT`'s
+own comment). Harder Section 3 constructions (Skolem functions,
+cross-sentential variable sharing, cardinality anaphora) are not
+attempted yet - see
 `scripts/gen_gf_cross_check.py` for exactly how, including the
 non-obvious exclusions it found and documents rather than silently
 omitting: problems 31 and 46 each need an aux hypothesis (like
@@ -44,7 +59,7 @@ both) - a real semantic modeling choice a literal, compositional
 translator correctly does not reproduce on its own.
 -/
 
-open FraCaS.Section1 FraCaS.Section2
+open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3
 
 -- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per
 -- predicate/conjunction they apply to - a real theorem's own
@@ -207,3 +222,15 @@ theorem fracas_097_from_gf {A : Type*} (softwareFault blameSystemFailure : A →
 theorem fracas_103_from_gf {A : Type*} (apcomManager haveCompanyCar : A → Prop) (jones : A) :
     Every apcomManager haveCompanyCar → apcomManager jones → haveCompanyCar jones :=
   fun h1 h2 => fracas_103 _ _ _ h1 h2
+
+theorem fracas_114_from_gf {A : Type*} (female : A → Prop) (has use : A → A → Prop) (mary : A) (maryWorkstation : A) :
+    (female mary ∧ has mary maryWorkstation ∧ use mary maryWorkstation) → use mary maryWorkstation :=
+  fun h1 => fracas_114 _ _ _ _ _ h1
+
+theorem fracas_115_from_gf {A : Type*} (female : A → Prop) (has use : A → A → Prop) (mary : A) (maryWorkstation : A) :
+    (female mary ∧ has mary maryWorkstation ∧ use mary maryWorkstation) → has mary maryWorkstation :=
+  fun h1 => fracas_115 _ _ _ _ _ h1
+
+theorem fracas_116_from_gf {A : Type*} (female : A → Prop) (has use : A → A → Prop) (mary : A) (maryWorkstation : A) :
+    (female mary ∧ has mary maryWorkstation ∧ use mary maryWorkstation) → female mary :=
+  fun h1 => fracas_116 _ _ _ _ _ h1

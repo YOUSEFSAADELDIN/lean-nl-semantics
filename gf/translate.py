@@ -502,6 +502,14 @@ class Translation:
     # has to use a conjunct's own predicates, not this Translation's
     # merged (wider) ones.
     conjuncts: "list | None" = None
+    # Which of `free_predicates` are BINARY (`A -> A -> Prop`, applied
+    # to two individuals) rather than this project's usual unary
+    # restrictor/scope predicates (`A -> Prop`) - every predicate this
+    # translator produced before `_try_translate_possessive_presupposition`
+    # was unary, so callers built elsewhere (scripts/gen_gf_cross_check.py)
+    # assumed it uniformly; this field lets them keep doing that for
+    # every OTHER predicate while declaring these few correctly.
+    binary_predicates: list = field(default_factory=list)
 
 
 def _try_translate_partitive_identity(subject, vp):
@@ -634,7 +642,126 @@ def _try_translate_conjnp_subject(subject, vp):
     )
 
 
+def _unwrap_tense(t):
+    """Strips a tensed utterance wrapper (`UttS (UseCl tense PPos cl)`)
+    down to its own bare clause. Tense/aspect carries no Lean-side
+    content for this project's own tenseless Props - every sentence
+    this translator handled through Section 1/2 was written as a bare,
+    present-tense `PredVP` tree with no wrapper at all, but Section 3's
+    own GF trees (`gf/run_gf_tests.py`'s `_SECTION3_TENSED_CHECKS`) are
+    written in the past tense throughout, wrapped accordingly - this
+    unwrapping is what lets the same, tenseless `translate_cl` machinery
+    apply unchanged. Only PPos is handled (every Section 3 tree
+    confirmed so far is positive polarity); a PNeg tree falls through
+    unwrapped and hits `translate_cl`'s own "only PredVP" error, rather
+    than being guessed at here."""
+    if (
+        t.head == "UttS"
+        and len(t.args) == 1
+        and t.args[0].head == "UseCl"
+        and len(t.args[0].args) == 3
+        and t.args[0].args[1].head == "PPos"
+    ):
+        return t.args[0].args[2]
+    return t
+
+
+# Only she_Pron is handled - confirmed needed by fracas_114/115/116
+# ("Mary used her workstation"); any other possessive pronoun is left
+# to translate_cl's own general path rather than guessed at here.
+_GENDER_BY_POSS_PRON = {"she_Pron": "female"}
+
+
+def _try_translate_possessive_presupposition(subject, vp):
+    """Handles "ProperNoun V2 POSS-PRON's N" ("Mary used her
+    workstation") as a three-way presupposition bundle - gender(owner)
+    AND has(owner, possessed) AND verb(owner, possessed) - matching
+    this project's own Section 3 convention directly (Batch1.lean's own
+    comment on fracas_114/115/116: "formalized as a bundle... 114/115/
+    116 are then just projections out of the same bundle"), the same
+    "presupposition as an explicit conjunct" principle Section 1's
+    fracas_005 already uses for definite-article presupposition. The
+    THREE conjuncts are exposed via `Translation.conjuncts` (same
+    mechanism `_try_translate_conjnp_subject` already uses) so a caller
+    that only needs ONE of them (scripts/gen_gf_cross_check.py's
+    BUNDLE_PROJECT, for 114/115/116's own real theorems, each a
+    projection out of this exact bundle) can use it directly instead of
+    re-deriving it from a separately-translated hypothesis sentence -
+    deliberately so: "Mary has a workstation", read on its own with no
+    discourse link back to this premise, is genuinely ambiguous between
+    a fresh existential (this project's own usual "has a N" reading,
+    e.g. fracas_103's `haveCompanyCar jones`) and this bundle's own
+    SPECIFIC named-possessed-individual reading, a distinction no
+    single sentence's own GF tree resolves by itself. Returns None when
+    the shape doesn't match."""
+    if subject.head != "UsePN" or len(subject.args) != 1:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    det, cn = obj.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "PossPron"
+        or len(det.args[0].args) != 1
+        or det.args[0].args[0].head not in _GENDER_BY_POSS_PRON
+    ):
+        return None
+    gender_name = _GENDER_BY_POSS_PRON[det.args[0].args[0].head]
+    owner_name = camel_name(_leaf_words(subject))
+    noun_name = camel_name(_leaf_words(cn))
+    possessed_name = owner_name + noun_name[0].upper() + noun_name[1:]
+    verb_name = camel_name(_leaf_words(vp.args[0]))
+    gender_part = Translation(
+        lean_prop=f"{gender_name} {owner_name}",
+        free_predicates=[gender_name],
+        free_individuals=[owner_name],
+    )
+    has_part = Translation(
+        lean_prop=f"has {owner_name} {possessed_name}",
+        free_predicates=["has"],
+        free_individuals=[owner_name, possessed_name],
+        binary_predicates=["has"],
+    )
+    verb_part = Translation(
+        lean_prop=f"{verb_name} {owner_name} {possessed_name}",
+        free_predicates=[verb_name],
+        free_individuals=[owner_name, possessed_name],
+        binary_predicates=[verb_name],
+    )
+    parts = [gender_part, has_part, verb_part]
+    preds: list[str] = []
+    individuals: list[str] = []
+    binary_preds: list[str] = []
+    for p in parts:
+        for pr in p.free_predicates:
+            if pr not in preds:
+                preds.append(pr)
+        for v in p.free_individuals:
+            if v not in individuals:
+                individuals.append(v)
+        for pr in p.binary_predicates:
+            if pr not in binary_preds:
+                binary_preds.append(pr)
+    return Translation(
+        lean_prop=f"({gender_part.lean_prop} ∧ {has_part.lean_prop} ∧ {verb_part.lean_prop})",
+        free_predicates=preds,
+        free_individuals=individuals,
+        conjuncts=parts,
+        binary_predicates=binary_preds,
+    )
+
+
 def translate_cl(t) -> Translation:
+    t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:
         raise NotImplementedError(
             f"only 'PredVP (DetCN det cn) vp' is handled so far, got head={t.head!r}"
@@ -644,6 +771,15 @@ def translate_cl(t) -> Translation:
     inverted = _try_translate_partitive_identity(subject, vp)
     if inverted is not None:
         return inverted
+
+    # Checked BEFORE _try_translate_named_individual_fact: that function's
+    # own fallback (any "ProperNoun VP" fuses the whole VP, object
+    # included, into one unary predicate) would otherwise shadow this
+    # MORE SPECIFIC possessive-pronoun-object shape first, silently
+    # giving the wrong (fused-unary) structure instead of the bundle.
+    possessive_bundle = _try_translate_possessive_presupposition(subject, vp)
+    if possessive_bundle is not None:
+        return possessive_bundle
 
     named_fact = _try_translate_named_individual_fact(subject, vp)
     if named_fact is not None:

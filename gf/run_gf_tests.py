@@ -1524,6 +1524,20 @@ _SECTION3_TENSED_CHECKS = [
         "Mary's workstation was used",
     ),
     (
+        # fracas_115/116's own gold premise text is identical to
+        # fracas_114's ("Mary used her workstation.") - reusing 114's
+        # own already-confirmed tree rather than re-linearizing the
+        # same sentence under a new label.
+        "fracas_115_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "Mary used her workstation",
+    ),
+    (
+        "fracas_116_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
+        "Mary used her workstation",
+    ),
+    (
         "fracas_117_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN every_Det (UseN student_N)) (ComplSlash (SlashV2a use_V2) (DetCN (DetQuant (PossPron she_Pron) NumSg) (UseN workstation_N)))))",
         "every student used her workstation",

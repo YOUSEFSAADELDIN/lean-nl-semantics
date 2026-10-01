@@ -150,6 +150,25 @@ AUX_HYPOTHESIS = {
 # narrower `free_predicates`/`free_individuals`, not the merged ones.
 PROJECT_CONJUNCT = {85: (1, 0), 86: (1, 1)}
 
+# Section 3 pilot: ids 114/115/116 all share the single premise "Mary
+# used her workstation", translated by `translate.py`'s
+# `_try_translate_possessive_presupposition` into a three-way
+# presupposition bundle (gender/has/verb). Each id's own real theorem
+# is a straight projection out of that SAME bundle (Batch1.lean's own
+# comment: "114/115/116 are then just projections out of the same
+# bundle") - 114 the verb conjunct, 115 the has conjunct, 116 the
+# gender conjunct (0-based, matching `Translation.conjuncts`'s own
+# order) - confirmed by reading each real theorem's own stated type
+# directly. Unlike PROJECT_CONJUNCT above, no proof-term projection is
+# needed here: the real theorems (`fun h => h.2.2` etc.) already
+# project internally, so the generated wrapper's own hypothesis is
+# simply REPLACED with the matching conjunct (not independently
+# re-translated from its own, differently-shaped hypothesis tree -
+# "Mary has a workstation" read in isolation would otherwise get
+# translate_cl's usual fused-unary-predicate treatment, structurally
+# incompatible with the bundle's own binary `has owner possessed`).
+BUNDLE_PROJECT = {114: 2, 115: 1, 116: 0}
+
 
 def load_base_checks():
     spec = importlib.util.spec_from_file_location(
@@ -157,7 +176,13 @@ def load_base_checks():
     )
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    return mod.BASE_CHECKS
+    # Section 3's own GF trees are written in the past tense (unlike
+    # Section 1/2's bare, present-tense ones), so they live in
+    # `_SECTION3_TENSED_CHECKS`, a separate module-level list from
+    # `BASE_CHECKS` proper (only combined into `CHECKS`, used for the
+    # real GF-toolchain verification run, at the bottom of
+    # run_gf_tests.py) - not visible to this generator otherwise.
+    return mod.BASE_CHECKS + mod._SECTION3_TENSED_CHECKS
 
 
 def _load_problems_lean_entries():
@@ -183,18 +208,16 @@ def load_answers():
 
 def load_bare_theorem_ids() -> set:
     """Which fracas_NNN ids have an actual bare (non-suffixed) theorem
-    declaration anywhere in Section1/Section2 - several ids with full GF
-    coverage turn out to be countermodel-only (`fracas_NNN_dir1`/`_dir2`,
-    from this session's own earlier many/both/neither work), and would
-    otherwise generate a reference to a theorem that doesn't exist at
-    all, not just a shape mismatch."""
+    declaration anywhere in Section1/Section2/Section3 - several ids
+    with full GF coverage turn out to be countermodel-only
+    (`fracas_NNN_dir1`/`_dir2`, from this session's own earlier many/
+    both/neither work), and would otherwise generate a reference to a
+    theorem that doesn't exist at all, not just a shape mismatch."""
     ids = set()
-    for path in (ROOT / "LeanNLSemantics/FraCaS/Section1").glob("Batch*.lean"):
-        for m in re.finditer(r"theorem fracas_(\d+) ", path.read_text()):
-            ids.add(int(m.group(1)))
-    for path in (ROOT / "LeanNLSemantics/FraCaS/Section2").glob("Batch*.lean"):
-        for m in re.finditer(r"theorem fracas_(\d+) ", path.read_text()):
-            ids.add(int(m.group(1)))
+    for section in ("Section1", "Section2", "Section3"):
+        for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
+            for m in re.finditer(r"theorem fracas_(\d+) ", path.read_text()):
+                ids.add(int(m.group(1)))
     return ids
 
 
@@ -216,7 +239,7 @@ def real_theorem_arrow_count(idn: int) -> "int | None":
     match here (not just a plausible-looking premise count) makes a
     problem eligible - confirmed by reading the actual Lean source, not
     assumed from Problems.lean's own premise list length. """
-    for section in ("Section1", "Section2"):
+    for section in ("Section1", "Section2", "Section3"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             text = path.read_text()
             m = re.search(rf"theorem fracas_{idn:03d} :\s*(.*?):=", text, re.S)
@@ -274,6 +297,8 @@ def main() -> None:
         "import LeanNLSemantics.FraCaS.Section1.Batch5",
         "import LeanNLSemantics.FraCaS.Section2.Batch1",
         "import LeanNLSemantics.FraCaS.Section2.Batch2",
+        "import LeanNLSemantics.FraCaS.Section3.Batch1",
+        "import LeanNLSemantics.FraCaS.Section3.Batch2",
         "",
         "/-!",
         "# GF cross-check, batch 2",
@@ -284,7 +309,20 @@ def main() -> None:
         "that `gf/translate.py` translates cleanly, where the real theorem's",
         "own top-level arrow count exactly matches (one arrow per premise,",
         "chaining into the hypothesis, plus a \"world-knowledge\" auxiliary",
-        "hypothesis for ids in `AUX_HYPOTHESIS`) - see",
+        "hypothesis for ids in `AUX_HYPOTHESIS`) - now extended into Section 3",
+        "as a pilot (ids 114-116 only - see `BUNDLE_PROJECT`): \"Mary used her",
+        "workstation\" translates to a three-way presupposition bundle",
+        "(`translate.py`'s `_try_translate_possessive_presupposition`),",
+        "matching Batch1.lean's own comment that 114/115/116 are \"just",
+        "projections out of the same bundle\" - each id's own generated",
+        "hypothesis is that SAME bundle's matching conjunct, not an",
+        "independent translation of its own (differently-shaped) hypothesis",
+        "sentence, since that sentence read in isolation is genuinely",
+        "ambiguous between this bundle's own specific reading and this",
+        "project's usual fused-unary-predicate one (see `BUNDLE_PROJECT`'s",
+        "own comment). Harder Section 3 constructions (Skolem functions,",
+        "cross-sentential variable sharing, cardinality anaphora) are not",
+        "attempted yet - see",
         "`scripts/gen_gf_cross_check.py` for exactly how, including the",
         "non-obvious exclusions it found and documents rather than silently",
         "omitting: problems 31 and 46 each need an aux hypothesis (like",
@@ -311,7 +349,7 @@ def main() -> None:
         "translator correctly does not reproduce on its own.",
         "-/",
         "",
-        "open FraCaS.Section1 FraCaS.Section2",
+        "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3",
         "",
         "-- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per",
         "-- predicate/conjunction they apply to - a real theorem's own",
@@ -326,7 +364,11 @@ def main() -> None:
     ]
 
     for idn in sorted(by_id):
-        if idn > 113:
+        # Section 3 pilot scoped to 114-116 only (the possessive-
+        # presupposition bundle) for now - raise this bound again when
+        # extending further into Section 3's harder constructions
+        # (Skolem functions, cross-sentential variable sharing, etc).
+        if idn > 116:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)
@@ -443,11 +485,32 @@ def main() -> None:
                     free_predicates=conj_preds,
                     free_individuals=conj_individuals,
                 )
+            elif idn in BUNDLE_PROJECT:
+                # Overridden below from the premise's own bundle - its
+                # hypothesis tree is a differently-shaped sentence
+                # (e.g. 114's own passive-possessive "Mary's workstation
+                # was used") not meant to be translated independently,
+                # and in 114's own case doesn't even translate at all
+                # (GenNP subjects aren't handled elsewhere in this
+                # translator - no need to extend that just to immediately
+                # discard the result).
+                translated_hyp = None
             else:
                 translated_hyp = translate_cl(parse_tree(roles["_hypothesis"]))
         except Exception as e:
             skipped[idn] = f"translate error: {e}"
             continue
+
+        if idn in BUNDLE_PROJECT:
+            bundle = translated_premises[0]
+            conjunct_idx = BUNDLE_PROJECT[idn]
+            if not bundle.conjuncts or conjunct_idx >= len(bundle.conjuncts):
+                skipped[idn] = (
+                    f"BUNDLE_PROJECT names conjunct {conjunct_idx}, but premise 1's "
+                    "own translation has no such conjunct - tree or mapping is stale"
+                )
+                continue
+            translated_hyp = bundle.conjuncts[conjunct_idx]
 
         # A `.no` gold answer means the real theorem proves premises ->
         # NOT hypothesis, not premises -> hypothesis (Batch1.lean's own
@@ -470,6 +533,7 @@ def main() -> None:
 
         preds: list[str] = []
         individuals: list[str] = []
+        binary_preds: list[str] = []
         for t in [*translated_premises, translated_hyp]:
             for p in t.free_predicates:
                 if p not in preds:
@@ -477,6 +541,10 @@ def main() -> None:
             for v in t.free_individuals:
                 if v not in individuals:
                     individuals.append(v)
+            for p in t.binary_predicates:
+                if p not in binary_preds:
+                    binary_preds.append(p)
+        unary_preds = [p for p in preds if p not in binary_preds]
 
         if idn in PROJECT_CONJUNCT:
             proj_i, conjunct_idx = PROJECT_CONJUNCT[idn]
@@ -507,8 +575,10 @@ def main() -> None:
         binder_parts = ["{A : Type*}"]
         if needs_fintype:
             binder_parts.append("[Fintype A]")
-        if preds:
-            binder_parts.append(f"({' '.join(preds)} : A → Prop)")
+        if unary_preds:
+            binder_parts.append(f"({' '.join(unary_preds)} : A → Prop)")
+        if binary_preds:
+            binder_parts.append(f"({' '.join(binary_preds)} : A → A → Prop)")
         for v in individuals:
             binder_parts.append(f"({v} : A)")
         binders = " ".join(binder_parts)
