@@ -377,6 +377,47 @@ this file's own blanket "Section 4+ needs CUSTOM_BUILD or
 nothing" rule - each individually hand-verified against its own
 real theorem's stated type first, the same due-diligence the rule
 itself exists to force.
+
+A second pass extends this pilot to 204/205/208/209: "small"/
+"large" are a CONTRARY (not contradictory) adjective pair, an
+independent fact about these two specific words (same
+`Adjectives.lean`-documented distinction as 202/214's own citation)
+- `_try_translate_named_individual_fact` now DROPS the noun
+entirely for either word in a bare copula predication
+(`_CONTRARY_ADJECTIVES`), reusing `_privative_aux` for their
+assumed `∀x, small x → ¬ large x`-shaped fact (the same shape as
+198's own privative one). Their shared comparison-class noun
+("animal") is dropped deliberately only HERE, not in
+`_restrictor_expr`: fracas_210/211/212 use the SAME two words in a
+subclass/superclass-shift context where the noun must stay fused
+("smallAnimal"), confirmed by their own stated types needing
+exactly that - the two contexts need opposite treatments of the
+same word, so this round deliberately doesn't touch 210-212.
+208/209 add one more genuinely new `translate.py` case: a bare
+comparative predication over a named standard ("Mickey is
+smaller than Dumbo") names a BINARY `{adj}Than` relation between
+subject and standard, General over any comparative this grammar
+can produce, not a 208/209-specific name. Both reuse
+`AUX_HYPOTHESIS_PREPEND`'s own mechanism with a new two-premise
+`_comparative_aux`/`_comparative_aux_neg` pair, reading each
+premise's own bare adjective positionally. 204's/205's own
+"_hypothesis" role is a SIBLING problem's premise tree, reused
+purely to NAME the other adjective (confirmed directly:
+run_gf_tests.py's own comment on this reuse, "the subject, Dumbo,
+is irrelevant here") - `HYPOTHESIS_FROM_PREMISE` rebuilds the
+generated conclusion from the real premise's own individual
+instead of the borrowed tree's, the same "reuse an established
+name instead of guessing a fresh one matches" principle as
+`BUNDLE_PROJECT`/`SKOLEM_PROJECT`/`SYNTHESIZE_PREMISE` above. This
+round also fixed a latent bug the "no"-answer wrapping step had
+carried since this file's very first version: it rebuilt the
+negated hypothesis's own `Translation` without copying
+`binary_predicates`/`free_functions` over, silently declaring a
+BINARY relation as a bogus unary binder instead whenever a
+"no"-answer id's hypothesis happened to be binary - caught by
+reading fracas_209_from_gf's own generated output directly before
+push (no earlier "no"-answer id's hypothesis was ever binary, so
+this never surfaced before).
 -/
 
 open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9
@@ -752,20 +793,20 @@ theorem fracas_203_from_gf {A : Type*} (fourLegged animal : A → Prop) (dumbo :
   fun h => fracas_203 _ _ _ h
 
 theorem fracas_204_from_gf {A : Type*} (small large : A → Prop) (mickey : A) :
-    (∀ x, small x → ¬ large x) → small mickey → ¬ large mickey :=
+    (∀ x, small x → ¬ large x) → small mickey → ¬ (large mickey) :=
   fun h1 h2 => fracas_204 _ _ _ h1 h2
 
-theorem fracas_205_from_gf {A : Type*} (small large : A → Prop) (dumbo : A) :
-    (∀ x, large x → ¬ small x) → large dumbo → ¬ small dumbo :=
+theorem fracas_205_from_gf {A : Type*} (large small : A → Prop) (dumbo : A) :
+    (∀ x, large x → ¬ small x) → large dumbo → ¬ (small dumbo) :=
   fun h1 h2 => fracas_205 _ _ _ h1 h2
 
-theorem fracas_208_from_gf {A : Type*} (small large : A → Prop) (smallThan : A → A → Prop) (mickey dumbo : A) :
+theorem fracas_208_from_gf {A : Type*} (small large : A → Prop) (smallThan : A → A → Prop) (mickey : A) (dumbo : A) :
     (∀ x y, small x → large y → smallThan x y) → small mickey → large dumbo → smallThan mickey dumbo :=
-  fun h hs hl => fracas_208 _ _ _ _ _ h hs hl
+  fun h1 h2 h3 => fracas_208 _ _ _ _ _ h1 h2 h3
 
-theorem fracas_209_from_gf {A : Type*} (small large : A → Prop) (largeThan : A → A → Prop) (mickey dumbo : A) :
-    (∀ x y, small x → large y → ¬ largeThan x y) → small mickey → large dumbo → ¬ largeThan mickey dumbo :=
-  fun h hs hl => fracas_209 _ _ _ _ _ h hs hl
+theorem fracas_209_from_gf {A : Type*} (small large : A → Prop) (largeThan : A → A → Prop) (mickey : A) (dumbo : A) :
+    (∀ x y, small x → large y → ¬ largeThan x y) → small mickey → large dumbo → ¬ (largeThan mickey dumbo) :=
+  fun h1 h2 h3 => fracas_209 _ _ _ _ _ h1 h2 h3
 
 theorem fracas_210_from_gf {A : Type*} (mouse animal smallAnimal largeMouse largeAnimal : A → Prop) (mickey : A) :
     (∀ x, mouse x → animal x ∧ smallAnimal x) → (∀ x, smallAnimal x → ¬ largeAnimal x) → (mouse mickey ∧ largeMouse mickey) → ¬ largeAnimal mickey :=

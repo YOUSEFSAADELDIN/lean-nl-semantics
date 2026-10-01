@@ -482,6 +482,20 @@ def _scope_name(vp) -> str:
 # real theorem with this shape at all.
 _SPLITTING_ADJECTIVES = {"fourLegged_A", "fat_A"}
 
+# Comparison-class-relative ("subsective") adjectives that are CONTRARY
+# pairs - "small"/"large" (fracas_204/205/208/209's own shared vocabulary)
+# - an independent, citable fact about these two specific WORDS (not
+# reverse-engineered from either problem's own proof): being small
+# entails not being large and vice versa, but "not small" doesn't give
+# "large" (a genuine middle ground, e.g. medium-sized) - the same
+# contrary-not-contradictory distinction `Adjectives.lean`'s own header
+# documents. Only used by `_try_translate_named_individual_fact`'s own
+# bare-copula-predication case, never by `_restrictor_expr` - see that
+# case's own comment for why the same two words need the OPPOSITE
+# (fused, not dropped) treatment in a subclass/superclass-shift context
+# (fracas_210/211/212).
+_CONTRARY_ADJECTIVES = {"small_A", "large_A"}
+
 
 def _restrictor_expr(cn):
     """Returns (expr, free_predicates) for a Cl's restrictor CN. Most
@@ -694,6 +708,32 @@ def _try_translate_named_individual_fact(subject, vp):
     if subject.head != "UsePN" or len(subject.args) != 1:
         return None
     individual_name = camel_name(_leaf_words(subject))
+    # A bare comparative predication over a named standard ("Mickey is
+    # smaller than Dumbo", fracas_208's/209's own hypothesis) is a
+    # genuinely different shape from every other case here: it names a
+    # BINARY relation between the subject and the comparison standard,
+    # not a unary predicate applied to one individual - "smaller"'s own
+    # lexical content becomes `smallerThan`, read directly off ComparA's
+    # own adjective argument (general over any comparative, not a
+    # fracas_208/209-specific name).
+    if (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompAP"
+        and len(vp.args[0].args) == 1
+        and vp.args[0].args[0].head == "ComparA"
+        and len(vp.args[0].args[0].args) == 2
+        and vp.args[0].args[0].args[1].head == "UsePN"
+    ):
+        adj_tree, standard_pn = vp.args[0].args[0].args
+        relation_name = camel_name(_leaf_words(adj_tree)) + "Than"
+        standard_name = camel_name(_leaf_words(standard_pn))
+        return Translation(
+            lean_prop=f"{relation_name} {individual_name} {standard_name}",
+            free_predicates=[relation_name],
+            free_individuals=[individual_name, standard_name],
+            binary_predicates=[relation_name],
+        )
     if (
         vp.head == "UseComp"
         and len(vp.args) == 1
@@ -703,6 +743,33 @@ def _try_translate_named_individual_fact(subject, vp):
         and len(vp.args[0].args[0].args) == 2
     ):
         cn = vp.args[0].args[0].args[1]
+        # A comparison-class-relative ("contrary", not contradictory)
+        # gradable adjective predicated bare over a named individual
+        # ("Mickey is a small animal", fracas_204's/205's own premise) -
+        # unlike `_SPLITTING_ADJECTIVES`' own intersective/extensional-
+        # subsective adjectives, this project's own Lean encoding drops
+        # the noun ENTIRELY here (`small mickey`, never `smallAnimal
+        # mickey`): Adjectives.lean's own header states the comparison
+        # class only matters when it's SHIFTING between a subclass and a
+        # superclass (fracas_210/211/212's own distinct shape, reached
+        # through `_restrictor_expr` instead, which still fuses "small
+        # animal" into one name there - deliberately NOT reused here,
+        # since the two contexts need opposite treatments of the same
+        # word). Confirmed directly against fracas_204/205's own stated
+        # types, which never mention "animal" at all.
+        if (
+            cn.head == "AdjCN"
+            and len(cn.args) == 2
+            and cn.args[0].head == "PositA"
+            and len(cn.args[0].args) == 1
+            and cn.args[0].args[0].head in _CONTRARY_ADJECTIVES
+        ):
+            pred_name = camel_name(_leaf_words(cn.args[0]))
+            return Translation(
+                lean_prop=f"{pred_name} {individual_name}",
+                free_predicates=[pred_name],
+                free_individuals=[individual_name],
+            )
         pred_expr, preds = _restrictor_expr(cn)
         return Translation(
             lean_prop=f"{pred_expr} {individual_name}",

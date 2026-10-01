@@ -154,24 +154,72 @@ def _privative_aux(ps, h) -> str:
     return f"(∀ x, {ps[-1].free_predicates[-1]} x → ¬ {h.free_predicates[-1]} x)"
 
 
+def _comparative_aux(ps, h) -> str:
+    """`(forall x y, <premise1's own bare adjective> x -> <premise2's
+    own bare adjective> y -> <hypothesis's own comparative relation> x
+    y)` - the comparative relation between two base gradable adjectives
+    is an assumed fact connecting them (`Adjectives.lean`'s own
+    comment), not derived - fracas_208's own shape. Reads EACH premise's
+    own bare adjective name positionally (premise 1 the "small"-type,
+    premise 2 the "large"-type), confirmed directly against fracas_208's
+    own stated type, not assumed uniform across every comparative id
+    (fracas_209 needs the negated variant below instead)."""
+    return (
+        f"(∀ x y, {ps[0].free_predicates[-1]} x → {ps[1].free_predicates[-1]} y → "
+        f"{h.free_predicates[-1]} x y)"
+    )
+
+
+def _comparative_aux_neg(ps, h) -> str:
+    """`_comparative_aux` with the comparative relation NEGATED -
+    fracas_209's own shape (`small x -> large y -> not largerThan x
+    y`), confirmed directly against its own stated type."""
+    return (
+        f"(∀ x y, {ps[0].free_predicates[-1]} x → {ps[1].free_predicates[-1]} y → "
+        f"¬ {h.free_predicates[-1]} x y)"
+    )
+
+
 # Ids needing their one AUX_HYPOTHESIS-style extra fact BEFORE their real
 # FraCaS premise instead of after it, matching each one's own real
 # argument order directly (fracas_198's own stated type is `(forall x,
 # formerUnivStudent x -> not univStudent x) -> formerUnivStudent john ->
 # not univStudent john` - the privative fact FIRST, not last, unlike
-# every `AUX_HYPOTHESIS` id above).
-AUX_HYPOTHESIS_PREPEND = {198: _privative_aux}
+# every `AUX_HYPOTHESIS` id above). 204/205 share 198's own privative-
+# style shape exactly (a contrary-adjective pair is just as much an
+# assumed "not" fact as a privative adjective is, confirmed directly
+# against each one's own stated type) - `_privative_aux` is reused
+# as-is, not duplicated. 208/209 are the two-premise comparative variant
+# instead.
+AUX_HYPOTHESIS_PREPEND = {
+    198: _privative_aux,
+    204: _privative_aux,
+    205: _privative_aux,
+    208: _comparative_aux,
+    209: _comparative_aux_neg,
+}
+
+# Ids whose real theorem's own conclusion needs a DIFFERENT individual
+# than the one translate_cl's own translation of their "_hypothesis"
+# role tree would supply - fracas_204's/205's own "_hypothesis" role is
+# a SIBLING problem's premise tree, reused purely to NAME the other
+# contrary adjective (see run_gf_tests.py's own comment on this reuse:
+# "large isn't in 204's own premise at all, so this reuses fracas_205's
+# own already-confirmed premise tree purely to name it - the subject,
+# Dumbo, is irrelevant here"). Maps an id to which premise (1-based)
+# supplies the REAL individual the rebuilt hypothesis is applied to.
+HYPOTHESIS_FROM_PREMISE = {204: 1, 205: 1}
 
 # Ids at 142+ allowed through the generic translate_cl pipeline despite
 # the blanket "Section 4+ needs CUSTOM_BUILD or nothing" guard below -
 # each one individually hand-verified (not just arrow-counted) to
 # produce translate_cl output structurally identical to its own real
-# theorem (see AUX_HYPOTHESIS_PREPEND's own `_privative_aux` for 198,
-# and `translate.py`'s `_SPLITTING_ADJECTIVES` for 202/214) before being
-# added here - the exact due-diligence step the guard itself exists to
-# force, just done by hand for these three instead of trusted from
-# arrow-count alone.
-GENERIC_PIPELINE_ALLOWED_142_PLUS = {198, 202, 214}
+# theorem (see AUX_HYPOTHESIS_PREPEND's own `_privative_aux`/
+# `_comparative_aux` for 198/204/205/208/209, and `translate.py`'s
+# `_SPLITTING_ADJECTIVES` for 202/214) before being added here - the
+# exact due-diligence step the guard itself exists to force, just done
+# by hand for these seven instead of trusted from arrow-count alone.
+GENERIC_PIPELINE_ALLOWED_142_PLUS = {198, 202, 204, 205, 208, 209, 214}
 
 # Ids whose real theorem's own HYPOTHESIS is itself stated as a bare,
 # unparenthesized `forall x, P x -> Q x` (never wrapped in `Every`/`Some`/
@@ -1344,112 +1392,6 @@ def _predet_restrictor_scope(p):
     restrictor_cn = p.args[0].args[1].args[1]
     scope_cn = p.args[1].args[0].args[0].args[1]
     return restrictor_cn, scope_cn
-
-
-def _build_fracas_204(roles: dict) -> "tuple[str, str, str]":
-    """"Mickey is a small animal." -> not "Mickey is a large animal."
-    Confirmed by reading the real theorem's own stated type directly
-    (`(∀x, small x -> ¬ large x) -> small mickey -> ¬ large mickey`) -
-    "small"/"large" are contrary (not contradictory), an assumed fact
-    this project states as an extra hypothesis rather than deriving it
-    (`Adjectives.lean`'s own comment). "large" isn't in 204's own
-    premise at all, so its name is read from fracas_205's own premise
-    tree (`fracas_204_hypothesis` in run_gf_tests.py - same reuse-for-
-    naming-only convention as 183/186/187's own premise reuses).
-    Returns (binders, arrow_chain, proof)."""
-    p = parse_tree(roles["_premise"])
-    h = parse_tree(roles["_hypothesis"])
-    subj, p_cn = _comp_cn(p)
-    small = camel_name(_leaf_words(p_cn.args[0]))
-    _h_subj, h_cn = _comp_cn(h)
-    large = camel_name(_leaf_words(h_cn.args[0]))
-    aux = f"∀ x, {small} x → ¬ {large} x"
-    arrow_chain = f"({aux}) → {small} {subj} → ¬ {large} {subj}"
-    binders = f"{{A : Type*}} ({small} {large} : A → Prop) ({subj} : A)"
-    proof = "fun h1 h2 => fracas_204 _ _ _ h1 h2"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_205(roles: dict) -> "tuple[str, str, str]":
-    """Symmetric to 204: "Dumbo is a large animal." -> not "Dumbo is a
-    small animal." Confirmed by reading the real theorem's own stated
-    type directly (`(∀x, large x -> ¬ small x) -> large dumbo -> ¬ small
-    dumbo`) - "small" is read from fracas_204's own premise tree
-    (`fracas_205_hypothesis`). Returns (binders, arrow_chain, proof)."""
-    p = parse_tree(roles["_premise"])
-    h = parse_tree(roles["_hypothesis"])
-    subj, p_cn = _comp_cn(p)
-    large = camel_name(_leaf_words(p_cn.args[0]))
-    _h_subj, h_cn = _comp_cn(h)
-    small = camel_name(_leaf_words(h_cn.args[0]))
-    aux = f"∀ x, {large} x → ¬ {small} x"
-    arrow_chain = f"({aux}) → {large} {subj} → ¬ {small} {subj}"
-    binders = f"{{A : Type*}} ({small} {large} : A → Prop) ({subj} : A)"
-    proof = "fun h1 h2 => fracas_205 _ _ _ h1 h2"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_208(roles: dict) -> "tuple[str, str, str]":
-    """"Mickey is a small animal. Dumbo is a large animal." -> "Mickey
-    is smaller than Dumbo." Confirmed by reading the real theorem's own
-    stated type directly (`(∀x y, small x -> large y -> smallerThan x y)
-    -> small mickey -> large dumbo -> smallerThan mickey dumbo`) - the
-    comparative relation between the two base gradable adjectives is an
-    assumed fact (`Adjectives.lean`'s own comment), not derived; both
-    premises reuse fracas_204's/205's own already-confirmed trees
-    (`fracas_208_premise1`/`fracas_208_premise2`). Returns (binders,
-    arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    hyp = parse_tree(roles["_hypothesis"])
-    mickey, p1_cn = _comp_cn(p1)
-    small = camel_name(_leaf_words(p1_cn.args[0]))
-    dumbo, p2_cn = _comp_cn(p2)
-    large = camel_name(_leaf_words(p2_cn.args[0]))
-    compar = hyp.args[1].args[0].args[0]
-    adj = camel_name(_leaf_words(compar.args[0]))
-    relation = adj + "Than"
-    aux = f"∀ x y, {small} x → {large} y → {relation} x y"
-    arrow_chain = (
-        f"({aux}) → {small} {mickey} → {large} {dumbo} → {relation} {mickey} {dumbo}"
-    )
-    binders = (
-        f"{{A : Type*}} ({small} {large} : A → Prop) ({relation} : A → A → Prop) "
-        f"({mickey} {dumbo} : A)"
-    )
-    proof = "fun h hs hl => fracas_208 _ _ _ _ _ h hs hl"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_209(roles: dict) -> "tuple[str, str, str]":
-    """Same antecedent as 208: "Mickey is a small animal. Dumbo is a
-    large animal." -> not "Mickey is larger than Dumbo." Confirmed by
-    reading the real theorem's own stated type directly (`(∀x y, small x
-    -> large y -> ¬ largerThan x y) -> small mickey -> large dumbo -> ¬
-    largerThan mickey dumbo`) - same assumed-comparative-relation shape
-    as 208, with the opposite relation and verdict; both premises reuse
-    the same fracas_204/205 trees again (`fracas_209_premise1`/
-    `fracas_209_premise2`). Returns (binders, arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    hyp = parse_tree(roles["_hypothesis"])
-    mickey, p1_cn = _comp_cn(p1)
-    small = camel_name(_leaf_words(p1_cn.args[0]))
-    dumbo, p2_cn = _comp_cn(p2)
-    large = camel_name(_leaf_words(p2_cn.args[0]))
-    compar = hyp.args[1].args[0].args[0]
-    adj = camel_name(_leaf_words(compar.args[0]))
-    relation = adj + "Than"
-    aux = f"∀ x y, {small} x → {large} y → ¬ {relation} x y"
-    arrow_chain = (
-        f"({aux}) → {small} {mickey} → {large} {dumbo} → ¬ {relation} {mickey} {dumbo}"
-    )
-    binders = (
-        f"{{A : Type*}} ({small} {large} : A → Prop) ({relation} : A → A → Prop) "
-        f"({mickey} {dumbo} : A)"
-    )
-    proof = "fun h hs hl => fracas_209 _ _ _ _ _ h hs hl"
-    return binders, arrow_chain, proof
 
 
 def _build_fracas_210(roles: dict) -> "tuple[str, str, str]":
@@ -2953,10 +2895,6 @@ CUSTOM_BUILD = {
     203: _build_fracas_203,
     216: _build_fracas_216,
     218: _build_fracas_218,
-    204: _build_fracas_204,
-    205: _build_fracas_205,
-    208: _build_fracas_208,
-    209: _build_fracas_209,
     210: _build_fracas_210,
     211: _build_fracas_211,
     212: _build_fracas_212,
@@ -3537,6 +3475,47 @@ def main() -> None:
         "nothing\" rule - each individually hand-verified against its own",
         "real theorem's stated type first, the same due-diligence the rule",
         "itself exists to force.",
+        "",
+        "A second pass extends this pilot to 204/205/208/209: \"small\"/",
+        "\"large\" are a CONTRARY (not contradictory) adjective pair, an",
+        "independent fact about these two specific words (same",
+        "`Adjectives.lean`-documented distinction as 202/214's own citation)",
+        "- `_try_translate_named_individual_fact` now DROPS the noun",
+        "entirely for either word in a bare copula predication",
+        "(`_CONTRARY_ADJECTIVES`), reusing `_privative_aux` for their",
+        "assumed `∀x, small x → ¬ large x`-shaped fact (the same shape as",
+        "198's own privative one). Their shared comparison-class noun",
+        "(\"animal\") is dropped deliberately only HERE, not in",
+        "`_restrictor_expr`: fracas_210/211/212 use the SAME two words in a",
+        "subclass/superclass-shift context where the noun must stay fused",
+        "(\"smallAnimal\"), confirmed by their own stated types needing",
+        "exactly that - the two contexts need opposite treatments of the",
+        "same word, so this round deliberately doesn't touch 210-212.",
+        "208/209 add one more genuinely new `translate.py` case: a bare",
+        "comparative predication over a named standard (\"Mickey is",
+        "smaller than Dumbo\") names a BINARY `{adj}Than` relation between",
+        "subject and standard, General over any comparative this grammar",
+        "can produce, not a 208/209-specific name. Both reuse",
+        "`AUX_HYPOTHESIS_PREPEND`'s own mechanism with a new two-premise",
+        "`_comparative_aux`/`_comparative_aux_neg` pair, reading each",
+        "premise's own bare adjective positionally. 204's/205's own",
+        "\"_hypothesis\" role is a SIBLING problem's premise tree, reused",
+        "purely to NAME the other adjective (confirmed directly:",
+        "run_gf_tests.py's own comment on this reuse, \"the subject, Dumbo,",
+        "is irrelevant here\") - `HYPOTHESIS_FROM_PREMISE` rebuilds the",
+        "generated conclusion from the real premise's own individual",
+        "instead of the borrowed tree's, the same \"reuse an established",
+        "name instead of guessing a fresh one matches\" principle as",
+        "`BUNDLE_PROJECT`/`SKOLEM_PROJECT`/`SYNTHESIZE_PREMISE` above. This",
+        "round also fixed a latent bug the \"no\"-answer wrapping step had",
+        "carried since this file's very first version: it rebuilt the",
+        "negated hypothesis's own `Translation` without copying",
+        "`binary_predicates`/`free_functions` over, silently declaring a",
+        "BINARY relation as a bogus unary binder instead whenever a",
+        "\"no\"-answer id's hypothesis happened to be binary - caught by",
+        "reading fracas_209_from_gf's own generated output directly before",
+        "push (no earlier \"no\"-answer id's hypothesis was ever binary, so",
+        "this never surfaced before).",
         "-/",
         "",
         "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9",
@@ -3755,6 +3734,27 @@ def main() -> None:
             skipped[idn] = f"translate error: {e}"
             continue
 
+        if idn in HYPOTHESIS_FROM_PREMISE:
+            # fracas_204's/205's own "_hypothesis" role is a SIBLING
+            # problem's premise tree, reused purely to NAME the other
+            # contrary adjective (see run_gf_tests.py's own comment on
+            # this reuse) - its own individual ("dumbo" for 204's
+            # borrowed "Dumbo is a large animal") is NOT the real
+            # conclusion's subject, confirmed by reading fracas_204's own
+            # stated type directly (`¬ large mickey`, not `¬ large
+            # dumbo`). Rebuilt here from the NAMED premise's own
+            # individual instead, keeping only the borrowed tree's own
+            # predicate name - the same "reuse an established name
+            # instead of guessing a fresh one matches" principle as
+            # BUNDLE_PROJECT/SKOLEM_PROJECT/SYNTHESIZE_PREMISE above.
+            premise_i = HYPOTHESIS_FROM_PREMISE[idn]
+            real_individual = translated_premises[premise_i - 1].free_individuals[-1]
+            translated_hyp = Translation(
+                lean_prop=f"{translated_hyp.free_predicates[-1]} {real_individual}",
+                free_predicates=translated_hyp.free_predicates,
+                free_individuals=[real_individual],
+            )
+
         if idn in BUNDLE_PROJECT:
             bundle = translated_premises[0]
             conjunct_idx = BUNDLE_PROJECT[idn]
@@ -3857,10 +3857,20 @@ def main() -> None:
         # pavarotti`, needing `¬ (...)`, not `¬ (fun x => ...) pavarotti`).
         answer = answers.get(idn)
         if answer == "no":
+            # Carries `binary_predicates`/`free_functions` over too, not
+            # just `free_predicates`/`free_individuals` - dropping them
+            # silently declared a BINARY relation (fracas_209's own
+            # `largerThan : A -> A -> Prop`) as a bogus unary `A -> Prop`
+            # binder instead, caught directly by reading this round's own
+            # generated fracas_209_from_gf output before it was pushed
+            # (every earlier "no"-answer id's own hypothesis happened to
+            # be unary already, so this silently never mattered before).
             translated_hyp = Translation(
                 lean_prop=f"¬ ({translated_hyp.lean_prop})",
                 free_predicates=translated_hyp.free_predicates,
                 free_individuals=translated_hyp.free_individuals,
+                binary_predicates=translated_hyp.binary_predicates,
+                free_functions=translated_hyp.free_functions,
             )
         elif answer != "yes":
             skipped[idn] = f"gold answer is .{answer}, not .yes/.no - not attempted"
