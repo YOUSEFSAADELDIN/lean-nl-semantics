@@ -21,6 +21,7 @@ import LeanNLSemantics.FraCaS.Section7.Batch1
 import LeanNLSemantics.FraCaS.Section7.Batch2
 import LeanNLSemantics.FraCaS.Section7.Batch3
 import LeanNLSemantics.FraCaS.Section7.Batch4
+import LeanNLSemantics.FraCaS.Section7.Batch5
 
 /-!
 # GF cross-check, batch 2
@@ -149,35 +150,81 @@ already present in run_gf_tests.py's own `fracas_270_premise3`
 (and the never-load-bearing `fracas_269_premise3`), both fixed
 this round. Not yet attempted: 253/254 (a non-stative predicate
 coerced into "since", countermodel-only, excluded automatically
-like the rest of this paragraph's unlisted ids); 259/260 (date/
-duration arithmetic needing fresh premise trees, left for a
-future round). 271-325 (277-325 in Batch3-5's own numbering) adds
-15 more ids, a mix of two shapes: 278/279/282 (an unrepeatable
-accomplishment/achievement with a unique referent pins down one
-year only, both literal years read off the real trees); 286/289
-("in N hours" upper-bounds duration / achievements are near-
-instantaneous, chaining in an assumed bound); 298/301/303 ("for N
-years/hours" is downward-entailing, both literal durations read
-off the real trees - 299 reuses 298's own trees verbatim, since
-"exactly" has no combinator over a measure-phrase adverbial but
-needs the same duration literal either way); 290/294/297/300/302/
-306 (existential closure over a duration adverbial, a trivial
-restatement using only the hypothesis's own bare-atom content,
-the premise's "in/for N" content dropped entirely - 302 reuses
-294's own hypothesis tree verbatim, same bare restatement). Two
+like the rest of this paragraph's unlisted ids); 259 (specific
+calendar-date arithmetic - see the later paragraph below for why
+this stays unattempted while 260's own date arithmetic doesn't).
+271-325 (277-325 in Batch3-5's own numbering) adds 16 more ids, a
+mix of shapes: 278/279/282 (an unrepeatable accomplishment/
+achievement with a unique referent pins down one year only, both
+literal years read off the real trees); 286/289 ("in N hours"
+upper-bounds duration / achievements are near-instantaneous,
+chaining in an assumed bound); 298/301/303 ("for N years/hours"
+is downward-entailing, both literal durations read off the real
+trees - 299 reuses 298's own trees verbatim, since "exactly" has
+no combinator over a measure-phrase adverbial but needs the same
+duration literal either way); 290/294/297/300/302/306 (existential
+closure over a duration adverbial, a trivial restatement using
+only the hypothesis's own bare-atom content, the premise's
+"in/for N" content dropped entirely - 302 reuses 294's own
+hypothesis tree verbatim, same bare restatement); 288 (a hand-
+invented existential-over-duration encoding with no natural
+compositional source - unlike every other builder here,
+`wroteReportIn` isn't translate_cl's own generic output for any
+sentence, reassembled from the premise's own core clause instead,
+the same one-off-shape move as 252's own `_since_interval`). Two
 new self-declared duration-adverbial tokens needed a dedicated
 `_duration_from_adv` reader (`inTwoHours_Adv`, `forAYear_Adv`,
 etc. spell the number out in the adverb's own name, the same
 move as `_year_from_adv` for calendar years) - genuinely general
-over every id in this paragraph, not a one-off. 288 (a hand-
-invented existential-over-duration encoding with no natural
-compositional source), 311/320/322 (each needs either "then"-
-sequencing world knowledge or deeply embedded factive-attitude
-clauses this generator isn't shaped for) are deliberately left
-unattempted rather than guessed. 271-277/280/281/283/285/287/
-291-293/295/296/304/305/308-310 are countermodel-only or skipped
-degenerate problems, already excluded automatically. The rest of
-Section 7 (307-325) is not yet attempted.
+over every id in this paragraph, not a one-off. 271-277/280/281/
+283/285/287/291-293/295/296/304/305/308-310 are countermodel-only
+or skipped degenerate problems, already excluded automatically.
+260/319/321 (the rest of this section's own "hard cluster",
+attempted and built this round rather than deferred again) each
+needed their own individual read of the real theorem before being
+judged tractable: 260 drops its own "yesterday" adverbial
+entirely (same "ignore the premise's extra wrapper" move as
+264/265/267/270's own distractors), reading the literal day
+numbers (14, 13) directly off Problems.lean's own English rather
+than any tree - a GENUINE calendar-date problem would still need
+the tree itself to encode a specific day, which 259's own "the
+conference started on July 4th, 1994"/"was over on July 8th,
+1994" premises do and 260's bare "APCOM signed the contract"
+doesn't, which is exactly why 259 stays unattempted while 260
+doesn't; 319 drops its own "before/since APCOM bought its office
+building" event-anchoring entirely (same move as 258's own
+event-anchoring simplification), needing two new self-declared
+duration adverbials (`forEightYears_Adv`, `forMoreThanTenYears_
+Adv`) - more instances of the same fixed-one-off-adverbial
+pattern already used throughout this section, not new grammar
+machinery; 321 pilots `TFut` for the first time outside
+run_gf_tests.py's own tense-reconfirmation pass, reusing already-
+dictionary words (`twice_Adv`, `florence_PN`, `visit_V2` - "
+visited" standing in for the idiomatic "been to", since `be_V`
+isn't in scope as a plain intransitive here, checked directly).
+Genuinely still blocked after individually reading each one's own
+real theorem and premises: 311 ("then"-sequencing world
+knowledge with no compositional source and thin cross-check value
+even if built); 312/313 (splitting a VP-level "late" adverb into
+its own conjunct the way 202/214 split a CN-level adjective is a
+genuinely new structural pattern, not yet established/verified);
+314/315 (the same specific-calendar-date blocker as 259, compounded
+with progressive-aspect-drop uncertainty for 315's own "had been
+travelling"); 316 (needs an event-anchored "ever since" - "has
+been employed ever since [graduating]", not since a literal year
+- genuinely new tense/anchor machinery); 317 (needs BOTH a
+cardinality premise - the same `Fintype.card` blocker as problem
+137 - AND a "no two X at the same time" relation at once); 318
+(needs "while X was V-ing, Y happened" interval-containment, a
+genuinely new construction); 320/322 (deeply embedded factive-
+attitude clauses - confirmed hard both by individually reading
+each one's own premise and by this grammar's own prior documented
+comment on exactly this range); 323/324/325 (fully abstract
+`{A : Type*}` facts with no literal number or tie to any specific
+named individual in their own Lean content at all - structurally
+blocked the same way the two-sorted-domain problems are, not just
+hard). The rest of Section 7 (307-310 aside, already excluded) is
+not yet surveyed.
 `scripts/gen_gf_cross_check.py` documents the non-obvious
 exclusions it found rather than silently omitting them, including
 earlier rounds': problems 31 and 46 each need an aux hypothesis (like
@@ -656,6 +703,10 @@ theorem fracas_258_from_gf (exist : Nat → Prop) (foundedYear : Nat) :
     (∀ y, exist y → foundedYear ≤ y) → foundedYear = 1993 → ¬ exist 1992 :=
   fun h heq hex => fracas_258 _ _ h heq hex
 
+theorem fracas_260_from_gf (apcomSignContract : Nat → Prop) (todayDay : Nat) :
+    todayDay = 14 → apcomSignContract (todayDay - 1) → apcomSignContract 13 :=
+  fun heq h => fracas_260 _ _ heq h
+
 theorem fracas_261_from_gf (tSmith tJones tAnderson : Nat) :
     tSmith < tJones → tJones < tAnderson → tSmith < tAnderson :=
   by omega
@@ -704,6 +755,10 @@ theorem fracas_286_from_gf (spentHours : Nat) :
     spentHours ≤ 2 → ¬ spentHours > 2 :=
   fun h => fracas_286 _ h
 
+theorem fracas_288_from_gf (smithWriteReportIn : Nat → Prop) (smithWriteReport : Prop) :
+    (∃ h, smithWriteReportIn h) → smithWriteReport → smithWriteReport :=
+  fun hex h => fracas_288 _ _ hex h
+
 theorem fracas_289_from_gf (discoveryDuration : Nat) :
     discoveryDuration = 0 → discoveryDuration ≠ 2 :=
   fun h => fracas_289 _ h
@@ -747,3 +802,11 @@ theorem fracas_303_from_gf (hours : Nat) :
 theorem fracas_306_from_gf (smithDiscoverNewSpecies : Prop) :
     smithDiscoverNewSpecies → smithDiscoverNewSpecies :=
   fun h => fracas_306 _ h
+
+theorem fracas_319_from_gf (yearsPrev yearsPresent : Nat) :
+    yearsPrev = 8 → yearsPresent > 10 → yearsPrev + yearsPresent ≥ 15 :=
+  fun h1 h2 => fracas_319 _ _ h1 h2
+
+theorem fracas_321_from_gf (pastVisits futureVisits : Nat) :
+    pastVisits = 2 → futureVisits = 2 → pastVisits + futureVisits ≥ 4 :=
+  fun h1 h2 => fracas_321 _ _ h1 h2

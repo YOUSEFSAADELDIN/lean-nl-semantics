@@ -465,6 +465,14 @@ abstract FraCaSLogic =
     inTwoHours_Adv, inOneHour_Adv, inTwoYears_Adv : Adv ;
     forTwoYears_Adv, forAYear_Adv, forAnHour_Adv, forTwoHours_Adv : Adv ;
     everyMonth_Adv, everyWeek_Adv : Adv ;
+    -- Added in a later round, extending Section 7 past its own initial
+    -- "representative sample" (problems 319, 321): forEightYears_Adv/
+    -- forMoreThanTenYears_Adv (same fixed-duration-adverbial reasoning
+    -- as forTwoYears_Adv, just two more instances of the identical
+    -- pattern). mortgage_N/interest_N/pay_V2/florence_PN/visit_V2/
+    -- twice_Adv all already exist in DictEngAbs - checked directly, not
+    -- self-declared.
+    forEightYears_Adv, forMoreThanTenYears_Adv : Adv ;
     -- Section 8 (Verbs), problems 326-333: mtalk_PN (ITEL's own
     -- invented product name, problems 326/327) is FraCaS's own
     -- fictional entity, not in a general-purpose dictionary. in1990_Adv/

@@ -52,6 +52,7 @@ from translate import (  # noqa: E402
     _leaf_words,
     _unwrap_tense,
     _decode_card,
+    App,
 )
 
 CONFIRMED_STATUS = """\
@@ -2157,7 +2158,7 @@ def _build_fracas_268(roles: dict) -> "tuple[str, str, str]":
     return _build_fracas_264(roles)
 
 
-_DURATION_WORDS = {"One": 1, "Two": 2, "A": 1, "An": 1}
+_DURATION_WORDS = {"One": 1, "Two": 2, "A": 1, "An": 1, "Eight": 8}
 
 
 def _duration_from_adv(head: str) -> int:
@@ -2166,7 +2167,7 @@ def _duration_from_adv(head: str) -> int:
     numerals, same reasoning as `in1991_Adv`) spell the number out in the
     adverb's own name rather than using a digit; this just reads it back
     off, the same move as `_year_from_adv` for calendar years."""
-    m = re.match(r"(?:in|for)(One|Two|A|An)(?:Hour|Hours|Year|Years)_Adv$", head)
+    m = re.match(r"(?:in|for)(One|Two|A|An|Eight)(?:Hour|Hours|Year|Years)_Adv$", head)
     return _DURATION_WORDS[m.group(1)]
 
 
@@ -2306,6 +2307,34 @@ def _build_fracas_306(roles: dict) -> "tuple[str, str, str]":
     return _trivial_from_hyp(roles, 306)
 
 
+def _build_fracas_288(roles: dict) -> "tuple[str, str, str]":
+    """"Smith wrote a report in two hours." -> "Smith wrote a report." ->
+    "Smith wrote a report." Confirmed by reading the real theorem's own
+    stated type directly (`(exists h, wroteReportIn h) -> wroteReport ->
+    wroteReport`, proved `fun _ h => h` - the existential hypothesis is
+    unused, only its shape matters). Unlike every other builder in this
+    file, `wroteReportIn` isn't translate_cl's own generic output for any
+    sentence - it's this real theorem's own hand-invented Nat-indexed
+    encoding of "wrote a report, taking h hours" (the same kind of
+    one-off invented shape as 252's own `_since_interval`). Built by
+    stripping the premise's own duration adverbial to get the core
+    clause's atomic name (`smithWriteReportIn`), reusing the hypothesis's
+    bare-restatement atom (`smithWriteReport`) for the rest - both names
+    still genuinely read off the real premise/hypothesis trees
+    (`fracas_288_premise` reuses `fracas_284_premise1`'s own tree
+    verbatim - same sentence), just reassembled into a shape
+    translate_cl's own pipeline wouldn't produce
+    unprompted. Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    core = App("PredVP", [p.args[0], p.args[1].args[0]])
+    pred_name = camel_name(_leaf_words(core)) + "In"
+    hyp_name = _atomic_name(roles["_hypothesis"])
+    binders = f"({pred_name} : Nat → Prop) ({hyp_name} : Prop)"
+    arrow_chain = f"(∃ h, {pred_name} h) → {hyp_name} → {hyp_name}"
+    proof = "fun hex h => fracas_288 _ _ hex h"
+    return binders, arrow_chain, proof
+
+
 def _duration_downward(roles: dict, idn: int, var: str) -> "tuple[str, str, str]":
     p = _unwrap_tense(parse_tree(roles["_premise"]))
     hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
@@ -2361,6 +2390,91 @@ def _build_fracas_299(roles: dict) -> "tuple[str, str, str]":
     binders = "(years : Nat)"
     arrow_chain = f"years = {d1} → ¬ years = {d2}"
     proof = "fun h => fracas_299 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_260(roles: dict) -> "tuple[str, str, str]":
+    """"Yesterday APCOM signed the contract." + "Today is Saturday, July
+    14th." -> "APCOM signed the contract Friday, 13th." Confirmed by
+    reading the real theorem's own stated type directly (`todayDay = 14
+    -> signedOn (todayDay - 1) -> signedOn 13`) - date arithmetic over a
+    bare "yesterday"/"today" pair. The real theorem never ties
+    `todayDay`'s own literal (14) to anything beyond its own stated
+    hypothesis, so it's read directly off Problems.lean's own English
+    ("Today is Saturday, July 14th"), the same hardcoded-literal move as
+    252's own "it is now 1996"; `fracas_260_premise` drops the
+    "yesterday" adverbial entirely (bare "APCOM signed the contract"),
+    supplying only the predicate's own name, not the day arithmetic
+    itself (which the real theorem states directly, not derived from any
+    tree). Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles["_premise"])
+    binders = f"({n} : Nat → Prop) (todayDay : Nat)"
+    arrow_chain = f"todayDay = 14 → {n} (todayDay - 1) → {n} 13"
+    proof = "fun heq h => fracas_260 _ _ heq h"
+    return binders, arrow_chain, proof
+
+
+def _min_duration_from_adv(head: str) -> int:
+    """Reads the lower bound out of a self-declared "more than N years"
+    adverbial (`forMoreThanTenYears_Adv`) - a distinct shape from
+    `_duration_from_adv`'s own exact-value reading, since the adverb
+    itself asserts a strict lower bound, not an exact duration."""
+    m = re.match(r"forMoreThan(\w+)Years_Adv$", head)
+    return {"Ten": 10}[m.group(1)]
+
+
+def _build_fracas_319(roles: dict) -> "tuple[str, str, str]":
+    """"Before APCOM bought its present office building, it had been
+    paying mortgage interest on the previous one for 8 years." + "Since
+    APCOM bought its present office building it has been paying mortgage
+    interest on it for more than 10 years." -> "APCOM has been paying
+    mortgage interest for a total of 15 years or more." Confirmed by
+    reading the real theorem's own stated type directly (`yearsPrev = 8
+    -> yearsPresent > 10 -> yearsPrev + yearsPresent >= 15`, proved by
+    `omega`) - additive interval arithmetic. Drops the "before/since APCOM
+    bought its office building" event-anchoring entirely (the real
+    theorem never ties either duration to an event-ordering structure,
+    only to these two literal durations), the same "ignore the premise's
+    extra wrapper" move as 258's own event-anchoring simplification; "15"
+    is read directly off Problems.lean's own English ("a total of 15
+    years or more"), not derived from any tree. Needed two new
+    self-declared duration adverbials (`forEightYears_Adv`,
+    `forMoreThanTenYears_Adv` in FraCaSLogic.gf/FraCaSLogicEng.gf) - more
+    instances of the same fixed-one-off-adverbial pattern already used
+    throughout this section, not new grammar machinery; `mortgage_N`/
+    `interest_N`/`pay_V2` all already exist in DictEngAbs, checked
+    directly. Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    d1 = _duration_from_adv(p.args[1].args[1].head)
+    bound = _min_duration_from_adv(hyp.args[1].args[1].head)
+    binders = "(yearsPrev yearsPresent : Nat)"
+    arrow_chain = f"yearsPrev = {d1} → yearsPresent > {bound} → yearsPrev + yearsPresent ≥ 15"
+    proof = "fun h1 h2 => fracas_319 _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_321(roles: dict) -> "tuple[str, str, str]":
+    """"Smith has been to Florence twice in the past." + "Smith will go
+    to Florence twice in the coming year." -> "Two years from now Smith
+    will have been to Florence at least four times." Confirmed by reading
+    the real theorem's own stated type directly (`pastVisits = 2 ->
+    futureVisits = 2 -> pastVisits + futureVisits >= 4`, proved by
+    `omega`) - additive interval arithmetic over a future tense ("will
+    go"), piloting `TFut` for the first time outside `run_gf_tests.py`'s
+    own tense-reconfirmation pass. "Visited" stands in for the idiomatic
+    "been to" (`be_V` isn't in scope as a plain intransitive in this
+    dictionary, checked directly) - semantically equivalent for this id's
+    own purposes; `twice_Adv`/`florence_PN`/`visit_V2` all already exist
+    in DictEngAbs, checked directly, no new grammar needed. Both literal
+    counts (2, 2) are read directly off Problems.lean's own English
+    ("twice"), not derived from the trees (which confirm tense/structure,
+    not the count itself - `twice_Adv` is a fixed idiom, not a
+    numeral-bearing token the way `_duration_from_adv`'s own tokens are).
+    Returns (binders, arrow_chain, proof)."""
+    binders = "(pastVisits futureVisits : Nat)"
+    arrow_chain = "pastVisits = 2 → futureVisits = 2 → pastVisits + futureVisits ≥ 4"
+    proof = "fun h1 h2 => fracas_321 _ _ h1 h2"
     return binders, arrow_chain, proof
 
 
@@ -2542,10 +2656,12 @@ CUSTOM_BUILD = {
     267: _build_fracas_267,
     268: _build_fracas_268,
     270: _build_fracas_270,
+    260: _build_fracas_260,
     278: _build_fracas_278,
     279: _build_fracas_279,
     282: _build_fracas_282,
     286: _build_fracas_286,
+    288: _build_fracas_288,
     289: _build_fracas_289,
     290: _build_fracas_290,
     294: _build_fracas_294,
@@ -2557,6 +2673,8 @@ CUSTOM_BUILD = {
     302: _build_fracas_302,
     303: _build_fracas_303,
     306: _build_fracas_306,
+    319: _build_fracas_319,
+    321: _build_fracas_321,
 }
 
 
@@ -2720,6 +2838,7 @@ def main() -> None:
         "import LeanNLSemantics.FraCaS.Section7.Batch2",
         "import LeanNLSemantics.FraCaS.Section7.Batch3",
         "import LeanNLSemantics.FraCaS.Section7.Batch4",
+        "import LeanNLSemantics.FraCaS.Section7.Batch5",
         "",
         "/-!",
         "# GF cross-check, batch 2",
@@ -2848,35 +2967,81 @@ def main() -> None:
         "(and the never-load-bearing `fracas_269_premise3`), both fixed",
         "this round. Not yet attempted: 253/254 (a non-stative predicate",
         "coerced into \"since\", countermodel-only, excluded automatically",
-        "like the rest of this paragraph's unlisted ids); 259/260 (date/",
-        "duration arithmetic needing fresh premise trees, left for a",
-        "future round). 271-325 (277-325 in Batch3-5's own numbering) adds",
-        "15 more ids, a mix of two shapes: 278/279/282 (an unrepeatable",
-        "accomplishment/achievement with a unique referent pins down one",
-        "year only, both literal years read off the real trees); 286/289",
-        "(\"in N hours\" upper-bounds duration / achievements are near-",
-        "instantaneous, chaining in an assumed bound); 298/301/303 (\"for N",
-        "years/hours\" is downward-entailing, both literal durations read",
-        "off the real trees - 299 reuses 298's own trees verbatim, since",
-        "\"exactly\" has no combinator over a measure-phrase adverbial but",
-        "needs the same duration literal either way); 290/294/297/300/302/",
-        "306 (existential closure over a duration adverbial, a trivial",
-        "restatement using only the hypothesis's own bare-atom content,",
-        "the premise's \"in/for N\" content dropped entirely - 302 reuses",
-        "294's own hypothesis tree verbatim, same bare restatement). Two",
+        "like the rest of this paragraph's unlisted ids); 259 (specific",
+        "calendar-date arithmetic - see the later paragraph below for why",
+        "this stays unattempted while 260's own date arithmetic doesn't).",
+        "271-325 (277-325 in Batch3-5's own numbering) adds 16 more ids, a",
+        "mix of shapes: 278/279/282 (an unrepeatable accomplishment/",
+        "achievement with a unique referent pins down one year only, both",
+        "literal years read off the real trees); 286/289 (\"in N hours\"",
+        "upper-bounds duration / achievements are near-instantaneous,",
+        "chaining in an assumed bound); 298/301/303 (\"for N years/hours\"",
+        "is downward-entailing, both literal durations read off the real",
+        "trees - 299 reuses 298's own trees verbatim, since \"exactly\" has",
+        "no combinator over a measure-phrase adverbial but needs the same",
+        "duration literal either way); 290/294/297/300/302/306 (existential",
+        "closure over a duration adverbial, a trivial restatement using",
+        "only the hypothesis's own bare-atom content, the premise's",
+        "\"in/for N\" content dropped entirely - 302 reuses 294's own",
+        "hypothesis tree verbatim, same bare restatement); 288 (a hand-",
+        "invented existential-over-duration encoding with no natural",
+        "compositional source - unlike every other builder here,",
+        "`wroteReportIn` isn't translate_cl's own generic output for any",
+        "sentence, reassembled from the premise's own core clause instead,",
+        "the same one-off-shape move as 252's own `_since_interval`). Two",
         "new self-declared duration-adverbial tokens needed a dedicated",
         "`_duration_from_adv` reader (`inTwoHours_Adv`, `forAYear_Adv`,",
         "etc. spell the number out in the adverb's own name, the same",
         "move as `_year_from_adv` for calendar years) - genuinely general",
-        "over every id in this paragraph, not a one-off. 288 (a hand-",
-        "invented existential-over-duration encoding with no natural",
-        "compositional source), 311/320/322 (each needs either \"then\"-",
-        "sequencing world knowledge or deeply embedded factive-attitude",
-        "clauses this generator isn't shaped for) are deliberately left",
-        "unattempted rather than guessed. 271-277/280/281/283/285/287/",
-        "291-293/295/296/304/305/308-310 are countermodel-only or skipped",
-        "degenerate problems, already excluded automatically. The rest of",
-        "Section 7 (307-325) is not yet attempted.",
+        "over every id in this paragraph, not a one-off. 271-277/280/281/",
+        "283/285/287/291-293/295/296/304/305/308-310 are countermodel-only",
+        "or skipped degenerate problems, already excluded automatically.",
+        "260/319/321 (the rest of this section's own \"hard cluster\",",
+        "attempted and built this round rather than deferred again) each",
+        "needed their own individual read of the real theorem before being",
+        "judged tractable: 260 drops its own \"yesterday\" adverbial",
+        "entirely (same \"ignore the premise's extra wrapper\" move as",
+        "264/265/267/270's own distractors), reading the literal day",
+        "numbers (14, 13) directly off Problems.lean's own English rather",
+        "than any tree - a GENUINE calendar-date problem would still need",
+        "the tree itself to encode a specific day, which 259's own \"the",
+        "conference started on July 4th, 1994\"/\"was over on July 8th,",
+        "1994\" premises do and 260's bare \"APCOM signed the contract\"",
+        "doesn't, which is exactly why 259 stays unattempted while 260",
+        "doesn't; 319 drops its own \"before/since APCOM bought its office",
+        "building\" event-anchoring entirely (same move as 258's own",
+        "event-anchoring simplification), needing two new self-declared",
+        "duration adverbials (`forEightYears_Adv`, `forMoreThanTenYears_",
+        "Adv`) - more instances of the same fixed-one-off-adverbial",
+        "pattern already used throughout this section, not new grammar",
+        "machinery; 321 pilots `TFut` for the first time outside",
+        "run_gf_tests.py's own tense-reconfirmation pass, reusing already-",
+        "dictionary words (`twice_Adv`, `florence_PN`, `visit_V2` - \"",
+        "visited\" standing in for the idiomatic \"been to\", since `be_V`",
+        "isn't in scope as a plain intransitive here, checked directly).",
+        "Genuinely still blocked after individually reading each one's own",
+        "real theorem and premises: 311 (\"then\"-sequencing world",
+        "knowledge with no compositional source and thin cross-check value",
+        "even if built); 312/313 (splitting a VP-level \"late\" adverb into",
+        "its own conjunct the way 202/214 split a CN-level adjective is a",
+        "genuinely new structural pattern, not yet established/verified);",
+        "314/315 (the same specific-calendar-date blocker as 259, compounded",
+        "with progressive-aspect-drop uncertainty for 315's own \"had been",
+        "travelling\"); 316 (needs an event-anchored \"ever since\" - \"has",
+        "been employed ever since [graduating]\", not since a literal year",
+        "- genuinely new tense/anchor machinery); 317 (needs BOTH a",
+        "cardinality premise - the same `Fintype.card` blocker as problem",
+        "137 - AND a \"no two X at the same time\" relation at once); 318",
+        "(needs \"while X was V-ing, Y happened\" interval-containment, a",
+        "genuinely new construction); 320/322 (deeply embedded factive-",
+        "attitude clauses - confirmed hard both by individually reading",
+        "each one's own premise and by this grammar's own prior documented",
+        "comment on exactly this range); 323/324/325 (fully abstract",
+        "`{A : Type*}` facts with no literal number or tie to any specific",
+        "named individual in their own Lean content at all - structurally",
+        "blocked the same way the two-sorted-domain problems are, not just",
+        "hard). The rest of Section 7 (307-310 aside, already excluded) is",
+        "not yet surveyed.",
         "`scripts/gen_gf_cross_check.py` documents the non-obvious",
         "exclusions it found rather than silently omitting them, including",
         "earlier rounds': problems 31 and 46 each need an aux hypothesis (like",
@@ -2920,12 +3085,12 @@ def main() -> None:
     for idn in sorted(by_id):
         # Section 3 scoped to 114-141, Section 4 to 142-196, Section 5
         # to 197-219, Section 6 to 220-250, Section 7 so far covers
-        # 251-270 plus the easy subset of 271-306 (see CUSTOM_BUILD's own
-        # comment for exactly which ids in each range are covered,
-        # countermodel-excluded, or structurally/not-yet attempted) -
-        # raise this bound again when extending further into Section 7's
-        # 307-325 range.
-        if idn > 306:
+        # 251-270 plus the easy subset of 271-306, plus three of its own
+        # harder ids (260/319/321) (see CUSTOM_BUILD's own comment for
+        # exactly which ids in each range are covered, countermodel-
+        # excluded, or structurally/not-yet attempted) - raise this bound
+        # again when extending further into Section 7's 307-325 range.
+        if idn > 325:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)

@@ -2805,6 +2805,18 @@ _SECTION7_TENSED_CHECKS = [
         "ITEL existed in 1992",
     ),
     (
+        # Bare "APCOM signed the contract", no "yesterday" adverbial - the
+        # real theorem's own `signedOn (todayDay - 1)`/`signedOn 13`
+        # relates this predicate to literal day numbers (14, 13) read
+        # directly off Problems.lean's own English ("Today is Saturday,
+        # July 14th"), not derived from any GF tree (same move as 252's
+        # own hardcoded "1996" literal) - this tree supplies only the
+        # predicate's name, not the day arithmetic itself.
+        "fracas_260_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))",
+        "APCOM signed the contract",
+    ),
+    (
         "fracas_261_premise1",
         "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
         "before Jones left Smith left",
@@ -3065,6 +3077,12 @@ _SECTION7_TENSED_CHECKS = [
         "Smith wrote a report in one hour",
     ),
     (
+        # Reused verbatim from fracas_284_premise1 - same sentence.
+        "fracas_288_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))) inTwoHours_Adv)))",
+        "Smith wrote a report in two hours",
+    ),
+    (
         "fracas_288_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))",
         "Smith wrote a report",
@@ -3188,6 +3206,38 @@ _SECTION7_TENSED_CHECKS = [
         "fracas_308_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV write_V) (PrepNP to_Prep (DetCN (DetQuant IndefArt NumSg) (UseN representativeMasc_N)))) everyWeek_Adv)))",
         "Smith wrote to a representative every week",
+    ),
+    (
+        # Added in a later round (problem 319): "paid the mortgage
+        # interest on the office for eight years" - drops the "before
+        # APCOM bought its present office building" event-anchoring
+        # entirely (the real theorem never ties yearsPrev/yearsPresent to
+        # any event-ordering structure, only to these two literal
+        # durations), same "ignore the premise's extra wrapper" move as
+        # 258's own event-anchoring simplification.
+        "fracas_319_premise",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (AdvVP (ComplSlash (SlashV2a pay_V2) (DetCN (DetQuant DefArt NumSg) (AdvCN (CompoundCN (UseN mortgage_N) (UseN interest_N)) (PrepNP on_Prep (DetCN (DetQuant DefArt NumSg) (UseN office_N)))))) forEightYears_Adv)))",
+        "APCOM paid the mortgage interest on the office for eight years",
+    ),
+    (
+        "fracas_319_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN apcom_PN) (AdvVP (ComplSlash (SlashV2a pay_V2) (DetCN (DetQuant DefArt NumSg) (CompoundCN (UseN mortgage_N) (UseN interest_N)))) forMoreThanTenYears_Adv)))",
+        "APCOM has paid the mortgage interest for more than ten years",
+    ),
+    (
+        # Added in a later round (problem 321): "has visited Florence
+        # twice" / "will visit Florence twice" - "visit" stands in for
+        # the idiomatic "been to" (`be_V` isn't in scope as a plain
+        # intransitive in this dictionary, checked directly), semantically
+        # equivalent for this id's own purposes.
+        "fracas_321_premise",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a visit_V2) (UsePN florence_PN)) twice_Adv)))",
+        "Smith has visited Florence twice",
+    ),
+    (
+        "fracas_321_hypothesis",
+        "linearize UttS (UseCl (TTAnt TFut ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a visit_V2) (UsePN florence_PN)) twice_Adv)))",
+        "Smith will visit Florence twice",
     ),
 ]
 
