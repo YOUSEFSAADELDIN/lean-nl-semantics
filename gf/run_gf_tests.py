@@ -1449,6 +1449,14 @@ BASE_CHECKS += [
         "each department has a dedicated line",
     ),
     (
+        # fracas_132's own gold premise 1 is identical to fracas_131's
+        # ("Each department has a dedicated line.") - reusing 131's own
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_132_premise1",
+        "linearize PredVP (DetCN each_Det (UseN department_N)) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA dedicated_A) (UseN line_N))))",
+        "each department has a dedicated line",
+    ),
+    (
         "fracas_131_premise2",
         "linearize PredVP (UsePron they_Pron) (AdvVP (ComplSlash (SlashV2a rent_V2) (UsePron they_Pron)) (PrepNP from_Prep (UsePN bt_PN)))",
         "they rent them from BT",
@@ -1652,6 +1660,14 @@ _SECTION3_TENSED_CHECKS = [
         "fracas_128_premise2",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron they_Pron) (ComplSlash (SlashV2a hate_V2) (UsePron it_Pron))))",
         "they hated it",
+    ),
+    (
+        # fracas_129's own gold premise 1 is identical to fracas_128's
+        # ("John and his colleagues went to a meeting.") - reusing 128's
+        # own already-confirmed tree rather than re-linearizing it.
+        "fracas_129_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (ConjNP and_Conj (BaseNP (UsePN john_PN) (DetCN (DetQuant (PossPron he_Pron) NumPl) (UseN colleague_N)))) (AdvVP (UseV go_V) (PrepNP to_Prep (DetCN (DetQuant IndefArt NumSg) (UseN meeting_N))))))",
+        "John and his colleagues went to a meeting",
     ),
     (
         "fracas_128_hypothesis",

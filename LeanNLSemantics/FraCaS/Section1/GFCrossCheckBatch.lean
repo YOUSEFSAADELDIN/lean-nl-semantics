@@ -19,20 +19,33 @@ already has a real, linearize-confirmed GF tree (`gf/run_gf_tests.py`)
 that `gf/translate.py` translates cleanly, where the real theorem's
 own top-level arrow count exactly matches (one arrow per premise,
 chaining into the hypothesis, plus a "world-knowledge" auxiliary
-hypothesis for ids in `AUX_HYPOTHESIS`) - now extended into Section 3
-as a pilot (ids 114-116 only - see `BUNDLE_PROJECT`): "Mary used her
-workstation" translates to a three-way presupposition bundle
-(`translate.py`'s `_try_translate_possessive_presupposition`),
+hypothesis for ids in `AUX_HYPOTHESIS`) - now extended through all of
+Section 3's 114-141 range: the possessive-presupposition bundle
+(114-116, `BUNDLE_PROJECT`, `translate.py`'s
+`_try_translate_possessive_presupposition`) - "Mary used her
+workstation" translates to a three-way presupposition bundle,
 matching Batch1.lean's own comment that 114/115/116 are "just
 projections out of the same bundle" - each id's own generated
 hypothesis is that SAME bundle's matching conjunct, not an
 independent translation of its own (differently-shaped) hypothesis
 sentence, since that sentence read in isolation is genuinely
 ambiguous between this bundle's own specific reading and this
-project's usual fused-unary-predicate one (see `BUNDLE_PROJECT`'s
-own comment). Harder Section 3 constructions (Skolem functions,
-cross-sentential variable sharing, cardinality anaphora) are not
-attempted yet - see
+project's usual fused-unary-predicate one; its Skolem-function-bound
+variant (117-119, `SKOLEM_PROJECT`); a synthesized scope-entailment
+premise (123, `SYNTHESIZE_PREMISE`); and twelve fully hand-built
+cross-sentential-anaphora theorems bypassing `translate_cl` entirely
+(120-122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - a shared bound
+existential, a ternary named-individual relation, trivial-literal
+restrictors, Skolemized dependent-plural/paycheque pronouns, a
+dropped licensing-only premise, and reflexive/embedded-clause
+arguments). Not every Section 3 id is covered: 125/130/136/141 are
+countermodel-only (no bare theorem to cross-check at all); 126 needs
+a genuinely unstated extra premise ("the other eight machines were
+also here yesterday", no corresponding FraCaS sentence); and
+127/134/135 (two-sorted `{Person Machine}`/`{A B}` domains - this
+generator hardcodes a single domain `{A : Type*}` throughout) and 137
+(needs a `Fintype.card` premise plus one predicate bundling five
+separate FraCaS sentences) are structurally blocked - see
 `scripts/gen_gf_cross_check.py` for exactly how, including the
 non-obvious exclusions it found and documents rather than silently
 omitting: problems 31 and 46 each need an aux hypothesis (like
@@ -266,3 +279,35 @@ theorem fracas_123_from_gf {A : Type*} [Fintype A] (reportSmithNeed sendItel smi
 theorem fracas_124_from_gf {A : Type*} [Fintype A] (missing remove : A → Prop) :
     Exactly 2 (fun _ : A => True) missing → (∀ x, missing x → remove x) → AtLeast 2 (fun _ : A => True) remove :=
   fun h1 h2 => fracas_124 _ _ h1 h2
+
+theorem fracas_128_from_gf {A : Type*} (colleague hate : A → Prop) :
+    Every colleague hate → Every colleague hate :=
+  fun h => fracas_128 _ _ h
+
+theorem fracas_129_from_gf {A : Type*} (john : A) (colleague hateMeeting : A → Prop) :
+    (Every (fun x => x = john ∨ colleague x) hateMeeting) → hateMeeting john :=
+  fun h => fracas_129 _ _ _ h
+
+theorem fracas_131_from_gf {A : Type*} (department : A → Prop) (dedicatedLineOf : A → A) (has rentBt : A → A → Prop) :
+    (∀ d, department d → has d (dedicatedLineOf d)) → (∀ d, department d → rentBt d (dedicatedLineOf d)) → (∀ d, department d → ∃ l, rentBt d l) :=
+  fun h1 h2 => fracas_131 _ _ _ _ h1 h2
+
+theorem fracas_132_from_gf {A : Type*} (department : A → Prop) (dedicatedLineOf : A → A) (salesDepartment : A) (has rentBt : A → A → Prop) :
+    (∀ d, department d → has d (dedicatedLineOf d)) → rentBt salesDepartment (dedicatedLineOf salesDepartment) → ∃ l, rentBt salesDepartment l :=
+  fun h1 h2 => fracas_132 _ _ _ _ _ h1 h2
+
+theorem fracas_133_from_gf {A : Type*} (ownComputer maintain : A → Prop) :
+    (∃ x, ownComputer x) → (∀ x, ownComputer x → maintain x) → (∀ x, ownComputer x → maintain x) :=
+  fun h1 h2 => fracas_133 _ _ h1 h2
+
+theorem fracas_138_from_gf {A : Type*} (report : A → Prop) (coverPageOf : A → A) (smith r95103 : A) (sign : A → A → Prop) :
+    report r95103 → sign smith (coverPageOf r95103) → sign smith (coverPageOf r95103) :=
+  fun h1 h2 => fracas_138 _ _ _ _ _ h1 h2
+
+theorem fracas_139_from_gf {A : Type*} (awardLargePayrise : A → A → Prop) :
+    (∃ d, awardLargePayrise d d) → ∃ d, awardLargePayrise d d :=
+  fun h => fracas_139 _ h
+
+theorem fracas_140_from_gf {A : Type*} (john bill : A) (said : A → Prop → Prop) (hurt : A → A → Prop) :
+    said john (hurt bill bill) → said john (hurt bill bill) :=
+  fun h => fracas_140 _ _ _ _ h

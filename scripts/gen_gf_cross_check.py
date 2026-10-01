@@ -367,26 +367,282 @@ def _build_fracas_124(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+def _build_fracas_128(roles: dict) -> "tuple[str, str, str]":
+    """"John and his colleagues went to a meeting. They hated it." ->
+    "John's colleagues hated the meeting." (reading A: "they" excludes
+    John). Confirmed by reading the real theorem's own `:= id` proof
+    directly (`Every colleagueOf hated -> Every colleagueOf hated`) -
+    premise 1's own VP ("went to a meeting") is a pure distractor, never
+    used at all; only its subject's own "his colleagues" conjunct
+    supplies the restrictor name. Premise 2 ("they hated it") supplies
+    the scope name directly (both pronouns contribute nothing to
+    naming, same as every other pronoun this generator's builders have
+    seen). Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    colleague_cn = p1.args[0].args[1].args[1].args[1]
+    colleague_name = camel_name(_leaf_words(colleague_cn))
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    hate_name = camel_name(_leaf_words(p2.args[1]))
+
+    combined = f"Every {colleague_name} {hate_name}"
+    arrow_chain = f"{combined} → {combined}"
+    binders = f"{{A : Type*}} ({colleague_name} {hate_name} : A → Prop)"
+    proof = "fun h => fracas_128 _ _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_129(roles: dict) -> "tuple[str, str, str]":
+    """"John and his colleagues went to a meeting. They hated it." ->
+    "John hated the meeting." (reading B: "they" includes John,
+    distributively). Confirmed by reading the real theorem's own stated
+    type directly (`Every (fun x => x = john or colleagueOf x) hated ->
+    hated john`). The hypothesis ("John hated the meeting") translates
+    fine via translate_cl's OWN general path (a plain "ProperNoun VP"
+    fact) - reused directly for both its own names and the final
+    conclusion, rather than re-derived - but premise 1's disjunctive
+    restrictor has no GF tree of its own to translate at all (it's a
+    hand-combination of fracas_128's own colleague name with John's own
+    individual, read off the real theorem's own stated shape directly).
+    Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    colleague_cn = p1.args[0].args[1].args[1].args[1]
+    colleague_name = camel_name(_leaf_words(colleague_cn))
+    hyp = translate_cl(parse_tree(roles["_hypothesis"]))
+    hate_name = hyp.free_predicates[-1]
+    john_name = hyp.free_individuals[0]
+
+    premise1_text = f"Every (fun x => x = {john_name} ∨ {colleague_name} x) {hate_name}"
+    arrow_chain = f"({premise1_text}) → {hyp.lean_prop}"
+    binders = f"{{A : Type*}} ({john_name} : A) ({colleague_name} {hate_name} : A → Prop)"
+    proof = "fun h => fracas_129 _ _ _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_131(roles: dict) -> "tuple[str, str, str]":
+    """"Each department has a dedicated line. They rent them from BT."
+    -> "Every department rents a line from BT." Confirmed by reading
+    the real theorem's own stated type directly (`(forall d, department
+    d -> hasLine d (lineOf d)) -> (forall d, department d -> rentsFromBT
+    d (lineOf d)) -> forall d, department d -> exists l, rentsFromBT d
+    l`): "a dedicated line" becomes a Skolem function (one line per
+    department, the same device 117-119 use for a BOUND possessive
+    pronoun, except triggered here by plain anaphoric continuation of
+    an indefinite object, not a possessive pronoun at all) - "they"/
+    "them" in premise 2 and the hypothesis's own weaker existential
+    conclusion are both built directly rather than independently
+    translated, since neither sentence's own compositional reading
+    matches the real theorem's shape (the hypothesis's own "rents A
+    line from BT" would otherwise fuse into one unary predicate, not
+    split into the needed `exists l, rentsFromBT d l`). Returns
+    (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    restrictor = camel_name(_leaf_words(p1.args[0]))
+    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
+    skolem = noun_name + "Of"
+    has_name = "has"
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    rel_name = camel_name(_leaf_words(p2.args[1]))
+
+    premise1_text = f"∀ d, {restrictor} d → {has_name} d ({skolem} d)"
+    premise2_text = f"∀ d, {restrictor} d → {rel_name} d ({skolem} d)"
+    conclusion = f"∀ d, {restrictor} d → ∃ l, {rel_name} d l"
+    arrow_chain = f"({premise1_text}) → ({premise2_text}) → ({conclusion})"
+    binders = (
+        f"{{A : Type*}} ({restrictor} : A → Prop) ({skolem} : A → A) "
+        f"({has_name} {rel_name} : A → A → Prop)"
+    )
+    proof = "fun h1 h2 => fracas_131 _ _ _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_132(roles: dict) -> "tuple[str, str, str]":
+    """"Each department has a dedicated line. The sales department
+    rents it from BT." -> "The sales department rents a line from BT."
+    The Skolem-function half of fracas_131's own pattern (premise 1 is
+    IDENTICAL, reused), now instantiated at a NAMED individual ("the
+    sales department") instead of the bound variable - confirmed by
+    reading the real theorem's own stated type directly (`(forall d,
+    department d -> hasLine d (lineOf d)) -> rentsFromBT salesDept
+    (lineOf salesDept) -> exists l, rentsFromBT salesDept l`). Returns
+    (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    restrictor = camel_name(_leaf_words(p1.args[0]))
+    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
+    skolem = noun_name + "Of"
+    has_name = "has"
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    sales_dept_name = camel_name(_leaf_words(p2.args[0]))
+    rel_name = camel_name(_leaf_words(p2.args[1]))
+
+    premise1_text = f"∀ d, {restrictor} d → {has_name} d ({skolem} d)"
+    premise2_text = f"{rel_name} {sales_dept_name} ({skolem} {sales_dept_name})"
+    conclusion = f"∃ l, {rel_name} {sales_dept_name} l"
+    arrow_chain = f"({premise1_text}) → {premise2_text} → {conclusion}"
+    binders = (
+        f"{{A : Type*}} ({restrictor} : A → Prop) ({skolem} : A → A) "
+        f"({sales_dept_name} : A) ({has_name} {rel_name} : A → A → Prop)"
+    )
+    proof = "fun h1 h2 => fracas_132 _ _ _ _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_133(roles: dict) -> "tuple[str, str, str]":
+    """"GFI owns several computers. ITEL maintains them." -> "ITEL
+    maintains all the computers that GFI owns." Confirmed by reading
+    the real theorem's own stated type directly (`(exists x, ownsGFI x)
+    -> (forall x, ownsGFI x -> maintainsITEL x) -> forall x, ownsGFI x
+    -> maintainsITEL x`) - e-type anaphora: "them" resolves to the
+    MAXIMAL set GFI owns, not just the "several" witnesses, so premise 2
+    becomes a universal bridging fact, built directly (pronoun "them"
+    contributes nothing to naming). The hypothesis's own GF tree (an
+    object-gap relative clause, "the computers that GFI owns") is never
+    translated independently: unlike fracas_123's own StrandRelSlash
+    case, which fuses the restrictor into ONE name, this real theorem
+    needs "owns"/"maintains" kept as two SEPARATE predicates sharing an
+    argument - the same restrictor-vs-two-predicates ambiguity
+    `_try_translate_possessive_presupposition`'s own comment already
+    flags for "has a N" sentences, just surfacing here for a relative
+    clause instead. Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    owns_name = camel_name(_leaf_words(p1.args[1]))
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    maintain_name = camel_name(_leaf_words(p2.args[1]))
+
+    premise1_text = f"∃ x, {owns_name} x"
+    premise2_text = f"∀ x, {owns_name} x → {maintain_name} x"
+    arrow_chain = f"({premise1_text}) → ({premise2_text}) → ({premise2_text})"
+    binders = f"{{A : Type*}} ({owns_name} {maintain_name} : A → Prop)"
+    proof = "fun h1 h2 => fracas_133 _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_138(roles: dict) -> "tuple[str, str, str]":
+    """"Every report has a cover page. R-95-103 is a report. Smith
+    signed the cover page." -> "Smith signed the cover page of
+    R-95-103." Confirmed by reading the real theorem's own stated type
+    directly (`report r95103 -> signed smith (coverPageOf r95103) ->
+    signed smith (coverPageOf r95103)`) - premise 1 is DROPPED entirely
+    (it only licenses treating "the cover page of X" as a total Skolem
+    function notationally, never appearing as an explicit hypothesis of
+    the real theorem at all - the reverse of AUX_HYPOTHESIS's own
+    pattern, which always ADDS a hypothesis, never removes one).
+    Premise 2 ("R-95-103 is a report") translates fine via translate_cl
+    directly and is reused as-is; premise 3 and the hypothesis both get
+    hand-built from the same coverPageOf Skolem function and r95103
+    individual, since the hypothesis's own independent translation
+    would otherwise bake r95103 directly into a fused predicate name
+    rather than applying a separate function to it as an argument.
+    Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
+    skolem = noun_name + "Of"
+    report_fact = translate_cl(parse_tree(roles["_premise2"]))
+    report_name = report_fact.free_predicates[0]
+    r_name = report_fact.free_individuals[0]
+    p3 = _unwrap_tense(parse_tree(roles["_premise3"]))
+    smith_name = camel_name(_leaf_words(p3.args[0]))
+    sign_name = camel_name(_leaf_words(p3.args[1].args[0]))
+
+    fact = f"{sign_name} {smith_name} ({skolem} {r_name})"
+    arrow_chain = f"{report_name} {r_name} → {fact} → {fact}"
+    binders = (
+        f"{{A : Type*}} ({report_name} : A → Prop) ({skolem} : A → A) "
+        f"({smith_name} {r_name} : A) ({sign_name} : A → A → Prop)"
+    )
+    proof = "fun h1 h2 => fracas_138 _ _ _ _ _ h1 h2"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_139(roles: dict) -> "tuple[str, str, str]":
+    """"A company director awarded himself a large payrise." ->
+    "A company director has awarded and been awarded a payrise."
+    Confirmed by reading the real theorem's own `:= id` proof directly
+    (`(exists d, awarded d d) -> exists d, awarded d d`) - "a company
+    director" is ERASED entirely (the real theorem existentially
+    quantifies over ANY individual, not specifically company directors
+    - a real semantic simplification, not a translation gap), and only
+    the reflexive "awarded... a large payrise" relation survives. The
+    verb's own GF lexical item (`award_V3`) uses a `_V3` suffix this
+    translator's `_LEXICAL_SUFFIXES` table doesn't recognize (the
+    ditransitive award_V3/ReflVP construction has never come up before
+    this problem), so "award" is prepended by hand rather than picked
+    up automatically - names don't need to match the real theorem's own
+    choice regardless. Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    obj_cn = p.args[1].args[0].args[1]
+    payrise_name = camel_name(_leaf_words(obj_cn))
+    verb_name = "award" + payrise_name[0].upper() + payrise_name[1:]
+
+    combined = f"∃ d, {verb_name} d d"
+    arrow_chain = f"({combined}) → {combined}"
+    binders = f"{{A : Type*}} ({verb_name} : A → A → Prop)"
+    proof = "fun h => fracas_139 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_140(roles: dict) -> "tuple[str, str, str]":
+    """"John said Bill had hurt himself." -> "John said Bill had been
+    hurt." Confirmed by reading the real theorem's own `:= id` proof
+    directly (`said john (hurt bill bill) -> said john (hurt bill
+    bill)`) - "said" takes a Prop as its own second argument (`A -> Prop
+    -> Prop`, an embedded-clause-as-argument shape no other id in this
+    generator needs), and "himself" resolves to Bill, giving the
+    reflexive `hurt bill bill`. Both `say_VS`'s own GF lexical item and
+    "said" itself use suffixes (`_VS`) this translator doesn't recognize
+    as lexical, so "said" is supplied by hand, same reason as
+    fracas_139's own `award_V3`. Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    john_name = camel_name(_leaf_words(p.args[0]))
+    embedded = p.args[1].args[1].args[2]
+    bill_name = camel_name(_leaf_words(embedded.args[0]))
+    hurt_name = camel_name(_leaf_words(embedded.args[1]))
+    said_name = "said"
+
+    hurt_fact = f"{hurt_name} {bill_name} {bill_name}"
+    combined = f"{said_name} {john_name} ({hurt_fact})"
+    arrow_chain = f"{combined} → {combined}"
+    binders = (
+        f"{{A : Type*}} ({john_name} {bill_name} : A) "
+        f"({said_name} : A → Prop → Prop) ({hurt_name} : A → A → Prop)"
+    )
+    proof = "fun h => fracas_140 _ _ _ _ h"
+    return binders, arrow_chain, proof
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
 # ternary named-individual relation, a nested bound existential, a
-# trivial-domain-wide "N out of M" restrictor) that doesn't recur
-# anywhere else in the corpus, so generalizing translate.py itself for
-# any of them would add real-general-translator complexity to serve
-# exactly one id - see each builder's own comment for the specific
-# real-theorem shape it was confirmed against. fracas_126 (same 124-126
-# "dependent-plural/cardinal anaphora" cluster) is NOT here: its own
-# real theorem needs an extra premise ("the other eight machines were
-# also here yesterday") with no corresponding FraCaS sentence at all -
-# confirmed by reading its stated type directly - the same "genuinely
-# unstated background premise" gap as id 5's `hNonempty`, not fixable
-# by any translation mechanism.
+# trivial-domain-wide "N out of M" restrictor, a plain-indefinite-object
+# Skolem function, a dropped licensing-only premise, reflexives, an
+# embedded-clause argument) that doesn't recur anywhere else in the
+# corpus, so generalizing translate.py itself for any of them would add
+# real-general-translator complexity to serve exactly one id - see each
+# builder's own comment for the specific real-theorem shape it was
+# confirmed against. fracas_126 (same 124-126 "dependent-plural/
+# cardinal anaphora" cluster) is NOT here: its own real theorem needs an
+# extra premise ("the other eight machines were also here yesterday")
+# with no corresponding FraCaS sentence at all - confirmed by reading
+# its stated type directly - the same "genuinely unstated background
+# premise" gap as id 5's `hNonempty`, not fixable by any translation
+# mechanism. fracas_127/134/135 (two-sorted domains, `{Person Machine}`/
+# `{A B}`) and fracas_137 (needs a `Fintype.card` premise plus a single
+# predicate bundling five separate FraCaS sentences) are structurally
+# blocked the same way - confirmed by reading their own stated types
+# directly, not attempted.
 CUSTOM_BUILD = {
     120: _build_fracas_120,
     121: _build_fracas_121,
     122: _build_fracas_122,
     124: _build_fracas_124,
+    128: _build_fracas_128,
+    129: _build_fracas_129,
+    131: _build_fracas_131,
+    132: _build_fracas_132,
+    133: _build_fracas_133,
+    138: _build_fracas_138,
+    139: _build_fracas_139,
+    140: _build_fracas_140,
 }
 
 
@@ -529,20 +785,33 @@ def main() -> None:
         "that `gf/translate.py` translates cleanly, where the real theorem's",
         "own top-level arrow count exactly matches (one arrow per premise,",
         "chaining into the hypothesis, plus a \"world-knowledge\" auxiliary",
-        "hypothesis for ids in `AUX_HYPOTHESIS`) - now extended into Section 3",
-        "as a pilot (ids 114-116 only - see `BUNDLE_PROJECT`): \"Mary used her",
-        "workstation\" translates to a three-way presupposition bundle",
-        "(`translate.py`'s `_try_translate_possessive_presupposition`),",
+        "hypothesis for ids in `AUX_HYPOTHESIS`) - now extended through all of",
+        "Section 3's 114-141 range: the possessive-presupposition bundle",
+        "(114-116, `BUNDLE_PROJECT`, `translate.py`'s",
+        "`_try_translate_possessive_presupposition`) - \"Mary used her",
+        "workstation\" translates to a three-way presupposition bundle,",
         "matching Batch1.lean's own comment that 114/115/116 are \"just",
         "projections out of the same bundle\" - each id's own generated",
         "hypothesis is that SAME bundle's matching conjunct, not an",
         "independent translation of its own (differently-shaped) hypothesis",
         "sentence, since that sentence read in isolation is genuinely",
         "ambiguous between this bundle's own specific reading and this",
-        "project's usual fused-unary-predicate one (see `BUNDLE_PROJECT`'s",
-        "own comment). Harder Section 3 constructions (Skolem functions,",
-        "cross-sentential variable sharing, cardinality anaphora) are not",
-        "attempted yet - see",
+        "project's usual fused-unary-predicate one; its Skolem-function-bound",
+        "variant (117-119, `SKOLEM_PROJECT`); a synthesized scope-entailment",
+        "premise (123, `SYNTHESIZE_PREMISE`); and twelve fully hand-built",
+        "cross-sentential-anaphora theorems bypassing `translate_cl` entirely",
+        "(120-122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - a shared bound",
+        "existential, a ternary named-individual relation, trivial-literal",
+        "restrictors, Skolemized dependent-plural/paycheque pronouns, a",
+        "dropped licensing-only premise, and reflexive/embedded-clause",
+        "arguments). Not every Section 3 id is covered: 125/130/136/141 are",
+        "countermodel-only (no bare theorem to cross-check at all); 126 needs",
+        "a genuinely unstated extra premise (\"the other eight machines were",
+        "also here yesterday\", no corresponding FraCaS sentence); and",
+        "127/134/135 (two-sorted `{Person Machine}`/`{A B}` domains - this",
+        "generator hardcodes a single domain `{A : Type*}` throughout) and 137",
+        "(needs a `Fintype.card` premise plus one predicate bundling five",
+        "separate FraCaS sentences) are structurally blocked - see",
         "`scripts/gen_gf_cross_check.py` for exactly how, including the",
         "non-obvious exclusions it found and documents rather than silently",
         "omitting: problems 31 and 46 each need an aux hypothesis (like",
@@ -584,15 +853,18 @@ def main() -> None:
     ]
 
     for idn in sorted(by_id):
-        # Section 3 scoped to 114-126 so far: the possessive-
+        # Section 3 scoped to 114-141 so far: the possessive-
         # presupposition bundle (114-116), its Skolem-function-bound
         # variant (117-119), a synthesized scope-entailment premise
-        # (123), and four fully hand-built cross-sentential-anaphora
-        # theorems (120-122/124, via CUSTOM_BUILD; 125 is countermodel-
-        # only, already excluded automatically; 126 needs a genuinely
-        # unstated extra premise, see CUSTOM_BUILD's own comment) -
-        # raise this bound again when extending past 126.
-        if idn > 126:
+        # (123), and twelve fully hand-built cross-sentential-anaphora
+        # theorems (120-122/124/128/129/131-133/138-140, via
+        # CUSTOM_BUILD; 125/130/136/141 are countermodel-only, already
+        # excluded automatically; 126 needs a genuinely unstated extra
+        # premise, and 127/134/135 (two-sorted domains) and 137 (needs a
+        # Fintype.card premise plus a five-sentence predicate bundle) are
+        # structurally blocked, see CUSTOM_BUILD's own comment) - raise
+        # this bound again when extending past 141.
+        if idn > 141:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)
