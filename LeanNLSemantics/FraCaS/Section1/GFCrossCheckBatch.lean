@@ -9,6 +9,10 @@ import LeanNLSemantics.FraCaS.Section2.Batch1
 import LeanNLSemantics.FraCaS.Section2.Batch2
 import LeanNLSemantics.FraCaS.Section3.Batch1
 import LeanNLSemantics.FraCaS.Section3.Batch2
+import LeanNLSemantics.FraCaS.Section4.Batch1
+import LeanNLSemantics.FraCaS.Section4.Batch2
+import LeanNLSemantics.FraCaS.Section4.Batch3
+import LeanNLSemantics.FraCaS.Section4.Batch4
 
 /-!
 # GF cross-check, batch 2
@@ -96,7 +100,7 @@ both) - a real semantic modeling choice a literal, compositional
 translator correctly does not reproduce on its own.
 -/
 
-open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3
+open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4
 
 -- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per
 -- predicate/conjunction they apply to - a real theorem's own
