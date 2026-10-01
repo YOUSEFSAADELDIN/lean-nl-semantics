@@ -250,6 +250,7 @@ _DIGIT_BY_CONST = {f"n{i}": i for i in range(2, 10)}
 _APPROX_BY_ADN = {
     "at_least_AdN": "AtLeast",
     "at_most_AdN": "AtMost",
+    "exactly_AdN": "Exactly",
 }
 
 
@@ -297,8 +298,9 @@ def _decode_numeral(t) -> int:
 
 def _decode_card(card):
     """Returns (count, approx) for a `Card` tree - `approx` is
-    'AtLeast'/'AtMost' when the Card is `AdNum`-wrapped ("at least
-    three"/"at most two"), or None for a bare exact count ("one")."""
+    'AtLeast'/'AtMost'/'Exactly' when the Card is `AdNum`-wrapped ("at
+    least three"/"at most two"/"exactly two"), or None for a bare count
+    with no AdNum wrapper at all ("one")."""
     if card.head == "NumNumeral" and len(card.args) == 1:
         return _decode_numeral(card.args[0]), None
     if card.head == "AdNum" and len(card.args) == 2:
@@ -326,6 +328,14 @@ def _resolve_quantifier(det) -> str:
             count, approx = _decode_card(num.args[0])
             if approx is not None:
                 return f"{approx} {count}"
+            # A bare counted numeral with no AdNum wrapper at all ("six
+            # lawyers", not "at least"/"at most"/"exactly six") is this
+            # project's own "Exactly" reading, not "Some" - confirmed by
+            # fracas_085/086's own real theorems (`Exactly 6 lawyer
+            # signed`/`Exactly 6 accountant signed`, for the gold
+            # hypotheses "Six lawyers/accountants signed the contract"),
+            # not guessed from the English alone.
+            return f"Exactly {count}"
         if quant.head in _QUANTIFIER_BY_QUANT:
             return _QUANTIFIER_BY_QUANT[quant.head]
         raise NotImplementedError(
@@ -483,6 +493,15 @@ class Translation:
     lean_prop: str
     free_predicates: list  # list[str], in the order first referenced
     free_individuals: list = field(default_factory=list)
+    # Set only by `_try_translate_conjnp_subject`: the two conjuncts'
+    # own separate Translations ("exactly two lawyers signed"/"three
+    # accountants signed", for "exactly two lawyers and three
+    # accountants signed"), each with its OWN narrower free_predicates -
+    # a caller that needs to apply a theorem taking only ONE conjunct as
+    # its premise (see scripts/gen_gf_cross_check.py's PROJECT_CONJUNCT)
+    # has to use a conjunct's own predicates, not this Translation's
+    # merged (wider) ones.
+    conjuncts: "list | None" = None
 
 
 def _try_translate_partitive_identity(subject, vp):
@@ -571,6 +590,50 @@ def _try_translate_named_individual_fact(subject, vp):
     )
 
 
+def _try_translate_conjnp_subject(subject, vp):
+    """Handles a subject that's a conjunction of two INDEPENDENTLY
+    quantified NPs - `ConjNP and_Conj (BaseNP np1 np2)`, "exactly two
+    lawyers and three accountants signed the contract" (fracas_085/086)
+    - as opposed to `_restrictor_expr`'s own `ConjCN` case (two bare CNs
+    sharing ONE determiner, "every representative and client"). Each
+    conjunct keeps its own determiner, so this isn't a single restrictor
+    at all: it's the distributive reading "np1 VP and np2 VP", gotten by
+    recursively translating each conjunct as its own full `PredVP np_i
+    vp` sentence (reusing every existing subject/VP rule with no
+    duplication) and `∧`-joining the results - the same "conjunction of
+    two independent facts, not one fused predicate" principle as
+    `CONJUNCT_IDS` in scripts/gen_gf_cross_check.py, just discovered
+    from the GF tree shape directly instead of hard-coded per id. Only
+    the two-conjunct case is handled (ConjCN's own restriction, for the
+    same reason: no FraCaS problem so far needs a longer list). Returns
+    None when the shape doesn't match."""
+    if (
+        subject.head != "ConjNP"
+        or len(subject.args) != 2
+        or subject.args[0].head != "and_Conj"
+        or subject.args[1].head != "BaseNP"
+        or len(subject.args[1].args) != 2
+    ):
+        return None
+    np1, np2 = subject.args[1].args
+    t1 = translate_cl(App("PredVP", [np1, vp]))
+    t2 = translate_cl(App("PredVP", [np2, vp]))
+    preds: list[str] = []
+    for p in [*t1.free_predicates, *t2.free_predicates]:
+        if p not in preds:
+            preds.append(p)
+    individuals: list[str] = []
+    for v in [*t1.free_individuals, *t2.free_individuals]:
+        if v not in individuals:
+            individuals.append(v)
+    return Translation(
+        lean_prop=f"({t1.lean_prop} ∧ {t2.lean_prop})",
+        free_predicates=preds,
+        free_individuals=individuals,
+        conjuncts=[t1, t2],
+    )
+
+
 def translate_cl(t) -> Translation:
     if t.head != "PredVP" or len(t.args) != 2:
         raise NotImplementedError(
@@ -585,6 +648,10 @@ def translate_cl(t) -> Translation:
     named_fact = _try_translate_named_individual_fact(subject, vp)
     if named_fact is not None:
         return named_fact
+
+    conj_subject = _try_translate_conjnp_subject(subject, vp)
+    if conj_subject is not None:
+        return conj_subject
 
     quant, cn = _resolve_subject(subject)
 

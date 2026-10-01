@@ -20,20 +20,21 @@ chaining into the hypothesis, plus a "world-knowledge" auxiliary
 hypothesis for ids in `AUX_HYPOTHESIS`) - see
 `scripts/gen_gf_cross_check.py` for exactly how, including the
 non-obvious exclusions it found and documents rather than silently
-omitting: problem 31 needs an aux hypothesis like 17/23-25/29 but is
-excluded because its premise and hypothesis trees collide on the same
+omitting: problems 31 and 46 each need an aux hypothesis (like
+17/23-25/29, or 38/70's reverse-direction variant) but are excluded
+because their own premise and hypothesis trees collide on the same
 generated predicate name (`translate.py` doesn't read determiners
-like "a lot of" when naming a VP's object); problem 5 needs an extra
-*nonempty-restrictor* premise (`hNonempty : ∃ x, ambitious x`) in a
-binder position this script's arrow-chain model doesn't cover;
-problems 38/70 are `.no`-answer problems that also need an aux
-hypothesis, where deriving it safely needs more care than this round
-attempted; problem 69's hand proof uses the SAME bound variable for
-premise 1's own scope and the hypothesis's predicate, even though
-their surface text differs ("can travel freely" vs "have the right
-to live") and translate_cl correctly gives them different names -
-bridging that needs a composed proof, not just an extra hypothesis;
-problems 44/46/81/82/85/86/92 hit real, pre-existing
+like "a lot of" when naming a VP's object - "spends time at home"
+and "spends a lot of time at home" both fuse to `spendTimeHome`,
+where the real theorems need two DISTINCT predicates); problem 5
+needs an extra *nonempty-restrictor* premise (`hNonempty : ∃ x,
+ambitious x`) in a binder position this script's arrow-chain model
+doesn't cover; problem 69's hand proof uses the SAME bound variable
+for premise 1's own scope and the hypothesis's predicate, even
+though their surface text differs ("can travel freely" vs "have
+the right to live") and translate_cl correctly gives them different
+names - bridging that needs a composed proof, not just an extra
+hypothesis; problems 44/81/82/85/86/92 hit real, pre-existing
 `gf/translate.py` gaps (`few_Det`, `CountNP` partitives, conjoined
 subjects, bare-cardinal determiners, `everyone_NP`) rather than
 anything this script can paper over; and problems 101/102 (Section
@@ -151,6 +152,10 @@ theorem fracas_029_from_gf {A : Type*} (commissioner leadingBusinessman business
     Every commissioner leadingBusinessman → (∀ x, leadingBusinessman x → businessman x) → Every commissioner businessman :=
   fun h1 h2 => fracas_029 _ _ _ h1 h2
 
+theorem fracas_038_from_gf {A : Type*} (delegate finishReport finishReportTime : A → Prop) :
+    No delegate finishReport → (∀ x, finishReportTime x → finishReport x) → ¬ (Some delegate finishReportTime) :=
+  fun h1 h2 => fracas_038 _ _ _ h1 h2
+
 theorem fracas_049_from_gf {A : Type*} (swedeMasc winNobelPrize scandinavian : A → Prop) :
     Some swedeMasc winNobelPrize → Every swedeMasc scandinavian → Some scandinavian winNobelPrize :=
   fun h1 h2 => fracas_049 _ _ _ h1 h2
@@ -170,6 +175,18 @@ theorem fracas_059_from_gf {A : Type*} (femaleCommitteeMember scandinavia commit
 theorem fracas_063_from_gf {A : Type*} [Fintype A] (femaleCommissioner spendTimeHome commissioner : A → Prop) :
     AtLeast 3 femaleCommissioner spendTimeHome → Every femaleCommissioner commissioner → AtLeast 3 commissioner spendTimeHome :=
   fun h1 h2 => fracas_063 _ _ _ h1 h2
+
+theorem fracas_070_from_gf {A : Type*} (delegate finishReportTime scandinavianDelegate : A → Prop) :
+    No delegate finishReportTime → Every scandinavianDelegate delegate → ¬ (Some scandinavianDelegate finishReportTime) :=
+  fun h1 h2 => fracas_070 _ _ _ h1 h2
+
+theorem fracas_085_from_gf {A : Type*} [Fintype A] (lawyer signContract accountant : A → Prop) :
+    (Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract) → ¬ (Exactly 6 lawyer signContract) :=
+  fun h1 => fracas_085 _ _ h1.1
+
+theorem fracas_086_from_gf {A : Type*} [Fintype A] (lawyer signContract accountant : A → Prop) :
+    (Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract) → ¬ (Exactly 6 accountant signContract) :=
+  fun h1 => fracas_086 _ _ h1.2
 
 theorem fracas_089_from_gf {A : Type*} (representativeMasc client meeting : A → Prop) :
     Every (fun x => representativeMasc x ∨ client x) meeting → Every representativeMasc meeting ∧ Every client meeting :=

@@ -954,6 +954,18 @@ BASE_CHECKS += [
         "six accountants sign the contract",
     ),
     (
+        # fracas_086's own gold premise text is identical to fracas_085's
+        # ("Exactly two lawyers and three accountants signed the
+        # contract.") - reusing 085's own already-confirmed tree rather
+        # than re-linearizing the same sentence under a new label.
+        "fracas_086_premise",
+        "linearize PredVP (ConjNP and_Conj (BaseNP "
+        "(DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n2))))))))) (UseN lawyer_N)) "
+        "(DetCN (DetQuant IndefArt (NumCard (AdNum exactly_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 (pot0 n3))))))))) (UseN accountant_N)))) "
+        "(ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))",
+        "exactly two lawyers and exactly three accountants sign the contract",
+    ),
+    (
         "fracas_088_premise",
         "linearize PredVP (DetCN every_Det (ConjCN and_Conj (BaseCN (UseN representativeMasc_N) (UseN client_N)))) "
         "(UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))",
@@ -3223,6 +3235,33 @@ BASE_CHECKS += [
         "(UseComp (CompNP (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
         "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N)))))))",
         "all residents of major Western countries are residents of Western countries",
+    ),
+    (
+        "fracas_038_premise",
+        "linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+        "(ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N)))",
+        "no delegate finishes the report",
+    ),
+    (
+        "fracas_038_hypothesis",
+        "linearize PredVP (DetCN someSg_Det (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some delegate finishes the report on time",
+    ),
+    (
+        "fracas_070_premise",
+        "linearize PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "no delegate finishes the report on time",
+    ),
+    (
+        "fracas_070_hypothesis",
+        "linearize PredVP (DetCN someSg_Det (AdjCN (PositA scandinavian_A) (UseN delegate_N))) "
+        "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
+        "(PrepNP on_Prep (MassNP (UseN time_N))))",
+        "some Scandinavian delegate finishes the report on time",
     ),
 ]
 

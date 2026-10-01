@@ -80,8 +80,44 @@ def _restrict_aux(ps, h) -> str:
     return f"Every {ps[-1].free_predicates[0]} {h.free_predicates[0]}"
 
 
+def _scope_aux_rev(ps, h) -> str:
+    """`(forall x, <hypothesis's own scope> x -> <premise's own scope> x)`
+    - `_scope_aux` with the two scopes in the OPPOSITE order, for a `.no`
+    theorem proved by `no_iff_not_some` + `some_mono_scope` (e.g.
+    fracas_038: `No delegate finish -> (forall x, onTime x -> finish x)
+    -> not Some delegate onTime`) - here the premise is the NEGATIVE
+    ("No ... finish") and the aux fact has to entail the premise's own
+    scope FROM the hypothesis's own (stronger) scope, the reverse
+    direction of the positive `..._mono_scope` theorems `_scope_aux`
+    covers (where the premise is positive and entails the hypothesis).
+    Predicate NAMES never have to match the real theorem's own choice
+    of variable names for this to typecheck (Lean unifies by position,
+    not by spelling) - only this SHARING PATTERN does: whichever
+    predicate the real theorem's own aux fact and premise share, or aux
+    fact and hypothesis share, has to be the same single translate_cl
+    predicate on this side too, confirmed by reading the real theorem's
+    stated type directly, not assumed from premise/hypothesis English
+    alone (this is exactly what tripped up fracas_069, excluded
+    elsewhere in this file: there the real theorem shares ONE variable
+    across premise and conclusion with no aux bridging it at all, a
+    strictly different, incompatible shape from this one)."""
+    return f"(∀ x, {h.free_predicates[-1]} x → {ps[-1].free_predicates[-1]} x)"
+
+
+def _restrict_aux_rev(ps, h) -> str:
+    """`Every <hypothesis's own restrictor> <premise's own restrictor>`
+    - `_restrict_aux` with the two restrictors in the OPPOSITE order,
+    for a `.no` theorem proved by `no_iff_not_some` + `some_restrict`
+    where the PREMISE carries the wide restrictor and the hypothesis
+    the narrow one (e.g. fracas_070: `No delegate finishOnTime -> Every
+    scandinavianDelegate delegate -> not Some scandinavianDelegate
+    finishOnTime`) - the reverse of `_restrict_aux`'s own cases (55/57/
+    59/63), where the premise always carries the NARROW restrictor."""
+    return f"Every {h.free_predicates[0]} {ps[-1].free_predicates[0]}"
+
+
 # Ids needing exactly one extra hypothesis beyond their real FraCaS
-# premises, and which of the two shapes above it takes - both read off
+# premises, and which of the four shapes above it takes - all read off
 # each id's own real theorem source directly (see AssumptionAudit-style
 # discipline throughout this project: confirmed, not assumed). Inserted
 # right before the hypothesis in the arrow chain for every one of these -
@@ -90,7 +126,29 @@ def _restrict_aux(ps, h) -> str:
 AUX_HYPOTHESIS = {
     17: _scope_aux, 23: _scope_aux, 24: _scope_aux, 25: _scope_aux, 29: _scope_aux,
     55: _restrict_aux, 57: _restrict_aux, 59: _restrict_aux, 63: _restrict_aux,
+    38: _scope_aux_rev,
+    70: _restrict_aux_rev,
 }
+
+# Ids whose own single FraCaS premise translates to a CONJUNCTION (via
+# `translate.py`'s `_try_translate_conjnp_subject`, "exactly two lawyers
+# and three accountants signed" read distributively) but whose real
+# theorem only needs ONE conjunct as its premise - 85 the first
+# (lawyer) conjunct, 86 the second (accountant), confirmed by reading
+# each real theorem's own stated type directly. Maps an id to (which
+# premise position needs projecting, 1-based matching hN; which
+# conjunct, 0-based matching `Translation.conjuncts`). The generated
+# theorem's own STATED type keeps the full, faithful conjunction as
+# that premise's type (only the proof term projects) - and, just as
+# importantly, the real theorem's own predicate/individual ARITY is
+# narrower than the full conjunction's (e.g. fracas_085 never mentions
+# "accountant" in its stated type at all, so Lean's `variable` auto-
+# inclusion never adds it as a parameter - confirmed by reading
+# Batch1.lean's own `variable` scoping directly, not assumed from the
+# conjunction's own merged predicate list), so the underscore count for
+# THIS premise position is computed from the projected conjunct's own
+# narrower `free_predicates`/`free_individuals`, not the merged ones.
+PROJECT_CONJUNCT = {85: (1, 0), 86: (1, 1)}
 
 
 def load_base_checks():
@@ -146,15 +204,18 @@ def real_theorem_arrow_count(idn: int) -> "int | None":
     proofs (`AUX_HYPOTHESIS`'s own keys: 17/23/24/25/29 via
     `some_mono_scope`/`every_mono_scope`-style scope facts, 55/57/59/63
     via `some_restrict`/`every_restrict`/`atLeast_restrict`-style
-    restrictor facts) take an EXTRA hypothesis beyond one per FraCaS
-    premise - a "world-knowledge" fact that isn't itself sourced from any
-    distinct FraCaS premise sentence at all, so `len(premises)` (this
-    script's default) undercounts them; `31` needs one too but is
-    excluded separately (see `AUX_HYPOTHESIS`'s own comment) since its
-    two trees collide on the same generated name. Only a real match here
-    (not just a plausible-looking premise count) makes a problem
-    eligible - confirmed by reading the actual Lean source, not assumed
-    from Problems.lean's own premise list length. """
+    restrictor facts, 38/70 via the same two lemma families but with
+    the premise/hypothesis roles reversed - a `.no` answer proved by
+    `no_iff_not_some` composed with `some_mono_scope`/`some_restrict`)
+    take an EXTRA hypothesis beyond one per FraCaS premise - a
+    "world-knowledge" fact that isn't itself sourced from any distinct
+    FraCaS premise sentence at all, so `len(premises)` (this script's
+    default) undercounts them; `31` and `46` need one too but are
+    excluded separately (see `AUX_HYPOTHESIS`'s own comment) since each
+    one's own two trees collide on the same generated name. Only a real
+    match here (not just a plausible-looking premise count) makes a
+    problem eligible - confirmed by reading the actual Lean source, not
+    assumed from Problems.lean's own premise list length. """
     for section in ("Section1", "Section2"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             text = path.read_text()
@@ -226,20 +287,21 @@ def main() -> None:
         "hypothesis for ids in `AUX_HYPOTHESIS`) - see",
         "`scripts/gen_gf_cross_check.py` for exactly how, including the",
         "non-obvious exclusions it found and documents rather than silently",
-        "omitting: problem 31 needs an aux hypothesis like 17/23-25/29 but is",
-        "excluded because its premise and hypothesis trees collide on the same",
+        "omitting: problems 31 and 46 each need an aux hypothesis (like",
+        "17/23-25/29, or 38/70's reverse-direction variant) but are excluded",
+        "because their own premise and hypothesis trees collide on the same",
         "generated predicate name (`translate.py` doesn't read determiners",
-        "like \"a lot of\" when naming a VP's object); problem 5 needs an extra",
-        "*nonempty-restrictor* premise (`hNonempty : ∃ x, ambitious x`) in a",
-        "binder position this script's arrow-chain model doesn't cover;",
-        "problems 38/70 are `.no`-answer problems that also need an aux",
-        "hypothesis, where deriving it safely needs more care than this round",
-        "attempted; problem 69's hand proof uses the SAME bound variable for",
-        "premise 1's own scope and the hypothesis's predicate, even though",
-        "their surface text differs (\"can travel freely\" vs \"have the right",
-        "to live\") and translate_cl correctly gives them different names -",
-        "bridging that needs a composed proof, not just an extra hypothesis;",
-        "problems 44/46/81/82/85/86/92 hit real, pre-existing",
+        "like \"a lot of\" when naming a VP's object - \"spends time at home\"",
+        "and \"spends a lot of time at home\" both fuse to `spendTimeHome`,",
+        "where the real theorems need two DISTINCT predicates); problem 5",
+        "needs an extra *nonempty-restrictor* premise (`hNonempty : ∃ x,",
+        "ambitious x`) in a binder position this script's arrow-chain model",
+        "doesn't cover; problem 69's hand proof uses the SAME bound variable",
+        "for premise 1's own scope and the hypothesis's predicate, even",
+        "though their surface text differs (\"can travel freely\" vs \"have",
+        "the right to live\") and translate_cl correctly gives them different",
+        "names - bridging that needs a composed proof, not just an extra",
+        "hypothesis; problems 44/81/82/85/86/92 hit real, pre-existing",
         "`gf/translate.py` gaps (`few_Det`, `CountNP` partitives, conjoined",
         "subjects, bare-cardinal determiners, `everyone_NP`) rather than",
         "anything this script can paper over; and problems 101/102 (Section",
@@ -416,6 +478,16 @@ def main() -> None:
                 if v not in individuals:
                     individuals.append(v)
 
+        if idn in PROJECT_CONJUNCT:
+            proj_i, conjunct_idx = PROJECT_CONJUNCT[idn]
+            proj_premise = translated_premises[proj_i - 1]
+            if not proj_premise.conjuncts or conjunct_idx >= len(proj_premise.conjuncts):
+                skipped[idn] = (
+                    f"PROJECT_CONJUNCT names premise {proj_i} conjunct {conjunct_idx}, "
+                    "but its own translation has no such conjunct - tree or mapping is stale"
+                )
+                continue
+
         chain_parts = [p.lean_prop for p in translated_premises]
         if idn in AUX_HYPOTHESIS:
             chain_parts.append(AUX_HYPOTHESIS[idn](translated_premises, translated_hyp))
@@ -459,8 +531,47 @@ def main() -> None:
         # hypotheses through the same application instead of applying
         # them after.
         hyp_names = [f"h{i}" for i in range(1, expected_arrows + 1)]
-        underscores = " ".join(["_"] * (len(preds) + len(individuals)))
-        proof_args = " ".join(filter(None, [underscores, " ".join(hyp_names)]))
+
+        # A handful of ids (85/86) translate their own single FraCaS
+        # premise to a CONJUNCTION (`_try_translate_conjnp_subject`'s own
+        # "np1 VP and np2 VP" reading of a conjoined, independently-
+        # quantified subject), faithfully restating the real English -
+        # but the real theorem itself only needs ONE conjunct as its own
+        # premise (confirmed by reading its stated type directly, e.g.
+        # fracas_085's own `Exactly 2 lawyer signed -> ...`, not the
+        # conjunction), with a correspondingly NARROWER predicate/
+        # individual arity than the full conjunction's own merged
+        # `preds`/`individuals` (see PROJECT_CONJUNCT's own comment) -
+        # so the underscore count for the real theorem's own application
+        # is computed from that narrower set for these ids, not `preds`.
+        if idn in PROJECT_CONJUNCT:
+            proj_i, conjunct_idx = PROJECT_CONJUNCT[idn]
+            real_preds: list[str] = []
+            real_individuals: list[str] = []
+            for i, t in enumerate(translated_premises, start=1):
+                source = t.conjuncts[conjunct_idx] if i == proj_i else t
+                for p in source.free_predicates:
+                    if p not in real_preds:
+                        real_preds.append(p)
+                for v in source.free_individuals:
+                    if v not in real_individuals:
+                        real_individuals.append(v)
+            for p in translated_hyp.free_predicates:
+                if p not in real_preds:
+                    real_preds.append(p)
+            for v in translated_hyp.free_individuals:
+                if v not in real_individuals:
+                    real_individuals.append(v)
+        else:
+            real_preds, real_individuals = preds, individuals
+
+        underscores = " ".join(["_"] * (len(real_preds) + len(real_individuals)))
+        proof_hyp_args = list(hyp_names)
+        if idn in PROJECT_CONJUNCT:
+            proj_i, conjunct_idx = PROJECT_CONJUNCT[idn]
+            suffix = ".1" if conjunct_idx == 0 else ".2"
+            proof_hyp_args[proj_i - 1] += suffix
+        proof_args = " ".join(filter(None, [underscores, " ".join(proof_hyp_args)]))
 
         lines.append(f"theorem fracas_{idn:03d}_from_gf {binders} :")
         lines.append(f"    {arrow_chain} :=")
