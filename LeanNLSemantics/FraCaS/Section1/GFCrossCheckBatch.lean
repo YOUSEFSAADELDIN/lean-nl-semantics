@@ -17,6 +17,8 @@ import LeanNLSemantics.FraCaS.Section5.Batch1
 import LeanNLSemantics.FraCaS.Section5.Batch2
 import LeanNLSemantics.FraCaS.Section6.Batch1
 import LeanNLSemantics.FraCaS.Section6.Batch2
+import LeanNLSemantics.FraCaS.Section7.Batch1
+import LeanNLSemantics.FraCaS.Section7.Batch2
 
 /-!
 # GF cross-check, batch 2
@@ -113,7 +115,41 @@ quantifier construction, which has NO combinator in this grammar
 at all - a real, pre-existing gap (the same class as problems
 44/81/82/92), confirmed via run_gf_tests.py's own comment, not
 just unattempted. 221/222/225/226/228/231/234/240/247 are
-countermodel-only, already excluded automatically.
+countermodel-only, already excluded automatically. Section 7
+(temporal reference, 251-325) is piloted this round on its own
+251-270 range only (the rest left for a future round): 251 is a
+trivial present-tense-persistence restatement; 252/255/257 are
+continuous "since" readings over a genuine state, formalized as a
+universal closure over the named interval ("it is now 1996" has
+no GF tree of its own, read directly off Problems.lean's own
+English as a literal, the same move as 242's hardcoded literals);
+257 reuses 255's own trees verbatim (Batch1.lean's own comment:
+"formally identical with preceding"); 258 bounds prior non-
+existence by a founding date, chaining in an assumed universal
+bounding fact (the same "world-knowledge" move as Section 5's
+204/205/208/209/212 and Section 6's 220/223/224/227/229) around
+two literal years read off its own real premise/hypothesis trees.
+261/262/264/265/267/270 are before/after chains, continuing 242's
+own literal-`Nat`-arithmetic shape rather than `{A : Type*}`
+predicates: 261/262 chain two real, independent premises (not a
+synthesized fact - `fracas_261_premise2`/`fracas_262_premise2`
+were missing from run_gf_tests.py and added this round); 264/265/
+267/270 each ignore FraCaS's own bare "X left"/"Y left"
+existence-assertion premises as distractors, using only the real
+theorem's own actual before/after comparison premise, whose
+conclusion is mechanically its converse. Confirming the `AdvS`/
+`SubjS` main-versus-embedded-clause convention this whole cluster
+depends on took a direct local GF-toolchain linearize cross-check
+(not just an assumption) - which caught a real transcription slip
+already present in run_gf_tests.py's own `fracas_270_premise3`
+(and the never-load-bearing `fracas_269_premise3`), both fixed
+this round. Not yet attempted: 253/254 (a non-stative predicate
+coerced into "since", countermodel-only, excluded automatically
+like the rest of this paragraph's unlisted ids); 259/260 (date/
+duration arithmetic needing fresh premise trees); 266/268 (same
+before/after-chain shape as 264/265/267/270 but with main and
+embedded roles swapped relative to this round's already-
+registered trees, left unattempted rather than guessed).
 `scripts/gen_gf_cross_check.py` documents the non-obvious
 exclusions it found rather than silently omitting them, including
 earlier rounds': problems 31 and 46 each need an aux hypothesis (like
@@ -140,7 +176,7 @@ both) - a real semantic modeling choice a literal, compositional
 translator correctly does not reproduce on its own.
 -/
 
-open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6
+open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7
 
 -- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per
 -- predicate/conjunction they apply to - a real theorem's own
@@ -571,3 +607,47 @@ theorem fracas_249_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 ite
 theorem fracas_250_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A) :
     fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY → fastThan pc6082 itelZX :=
   fun h => fracas_250 _ _ _ _ h
+
+theorem fracas_251_from_gf (itelHaveFactoryBirmingham : Prop) :
+    itelHaveFactoryBirmingham → itelHaveFactoryBirmingham :=
+  fun h => fracas_251 _ h
+
+theorem fracas_252_from_gf (itelBirmingham : Nat → Prop) :
+    (∀ y, 1992 ≤ y → y ≤ 1996 → itelBirmingham y) → itelBirmingham 1993 :=
+  fun h => fracas_252 _ h
+
+theorem fracas_255_from_gf (itelMakeLoss : Nat → Prop) :
+    (∀ y, 1992 ≤ y → y ≤ 1996 → itelMakeLoss y) → itelMakeLoss 1993 :=
+  fun h => fracas_255 _ h
+
+theorem fracas_257_from_gf (itelMakeLoss : Nat → Prop) :
+    (∀ y, 1992 ≤ y → y ≤ 1996 → itelMakeLoss y) → itelMakeLoss 1993 :=
+  fun h => fracas_257 _ h
+
+theorem fracas_258_from_gf (exist : Nat → Prop) (foundedYear : Nat) :
+    (∀ y, exist y → foundedYear ≤ y) → foundedYear = 1993 → ¬ exist 1992 :=
+  fun h heq hex => fracas_258 _ _ h heq hex
+
+theorem fracas_261_from_gf (tSmith tJones tAnderson : Nat) :
+    tSmith < tJones → tJones < tAnderson → tSmith < tAnderson :=
+  by omega
+
+theorem fracas_262_from_gf (tSmith tJones tAnderson : Nat) :
+    tSmith > tJones → tJones > tAnderson → tSmith > tAnderson :=
+  by omega
+
+theorem fracas_264_from_gf (tSmith tJones : Nat) :
+    tSmith < tJones → tJones > tSmith :=
+  by omega
+
+theorem fracas_265_from_gf (tSmith tJones : Nat) :
+    tSmith > tJones → tJones < tSmith :=
+  by omega
+
+theorem fracas_267_from_gf (tJones tSmith : Nat) :
+    tJones < tSmith → tSmith > tJones :=
+  by omega
+
+theorem fracas_270_from_gf (tSmith tJones : Nat) :
+    tSmith < tJones → tJones > tSmith :=
+  by omega

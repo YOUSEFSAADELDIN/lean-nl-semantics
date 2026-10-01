@@ -1896,6 +1896,242 @@ def _build_fracas_250(roles: dict) -> "tuple[str, str, str]":
     return _conj_fact(roles, 250)
 
 
+def _year_from_adv(head: str) -> int:
+    m = re.search(r"(\d+)", head)
+    return int(m.group(1))
+
+
+def _since_interval(p, hyp, end_year: int) -> "tuple[str, str]":
+    """Shared by 252/255/257: "X has V-ed since START" + "it is now
+    END" -> "X V-ed in TARGET" is a continuous-state entailment over the
+    interval [START, END] - the premise's own universal closure gives
+    TARGET (any year in range) directly. Returns (binders, arrow_chain)."""
+    subj = camel_name(_leaf_words(p.args[0]))
+    inner = p.args[1]
+    comp = inner.args[0]
+    loc_name = camel_name(_leaf_words(comp))
+    start_year = _year_from_adv(inner.args[1].head)
+    pred_name = subj + loc_name[0].upper() + loc_name[1:]
+    hyp_inner = hyp.args[1]
+    target_year = _year_from_adv(hyp_inner.args[1].head)
+    arrow_chain = (
+        f"(∀ y, {start_year} ≤ y → y ≤ {end_year} → {pred_name} y) → "
+        f"{pred_name} {target_year}"
+    )
+    binders = f"({pred_name} : Nat → Prop)"
+    return binders, arrow_chain
+
+
+def _build_fracas_251(roles: dict) -> "tuple[str, str, str]":
+    """"ITEL has a factory in Birmingham." -> "ITEL has a factory in
+    Birmingham." Confirmed by reading the real theorem's own stated type
+    directly (`hasFactory -> hasFactory`, proved by `id`) - present-tense
+    persistence, a trivial bare-`Prop` restatement (`_atomic_name`, same
+    move as Section 4's ellipsis atoms). Returns (binders, arrow_chain,
+    proof)."""
+    n = _atomic_name(roles["_premise"])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_251 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_252(roles: dict) -> "tuple[str, str, str]":
+    """"ITEL has been in Birmingham since 1992." + "It is now 1996." ->
+    "ITEL was in Birmingham in 1993." Confirmed by reading the real
+    theorem's own stated type directly (`(forall y, 1992 <= y -> y <= 1996
+    -> inBirmingham y) -> inBirmingham 1993`) - continuous "since" for a
+    genuine state (`_since_interval`); "it is now 1996" has no GF tree of
+    its own (sourced directly from Problems.lean's own English, not
+    fabricated) so END is a literal here, same as Section 6's precedent
+    for hardcoded literals read off the real theorem. Returns (binders,
+    arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise1"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    binders, arrow_chain = _since_interval(p, hyp, 1996)
+    proof = "fun h => fracas_252 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_255(roles: dict) -> "tuple[str, str, str]":
+    """"ITEL has made a loss since 1992." + "It is now 1996." -> "ITEL
+    made a loss in 1993." Confirmed by reading the real theorem's own
+    stated type directly - identical shape to 252's own (`_since_interval`
+    again). Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    binders, arrow_chain = _since_interval(p, hyp, 1996)
+    proof = "fun h => fracas_255 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_257(roles: dict) -> "tuple[str, str, str]":
+    """Reuses 255's own premise/hypothesis trees directly - Batch1.lean's
+    own comment on 257 ("formally identical with preceding") confirms
+    FraCaS gives `.unknown` at 256 and `.yes` at 257 for the exact same
+    sentence under two different gold readings; this project formalizes
+    the `.yes` (257) reading, same shape as 255. Returns (binders,
+    arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    binders, arrow_chain = _since_interval(p, hyp, 1996)
+    proof = "fun h => fracas_257 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_258(roles: dict) -> "tuple[str, str, str]":
+    """"APCOM founded ITEL in March 1993." + "ITEL existed in 1992." ->
+    (expected .no, so the theorem proves the negation) Confirmed by
+    reading the real theorem's own stated type directly (`(forall y,
+    existedAt y -> foundedYear <= y) -> foundedYear = 1993 -> ¬ existedAt
+    1992`) - a founding date bounds prior non-existence; the universal
+    bounding fact itself has no GF tree (not sourced from any FraCaS
+    premise sentence, a genuinely assumed "world-knowledge" fact, same
+    move as 198/204/205/208/209/212/220/223/224/227/229's own assumed
+    facts) while the two literal years ARE read off real premise/
+    hypothesis trees. Returns (binders, arrow_chain, proof)."""
+    p = _unwrap_tense(parse_tree(roles["_premise"]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    founded_year = _year_from_adv(p.args[1].args[1].head)
+    existed_name = camel_name(_leaf_words(hyp.args[1].args[0]))
+    target_year = _year_from_adv(hyp.args[1].args[1].head)
+    arrow_chain = (
+        f"(∀ y, {existed_name} y → foundedYear ≤ y) → foundedYear = {founded_year} → "
+        f"¬ {existed_name} {target_year}"
+    )
+    binders = f"({existed_name} : Nat → Prop) (foundedYear : Nat)"
+    proof = "fun h heq hex => fracas_258 _ _ h heq hex"
+    return binders, arrow_chain, proof
+
+
+def _strip_utts(t):
+    """`_unwrap_tense` only matches the `UttS (UseCl ...)` shape; Section
+    7's `AdvS`-headed before/after trees need their own bare `UttS (x)` ->
+    `x` peel."""
+    if t.head == "UttS" and len(t.args) == 1:
+        return t.args[0]
+    return t
+
+
+def _relation_main_embedded(advs_tree):
+    """`AdvS (SubjS connective (UseCl embeddedClause)) (mainClause)` ->
+    (main_subj, op, embedded_subj). Confirmed empirically via the local GF
+    toolchain (not assumed): the OUTER/second argument to `AdvS` is the
+    main asserted clause, and the `SubjS`-wrapped clause is the
+    subordinate before/after-marked reference point - this grammar's
+    AdvS/SubjS combinator always fronts the before/after-marked clause in
+    its own linearization regardless of which clause is the TRUE main one
+    in the original FraCaS sentence (see run_gf_tests.py's own comment on
+    fracas_269_premise3/fracas_270_premise3, corrected this same round
+    after a transcription slip put Smith/Jones in the wrong slot). The
+    semantic relation is "main [connective] embedded": before_Subj ->
+    t_main < t_embedded, after_Subj -> t_main > t_embedded."""
+    subjs = advs_tree.args[0]
+    connective = subjs.args[0].head
+    embedded_useCl = subjs.args[1]
+    embedded_subj = camel_name(_leaf_words(embedded_useCl.args[2].args[0]))
+    main_useCl = advs_tree.args[1]
+    main_subj = camel_name(_leaf_words(main_useCl.args[2].args[0]))
+    op = "<" if connective == "before_Subj" else ">"
+    return main_subj, op, embedded_subj
+
+
+def _build_fracas_261(roles: dict) -> "tuple[str, str, str]":
+    """"Smith left before Jones left." + "Jones left before Anderson
+    left." -> "Smith left before Anderson left." Confirmed by reading the
+    real theorem's own stated type directly (`tSmith < tJones -> tJones <
+    tAnderson -> tSmith < tAnderson`, proved `by omega`) - a genuinely
+    different shape from the rest of this file: before/after chains are
+    formalized as literal `Nat` arithmetic (not `{A : Type*}` predicates),
+    proved directly rather than reapplying `fracas_261`, the same move as
+    242's cardinal-arithmetic shape. Both premises are real, independent
+    FraCaS premises (not a synthesized fact) - `fracas_261_premise2` was
+    missing from run_gf_tests.py and added this round. Returns (binders,
+    arrow_chain, proof)."""
+    p1 = _strip_utts(parse_tree(roles["_premise1"]))
+    p2 = _strip_utts(parse_tree(roles["_premise2"]))
+    hyp = _strip_utts(parse_tree(roles["_hypothesis"]))
+    smith, op1, jones = _relation_main_embedded(p1)
+    jones2, op2, anderson = _relation_main_embedded(p2)
+    smith2, op3, anderson2 = _relation_main_embedded(hyp)
+    assert jones == jones2 and smith == smith2 and anderson == anderson2
+    assert op1 == op2 == op3
+    t_smith, t_jones, t_anderson = "t" + smith.title(), "t" + jones.title(), "t" + anderson.title()
+    arrow_chain = (
+        f"{t_smith} {op1} {t_jones} → {t_jones} {op1} {t_anderson} → {t_smith} {op1} {t_anderson}"
+    )
+    binders = f"({t_smith} {t_jones} {t_anderson} : Nat)"
+    proof = "by omega"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_262(roles: dict) -> "tuple[str, str, str]":
+    """"Smith left after Jones left." + "Jones left after Anderson left."
+    -> "Smith left after Anderson left." Confirmed by reading the real
+    theorem's own stated type directly - identical shape to 261's own
+    (`tSmith > tJones -> tJones > tAnderson -> tSmith > tAnderson`),
+    `after_Subj` throughout instead of `before_Subj`. Returns (binders,
+    arrow_chain, proof)."""
+    return _build_fracas_261(roles)
+
+
+def _build_fracas_264(roles: dict) -> "tuple[str, str, str]":
+    """"Smith left." + "Jones left." + "Smith left before Jones left."
+    -> "Jones left after Smith left." Confirmed by reading the real
+    theorem's own stated type directly (`tSmith < tJones -> tJones >
+    tSmith`, proved `by omega`) - the bare "X left"/"Y left" existence
+    premises are distractors the real theorem ignores entirely; only the
+    actual before/after comparison (premise3) matters, and the
+    conclusion is mechanically its converse (swap connective direction,
+    same subjects). `fracas_264_premise3` reuses `fracas_261_premise1`'s
+    own tree verbatim (byte-identical sentence, "Smith left before Jones
+    left"), added to run_gf_tests.py this round. Returns (binders,
+    arrow_chain, proof)."""
+    p3 = _strip_utts(parse_tree(roles["_premise3"]))
+    main, op, embedded = _relation_main_embedded(p3)
+    t_main, t_embedded = "t" + main.title(), "t" + embedded.title()
+    opposite = ">" if op == "<" else "<"
+    arrow_chain = f"{t_main} {op} {t_embedded} → {t_embedded} {opposite} {t_main}"
+    binders = f"({t_main} {t_embedded} : Nat)"
+    proof = "by omega"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_265(roles: dict) -> "tuple[str, str, str]":
+    """"Smith left." + "Jones left." + "Smith left after Jones left." ->
+    "Jones left before Smith left." Confirmed by reading the real
+    theorem's own stated type directly - same converse shape as 264's own
+    (`tSmith > tJones -> tJones < tSmith`). `fracas_265_premise3` reuses
+    `fracas_262_premise1`'s own tree verbatim, added to run_gf_tests.py
+    this round. Returns (binders, arrow_chain, proof)."""
+    return _build_fracas_264(roles)
+
+
+def _build_fracas_267(roles: dict) -> "tuple[str, str, str]":
+    """"Jones revised the contract." + "Smith revised the contract." +
+    "Jones revised the contract before Smith did." -> "Smith revised the
+    contract after Jones did." Confirmed by reading the real theorem's
+    own stated type directly - same converse-of-premise3 shape as 264's
+    own (`tJones < tSmith -> tSmith > tJones`); premise3's own tree was
+    already registered in run_gf_tests.py. Returns (binders, arrow_chain,
+    proof)."""
+    return _build_fracas_264(roles)
+
+
+def _build_fracas_270(roles: dict) -> "tuple[str, str, str]":
+    """"Smith swam to the shore." + "Jones swam to the shore." + "Smith
+    swam to the shore before Jones swam to the shore." -> "Jones swam to
+    the shore after Smith swam to the shore." Confirmed by reading the
+    real theorem's own stated type directly - same converse-of-premise3
+    shape as 264's own (`tSmith < tJones -> tJones > tSmith`).
+    `fracas_270_premise3`'s own tree in run_gf_tests.py had Smith/Jones
+    swapped (a transcription slip caught and fixed this round via direct
+    GF-toolchain linearize cross-check against this real theorem's own
+    stated hypothesis direction, before this builder was ever committed).
+    Returns (binders, arrow_chain, proof)."""
+    return _build_fracas_264(roles)
+
+
 # Ids needing a FULLY CUSTOM theorem build, bypassing translate_cl's own
 # per-sentence pipeline entirely - each is a one-off cross-sentential
 # anaphora shape (a shared bound existential across two sentences, a
@@ -2061,6 +2297,17 @@ CUSTOM_BUILD = {
     248: _build_fracas_248,
     249: _build_fracas_249,
     250: _build_fracas_250,
+    251: _build_fracas_251,
+    252: _build_fracas_252,
+    255: _build_fracas_255,
+    257: _build_fracas_257,
+    258: _build_fracas_258,
+    261: _build_fracas_261,
+    262: _build_fracas_262,
+    264: _build_fracas_264,
+    265: _build_fracas_265,
+    267: _build_fracas_267,
+    270: _build_fracas_270,
 }
 
 
@@ -2116,7 +2363,7 @@ def load_bare_theorem_ids() -> set:
     both/neither work), and would otherwise generate a reference to a
     theorem that doesn't exist at all, not just a shape mismatch."""
     ids = set()
-    for section in ("Section1", "Section2", "Section3", "Section4", "Section5", "Section6"):
+    for section in ("Section1", "Section2", "Section3", "Section4", "Section5", "Section6", "Section7"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             for m in re.finditer(r"theorem fracas_(\d+) ", path.read_text()):
                 ids.add(int(m.group(1)))
@@ -2141,7 +2388,7 @@ def real_theorem_arrow_count(idn: int) -> "int | None":
     match here (not just a plausible-looking premise count) makes a
     problem eligible - confirmed by reading the actual Lean source, not
     assumed from Problems.lean's own premise list length. """
-    for section in ("Section1", "Section2", "Section3", "Section4", "Section5", "Section6"):
+    for section in ("Section1", "Section2", "Section3", "Section4", "Section5", "Section6", "Section7"):
         for path in (ROOT / f"LeanNLSemantics/FraCaS/{section}").glob("Batch*.lean"):
             text = path.read_text()
             m = re.search(rf"theorem fracas_{idn:03d} :\s*(.*?):=", text, re.S)
@@ -2220,6 +2467,8 @@ def main() -> None:
         "import LeanNLSemantics.FraCaS.Section5.Batch2",
         "import LeanNLSemantics.FraCaS.Section6.Batch1",
         "import LeanNLSemantics.FraCaS.Section6.Batch2",
+        "import LeanNLSemantics.FraCaS.Section7.Batch1",
+        "import LeanNLSemantics.FraCaS.Section7.Batch2",
         "",
         "/-!",
         "# GF cross-check, batch 2",
@@ -2316,7 +2565,41 @@ def main() -> None:
         "at all - a real, pre-existing gap (the same class as problems",
         "44/81/82/92), confirmed via run_gf_tests.py's own comment, not",
         "just unattempted. 221/222/225/226/228/231/234/240/247 are",
-        "countermodel-only, already excluded automatically.",
+        "countermodel-only, already excluded automatically. Section 7",
+        "(temporal reference, 251-325) is piloted this round on its own",
+        "251-270 range only (the rest left for a future round): 251 is a",
+        "trivial present-tense-persistence restatement; 252/255/257 are",
+        "continuous \"since\" readings over a genuine state, formalized as a",
+        "universal closure over the named interval (\"it is now 1996\" has",
+        "no GF tree of its own, read directly off Problems.lean's own",
+        "English as a literal, the same move as 242's hardcoded literals);",
+        "257 reuses 255's own trees verbatim (Batch1.lean's own comment:",
+        "\"formally identical with preceding\"); 258 bounds prior non-",
+        "existence by a founding date, chaining in an assumed universal",
+        "bounding fact (the same \"world-knowledge\" move as Section 5's",
+        "204/205/208/209/212 and Section 6's 220/223/224/227/229) around",
+        "two literal years read off its own real premise/hypothesis trees.",
+        "261/262/264/265/267/270 are before/after chains, continuing 242's",
+        "own literal-`Nat`-arithmetic shape rather than `{A : Type*}`",
+        "predicates: 261/262 chain two real, independent premises (not a",
+        "synthesized fact - `fracas_261_premise2`/`fracas_262_premise2`",
+        "were missing from run_gf_tests.py and added this round); 264/265/",
+        "267/270 each ignore FraCaS's own bare \"X left\"/\"Y left\"",
+        "existence-assertion premises as distractors, using only the real",
+        "theorem's own actual before/after comparison premise, whose",
+        "conclusion is mechanically its converse. Confirming the `AdvS`/",
+        "`SubjS` main-versus-embedded-clause convention this whole cluster",
+        "depends on took a direct local GF-toolchain linearize cross-check",
+        "(not just an assumption) - which caught a real transcription slip",
+        "already present in run_gf_tests.py's own `fracas_270_premise3`",
+        "(and the never-load-bearing `fracas_269_premise3`), both fixed",
+        "this round. Not yet attempted: 253/254 (a non-stative predicate",
+        "coerced into \"since\", countermodel-only, excluded automatically",
+        "like the rest of this paragraph's unlisted ids); 259/260 (date/",
+        "duration arithmetic needing fresh premise trees); 266/268 (same",
+        "before/after-chain shape as 264/265/267/270 but with main and",
+        "embedded roles swapped relative to this round's already-",
+        "registered trees, left unattempted rather than guessed).",
         "`scripts/gen_gf_cross_check.py` documents the non-obvious",
         "exclusions it found rather than silently omitting them, including",
         "earlier rounds': problems 31 and 46 each need an aux hypothesis (like",
@@ -2343,7 +2626,7 @@ def main() -> None:
         "translator correctly does not reproduce on its own.",
         "-/",
         "",
-        "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6",
+        "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7",
         "",
         "-- Most/AtLeast/AtMost/Exactly need a DecidablePred instance per",
         "-- predicate/conjunction they apply to - a real theorem's own",
@@ -2359,11 +2642,12 @@ def main() -> None:
 
     for idn in sorted(by_id):
         # Section 3 scoped to 114-141, Section 4 to 142-196, Section 5
-        # to 197-219, Section 6 to 220-250 so far (see CUSTOM_BUILD's
-        # own comment for exactly which ids in each range are covered,
-        # countermodel-excluded, or structurally/not-yet attempted) -
-        # raise this bound again when extending past 250.
-        if idn > 250:
+        # to 197-219, Section 6 to 220-250, Section 7 so far piloted only
+        # to 251-270 (see CUSTOM_BUILD's own comment for exactly which
+        # ids in each range are covered, countermodel-excluded, or
+        # structurally/not-yet attempted) - raise this bound again when
+        # extending further into Section 7's 271-325 range.
+        if idn > 270:
             continue
         roles = by_id[idn]
         n = premise_counts.get(idn)

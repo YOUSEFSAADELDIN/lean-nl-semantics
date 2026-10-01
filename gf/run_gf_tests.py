@@ -2780,6 +2780,21 @@ _SECTION7_TENSED_CHECKS = [
         "ITEL made a loss in 1993",
     ),
     (
+        # 257 has no own premise/hypothesis sentence in FraCaS's corpus at
+        # all - Batch1.lean's own comment on 257 ("formally identical with
+        # preceding") confirms it's the exact same sentence as 255, just
+        # given `.yes` instead of `.unknown`; reused verbatim here under
+        # 257's own role name so it gets its own by_id entry.
+        "fracas_257_premise",
+        "linearize UttS (UseCl (TTAnt TPres AAnter) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumSg) (UseN loss_N))) since1992_Adv)))",
+        "ITEL has made a loss since 1992",
+    ),
+    (
+        "fracas_257_hypothesis",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ComplSlash (SlashV2a make_V2) (DetCN (DetQuant IndefArt NumSg) (UseN loss_N))) in1993_Adv)))",
+        "ITEL made a loss in 1993",
+    ),
+    (
         "fracas_258_premise",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN apcom_PN) (AdvVP (ComplSlash (SlashV2a found_V2) (UsePN itel_PN)) inMarch1993_Adv)))",
         "APCOM founded ITEL in March 1993",
@@ -2800,9 +2815,25 @@ _SECTION7_TENSED_CHECKS = [
         "before Anderson left Smith left",
     ),
     (
+        # 261's own second premise - "Jones left before Anderson left" -
+        # was missing from this suite even though it's a real, independent
+        # FraCaS premise (not a synthesized fact): main=Jones (earlier),
+        # embedded=Anderson, same before_Subj convention as premise1.
+        "fracas_261_premise2",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN anderson_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V))))",
+        "before Anderson left Jones left",
+    ),
+    (
         "fracas_262_premise1",
         "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
         "after Jones left Smith left",
+    ),
+    (
+        # Likewise 262's own real second premise - "Jones left after
+        # Anderson left" - previously missing.
+        "fracas_262_premise2",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN anderson_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V))))",
+        "after Anderson left Jones left",
     ),
     (
         "fracas_262_hypothesis",
@@ -2828,6 +2859,22 @@ _SECTION7_TENSED_CHECKS = [
         "fracas_264_premise2",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))",
         "Jones left",
+    ),
+    (
+        # Reused verbatim from fracas_261_premise1 ("Smith left before Jones
+        # left" paraphrased as "before Jones left Smith left") - byte-
+        # identical tree, already GF-toolchain-confirmed under that id.
+        "fracas_264_premise3",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "before Jones left Smith left",
+    ),
+    (
+        # Reused verbatim from fracas_262_premise1 ("Smith left after Jones
+        # left" paraphrased as "after Jones left Smith left") - byte-
+        # identical tree, already GF-toolchain-confirmed under that id.
+        "fracas_265_premise3",
+        "linearize UttS (AdvS (SubjS after_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV leave_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV leave_V))))",
+        "after Jones left Smith left",
     ),
     (
         "fracas_267_premise1",
@@ -2860,9 +2907,19 @@ _SECTION7_TENSED_CHECKS = [
         "Jones swam",
     ),
     (
+        # "Smith swam before Jones swam" (main=Smith, earlier; subordinate=
+        # Jones) - this grammar's AdvS/SubjS combinator always fronts the
+        # before/after-marked clause, so the correct tree puts the TRUE
+        # subordinate subject (Jones) in SubjS and the TRUE main subject
+        # (Smith) in the outer slot, even though that reorders the surface
+        # text relative to Problems.lean's own (matrix-first) wording - the
+        # same paraphrase-not-transcription convention already used by
+        # 267's own premise3 (confirmed by direct GF-toolchain linearize
+        # cross-check against the real theorem's own stated hypothesis
+        # direction for 270, the sibling that does have a real theorem).
         "fracas_269_premise3",
-        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV swim_V))))",
-        "before Smith swam Jones swam",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (UseV swim_V)))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (UseV swim_V))))",
+        "before Jones swam Smith swam",
     ),
     (
         "fracas_269_hypothesis",
@@ -2875,9 +2932,13 @@ _SECTION7_TENSED_CHECKS = [
         "Smith swam to the shore",
     ),
     (
+        # "Smith swam to the shore before Jones swam to the shore" (main=
+        # Smith, earlier; subordinate=Jones) - see 269_premise3's own
+        # comment just above for why Jones (the true subordinate) goes in
+        # SubjS and Smith (the true main subject) goes in the outer slot.
         "fracas_270_premise3",
-        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N))))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N)))))))",
-        "before Smith swam to the shore Jones swam to the shore",
+        "linearize UttS (AdvS (SubjS before_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N))))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (UseV swim_V) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN shore_N)))))))",
+        "before Jones swam to the shore Smith swam to the shore",
     ),
     (
         "fracas_270_hypothesis",
