@@ -140,14 +140,34 @@ every other pronoun this project's generator has seen), confirmed to
 reproduce the prior hand-built derivation byte-for-byte. Confirmed via
 `_build_fracas_128`/`_build_fracas_129`.
 
-Together these eleven ids (120/121/122/124/128/129/131/132/138/139/140)
-do not cover any other id in this file — e-type "upgrade the witness
-set to the whole set" anaphora (133) is the one remaining genuinely
-different resolution mechanism from all seven pipelines above, not an
-incremental extension of any of them — left hand-resolved exactly as
-this header already describes, extended only when another confirmed GF
-tree needs more, the same incremental discipline `translate.py`'s own
-`_try_translate_*` functions already follow.
+An eighth pipeline, `_try_translate_named_verb_several`/`_try_
+translate_named_verb_pronoun_object`, reproduces 133's own e-type
+anaphora: "GFI owns several computers. ITEL maintains them." — "them"
+resolves to the MAXIMAL set GFI owns, not just the "several" witnesses,
+so premise 1's own named subject (GFI) is existentially quantified AWAY
+entirely rather than kept as a fixed individual (`∃x, ownComputer x`,
+not `ownComputer gfi`) — the opposite move from every other named-
+subject case in this file, and why this needs its own dedicated pair of
+functions rather than reusing `translate_cl`'s own general fused-
+predicate path, which keeps the subject and is the CORRECT reading for
+fracas_103's identical tree shape ("Jones has a company car" →
+`hasCar jones`). Confirmed to reproduce the prior hand-built derivation
+byte-for-byte (`ownComputer`/`maintain`). Confirmed via
+`_build_fracas_133`.
+
+All twelve ids in this file with their own GF trees (120/121/122/124/
+128/129/131/132/133/138/139/140) are now reproduced through one of
+these eight pipelines or `translate_cl` directly, rather than by
+hand-indexed positional extraction — each pipeline earning its own
+name because it resolves a genuinely different kind of ambiguity or
+discourse continuation (120/121/122/131/132: a context-dependent
+reading choice an explicit flag or a later sentence's own shape
+decides; 124/128/129/133: a single, undisputed reading recovered via
+shape-checked extraction in place of blind indexing, not a competing
+interpretation). Extending any one of them further, or adding a ninth,
+happens only when another confirmed GF tree needs it — the same
+incremental discipline `translate.py`'s own `_try_translate_*`
+functions already follow.
 -/
 
 namespace FraCaS.Section3

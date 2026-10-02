@@ -132,12 +132,25 @@ winner; both readings share the identical premise 1 ("NAME and
 his/her Ns", a `ConjNP`+`BaseNP`+possessive-pronoun shape) and
 premise 2 ("PronSubj V2 PronObj", contributing only the verb's
 own name), confirmed to reproduce the prior hand-built derivation
-byte-for-byte (`colleague`/`hate`); and one further fully
-hand-built cross-sentential-anaphora theorem bypassing all seven
-pipelines entirely (133, `CUSTOM_BUILD` - e-type "upgrade the
-witness set to the whole set" anaphora, a genuinely different
-resolution mechanism from any of the seven pipelines above, not
-an incremental extension of one). Not every
+byte-for-byte (`colleague`/`hate`); e-type anaphora (133,
+`CUSTOM_BUILD`) built through an EIGHTH pipeline, `_try_
+translate_named_verb_several`/`_try_translate_named_verb_
+pronoun_object` - "GFI owns several computers. ITEL maintains
+them.": "them" resolves to the MAXIMAL set GFI owns, not just
+the "several" witnesses, so premise 1's own named subject (GFI)
+is existentially quantified AWAY entirely rather than kept as a
+fixed individual - the opposite move from every other named-
+subject case in this corpus (contrast `translate_cl`'s own
+general fused-predicate path, which keeps the subject and gives
+`ownComputer gfi` - correct for fracas_103's identical shape,
+wrong for this one), confirmed to reproduce the prior hand-built
+derivation byte-for-byte (`ownComputer`/`maintain`). This was the
+last of this file's cross-sentential-anaphora ids (120-141) still
+using hand-indexed positional extraction rather than a named,
+shape-checked function - 114-119/123 are handled by the generic
+BUNDLE_PROJECT/SKOLEM_PROJECT/SYNTHESIZE_PREMISE mechanisms
+documented separately above, not by these eight pipelines. Not
+every
 Section 3 id is covered: 125/130/136/141 are
 countermodel-only (no bare theorem to cross-check at all); 126 needs
 a genuinely unstated extra premise ("the other eight machines were

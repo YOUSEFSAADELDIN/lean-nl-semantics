@@ -1797,6 +1797,68 @@ def _try_translate_pronoun_verb_pronoun(subject, vp):
     return camel_name(_leaf_words(vp))
 
 
+# ---------------------------------------------------------------------
+# 3h. E-type anaphora (fracas_133's own "GFI owns several computers.
+#     ITEL maintains them." -> `(∃x, ownComputer x) → (∀x, ownComputer x
+#     → maintain x) → ∀x, ownComputer x → maintain x`). "Them" resolves
+#     to the MAXIMAL set GFI owns, not just the "several" witnesses, so
+#     premise 1's own named subject (GFI) is existentially QUANTIFIED
+#     AWAY entirely rather than kept as a fixed individual - the
+#     opposite move from every other named-subject case in this
+#     corpus, and the reason this needs its own dedicated pair of
+#     functions rather than reusing `translate_cl`'s own general fused-
+#     predicate path (which keeps the subject, giving `ownComputer gfi`
+#     - correct for fracas_103's identical shape, wrong for this one).
+
+
+def _try_translate_named_verb_several(subject, vp):
+    """Recognizes "NAME V2s several Ns" (fracas_133's own premise 1,
+    "GFI owns several computers"). Returns None on shape mismatch, else
+    the fused verb+object predicate name ("own"+"computer" ->
+    `ownComputer`) - the SAME fused-name convention `translate_cl`'s own
+    general path already uses for a named-subject-plus-indefinite-
+    object VP (fracas_103's `hasCar`), just confirmed here via
+    `several_Det` instead of an ordinary indefinite article. The named
+    subject itself is discarded entirely: this id's own real theorem
+    existentially quantifies over a FRESH variable instead of applying
+    the predicate to GFI, the e-type reading, not a fused "subject has
+    property" one."""
+    if subject.head != "UsePN":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2 or obj.args[0].head != "several_Det":
+        return None
+    return camel_name(_leaf_words(vp))
+
+
+def _try_translate_named_verb_pronoun_object(subject, vp):
+    """Recognizes "NAME V2s PronObj" (fracas_133's own premise 2, "ITEL
+    maintains them") - both the named subject and the pronoun object
+    are discarded entirely (the pronoun resolves to the SAME fresh
+    variable `_try_translate_named_verb_several`'s own premise 1
+    existentially quantifies, not to ITEL or to any individual named in
+    this sentence at all), leaving only the verb's own name. Returns
+    None on shape mismatch, else the verb name."""
+    if subject.head != "UsePN":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[1].head != "UsePron"
+    ):
+        return None
+    return camel_name(_leaf_words(vp))
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:

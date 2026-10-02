@@ -57,6 +57,8 @@ from translate import (  # noqa: E402
     _try_translate_definite_skolem_application,
     _try_translate_conjoined_possessive_restrictor,
     _try_translate_pronoun_verb_pronoun,
+    _try_translate_named_verb_several,
+    _try_translate_named_verb_pronoun_object,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -555,11 +557,19 @@ def _build_fracas_133(roles: dict) -> "tuple[str, str, str]":
     argument - the same restrictor-vs-two-predicates ambiguity
     `_try_translate_possessive_presupposition`'s own comment already
     flags for "has a N" sentences, just surfacing here for a relative
-    clause instead. Returns (binders, arrow_chain, proof)."""
+    clause instead. Built through `translate.py`'s own `_try_translate_
+    named_verb_several`/`_try_translate_named_verb_pronoun_object` -
+    a shape-checked pair confirmed to reproduce this same derivation
+    byte-for-byte (`ownComputer`/`maintain`). Returns (binders,
+    arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    owns_name = camel_name(_leaf_words(p1.args[1]))
+    owns_name = _try_translate_named_verb_several(*p1.args)
+    if owns_name is None:
+        raise ValueError("fracas_133's premise 1 no longer matches the named-verb-several shape")
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    maintain_name = camel_name(_leaf_words(p2.args[1]))
+    maintain_name = _try_translate_named_verb_pronoun_object(*p2.args)
+    if maintain_name is None:
+        raise ValueError("fracas_133's premise 2 no longer matches the named-verb-pronoun-object shape")
 
     premise1_text = f"∃ x, {owns_name} x"
     premise2_text = f"∀ x, {owns_name} x → {maintain_name} x"
@@ -3386,12 +3396,25 @@ def main() -> None:
         "his/her Ns\", a `ConjNP`+`BaseNP`+possessive-pronoun shape) and",
         "premise 2 (\"PronSubj V2 PronObj\", contributing only the verb's",
         "own name), confirmed to reproduce the prior hand-built derivation",
-        "byte-for-byte (`colleague`/`hate`); and one further fully",
-        "hand-built cross-sentential-anaphora theorem bypassing all seven",
-        "pipelines entirely (133, `CUSTOM_BUILD` - e-type \"upgrade the",
-        "witness set to the whole set\" anaphora, a genuinely different",
-        "resolution mechanism from any of the seven pipelines above, not",
-        "an incremental extension of one). Not every",
+        "byte-for-byte (`colleague`/`hate`); e-type anaphora (133,",
+        "`CUSTOM_BUILD`) built through an EIGHTH pipeline, `_try_",
+        "translate_named_verb_several`/`_try_translate_named_verb_",
+        "pronoun_object` - \"GFI owns several computers. ITEL maintains",
+        "them.\": \"them\" resolves to the MAXIMAL set GFI owns, not just",
+        "the \"several\" witnesses, so premise 1's own named subject (GFI)",
+        "is existentially quantified AWAY entirely rather than kept as a",
+        "fixed individual - the opposite move from every other named-",
+        "subject case in this corpus (contrast `translate_cl`'s own",
+        "general fused-predicate path, which keeps the subject and gives",
+        "`ownComputer gfi` - correct for fracas_103's identical shape,",
+        "wrong for this one), confirmed to reproduce the prior hand-built",
+        "derivation byte-for-byte (`ownComputer`/`maintain`). This was the",
+        "last of this file's cross-sentential-anaphora ids (120-141) still",
+        "using hand-indexed positional extraction rather than a named,",
+        "shape-checked function - 114-119/123 are handled by the generic",
+        "BUNDLE_PROJECT/SKOLEM_PROJECT/SYNTHESIZE_PREMISE mechanisms",
+        "documented separately above, not by these eight pipelines. Not",
+        "every",
         "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",
         "a genuinely unstated extra premise (\"the other eight machines were",
