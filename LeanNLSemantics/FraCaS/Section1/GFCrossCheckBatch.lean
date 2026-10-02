@@ -47,21 +47,30 @@ sentence, since that sentence read in isolation is genuinely
 ambiguous between this bundle's own specific reading and this
 project's usual fused-unary-predicate one; its Skolem-function-bound
 variant (117-119, `SKOLEM_PROJECT`); a synthesized scope-entailment
-premise (123, `SYNTHESIZE_PREMISE`); one id (120, `CUSTOM_BUILD`)
+premise (123, `SYNTHESIZE_PREMISE`); two ids (120/121, `CUSTOM_BUILD`)
 built through `translate.py`'s own `translate_discourse` - a real,
 reusable (if narrowly-scoped) cross-sentential pronoun-resolution
 mechanism, not a per-id hand translation, though still invoked via
 `CUSTOM_BUILD` rather than the generic pipeline since combining a
 multi-sentence premise with a single-sentence hypothesis isn't this
-script's generic arrow-chain shape; and eleven further fully
-hand-built cross-sentential-anaphora theorems bypassing both
-`translate_cl` AND `translate_discourse` entirely (121/122/124/128/
-129/131-133/138-140, `CUSTOM_BUILD` - a ternary named-individual
-relation, trivial-literal restrictors, Skolemized dependent-plural/
-paycheque pronouns, a dropped licensing-only premise, and
-reflexive/embedded-clause arguments - 121 in particular needs
-`translate_discourse`'s own PP-complement-VP/three-sentence
-extension before it could move out of this bucket too). Not every
+script's generic arrow-chain shape (121's own real theorem restates
+the same conjunction as both premise and hypothesis, via
+`existential_objects=False` - a ternary PP-complement relation over
+three sentences, confirmed by `translate_discourse`'s own proper-
+noun-vs-indefinite salience preference correctly resolving "them"
+to ITEL rather than the just-introduced report/invoice); and nine
+further fully hand-built cross-sentential-anaphora theorems
+bypassing both `translate_cl` AND `translate_discourse` entirely
+(122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - nested donkey-
+pronoun quantifier binding, cardinal/set-based anaphora, genuine
+multi-reading referential ambiguity, dependent-plural/paycheque
+Skolemization, e-type "upgrade the witness set to the whole set"
+anaphora, a definite-description-licensed total function, and
+reflexive/embedded-clause VP shapes (`ReflVP`/`Slash2V3`/`ComplVS`)
+neither pipeline parses at all - each a genuinely different
+resolution mechanism from `translate_discourse`'s own flat,
+top-level discourse-referent threading, not an incremental
+extension of it). Not every
 Section 3 id is covered: 125/130/136/141 are
 countermodel-only (no bare theorem to cross-check at all); 126 needs
 a genuinely unstated extra premise ("the other eight machines were

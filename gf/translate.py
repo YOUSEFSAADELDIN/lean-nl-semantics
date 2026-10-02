@@ -928,13 +928,22 @@ class Referent:
     True` - the noun's own predicate is dropped entirely, matching this
     project's existing convention elsewhere of not asserting "and x is
     a meeting" when nothing downstream needs it). `personal` is the
-    only disambiguator `DiscourseState.resolve` uses: True for a
+    primary disambiguator `DiscourseState.resolve` uses: True for a
     referent a personal pronoun (she/he) can pick out, False for one an
-    impersonal pronoun (it) can."""
+    impersonal pronoun (it/they) can. `proper` marks a referent
+    introduced by an actual proper noun (`UsePN`, e.g. "ITEL") as
+    opposed to a fresh indefinite object ("a report") - confirmed
+    needed by fracas_121's own "them": once a sentence has introduced
+    BOTH a named recipient (ITEL) and a same-impersonal-gender
+    indefinite theme (a report) in the same clause, "them" in a LATER
+    sentence has to prefer the proper-noun referent over the more
+    recently introduced indefinite one, not just take whichever was
+    added last (see `resolve`'s own comment)."""
 
     name: str
     bound: bool
     personal: bool
+    proper: bool = False
 
 
 class DiscourseState:
@@ -947,11 +956,11 @@ class DiscourseState:
         self.referents: list[Referent] = []
         self._fresh_count = 0
 
-    def add_named(self, name: str, *, personal: bool) -> Referent:
+    def add_named(self, name: str, *, personal: bool, proper: bool = False) -> Referent:
         for ref in self.referents:
             if not ref.bound and ref.name == name:
                 return ref
-        ref = Referent(name=name, bound=False, personal=personal)
+        ref = Referent(name=name, bound=False, personal=personal, proper=proper)
         self.referents.append(ref)
         return ref
 
@@ -963,32 +972,64 @@ class DiscourseState:
         return ref
 
     def resolve(self, *, personal: bool) -> Referent:
-        for ref in reversed(self.referents):
-            if ref.personal == personal:
-                return ref
-        raise NotImplementedError(
-            f"no compatible discourse referent to resolve a pronoun to (personal={personal})"
-        )
+        """Among referents matching `personal`, prefers the most
+        recently introduced PROPER-NOUN one (a named recipient like
+        "ITEL" is a far more salient antecedent than a same-gender
+        indefinite theme mentioned in between), falling back to the
+        most recent match of any kind when no proper-noun candidate
+        exists (fracas_120's own "it", resolving to the indefinite
+        "a meeting" - there is no competing proper-noun referent to
+        prefer over it in that problem at all)."""
+        matches = [ref for ref in reversed(self.referents) if ref.personal == personal]
+        if not matches:
+            raise NotImplementedError(
+                f"no compatible discourse referent to resolve a pronoun to (personal={personal})"
+            )
+        proper_matches = [ref for ref in matches if ref.proper]
+        return proper_matches[0] if proper_matches else matches[0]
 
 
 # she_Pron/he_Pron resolve to the most recent PERSONAL referent;
-# it_Pron to the most recent IMPERSONAL one. they_Pron is genuinely
-# ambiguous between the two (plural personal or plural impersonal) and
-# isn't needed by fracas_120 - left unhandled rather than guessed at.
+# it_Pron/they_Pron to the most recent IMPERSONAL one. they_Pron is
+# genuinely ambiguous in general (plural personal or plural impersonal)
+# - only its impersonal reading is handled, confirmed needed by
+# fracas_121's own "them" (referring back to ITEL, a company); a
+# PERSONAL plural "they" isn't needed yet and isn't guessed at.
 _PERSONAL_SUBJECT_PRON = {"she_Pron", "he_Pron"}
-_IMPERSONAL_OBJECT_PRON = {"it_Pron"}
+_IMPERSONAL_OBJECT_PRON = {"it_Pron", "they_Pron"}
+
+# Proper nouns this corpus treats as IMPERSONAL (picked up again by
+# "it"/"they", never "she"/"he") despite using the same `UsePN` shape
+# personal names do - confirmed needed by fracas_121's "ITEL" (a
+# company); `UsePN`'s own tree carries no gender/animacy marking the
+# way a pronoun does, so this has to be an explicit lookup, extended
+# only when another confirmed GF tree needs another impersonal proper
+# noun, not guessed at from the name alone.
+_IMPERSONAL_PROPER_NOUNS = {"itel_PN"}
 
 
-def _resolve_np_referent(np, state: DiscourseState) -> Referent:
+def _resolve_np_referent(np, state: DiscourseState, *, existential: bool) -> Referent:
     """Resolves one NP to a discourse referent against `state`,
     introducing a new one when the NP is a proper noun (named) or a
-    singular indefinite (freshly bound) - the only two referent-
-    introducing shapes fracas_120 needs - or looking one up when it's a
-    pronoun. Raises NotImplementedError for any other NP shape, same
-    "narrow by design" discipline as every `_try_translate_*` special
-    case in this file."""
+    singular indefinite, or looking one up when it's a pronoun. Raises
+    NotImplementedError for any other NP shape, same "narrow by design"
+    discipline as every `_try_translate_*` special case in this file.
+
+    `existential` controls what a singular indefinite NP introduces:
+    `True` (fracas_120's own convention) gives it a fresh EXISTENTIALLY-
+    BOUND referent, dropping the noun's own predicate entirely; `False`
+    (fracas_121's own convention - confirmed by its real theorem's `:=
+    id` proof, which has no existential anywhere) gives it a fresh
+    NAMED free individual instead, keyed by the noun's own name. Which
+    reading a given indefinite object needs is NOT recoverable from its
+    own syntax alone (the two trees have an identical shape) - it's a
+    discourse-structural fact about whether anything later needs to
+    refer back to a SPECIFIC witness by name, which is why this is a
+    parameter the caller supplies (already knowing the real theorem's
+    own shape), not something this function infers."""
     if np.head == "UsePN" and len(np.args) == 1:
-        return state.add_named(camel_name(_leaf_words(np)), personal=True)
+        personal = np.args[0].head not in _IMPERSONAL_PROPER_NOUNS
+        return state.add_named(camel_name(_leaf_words(np)), personal=personal, proper=True)
     if np.head == "UsePron" and len(np.args) == 1:
         pron = np.args[0].head
         if pron in _PERSONAL_SUBJECT_PRON:
@@ -1006,33 +1047,66 @@ def _resolve_np_referent(np, state: DiscourseState) -> Referent:
         and len(np.args[0].args) == 2
         and np.args[0].args[0].head == "IndefArt"
     ):
-        return state.add_bound(personal=False)
+        if existential:
+            return state.add_bound(personal=False)
+        return state.add_named(camel_name(_leaf_words(np)), personal=False)
     raise NotImplementedError(f"NP shape {np.head!r} not handled yet in discourse resolution")
 
 
-def translate_discourse(sentences) -> Translation:
+def _strip_adv_wrapper(vp):
+    """Strips an `AdVVP` adverb wrapper ("she ALSO delivered...") down
+    to the VP it modifies - confirmed by fracas_121's own real theorem
+    that "also" carries no truth-conditional content of its own here
+    (its premise 2's formalization is the plain ternary relation, same
+    as premises 1/3, nothing "also"-shaped added). Only `AdVVP` is
+    stripped; any other wrapper is left alone for `translate_discourse`
+    to reject on its own terms."""
+    while vp.head == "AdVVP" and len(vp.args) == 2:
+        vp = vp.args[1]
+    return vp
+
+
+def translate_discourse(sentences, *, existential_objects: bool = True) -> Translation:
     """Translates a SEQUENCE of already-tense-unwrapped `PredVP subject
-    (ComplSlash (SlashV2a verb) object)` clauses sharing ONE threaded
-    `DiscourseState`, producing a single conjunction (bare, no outer
-    parens - same convention as every other `Translation.lean_prop`
-    this file produces; the caller wraps it if it's embedded in a
-    larger expression) existentially closed over every bound
-    (indefinite-object) referent introduced anywhere in the sequence.
+    vp` clauses sharing ONE threaded `DiscourseState`, producing a
+    single conjunction (bare, no outer parens - same convention as
+    every other `Translation.lean_prop` this file produces; the caller
+    wraps it if it's embedded in a larger expression). When
+    `existential_objects` is true (the default, fracas_120's own
+    reading), the result is existentially closed over every bound
+    (indefinite-object) referent introduced anywhere in the sequence -
     fracas_120's own two premises, "Smith attended a meeting" + "she
-    chaired it", become `∃ m, attended smith m ∧ chaired smith m` - the
+    chaired it", become `∃ m, attended smith m ∧ chaired smith m`, the
     same proposition `scripts/gen_gf_cross_check.py`'s own
     `_build_fracas_120` used to hand-build directly from the raw trees.
     Called with a single sentence (no pronouns to resolve), this is
     also how fracas_120's own HYPOTHESIS gets its existential reading
-    ("Smith chaired a meeting" -> `∃ m, chaired smith m`) rather than
-    `translate_cl`'s own fused-predicate one - see this section's module
-    comment for why that's a different, explicitly-invoked pipeline
-    rather than a new case inside `translate_cl` itself.
+    rather than `translate_cl`'s own fused-predicate one - see this
+    section's module comment for why that's a different, explicitly-
+    invoked pipeline rather than a new case inside `translate_cl`
+    itself. With `existential_objects=False` (fracas_121's own reading -
+    see `_resolve_np_referent`'s own comment on why that's a real,
+    discourse-structural choice rather than a flag this function could
+    infer), every indefinite object instead becomes a fresh NAMED free
+    individual, and nothing is existentially bound at all.
 
-    Only one VP shape (`ComplSlash (SlashV2a verb) obj`, a plain
-    transitive verb) is handled - confirmed sufficient for fracas_120;
-    extending to a PP-complement VP (fracas_121's own "delivered ... to
-    ITEL") is left for when that id's own tree is wired in here."""
+    Two VP shapes are handled: a plain transitive `ComplSlash (SlashV2a
+    verb) obj` (fracas_120's own binary relation), and a PP-complement
+    `AdvVP (ComplSlash (SlashV2a verb) obj) (PrepNP prep pp)`
+    (fracas_121's own ternary one, "delivered a report to ITEL" -
+    `deliver subject pp obj`, confirmed argument order by
+    `scripts/gen_gf_cross_check.py`'s own prior hand-built version of
+    `_build_fracas_121`). An `AdVVP` adverb wrapper around either shape
+    is stripped first (`_strip_adv_wrapper`). The PP's own NP is always
+    resolved BEFORE the direct object within one sentence, regardless
+    of the trees' own nesting order - deliberately, since a pronoun in
+    the PP (fracas_121's own "them") must resolve against referents
+    introduced by EARLIER sentences only, not get shadowed by a brand
+    new indefinite direct object this SAME sentence is about to
+    introduce (confirmed necessary: "she delivered an invoice to them"
+    introduces "invoice" and resolves "them" in the same clause, and
+    processing them in the wrong order would make "them" resolve to the
+    invoice it sits next to instead of ITEL)."""
     state = DiscourseState()
     conjuncts: list[str] = []
     free_predicates: list[str] = []
@@ -1043,23 +1117,43 @@ def translate_discourse(sentences) -> Translation:
                 f"only 'PredVP subject vp' is handled in a discourse, got head={cl.head!r}"
             )
         subject, vp = cl.args
+        vp = _strip_adv_wrapper(vp)
+        subj_ref = _resolve_np_referent(subject, state, existential=existential_objects)
         if (
-            vp.head != "ComplSlash"
-            or len(vp.args) != 2
-            or vp.args[0].head != "SlashV2a"
-            or len(vp.args[0].args) != 1
+            vp.head == "ComplSlash"
+            and len(vp.args) == 2
+            and vp.args[0].head == "SlashV2a"
+            and len(vp.args[0].args) == 1
         ):
+            obj_ref = _resolve_np_referent(vp.args[1], state, existential=existential_objects)
+            verb_name = camel_name(_leaf_words(vp.args[0]))
+            conjuncts.append(f"{verb_name} {subj_ref.name} {obj_ref.name}")
+            new_refs = (subj_ref, obj_ref)
+        elif (
+            vp.head == "AdvVP"
+            and len(vp.args) == 2
+            and vp.args[0].head == "ComplSlash"
+            and len(vp.args[0].args) == 2
+            and vp.args[0].args[0].head == "SlashV2a"
+            and len(vp.args[0].args[0].args) == 1
+            and vp.args[1].head == "PrepNP"
+            and len(vp.args[1].args) == 2
+        ):
+            inner = vp.args[0]
+            pp_ref = _resolve_np_referent(vp.args[1].args[1], state, existential=existential_objects)
+            obj_ref = _resolve_np_referent(inner.args[1], state, existential=existential_objects)
+            verb_name = camel_name(_leaf_words(inner.args[0]))
+            conjuncts.append(f"{verb_name} {subj_ref.name} {pp_ref.name} {obj_ref.name}")
+            new_refs = (subj_ref, pp_ref, obj_ref)
+        else:
             raise NotImplementedError(
-                "only a plain transitive VP (ComplSlash (SlashV2a verb) obj) is "
-                f"handled in a discourse so far, got vp head={vp.head!r}"
+                "only a plain transitive VP (ComplSlash (SlashV2a verb) obj) or a "
+                "PP-complement one (AdvVP (ComplSlash (SlashV2a verb) obj) (PrepNP "
+                f"prep pp)) is handled in a discourse so far, got vp head={vp.head!r}"
             )
-        subj_ref = _resolve_np_referent(subject, state)
-        obj_ref = _resolve_np_referent(vp.args[1], state)
-        verb_name = camel_name(_leaf_words(vp.args[0]))
-        conjuncts.append(f"{verb_name} {subj_ref.name} {obj_ref.name}")
         if verb_name not in free_predicates:
             free_predicates.append(verb_name)
-        for ref in (subj_ref, obj_ref):
+        for ref in new_refs:
             if not ref.bound and ref.name not in free_individuals:
                 free_individuals.append(ref.name)
     bound_names = [r.name for r in state.referents if r.bound]

@@ -264,36 +264,29 @@ def _build_fracas_121(roles: dict) -> "tuple[str, str, str]":
     same three-way conjunction, confirmed by reading the real theorem's
     own `:= id` proof directly. The real theorem treats each delivered
     item as a NAMED INDIVIDUAL constant, not a predicate (`delivered :
-    A -> A -> A -> Prop`, a genuinely TERNARY relation - the first this
-    generator has ever produced) - built by hand for the same reason as
-    fracas_120's own builder: "she"/"them" resolving to the first
-    sentence's own subject/PP-object, and a ternary named-individual
-    relation, are both one-off shapes no other id needs. Returns
-    (binders, arrow_chain, proof)."""
+    A -> A -> A -> Prop`, a genuinely TERNARY relation), via
+    `translate.py`'s own `translate_discourse(..., existential_objects=
+    False)` - the same general pipeline `_build_fracas_120` uses, just
+    with indefinite objects read as fresh NAMED individuals instead of
+    an existential (confirmed by this real theorem's own `:= id` proof,
+    which has no existential anywhere - see `_resolve_np_referent`'s own
+    comment on why that reading isn't recoverable from the tree's shape
+    alone and has to be a parameter the caller supplies). The
+    hypothesis's own tree (a conjoined-object NP translate.py doesn't
+    parse) is never translated independently either, matching the real
+    theorem's own `:= id` proof directly reusing the premise's exact
+    proposition as the conclusion. Returns (binders, arrow_chain, proof).
+    """
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
     p3 = _unwrap_tense(parse_tree(roles["_premise3"]))
 
-    subject_name = camel_name(_leaf_words(p1.args[0]))
-    vp1 = p1.args[1]
-    verb_name = camel_name(_leaf_words(vp1.args[0].args[0]))
-    obj1_name = camel_name(_leaf_words(vp1.args[0].args[1]))
-    pp_name = camel_name(_leaf_words(vp1.args[1].args[1]))
+    premise_t = translate_discourse([p1, p2, p3], existential_objects=False)
 
-    vp2 = p2.args[1].args[1]
-    obj2_name = camel_name(_leaf_words(vp2.args[0].args[1]))
-
-    vp3 = p3.args[1]
-    obj3_name = camel_name(_leaf_words(vp3.args[0].args[1]))
-
-    def conjunct(obj_name: str) -> str:
-        return f"{verb_name} {subject_name} {pp_name} {obj_name}"
-
-    combined = f"({conjunct(obj1_name)} ∧ {conjunct(obj2_name)} ∧ {conjunct(obj3_name)})"
-    arrow_chain = f"{combined} → {combined}"
+    arrow_chain = f"({premise_t.lean_prop}) → ({premise_t.lean_prop})"
     binders = (
-        f"{{A : Type*}} ({subject_name} {pp_name} {obj1_name} {obj2_name} {obj3_name} : A) "
-        f"({verb_name} : A → A → A → Prop)"
+        f"{{A : Type*}} ({' '.join(premise_t.free_individuals)} : A) "
+        f"({premise_t.free_predicates[0]} : A → A → A → Prop)"
     )
     proof = "fun h => fracas_121 _ _ _ _ _ _ h"
     return binders, arrow_chain, proof
@@ -3234,21 +3227,30 @@ def main() -> None:
         "ambiguous between this bundle's own specific reading and this",
         "project's usual fused-unary-predicate one; its Skolem-function-bound",
         "variant (117-119, `SKOLEM_PROJECT`); a synthesized scope-entailment",
-        "premise (123, `SYNTHESIZE_PREMISE`); one id (120, `CUSTOM_BUILD`)",
+        "premise (123, `SYNTHESIZE_PREMISE`); two ids (120/121, `CUSTOM_BUILD`)",
         "built through `translate.py`'s own `translate_discourse` - a real,",
         "reusable (if narrowly-scoped) cross-sentential pronoun-resolution",
         "mechanism, not a per-id hand translation, though still invoked via",
         "`CUSTOM_BUILD` rather than the generic pipeline since combining a",
         "multi-sentence premise with a single-sentence hypothesis isn't this",
-        "script's generic arrow-chain shape; and eleven further fully",
-        "hand-built cross-sentential-anaphora theorems bypassing both",
-        "`translate_cl` AND `translate_discourse` entirely (121/122/124/128/",
-        "129/131-133/138-140, `CUSTOM_BUILD` - a ternary named-individual",
-        "relation, trivial-literal restrictors, Skolemized dependent-plural/",
-        "paycheque pronouns, a dropped licensing-only premise, and",
-        "reflexive/embedded-clause arguments - 121 in particular needs",
-        "`translate_discourse`'s own PP-complement-VP/three-sentence",
-        "extension before it could move out of this bucket too). Not every",
+        "script's generic arrow-chain shape (121's own real theorem restates",
+        "the same conjunction as both premise and hypothesis, via",
+        "`existential_objects=False` - a ternary PP-complement relation over",
+        "three sentences, confirmed by `translate_discourse`'s own proper-",
+        "noun-vs-indefinite salience preference correctly resolving \"them\"",
+        "to ITEL rather than the just-introduced report/invoice); and nine",
+        "further fully hand-built cross-sentential-anaphora theorems",
+        "bypassing both `translate_cl` AND `translate_discourse` entirely",
+        "(122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - nested donkey-",
+        "pronoun quantifier binding, cardinal/set-based anaphora, genuine",
+        "multi-reading referential ambiguity, dependent-plural/paycheque",
+        "Skolemization, e-type \"upgrade the witness set to the whole set\"",
+        "anaphora, a definite-description-licensed total function, and",
+        "reflexive/embedded-clause VP shapes (`ReflVP`/`Slash2V3`/`ComplVS`)",
+        "neither pipeline parses at all - each a genuinely different",
+        "resolution mechanism from `translate_discourse`'s own flat,",
+        "top-level discourse-referent threading, not an incremental",
+        "extension of it). Not every",
         "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",
         "a genuinely unstated extra premise (\"the other eight machines were",

@@ -41,16 +41,30 @@ hand-written either way): `gf/translate.py`'s `translate_discourse`
 function is a real, reusable (if deliberately narrow) cross-sentential
 pronoun-resolution mechanism — a personal subject pronoun resolves to
 the most recently introduced personal referent, an impersonal object
-pronoun to the most recent impersonal (existentially-bound) one — that
-independently reproduces problem 120's own referential-pronoun
-formalization above (`∃m, attended smith m ∧ chaired smith m`) from the
-raw GF trees, confirmed via `scripts/gen_gf_cross_check.py`'s own
-`_build_fracas_120`. It does not yet cover any other id in this file
-(121's PP-complement verb and three-sentence chain, the donkey-pronoun
-Skolemization, or anything else below) — those remain exactly as hand-
-resolved as this header already describes, extended only when another
-confirmed GF tree needs more, the same incremental discipline
-`translate.py`'s own `_try_translate_*` functions already follow.
+pronoun to the most recent impersonal referent (preferring a proper
+noun over a same-gender indefinite mentioned in between, when both are
+candidates), and an indefinite object becomes either a fresh
+existential or a fresh named individual depending on which the real
+theorem's own type needs (a discourse-structural fact the tree's own
+shape alone doesn't decide). It independently reproduces both problem
+120's own referential-pronoun formalization above (`∃m, attended smith
+m ∧ chaired smith m`) and problem 121's own three-sentence ternary one
+(`delivered smith itel report ∧ delivered smith itel invoice ∧
+delivered smith itel proposal`, "them" correctly preferring ITEL over
+the report/invoice mentioned nearer it) from the raw GF trees, confirmed
+via `scripts/gen_gf_cross_check.py`'s own `_build_fracas_120`/
+`_build_fracas_121`. It does not yet cover any other id in this file —
+the donkey-pronoun quantifier nesting (122), cardinal/set-based
+anaphora (124), genuine multi-reading referential ambiguity (128-130),
+dependent-plural/paycheque Skolemization (131/132), e-type "upgrade the
+witness set to the whole set" anaphora (133), a definite-description-
+licensed total function (138), or reflexive/embedded-clause VP shapes
+(139/140) are each a genuinely different resolution mechanism from this
+one's flat, top-level discourse-referent threading, not an incremental
+extension of it — left hand-resolved exactly as this header already
+describes, extended only when another confirmed GF tree needs more,
+the same incremental discipline `translate.py`'s own `_try_translate_*`
+functions already follow.
 -/
 
 namespace FraCaS.Section3
