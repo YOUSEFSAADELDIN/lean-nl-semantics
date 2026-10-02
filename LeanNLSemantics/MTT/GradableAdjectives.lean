@@ -297,20 +297,26 @@ def toyGradable : Gradable ℚ ToyAnimal where
   largeThreshold := 50
   small_lt_large := by exact_mod_cast (show (10:ℤ) < 50 by omega)
 
-theorem toy_mickey_small : small toyGradable .mickey := by show (1:ℚ) < 10; norm_num
+theorem toy_mickey_small : small toyGradable .mickey := by
+  show (1:ℚ) < 10
+  exact_mod_cast (show (1:ℤ) < 10 by omega)
 
-theorem toy_dumbo_large : large toyGradable .dumbo := by show (50:ℚ) < 100; norm_num
+theorem toy_dumbo_large : large toyGradable .dumbo := by
+  show (50:ℚ) < 100
+  exact_mod_cast (show (50:ℤ) < 100 by omega)
 
 /-- The fully concrete form of `fracas_204_degree_based`: Mickey really
 is not large. -/
 theorem toy_fracas_204_not_large : ¬ large toyGradable .mickey :=
-  fracas_204_degree_based toyGradable .mickey (by show (1:ℚ) < 10; norm_num)
+  fracas_204_degree_based toyGradable .mickey
+    (by show (1:ℚ) < 10; exact_mod_cast (show (1:ℤ) < 10 by omega))
 
 /-- The fully concrete form of `fracas_208_degree_based`: Mickey really
 does measure below Dumbo. -/
 theorem toy_fracas_208_smallerThan : smallerThan toyGradable .mickey .dumbo :=
   fracas_208_degree_based toyGradable .mickey .dumbo
-    (by show (1:ℚ) < 10; norm_num) (by show (50:ℚ) < 100; norm_num)
+    (by show (1:ℚ) < 10; exact_mod_cast (show (1:ℤ) < 10 by omega))
+    (by show (50:ℚ) < 100; exact_mod_cast (show (50:ℤ) < 100 by omega))
 
 /-- `.medium` sits strictly inside the threshold gap — this is the
 concrete form of FraCaS's own 206/207 independence ("not small" doesn't
@@ -320,8 +326,10 @@ is a genuine witness of it, not just an assertion in prose. -/
 theorem fracas_206_207_gap_witness :
     ¬ small toyGradable .medium ∧ ¬ large toyGradable .medium := by
   refine ⟨?_, ?_⟩
-  · show ¬ (25:ℚ) < 10; norm_num
-  · show ¬ (50:ℚ) < 25; norm_num
+  · show ¬ (25:ℚ) < 10
+    exact_mod_cast (show ¬ (25:ℤ) < 10 by omega)
+  · show ¬ (50:ℚ) < 25
+    exact_mod_cast (show ¬ (50:ℤ) < 25 by omega)
 
 /-! ## Axiom audit
 
