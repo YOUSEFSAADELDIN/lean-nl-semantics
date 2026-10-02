@@ -269,18 +269,19 @@ def toyGradable : Gradable ToyAnimal where
   largeThreshold := 50
   small_lt_large := by norm_num
 
-example : small toyGradable .mickey := by decide
+example : small toyGradable .mickey := by unfold small; decide
 
-example : large toyGradable .dumbo := by decide
+example : large toyGradable .dumbo := by unfold large; decide
 
 /-- The fully concrete form of `fracas_204_degree_based`: Mickey really
 is not large. -/
 example : ¬ large toyGradable .mickey :=
-  fracas_204_degree_based toyGradable .mickey (by decide)
+  fracas_204_degree_based toyGradable .mickey (by unfold small; decide)
 
 /-- The fully concrete form of `fracas_208_degree_based`: Mickey really
 does measure below Dumbo. -/
 example : smallerThan toyGradable .mickey .dumbo :=
-  fracas_208_degree_based toyGradable .mickey .dumbo (by decide) (by decide)
+  fracas_208_degree_based toyGradable .mickey .dumbo
+    (by unfold small; decide) (by unfold large; decide)
 
 end MTT
