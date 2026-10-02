@@ -26,21 +26,25 @@ in between for the middle ground — is exactly the device used by:
 ## What this buys the existing port
 
 This project's own Section 5/6 FraCaS theorems (`fracas_204`, `205`,
-`208`, `209`, `220`, `223`, `224`, `227`, `229`) each had to take, as an
-extra hypothesis, an assumed "connecting fact" relating a pair of
-gradable adjectives or comparatives — e.g. `204`'s
+`208`, `209`, `210`, `211`, `212`, `220`, `223`, `224`, `227`, `229`)
+each had to take, as an extra hypothesis, an assumed "connecting fact"
+relating a pair of gradable adjectives or comparatives — e.g. `204`'s
 `∀ x, small x → ¬ large x`, or `208`'s
 `∀ x y, small x → large y → smallerThan x y`. FraCaS's own `<why>` notes
 for these problems call such facts genuinely assumed world knowledge,
 not derivable from the sentences alone — and that remains true in
-general (nothing here changes how those 9 theorems are stated or
-proved). What this file adds is a *concrete model* in which all 9 of
+general (nothing here changes how those 12 theorems are stated or
+proved). What this file adds is a *concrete model* in which all of
 those assumed facts turn out to be theorems: give `small`/`large` (or
 `fast`/`slow`, `asFastAs`, ...) a shared integer `measure` and a
 threshold gap, and each fact is a one-line `omega` consequence of that
-gap. The 9 corollaries below apply the real, already-proved `fracas_NNN`
+gap. The corollaries below apply the real, already-proved `fracas_NNN`
 theorems to these derived facts, rather than re-proving or modifying
-them — this file is purely additive.
+them — this file is purely additive. `210`/`211`/`212` reuse the exact
+same `small`/`large` contrariety facts as `204`/`205`/`208` — they only
+differ from 204/205/208 in bundling in an extra, genuinely lexical
+(non-gradable) "mice/elephants are animals" premise that stays an
+ordinary hypothesis, not something the degree model derives.
 -/
 
 namespace MTT
@@ -81,7 +85,7 @@ def asFastAs (G : Gradable A) (x y : A) : Prop := G.measure y ≤ G.measure x
 /-- "Slower than": the reverse strict comparative. -/
 def slowerThan (G : Gradable A) (x y : A) : Prop := G.measure x < G.measure y
 
-/-! ## The 9 derived "connecting facts" -/
+/-! ## The derived "connecting facts" -/
 
 /-- Feeds `fracas_204`: small and large can't both hold, via the gap. -/
 theorem small_not_large (G : Gradable A) : ∀ x, small G x → ¬ large G x := by
@@ -168,7 +172,19 @@ theorem not_slowerThan_of_asFastAs (G : Gradable A) :
   unfold slowerThan at hcontra
   omega
 
-/-! ## The 9 corollaries: the real FraCaS theorems, discharged -/
+/-- Feeds `fracas_212`: same fact as `small_lt_large_measure`, but in
+the large-object-first argument order 212's own hypothesis happens to
+use (`largerThan y x` where `y` is the large one, `x` the small one). -/
+theorem large_gt_small_measure (G : Gradable A) :
+    ∀ x y, small G x → large G y → largerThan G y x := by
+  intro x y hs hl
+  have hgap := G.small_lt_large
+  unfold small at hs
+  unfold large at hl
+  unfold largerThan
+  omega
+
+/-! ## The corollaries: the real FraCaS theorems, discharged -/
 
 theorem fracas_204_degree_based (G : Gradable A) (mickey : A) :
     small G mickey → ¬ large G mickey :=
@@ -185,6 +201,28 @@ theorem fracas_208_degree_based (G : Gradable A) (mickey dumbo : A) :
 theorem fracas_209_degree_based (G : Gradable A) (mickey dumbo : A) :
     small G mickey → large G dumbo → ¬ largerThan G mickey dumbo :=
   fracas_209 (small G) (large G) (largerThan G) mickey dumbo (not_larger_of_small_large G)
+
+theorem fracas_210_degree_based (G : Gradable A) (mouse animal largeMouse : A → Prop) (mickey : A) :
+    (∀ x, mouse x → animal x ∧ small G x) → mouse mickey ∧ largeMouse mickey →
+      ¬ large G mickey :=
+  fun h1 h2 => fracas_210 mouse animal (small G) largeMouse (large G) mickey h1
+    (small_not_large G) h2
+
+theorem fracas_211_degree_based (G : Gradable A) (elephant animal smallElephant : A → Prop)
+    (dumbo : A) :
+    (∀ x, elephant x → animal x ∧ large G x) → elephant dumbo ∧ smallElephant dumbo →
+      ¬ small G dumbo :=
+  fun h1 h2 => fracas_211 elephant animal (large G) smallElephant (small G) dumbo h1
+    (large_not_small G) h2
+
+theorem fracas_212_degree_based (G : Gradable A)
+    (mouse elephant animal largeMouse smallElephant : A → Prop) (mickey dumbo : A) :
+    (∀ x, mouse x → animal x ∧ small G x) → (∀ x, elephant x → animal x ∧ large G x) →
+      mouse mickey ∧ largeMouse mickey → elephant dumbo ∧ smallElephant dumbo →
+        largerThan G dumbo mickey :=
+  fun h1 h2 h3 h4 =>
+    fracas_212 mouse elephant animal (small G) (large G) largeMouse smallElephant (largerThan G)
+      mickey dumbo h1 h2 h3 h4 (large_gt_small_measure G)
 
 theorem fracas_220_degree_based (G : Gradable A) (pc itel : A) :
     fasterThan G pc itel → large G itel → large G pc :=
