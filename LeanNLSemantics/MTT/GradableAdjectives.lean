@@ -303,26 +303,26 @@ theorem fracas_206_207_gap_witness :
 Same discipline as `AssumptionAudit.lean`'s port of `MTT.v` Part 9,
 applied to this file's own theorems: `#print axioms` on everything
 proved above, to check rather than assume that this pilot's proofs
-don't quietly depend on anything beyond what the originals need. The
-check found something worth recording: the abstract lemmas above
-(everything closed by `omega` alone, `small_not_large` through
-`fracas_229_degree_based` — `omega` works there because `G` is
-abstract, so its hypotheses are already plain `ℤ` inequalities with
-nothing to reduce) depend only on `[propext, Quot.sound]`, the ordinary
-Mathlib baseline. The concrete `toy*`/`fracas_206_207_gap_witness`
-proofs are harder to keep clean, because `toyGradable` is a literal
-structure whose `measure` field is a `match` that has to be reduced on
-the concrete constructor first, and `omega` (unlike `decide`) won't do
-that reduction on its own. Two earlier attempts both closed the goal
-but additionally pulled in `Classical.choice`: `decide` and, surprisingly,
-`simp` too — both apparently route the concrete numeral comparison
-through a Mathlib-derived `Decidable` instance for `ℤ` rather than a
-core constructive one, regardless of which tactic triggers it. The fix
-that actually stayed clean is `show`: stating the already-reduced
-literal goal explicitly (e.g. `show (1:ℤ) < 10`) forces the needed
-delta/iota reduction via a plain defeq check, with no `Decidable`
-instance involved, and `omega` then closes the resulting bare
-arithmetic goal the same clean way it closes the abstract lemmas. -/
+don't quietly depend on anything beyond what the originals need.
+Everything below comes back `[propext, Quot.sound]`, the ordinary
+Mathlib baseline — no `Classical.choice` anywhere — but getting there
+took three wrong turns worth recording, because all three misdiagnosed
+where the dependency actually lived. The concrete `toy*`/
+`fracas_206_207_gap_witness` theorems (the only ones that mention
+`toyGradable`) first showed up depending on `Classical.choice` while
+the abstract lemmas about an arbitrary `G` didn't. The natural guess
+was that whatever closed each theorem's own goal (`decide`, then
+`simp`, then an explicit `show` forcing the reduction before `omega`)
+was the culprit — three different tactics, three still-dirty results,
+because none of them touched the real source: `toyGradable`'s own
+`small_lt_large` field was proved with `norm_num`, and *that* proof's
+dependency travels into every theorem that so much as mentions
+`toyGradable`, regardless of how each theorem's own goal gets closed.
+Swapping that one field to `omega` (already known clean from the
+abstract lemmas) was the actual fix. The lesson: `#print axioms` on
+the downstream theorem names the dependency, but not where it was
+introduced — check every definition the statement touches, not just
+the tactic that closes it. -/
 
 #print axioms small_not_large
 #print axioms large_not_small
