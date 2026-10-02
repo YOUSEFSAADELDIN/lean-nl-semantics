@@ -272,20 +272,20 @@ def toyGradable : Gradable ToyAnimal where
   largeThreshold := 50
   small_lt_large := by norm_num
 
-theorem toy_mickey_small : small toyGradable .mickey := by unfold small; decide
+theorem toy_mickey_small : small toyGradable .mickey := by unfold small toyGradable; omega
 
-theorem toy_dumbo_large : large toyGradable .dumbo := by unfold large; decide
+theorem toy_dumbo_large : large toyGradable .dumbo := by unfold large toyGradable; omega
 
 /-- The fully concrete form of `fracas_204_degree_based`: Mickey really
 is not large. -/
 theorem toy_fracas_204_not_large : ¬ large toyGradable .mickey :=
-  fracas_204_degree_based toyGradable .mickey (by unfold small; decide)
+  fracas_204_degree_based toyGradable .mickey (by unfold small toyGradable; omega)
 
 /-- The fully concrete form of `fracas_208_degree_based`: Mickey really
 does measure below Dumbo. -/
 theorem toy_fracas_208_smallerThan : smallerThan toyGradable .mickey .dumbo :=
   fracas_208_degree_based toyGradable .mickey .dumbo
-    (by unfold small; decide) (by unfold large; decide)
+    (by unfold small toyGradable; omega) (by unfold large toyGradable; omega)
 
 /-- `.medium` sits strictly inside the threshold gap — this is the
 concrete form of FraCaS's own 206/207 independence ("not small" doesn't
@@ -295,15 +295,27 @@ is a genuine witness of it, not just an assertion in prose. -/
 theorem fracas_206_207_gap_witness :
     ¬ small toyGradable .medium ∧ ¬ large toyGradable .medium := by
   refine ⟨?_, ?_⟩
-  · unfold small; decide
-  · unfold large; decide
+  · unfold small toyGradable; omega
+  · unfold large toyGradable; omega
 
 /-! ## Axiom audit
 
 Same discipline as `AssumptionAudit.lean`'s port of `MTT.v` Part 9,
 applied to this file's own theorems: `#print axioms` on everything
 proved above, to check rather than assume that this pilot's proofs
-don't quietly depend on anything beyond what the originals need. -/
+don't quietly depend on anything beyond what the originals need. The
+check found something worth recording: the abstract lemmas above
+(everything closed by `omega` alone, `small_not_large` through
+`fracas_229_degree_based`) depend only on `[propext, Quot.sound]`, the
+ordinary Mathlib baseline — but an earlier version of the concrete
+`toy*`/`fracas_206_207_gap_witness` proofs, which closed the same kind
+of goal with `decide` instead, additionally pulled in
+`Classical.choice`. `decide` on `ℤ` here routes through a
+Mathlib-derived `Decidable` instance rather than a core constructive
+one, so the fully concrete, computable examples were *less*
+constructive than the abstract theorems about arbitrary `G`. Since
+`omega` was already proven clean on this exact shape of goal, the fix
+was to use it throughout instead of `decide`. -/
 
 #print axioms small_not_large
 #print axioms large_not_small
