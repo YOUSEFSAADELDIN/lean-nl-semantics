@@ -1067,6 +1067,151 @@ def _build_fracas_167(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+def _build_fracas_169(roles: dict) -> "tuple[str, str, str]":
+    """"John found Mary before Bill found Mary." (the stipulated
+    reading of a genuinely ambiguous sentence) -> itself, trivially.
+    Confirmed by reading the real theorem's own `:= id` proof directly
+    (`johnFoundMaryBeforeBillFoundMary -> johnFoundMaryBeforeBillFoundMary`).
+    The whole `AdvS (SubjS before_Subj ...) ...` tree is registered
+    under a single bare check name (`fracas_169`, no `_premise1`/
+    `_hypothesis` suffix - `roles[""]`), confirmed via `gf`'s own
+    linearize check (`run_gf_tests.py`'s own `CHECKS` list) independent
+    of this cross-check script; `_atomic_name` fuses its own whole word
+    list into one bare `Prop` atom, same convention as 142/145-149 -
+    word ORDER doesn't matter to that fusion (GF's own AdvS/SubjS always
+    fronts the subordinate clause regardless of FraCaS's own clause
+    order, but since the real theorem only needs ONE atom reused on both
+    sides of a trivial self-implication, that surface-order mismatch
+    has no effect on the derivation at all). Returns (binders,
+    arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_169 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_170(roles: dict) -> "tuple[str, str, str]":
+    """The other stipulated reading of the same ambiguous sentence,
+    "John found Mary before John found Bill" -> itself, trivially.
+    Confirmed by reading the real theorem's own `:= id` proof directly.
+    Built the same way as fracas_169's own builder - see its docstring.
+    Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_170 _ h"
+    return binders, arrow_chain, proof
+
+
+def _split_advs_conditional(tree_text: str):
+    """Splits a `UttS (AdvS (SubjS conn embedded) main)` top-level
+    conditional (fracas_179's own "if John wrote a report, Bill wrote a
+    report") into its two clauses, each independently fused into its
+    own bare `Prop` atom via the SAME `camel_name(_leaf_words(...))`
+    convention `_atomic_name` uses - but applied to EACH clause
+    separately rather than the whole tree, since this id's own real
+    theorem needs two SEPARATE atoms (`johnWroteReport`/
+    `billWroteReport`), not one fused name the way 169/170's own
+    trivial self-implication does. Returns None on shape mismatch, else
+    (embedded_name, main_name)."""
+    t = parse_tree(tree_text)
+    if t.head != "UttS" or len(t.args) != 1:
+        return None
+    advs = t.args[0]
+    if advs.head != "AdvS" or len(advs.args) != 2:
+        return None
+    subjs, main = advs.args
+    if subjs.head != "SubjS" or len(subjs.args) != 2:
+        return None
+    _conn, embedded = subjs.args
+    return camel_name(_leaf_words(embedded)), camel_name(_leaf_words(main))
+
+
+def _build_fracas_179(roles: dict) -> "tuple[str, str, str]":
+    """"If John wrote a report, Bill did [write a report] too. John
+    wrote a report." -> "Bill wrote a report." (ellipsis inside a
+    conditional's own consequent). Confirmed by reading the real
+    theorem's own stated type directly (`(johnWroteReport ->
+    billWroteReport) -> johnWroteReport -> billWroteReport`) - modus
+    ponens over two bare `Prop` atoms. The whole "if"-sentence is
+    registered under a single bare check name (`fracas_179`, no
+    `_premise1`/`_hypothesis` suffix - `roles[""]`), confirmed via
+    `gf`'s own linearize check independent of this script. Built
+    through the new `_split_advs_conditional` helper, splitting the
+    `AdvS (SubjS if_Subj embedded) main` tree into its own antecedent
+    and consequent atoms, rather than fusing the whole conditional into
+    one name the way 169/170's own trivial self-implication does.
+    Returns (binders, arrow_chain, proof)."""
+    result = _split_advs_conditional(roles[""])
+    if result is None:
+        raise ValueError("fracas_179's own tree no longer matches the AdvS-conditional shape")
+    embedded_name, main_name = result
+    arrow_chain = f"({embedded_name} → {main_name}) → {embedded_name} → {main_name}"
+    binders = f"({embedded_name} {main_name} : Prop)"
+    proof = "fun h hj => fracas_179 _ _ h hj"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_175(roles: dict) -> "tuple[str, str, str]":
+    """""Bill said that Mary wrote a report, and [so did/and that] Bill
+    [said that she] did too." -> itself, trivially (one available parse:
+    "Bill did too" resolves INSIDE "said", giving "Bill said Mary wrote
+    a report" directly). Confirmed by reading the real theorem's own
+    `:= id` proof directly (`billSaidMaryWroteReport ->
+    billSaidMaryWroteReport`). Registered under a single bare check name
+    (`fracas_175`, no `_premise1`/`_hypothesis` suffix - `roles[""]`),
+    a genuinely NEW tree this round (not previously confirmed), built
+    from the SAME `ComplVS say_VS` construction fracas_140/178's own
+    already-confirmed trees use, confirmed via `gf`'s own linearize
+    check. `_atomic_name` fuses it into one bare `Prop` atom, same
+    convention as 169/170. Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_175 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_176(roles: dict) -> "tuple[str, str, str]":
+    """A different available parse of the same sentence (per FraCaS's
+    own `<why>`, a genuine attachment ambiguity, not just anaphora):
+    "and Bill did too" attaches INSIDE the "said"-clause as a second
+    reported claim, giving "John said Bill wrote a report" -> itself,
+    trivially. Confirmed by reading the real theorem's own `:= id`
+    proof directly. Built the same way as fracas_175's own builder -
+    see its docstring; a genuinely NEW tree this round, confirmed via
+    `gf`'s own linearize check. Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_176 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_180(roles: dict) -> "tuple[str, str, str]":
+    """"John wanted to buy a car, and he did [buy a car]." -> "John
+    bought a car." Confirmed by reading the real theorem's own stated
+    type directly (`johnWantedBuyCar ∧ johnBoughtCar -> johnBoughtCar`).
+    Premise 1 ("John wanted to buy a car", a `want_VV`+`ComplVV`
+    control-verb construction) is a genuinely NEW tree this round,
+    confirmed via `gf`'s own linearize check from constructs already
+    proven elsewhere (`want_VV`/`ComplVV` from Section 1's own "wants a
+    great tenor" cluster, `buy_V2`/`car_N` from this id's own
+    already-confirmed hypothesis). The elided "he did [buy a car]"
+    (premise 2) is never given its own tree - its resolved content is
+    literally the hypothesis's own sentence, reused directly, the same
+    "elided sentence = reuse the hypothesis's own tree" convention
+    142/145-149/196's own builders already use. Returns (binders,
+    arrow_chain, proof)."""
+    n1 = _atomic_name(roles["_premise1"])
+    n2 = _atomic_name(roles["_hypothesis"])
+    arrow_chain = f"{n1} ∧ {n2} → {n2}"
+    binders = f"({n1} {n2} : Prop)"
+    proof = "fun h => fracas_180 _ _ h"
+    return binders, arrow_chain, proof
+
+
 def _represents_fact(p, default_owner=None):
     """Parses a "X represents (his|Y's) company" clause into (subject,
     verb, noun, owner) - `owner` is the subject itself for a bound
@@ -3180,13 +3325,37 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # under "know"/"want", relativizing a quantificational pronoun NP, and a
 # passive-impersonal-plus-reciprocal construction this grammar has no
 # combinator for - confirmed by `run_gf_tests.py`'s own comment on
-# exactly these ids, not just unattempted); 168/169/170/175/176/179/180
-# (each needs at least one genuinely NEW GF tree - "forty five women
-# work part time", "John wanted to buy a car", or an `AdvS`-headed
-# before/if-conditional top level this generator's builders haven't
-# been shaped for yet - left for a future round rather than rushed).
-# 143/156/158/161/174/177/181/184/188/192/194 are countermodel-only,
-# already excluded automatically (no bare theorem to cross-check).
+# exactly these ids, not just unattempted). 169/170/175/176/179/180 ARE
+# now built: 169/170 (an `AdvS (SubjS before_Subj ...) ...` top-level
+# "before"-conditional, the stipulated reading of a genuinely ambiguous
+# sentence, `:= id` trivially) reuse trees that were ALREADY confirmed
+# via `gf`'s own linearize check but never wired into this generator at
+# all; 179 (an `if`-conditional, modus ponens over two atoms) likewise
+# reuses an already-confirmed tree, split into its antecedent/consequent
+# via the new `_split_advs_conditional` helper; 175/176 ("Bill/John said
+# that Mary/Bill wrote a report", `:= id` trivially) and 180's own
+# premise 1 ("John wanted to buy a car", a `want_VV`+`ComplVV`
+# control-verb construction) are genuinely NEW trees, confirmed directly
+# via `gf`'s own linearize check this round (this project's local GF
+# toolchain - `gf` plus the pinned gf-rgl tag - is available and fast
+# enough to confirm new sentences directly, not just reuse already-
+# confirmed ones, confirmed by actually invoking it, not assumed) -
+# all six built from constructs (`say_VS`/`ComplVS`, `want_VV`/
+# `ComplVV`) already proven elsewhere in this corpus. Genuinely still
+# not attempted: 168 ("forty-five women work part time") - a REAL,
+# independently-reconfirmed gf-rgl toolchain bug at the current pinned
+# tag: `pot1plus` (the tens-plus-ones numeral combinator any two-digit
+# number with a nonzero ones digit needs) renders its own bind tokens
+# literally ("forty &+ - &+ five") instead of collapsing them, confirmed
+# directly via `gf`'s own linearize output this round, not merely
+# re-read from the pre-existing comment - round tens via bare `pot1`
+# ("twenty") are unaffected, but nothing fixable at the Python/
+# translate.py level changes a gf-rgl bug; the construction this
+# generator CAN build (168's own first sentence, "five men work part
+# time") already exercises the construction cleanly, just under a
+# different, wrong number. 143/156/158/161/174/177/181/184/188/192/194
+# are countermodel-only, already excluded automatically (no bare
+# theorem to cross-check).
 #
 # Section 5 (adjectives, 197-219) adds 5 more ids this round - the
 # straightforward subset only, deliberately paced after Section 4's two
@@ -3287,7 +3456,13 @@ CUSTOM_BUILD = {
     165: _build_fracas_165,
     166: _build_fracas_166,
     167: _build_fracas_167,
+    169: _build_fracas_169,
+    170: _build_fracas_170,
+    175: _build_fracas_175,
+    176: _build_fracas_176,
     178: _build_fracas_178,
+    179: _build_fracas_179,
+    180: _build_fracas_180,
     182: _build_fracas_182,
     183: _build_fracas_183,
     185: _build_fracas_185,
@@ -3732,15 +3907,33 @@ def main() -> None:
         "lemmas via Lean's own elaborator, the same cross-check every",
         "other id in this corpus gets - none of these were previously",
         "attempted at all (not a refactor of existing hand-built code).",
-        "Still not covered: 163/171/172/173/174/191-195 (genuine grammar",
-        "gaps - embedded questions, relativizing a quantificational",
-        "pronoun NP, a passive-impersonal-plus-reciprocal construction",
-        "with no combinator - confirmed via `run_gf_tests.py`'s own",
-        "comment on exactly these ids); 168/169/170/175/176/179/180",
-        "(each needs a genuinely new GF",
-        "tree or an `AdvS`-headed conditional top level not yet built,",
-        "left for a future round); and 143/156/158/161/174/177/181/184/",
-        "188/192/194 (countermodel-only, already excluded automatically).",
+        "169/170/175/176/179/180 ARE also now built: 169/170 (a top-level",
+        "\"before\"-conditional, the stipulated reading of a genuinely",
+        "ambiguous sentence, `:= id` trivially) and 179 (an `if`-",
+        "conditional, modus ponens over two atoms, split via the new",
+        "`_split_advs_conditional` helper) reuse trees that were ALREADY",
+        "confirmed via `gf`'s own linearize check but never wired into",
+        "this generator at all; 175/176 (\"Bill/John said that Mary/Bill",
+        "wrote a report\", `:= id` trivially) and 180's own premise 1",
+        "(\"John wanted to buy a car\", a `want_VV`+`ComplVV` control-verb",
+        "construction) are genuinely NEW trees, confirmed directly via",
+        "`gf`'s own linearize check this round - this project's local GF",
+        "toolchain is available and fast enough to confirm new sentences",
+        "directly, not just reuse already-confirmed ones. Still not",
+        "covered: 163/171/172/173/174/191-195 (genuine grammar gaps -",
+        "embedded questions, relativizing a quantificational pronoun NP,",
+        "a passive-impersonal-plus-reciprocal construction with no",
+        "combinator - confirmed via `run_gf_tests.py`'s own comment on",
+        "exactly these ids); 168 (\"forty-five women work part time\") - a",
+        "REAL, independently-reconfirmed gf-rgl TOOLCHAIN bug at the",
+        "current pinned tag (`pot1plus`, the tens-plus-ones numeral",
+        "combinator any two-digit number with a nonzero ones digit",
+        "needs, renders its own bind tokens literally instead of",
+        "collapsing them - confirmed directly via `gf`'s own linearize",
+        "output this round, not merely re-read from a pre-existing",
+        "comment), not fixable at the Python/translate.py level; and",
+        "143/156/158/161/174/177/181/184/188/192/194 (countermodel-only,",
+        "already excluded automatically).",
         "Section 5 (adjectives, 197-219) adds 14 more ids, all via",
         "`CUSTOM_BUILD` again: per Adjectives.lean's own approach note, this",
         "project treats adjective-noun predication directly (not via MTT's",

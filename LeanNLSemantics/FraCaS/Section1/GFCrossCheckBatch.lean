@@ -222,15 +222,33 @@ five confirmed to typecheck against their own real `fracas_NNN`
 lemmas via Lean's own elaborator, the same cross-check every
 other id in this corpus gets - none of these were previously
 attempted at all (not a refactor of existing hand-built code).
-Still not covered: 163/171/172/173/174/191-195 (genuine grammar
-gaps - embedded questions, relativizing a quantificational
-pronoun NP, a passive-impersonal-plus-reciprocal construction
-with no combinator - confirmed via `run_gf_tests.py`'s own
-comment on exactly these ids); 168/169/170/175/176/179/180
-(each needs a genuinely new GF
-tree or an `AdvS`-headed conditional top level not yet built,
-left for a future round); and 143/156/158/161/174/177/181/184/
-188/192/194 (countermodel-only, already excluded automatically).
+169/170/175/176/179/180 ARE also now built: 169/170 (a top-level
+"before"-conditional, the stipulated reading of a genuinely
+ambiguous sentence, `:= id` trivially) and 179 (an `if`-
+conditional, modus ponens over two atoms, split via the new
+`_split_advs_conditional` helper) reuse trees that were ALREADY
+confirmed via `gf`'s own linearize check but never wired into
+this generator at all; 175/176 ("Bill/John said that Mary/Bill
+wrote a report", `:= id` trivially) and 180's own premise 1
+("John wanted to buy a car", a `want_VV`+`ComplVV` control-verb
+construction) are genuinely NEW trees, confirmed directly via
+`gf`'s own linearize check this round - this project's local GF
+toolchain is available and fast enough to confirm new sentences
+directly, not just reuse already-confirmed ones. Still not
+covered: 163/171/172/173/174/191-195 (genuine grammar gaps -
+embedded questions, relativizing a quantificational pronoun NP,
+a passive-impersonal-plus-reciprocal construction with no
+combinator - confirmed via `run_gf_tests.py`'s own comment on
+exactly these ids); 168 ("forty-five women work part time") - a
+REAL, independently-reconfirmed gf-rgl TOOLCHAIN bug at the
+current pinned tag (`pot1plus`, the tens-plus-ones numeral
+combinator any two-digit number with a nonzero ones digit
+needs, renders its own bind tokens literally instead of
+collapsing them - confirmed directly via `gf`'s own linearize
+output this round, not merely re-read from a pre-existing
+comment), not fixable at the Python/translate.py level; and
+143/156/158/161/174/177/181/184/188/192/194 (countermodel-only,
+already excluded automatically).
 Section 5 (adjectives, 197-219) adds 14 more ids, all via
 `CUSTOM_BUILD` again: per Adjectives.lean's own approach note, this
 project treats adjective-noun predication directly (not via MTT's
@@ -789,9 +807,33 @@ theorem fracas_167_from_gf {A : Type*} [Fintype A] (womanWorkSalesDepartment : A
     Exactly 1 (fun _ : A => True) womanWorkSalesDepartment → ¬ Exactly 2 (fun _ : A => True) womanWorkSalesDepartment :=
   fun h => fracas_167 _ h
 
+theorem fracas_169_from_gf (billFindMaryJohnFindMary : Prop) :
+    billFindMaryJohnFindMary → billFindMaryJohnFindMary :=
+  fun h => fracas_169 _ h
+
+theorem fracas_170_from_gf (johnFindBillJohnFindMary : Prop) :
+    johnFindBillJohnFindMary → johnFindBillJohnFindMary :=
+  fun h => fracas_170 _ h
+
+theorem fracas_175_from_gf (billMaryWriteReport : Prop) :
+    billMaryWriteReport → billMaryWriteReport :=
+  fun h => fracas_175 _ h
+
+theorem fracas_176_from_gf (johnBillWriteReport : Prop) :
+    johnBillWriteReport → johnBillWriteReport :=
+  fun h => fracas_176 _ h
+
 theorem fracas_178_from_gf (johnWriteReport billPeterWriteReport : Prop) :
     johnWriteReport ∧ billPeterWriteReport → billPeterWriteReport :=
   fun h => fracas_178 _ _ h
+
+theorem fracas_179_from_gf (johnWriteReport billWriteReport : Prop) :
+    (johnWriteReport → billWriteReport) → johnWriteReport → billWriteReport :=
+  fun h hj => fracas_179 _ _ h hj
+
+theorem fracas_180_from_gf (johnWantBuyCar johnBuyCar : Prop) :
+    johnWantBuyCar ∧ johnBuyCar → johnBuyCar :=
+  fun h => fracas_180 _ _ h
 
 theorem fracas_182_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (smith jones : A) :
     (represent smith (companyOf smith)) ∧ (represent jones (companyOf jones)) → represent jones (companyOf jones) :=

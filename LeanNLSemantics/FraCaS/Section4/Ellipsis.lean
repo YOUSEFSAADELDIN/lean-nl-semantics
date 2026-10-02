@@ -56,15 +56,38 @@ inner universal object — `translate_cl`'s own general path parses the
 identical tree shape without erroring but commits to the wrong,
 cardinal-quantified reading for it, confirmed by direct comparison, not
 assumed. None of these five ids were previously cross-checked at all
-(not a refactor of existing hand-built code) — the remaining 18 ids in
-this section are either bare-`Prop`-atom restatements (via
-`gen_gf_cross_check.py`'s own `_atomic_name` helper, which fuses an
-entire resolved sentence into one nullary fact, not a domain-quantified
-predicate, so there is no positional structure to extract in the first
-place) or still out of reach for the same documented reasons as
-Section 3's own remaining ids: genuine grammar gaps the GF grammar
-itself has no combinator for (163/171–174/191–195), ids needing a
-genuinely new GF tree not yet confirmed (168–170/175/176/179/180), or
-countermodel-only ids with no bare theorem to cross-check at all
+(not a refactor of existing hand-built code).
+
+A second round added six more: 169/170 (a top-level `AdvS (SubjS
+before_Subj ...) ...` "before"-conditional, the stipulated reading of a
+genuinely ambiguous sentence, `:= id` trivially) and 179 (an
+`if`-conditional, modus ponens over two bare atoms, split via a new
+`_split_advs_conditional` helper into its antecedent/consequent) reuse
+trees that were ALREADY confirmed via `gf`'s own linearize check but
+had never been wired into the cross-check generator at all. 175/176
+("Bill/John said that Mary/Bill wrote a report", `:= id` trivially) and
+180's own premise 1 ("John wanted to buy a car", a `want_VV`+`ComplVV`
+control-verb construction) are genuinely NEW trees, confirmed directly
+by actually invoking this project's own local `gf` toolchain this
+round — it's available and fast enough to confirm brand-new sentences
+directly, not just reuse already-confirmed ones, each built from
+constructs (`say_VS`/`ComplVS`, `want_VV`/`ComplVV`) already proven
+elsewhere in this corpus.
+
+The remaining 12 ids in this section are either bare-`Prop`-atom
+restatements (via `gen_gf_cross_check.py`'s own `_atomic_name` helper,
+which fuses an entire resolved sentence into one nullary fact, not a
+domain-quantified predicate, so there is no positional structure to
+extract in the first place) or still out of reach for reasons that
+don't shrink with more GF-construction effort: genuine grammar gaps the
+GF grammar itself has no combinator for (163/171–174/191–195); 168
+("forty-five women work part time"), a REAL, independently-
+reconfirmed gf-rgl TOOLCHAIN bug at the current pinned tag (`pot1plus`,
+the tens-plus-ones numeral combinator any two-digit number with a
+nonzero ones digit needs, renders its own bind tokens literally instead
+of collapsing them — confirmed directly via `gf`'s own linearize output
+this round, not merely re-read from a pre-existing comment), not
+fixable at the Python/`translate.py` level; or countermodel-only ids
+with no bare theorem to cross-check at all
 (143/156/158/161/174/177/181/184/188/192/194).
 -/

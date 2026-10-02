@@ -2103,6 +2103,16 @@ _SECTION4_TENSED_CHECKS = [
         "before John found Bill John found Mary",
     ),
     (
+        "fracas_175",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplVS say_VS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))))",
+        "Bill said that Mary wrote a report",
+    ),
+    (
+        "fracas_176",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplVS say_VS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))))",
+        "John said that Bill wrote a report",
+    ),
+    (
         "fracas_178_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))",
         "John wrote a report",
@@ -2116,6 +2126,11 @@ _SECTION4_TENSED_CHECKS = [
         "fracas_179",
         "linearize UttS (AdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))",
         "if John wrote a report Bill wrote a report",
+    ),
+    (
+        "fracas_180_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplVV want_VV (ComplSlash (SlashV2a buy_V2) (DetCN (DetQuant IndefArt NumSg) (UseN car_N))))))",
+        "John wanted to buy a car",
     ),
     (
         "fracas_180_hypothesis",
