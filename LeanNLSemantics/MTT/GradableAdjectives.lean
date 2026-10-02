@@ -295,7 +295,7 @@ def toyGradable : Gradable ℚ ToyAnimal where
     | .dumbo => 100
   smallThreshold := 10
   largeThreshold := 50
-  small_lt_large := by norm_num
+  small_lt_large := by exact_mod_cast (show (10:ℤ) < 50 by omega)
 
 theorem toy_mickey_small : small toyGradable .mickey := by show (1:ℚ) < 10; norm_num
 
