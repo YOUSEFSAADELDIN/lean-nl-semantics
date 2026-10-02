@@ -750,7 +750,7 @@ theorem fracas_152_from_gf {A B C : Type*} (go : A → B → C → Prop) (john b
   fun h => fracas_152 _ _ _ _ _ _ h
 
 theorem fracas_153_from_gf {A B C : Type*} (go : A → B → C → Prop) (john : A) (paris : B) (car train : C) :
-    (go john paris car ∧ Every (fun _ : B => True) (fun s => go s paris train)) → Every (fun _ : B => True) (fun s => go s paris train) :=
+    (go john paris car ∧ Every (fun _ : A => True) (fun s => go s paris train)) → Every (fun _ : A => True) (fun s => go s paris train) :=
   fun h => fracas_153 _ _ _ _ _ h
 
 theorem fracas_155_from_gf {A : Type*} (car : A → Prop) (own : A → A → Prop) (john bill : A) :

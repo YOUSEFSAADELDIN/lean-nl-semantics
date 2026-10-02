@@ -968,7 +968,7 @@ def _build_fracas_153(roles: dict) -> "tuple[str, str, str]":
         raise ValueError("fracas_153's premise 1 and premise 2 disagree on the verb name")
 
     fact1 = f"{verb} {subj1} {pp1a} {pp2a}"
-    fact2 = f"Every (fun _ : B => True) (fun s => {verb} s {pp1b} {pp2b})"
+    fact2 = f"Every (fun _ : A => True) (fun s => {verb} s {pp1b} {pp2b})"
     arrow_chain = f"({fact1} ∧ {fact2}) → {fact2}"
 
     pp1_names = [pp1a] if pp1a == pp1b else [pp1a, pp1b]
