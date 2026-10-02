@@ -34,6 +34,23 @@ needs: relating `card (fun _ => True)` (the "how many things are there
 at all" count) to `Fintype.card`, so a proportion problem can be posed
 over an abstract `Fintype` with a stated total rather than a concrete
 enumerated type.
+
+One caveat to "no general machinery," specific to the GF cross-check
+tooling rather than the Lean formalization above (which stays entirely
+hand-written either way): `gf/translate.py`'s `translate_discourse`
+function is a real, reusable (if deliberately narrow) cross-sentential
+pronoun-resolution mechanism — a personal subject pronoun resolves to
+the most recently introduced personal referent, an impersonal object
+pronoun to the most recent impersonal (existentially-bound) one — that
+independently reproduces problem 120's own referential-pronoun
+formalization above (`∃m, attended smith m ∧ chaired smith m`) from the
+raw GF trees, confirmed via `scripts/gen_gf_cross_check.py`'s own
+`_build_fracas_120`. It does not yet cover any other id in this file
+(121's PP-complement verb and three-sentence chain, the donkey-pronoun
+Skolemization, or anything else below) — those remain exactly as hand-
+resolved as this header already describes, extended only when another
+confirmed GF tree needs more, the same incremental discipline
+`translate.py`'s own `_try_translate_*` functions already follow.
 -/
 
 namespace FraCaS.Section3

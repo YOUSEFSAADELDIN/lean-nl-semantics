@@ -882,6 +882,197 @@ def _try_translate_bound_possessive_presupposition(subject, vp):
     )
 
 
+# ---------------------------------------------------------------------
+# 3b. Cross-sentential discourse resolution (FraCaS Section 3's
+#     referential-pronoun class, problem 120: "Smith attended a
+#     meeting. She chaired it." -> Lean: `∃ m, attended smith m ∧
+#     chaired smith m`). This is a SEPARATE, PARALLEL pipeline from
+#     `translate_cl` above, not a new case inside it - deliberately,
+#     because the two pipelines disagree on what an indefinite object
+#     means. `translate_cl`'s own existing convention for "ProperNoun V2
+#     a/an N" (confirmed by fracas_103's real theorem, `hasCar jones`)
+#     fuses the whole VP into one unary predicate; but THAT fact, read
+#     with no discourse link to anything else, is exactly as ambiguous
+#     as `_try_translate_possessive_presupposition`'s own documented
+#     "Mary has a workstation" case - nothing in a single sentence's own
+#     syntax picks the fused reading over a fresh-existential one. What
+#     actually forces the existential reading for fracas_120's own
+#     hypothesis is that it has to type-match its premise's own shared
+#     bound variable - a discourse-structural fact, not something
+#     `translate_cl`'s single-sentence dispatch could or should guess at
+#     automatically (doing so would silently break fracas_103's own
+#     already-confirmed translation, which needs the fused reading for
+#     the identical tree shape). So this pipeline is invoked
+#     explicitly, per problem, by whatever caller already knows a
+#     specific sentence is playing a discourse-continuation role -
+#     narrower than `translate_cl`'s own "any PredVP" scope, the same
+#     "only what's confirmed needed" discipline every `_try_translate_*`
+#     special case above already follows. It is NOT a general DRT/
+#     assignment-function implementation (`Anaphora.lean`'s own header
+#     explains why this project doesn't build one) - just enough
+#     machinery to resolve a personal subject pronoun (she/he) to the
+#     most recently introduced PERSONAL referent and an impersonal
+#     object pronoun (it) to the most recently introduced IMPERSONAL
+#     (existentially-bound) referent, confirmed sufficient for
+#     fracas_120 and extended only when another confirmed GF tree needs
+#     more (fracas_121's own PP-complement VP and three-sentence chain,
+#     for instance, isn't handled yet).
+# ---------------------------------------------------------------------
+
+
+@dataclass
+class Referent:
+    """One discourse referent: either a NAMED individual (a proper noun
+    already given a Lean constant name, `bound=False`) or a freshly
+    introduced EXISTENTIAL variable (an indefinite object NP, `bound=
+    True` - the noun's own predicate is dropped entirely, matching this
+    project's existing convention elsewhere of not asserting "and x is
+    a meeting" when nothing downstream needs it). `personal` is the
+    only disambiguator `DiscourseState.resolve` uses: True for a
+    referent a personal pronoun (she/he) can pick out, False for one an
+    impersonal pronoun (it) can."""
+
+    name: str
+    bound: bool
+    personal: bool
+
+
+class DiscourseState:
+    """Threads discourse referents across a SEQUENCE of sentences, for
+    cross-sentential pronoun resolution. See this section's own module
+    comment for scope - this is deliberately narrow, not a general
+    assignment-function implementation."""
+
+    def __init__(self):
+        self.referents: list[Referent] = []
+        self._fresh_count = 0
+
+    def add_named(self, name: str, *, personal: bool) -> Referent:
+        for ref in self.referents:
+            if not ref.bound and ref.name == name:
+                return ref
+        ref = Referent(name=name, bound=False, personal=personal)
+        self.referents.append(ref)
+        return ref
+
+    def add_bound(self, *, personal: bool) -> Referent:
+        self._fresh_count += 1
+        name = "m" if self._fresh_count == 1 else f"m{self._fresh_count}"
+        ref = Referent(name=name, bound=True, personal=personal)
+        self.referents.append(ref)
+        return ref
+
+    def resolve(self, *, personal: bool) -> Referent:
+        for ref in reversed(self.referents):
+            if ref.personal == personal:
+                return ref
+        raise NotImplementedError(
+            f"no compatible discourse referent to resolve a pronoun to (personal={personal})"
+        )
+
+
+# she_Pron/he_Pron resolve to the most recent PERSONAL referent;
+# it_Pron to the most recent IMPERSONAL one. they_Pron is genuinely
+# ambiguous between the two (plural personal or plural impersonal) and
+# isn't needed by fracas_120 - left unhandled rather than guessed at.
+_PERSONAL_SUBJECT_PRON = {"she_Pron", "he_Pron"}
+_IMPERSONAL_OBJECT_PRON = {"it_Pron"}
+
+
+def _resolve_np_referent(np, state: DiscourseState) -> Referent:
+    """Resolves one NP to a discourse referent against `state`,
+    introducing a new one when the NP is a proper noun (named) or a
+    singular indefinite (freshly bound) - the only two referent-
+    introducing shapes fracas_120 needs - or looking one up when it's a
+    pronoun. Raises NotImplementedError for any other NP shape, same
+    "narrow by design" discipline as every `_try_translate_*` special
+    case in this file."""
+    if np.head == "UsePN" and len(np.args) == 1:
+        return state.add_named(camel_name(_leaf_words(np)), personal=True)
+    if np.head == "UsePron" and len(np.args) == 1:
+        pron = np.args[0].head
+        if pron in _PERSONAL_SUBJECT_PRON:
+            return state.resolve(personal=True)
+        if pron in _IMPERSONAL_OBJECT_PRON:
+            return state.resolve(personal=False)
+        raise NotImplementedError(
+            f"pronoun {pron!r} not handled yet in discourse resolution "
+            "(see _PERSONAL_SUBJECT_PRON/_IMPERSONAL_OBJECT_PRON)"
+        )
+    if (
+        np.head == "DetCN"
+        and len(np.args) == 2
+        and np.args[0].head == "DetQuant"
+        and len(np.args[0].args) == 2
+        and np.args[0].args[0].head == "IndefArt"
+    ):
+        return state.add_bound(personal=False)
+    raise NotImplementedError(f"NP shape {np.head!r} not handled yet in discourse resolution")
+
+
+def translate_discourse(sentences) -> Translation:
+    """Translates a SEQUENCE of already-tense-unwrapped `PredVP subject
+    (ComplSlash (SlashV2a verb) object)` clauses sharing ONE threaded
+    `DiscourseState`, producing a single conjunction (bare, no outer
+    parens - same convention as every other `Translation.lean_prop`
+    this file produces; the caller wraps it if it's embedded in a
+    larger expression) existentially closed over every bound
+    (indefinite-object) referent introduced anywhere in the sequence.
+    fracas_120's own two premises, "Smith attended a meeting" + "she
+    chaired it", become `∃ m, attended smith m ∧ chaired smith m` - the
+    same proposition `scripts/gen_gf_cross_check.py`'s own
+    `_build_fracas_120` used to hand-build directly from the raw trees.
+    Called with a single sentence (no pronouns to resolve), this is
+    also how fracas_120's own HYPOTHESIS gets its existential reading
+    ("Smith chaired a meeting" -> `∃ m, chaired smith m`) rather than
+    `translate_cl`'s own fused-predicate one - see this section's module
+    comment for why that's a different, explicitly-invoked pipeline
+    rather than a new case inside `translate_cl` itself.
+
+    Only one VP shape (`ComplSlash (SlashV2a verb) obj`, a plain
+    transitive verb) is handled - confirmed sufficient for fracas_120;
+    extending to a PP-complement VP (fracas_121's own "delivered ... to
+    ITEL") is left for when that id's own tree is wired in here."""
+    state = DiscourseState()
+    conjuncts: list[str] = []
+    free_predicates: list[str] = []
+    free_individuals: list[str] = []
+    for cl in sentences:
+        if cl.head != "PredVP" or len(cl.args) != 2:
+            raise NotImplementedError(
+                f"only 'PredVP subject vp' is handled in a discourse, got head={cl.head!r}"
+            )
+        subject, vp = cl.args
+        if (
+            vp.head != "ComplSlash"
+            or len(vp.args) != 2
+            or vp.args[0].head != "SlashV2a"
+            or len(vp.args[0].args) != 1
+        ):
+            raise NotImplementedError(
+                "only a plain transitive VP (ComplSlash (SlashV2a verb) obj) is "
+                f"handled in a discourse so far, got vp head={vp.head!r}"
+            )
+        subj_ref = _resolve_np_referent(subject, state)
+        obj_ref = _resolve_np_referent(vp.args[1], state)
+        verb_name = camel_name(_leaf_words(vp.args[0]))
+        conjuncts.append(f"{verb_name} {subj_ref.name} {obj_ref.name}")
+        if verb_name not in free_predicates:
+            free_predicates.append(verb_name)
+        for ref in (subj_ref, obj_ref):
+            if not ref.bound and ref.name not in free_individuals:
+                free_individuals.append(ref.name)
+    bound_names = [r.name for r in state.referents if r.bound]
+    body = " ∧ ".join(conjuncts)
+    prop = f"∃ {' '.join(bound_names)}, {body}" if bound_names else body
+    return Translation(
+        lean_prop=prop,
+        free_predicates=free_predicates,
+        free_individuals=free_individuals,
+        binary_predicates=list(free_predicates),
+    )
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:

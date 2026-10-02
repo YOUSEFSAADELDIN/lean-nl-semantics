@@ -47,6 +47,7 @@ sys.path.insert(0, str(GF_DIR))
 from translate import (  # noqa: E402
     Translation,
     translate_cl,
+    translate_discourse,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -224,29 +225,34 @@ def _build_fracas_120(roles: dict) -> "tuple[str, str, str]":
     meeting." The two premises share ONE bound existential (the
     meeting), confirmed by reading the real theorem's own stated type
     directly (`(exists m, attended smith m and chaired smith m) ->
-    exists m, chaired smith m`). Built by hand straight from the three
-    raw GF trees rather than through translate_cl's own per-sentence
-    pipeline: no other id needs "keep the indefinite object
-    existentially open instead of fusing it into a predicate name" or
-    "she"/"it" resolving to the PRIOR sentence's own subject/object -
-    forcing either into translate_cl's general-purpose dispatch would
-    risk it misfiring on some unrelated future sentence shape it was
-    never meant to cover. Returns (binders, arrow_chain, proof)."""
+    exists m, chaired smith m`). Built via `translate.py`'s own general
+    `translate_discourse` pipeline (not `translate_cl`'s per-sentence
+    one - see that function's module comment for why cross-sentential
+    pronoun resolution needs a separate, explicitly-invoked mechanism
+    rather than a new case inside `translate_cl` itself, which would
+    silently misfire on fracas_103's own already-confirmed "ProperNoun
+    V2 a N" translation). The hypothesis is translated the same way,
+    as a one-sentence discourse - `translate_discourse` always prefers
+    the existential reading for an indefinite object, which is exactly
+    what's needed here to type-match the premise's own shared bound
+    variable (see fracas_103's real theorem, `hasCar jones`, for the
+    OTHER reading `translate_cl` picks for the identical tree shape
+    read with no discourse link). Returns (binders, arrow_chain, proof).
+    """
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
     hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
 
-    subject_name = camel_name(_leaf_words(p1.args[0]))
-    verb1 = camel_name(_leaf_words(p1.args[1].args[0]))
-    verb2 = camel_name(_leaf_words(p2.args[1].args[0]))
-    if camel_name(_leaf_words(hyp.args[0])) != subject_name:
+    premise_t = translate_discourse([p1, p2])
+    hyp_t = translate_discourse([hyp])
+    if hyp_t.free_individuals != premise_t.free_individuals[:1]:
         raise ValueError("hypothesis's own subject doesn't match premise 1's")
-    if camel_name(_leaf_words(hyp.args[1].args[0])) != verb2:
+    if hyp_t.free_predicates != premise_t.free_predicates[1:2]:
         raise ValueError("hypothesis's own verb doesn't match premise 2's")
 
-    combined = f"(∃ m, {verb1} {subject_name} m ∧ {verb2} {subject_name} m)"
-    conclusion = f"∃ m, {verb2} {subject_name} m"
-    arrow_chain = f"{combined} → {conclusion}"
+    subject_name = premise_t.free_individuals[0]
+    verb1, verb2 = premise_t.free_predicates
+    arrow_chain = f"({premise_t.lean_prop}) → {hyp_t.lean_prop}"
     binders = f"{{A : Type*}} ({subject_name} : A) ({verb1} {verb2} : A → A → Prop)"
     proof = "fun h1 => fracas_120 _ _ _ h1"
     return binders, arrow_chain, proof
@@ -3228,13 +3234,22 @@ def main() -> None:
         "ambiguous between this bundle's own specific reading and this",
         "project's usual fused-unary-predicate one; its Skolem-function-bound",
         "variant (117-119, `SKOLEM_PROJECT`); a synthesized scope-entailment",
-        "premise (123, `SYNTHESIZE_PREMISE`); and twelve fully hand-built",
-        "cross-sentential-anaphora theorems bypassing `translate_cl` entirely",
-        "(120-122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - a shared bound",
-        "existential, a ternary named-individual relation, trivial-literal",
-        "restrictors, Skolemized dependent-plural/paycheque pronouns, a",
-        "dropped licensing-only premise, and reflexive/embedded-clause",
-        "arguments). Not every Section 3 id is covered: 125/130/136/141 are",
+        "premise (123, `SYNTHESIZE_PREMISE`); one id (120, `CUSTOM_BUILD`)",
+        "built through `translate.py`'s own `translate_discourse` - a real,",
+        "reusable (if narrowly-scoped) cross-sentential pronoun-resolution",
+        "mechanism, not a per-id hand translation, though still invoked via",
+        "`CUSTOM_BUILD` rather than the generic pipeline since combining a",
+        "multi-sentence premise with a single-sentence hypothesis isn't this",
+        "script's generic arrow-chain shape; and eleven further fully",
+        "hand-built cross-sentential-anaphora theorems bypassing both",
+        "`translate_cl` AND `translate_discourse` entirely (121/122/124/128/",
+        "129/131-133/138-140, `CUSTOM_BUILD` - a ternary named-individual",
+        "relation, trivial-literal restrictors, Skolemized dependent-plural/",
+        "paycheque pronouns, a dropped licensing-only premise, and",
+        "reflexive/embedded-clause arguments - 121 in particular needs",
+        "`translate_discourse`'s own PP-complement-VP/three-sentence",
+        "extension before it could move out of this bucket too). Not every",
+        "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",
         "a genuinely unstated extra premise (\"the other eight machines were",
         "also here yesterday\", no corresponding FraCaS sentence); and",
