@@ -270,7 +270,7 @@ def toyGradable : Gradable ToyAnimal where
     | .dumbo => 100
   smallThreshold := 10
   largeThreshold := 50
-  small_lt_large := by norm_num
+  small_lt_large := by omega
 
 theorem toy_mickey_small : small toyGradable .mickey := by show (1:ℤ) < 10; omega
 
