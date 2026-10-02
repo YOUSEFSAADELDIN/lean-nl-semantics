@@ -58,19 +58,23 @@ the same conjunction as both premise and hypothesis, via
 `existential_objects=False` - a ternary PP-complement relation over
 three sentences, confirmed by `translate_discourse`'s own proper-
 noun-vs-indefinite salience preference correctly resolving "them"
-to ITEL rather than the just-introduced report/invoice); and nine
-further fully hand-built cross-sentential-anaphora theorems
-bypassing both `translate_cl` AND `translate_discourse` entirely
-(122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - nested donkey-
+to ITEL rather than the just-introduced report/invoice); two more
+(139/140, `CUSTOM_BUILD`) built through `translate_cl` itself -
+`_try_translate_reflexive_indefinite_subject` (139's own
+ditransitive reflexive, existentially binding the subject and
+dropping the ditransitive object) and `_try_translate_sentential_
+complement` composed with `_try_translate_reflexive_named_subject`
+(140's own "said [that] ... himself", the embedded clause
+translated RECURSIVELY through `translate_cl` rather than by hand);
+and seven further fully hand-built cross-sentential-anaphora
+theorems bypassing `translate_cl`/`translate_discourse` entirely
+(122/124/128/129/131-133/138, `CUSTOM_BUILD` - nested donkey-
 pronoun quantifier binding, cardinal/set-based anaphora, genuine
 multi-reading referential ambiguity, dependent-plural/paycheque
 Skolemization, e-type "upgrade the witness set to the whole set"
-anaphora, a definite-description-licensed total function, and
-reflexive/embedded-clause VP shapes (`ReflVP`/`Slash2V3`/`ComplVS`)
-neither pipeline parses at all - each a genuinely different
-resolution mechanism from `translate_discourse`'s own flat,
-top-level discourse-referent threading, not an incremental
-extension of it). Not every
+anaphora, and a definite-description-licensed total function -
+each a genuinely different resolution mechanism from either
+pipeline's own, not an incremental extension of one). Not every
 Section 3 id is covered: 125/130/136/141 are
 countermodel-only (no bare theorem to cross-check at all); 126 needs
 a genuinely unstated extra premise ("the other eight machines were

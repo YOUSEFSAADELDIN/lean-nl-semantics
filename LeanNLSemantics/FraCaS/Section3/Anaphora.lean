@@ -53,18 +53,35 @@ m ∧ chaired smith m`) and problem 121's own three-sentence ternary one
 delivered smith itel proposal`, "them" correctly preferring ITEL over
 the report/invoice mentioned nearer it) from the raw GF trees, confirmed
 via `scripts/gen_gf_cross_check.py`'s own `_build_fracas_120`/
-`_build_fracas_121`. It does not yet cover any other id in this file —
-the donkey-pronoun quantifier nesting (122), cardinal/set-based
-anaphora (124), genuine multi-reading referential ambiguity (128-130),
-dependent-plural/paycheque Skolemization (131/132), e-type "upgrade the
-witness set to the whole set" anaphora (133), a definite-description-
-licensed total function (138), or reflexive/embedded-clause VP shapes
-(139/140) are each a genuinely different resolution mechanism from this
-one's flat, top-level discourse-referent threading, not an incremental
-extension of it — left hand-resolved exactly as this header already
-describes, extended only when another confirmed GF tree needs more,
-the same incremental discipline `translate.py`'s own `_try_translate_*`
-functions already follow.
+`_build_fracas_121`.
+
+Two more ids, 139 and 140, are likewise reproduced from their raw GF
+trees, but through `translate_cl` itself rather than through
+`translate_discourse` — both are single-sentence reflexive shapes, not
+cross-sentential threading, so they fit `translate_cl`'s own per-sentence
+dispatch instead: `_try_translate_reflexive_indefinite_subject` handles
+139's ditransitive reflexive ("A company director awarded himself a
+large payrise"), existentially binding the subject and dropping the
+ditransitive object (`∃d, awardLargePayrise d d`); `_try_translate_
+sentential_complement` composed with `_try_translate_reflexive_named_
+subject` handles 140's "John said that Bill had hurt himself," recursing
+`translate_cl` on the embedded clause rather than hand-resolving it
+(`said john (hurt bill bill)`). Confirmed via `_build_fracas_139`/
+`_build_fracas_140`.
+
+Together these four ids (120/121/139/140) do not cover any other id in
+this file — the donkey-pronoun quantifier nesting (122), cardinal/set-
+based anaphora (124), genuine multi-reading referential ambiguity
+(128-130), dependent-plural/paycheque Skolemization (131/132), e-type
+"upgrade the witness set to the whole set" anaphora (133), or a
+definite-description-licensed total function (138) are each a genuinely
+different resolution mechanism from `translate_discourse`'s flat,
+top-level discourse-referent threading and from `translate_cl`'s
+per-sentence dispatch alike, not an incremental extension of either —
+left hand-resolved exactly as this header already describes, extended
+only when another confirmed GF tree needs more, the same incremental
+discipline `translate.py`'s own `_try_translate_*` functions already
+follow.
 -/
 
 namespace FraCaS.Section3

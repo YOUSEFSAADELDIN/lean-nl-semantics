@@ -169,8 +169,10 @@ def parse_tree(text: str):
 # _PN (proper nouns, e.g. pavarotti_PN) is content-bearing too, but -
 # unlike every other suffix here - it names a free *individual*, not a
 # free *predicate*; see _try_translate_partitive_identity below for the
-# one place that distinction actually matters.
-_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN", "_Adv")
+# one place that distinction actually matters. _V3 (a ditransitive verb,
+# e.g. award_V3) is confirmed needed by fracas_139's own reflexive
+# construction - the only id in this corpus that uses one.
+_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN", "_Adv", "_V3")
 
 
 def _is_leaf_lexical(name: str) -> bool:
@@ -1167,6 +1169,128 @@ def translate_discourse(sentences, *, existential_objects: bool = True) -> Trans
     )
 
 
+def _try_translate_reflexive_indefinite_subject(subject, vp):
+    """Handles an INDEFINITE subject with a reflexive ditransitive VP -
+    e.g. fracas_139's own "A company director awarded himself a large
+    payrise" -> `∃ d, awardLargePayrise d d`. Confirmed by the real
+    theorem's own `:= id` proof (`(exists d, awarded d d) -> exists d,
+    awarded d d`): the ditransitive's own direct object ("a large
+    payrise") contributes nothing beyond the predicate's OWN name (the
+    real Lean predicate is BINARY, `A -> A -> Prop`, not ternary), and
+    "a company director" itself - not just its reflexive pronoun - is
+    what's existentially bound, since nothing about being specifically
+    a company director survives into the real theorem's stated type
+    either. Matches `scripts/gen_gf_cross_check.py`'s own prior
+    hand-built `_build_fracas_139` exactly (same verb-name derivation:
+    the verb's own lexical content fused with the ditransitive object's,
+    e.g. "award" + "largePayrise" -> "awardLargePayrise").
+
+    Only a singular-indefinite subject (`DetCN (DetQuant IndefArt
+    NumSg) cn`) with a `ReflVP (Slash2V3 verb obj)` VP is handled -
+    confirmed sufficient for fracas_139, the only id in this corpus
+    using a ditransitive verb at all. Returns None when the shape
+    doesn't match, so the caller falls through to the general path."""
+    if (
+        subject.head != "DetCN"
+        or len(subject.args) != 2
+        or subject.args[0].head != "DetQuant"
+        or len(subject.args[0].args) != 2
+        or subject.args[0].args[0].head != "IndefArt"
+    ):
+        return None
+    if vp.head != "ReflVP" or len(vp.args) != 1:
+        return None
+    inner = vp.args[0]
+    if inner.head != "Slash2V3" or len(inner.args) != 2:
+        return None
+    verb_prefix = camel_name(_leaf_words(inner.args[0]))
+    obj_name = camel_name(_leaf_words(inner.args[1]))
+    verb_name = verb_prefix + obj_name[0].upper() + obj_name[1:]
+    return Translation(
+        lean_prop=f"∃ d, {verb_name} d d",
+        free_predicates=[verb_name],
+        free_individuals=[],
+        binary_predicates=[verb_name],
+    )
+
+
+def _try_translate_reflexive_named_subject(subject, vp):
+    """Handles a NAMED subject with a reflexive TRANSITIVE VP - e.g.
+    fracas_140's own embedded clause "Bill had hurt himself" -> `hurt
+    bill bill`. Distinct from `_try_translate_reflexive_indefinite_
+    subject` above (that one's subject is INDEFINITE and its verb
+    DITRANSITIVE, dropping its own direct object and existentially
+    binding the subject itself); here the subject is already a fixed
+    named individual and the verb is plain transitive, so nothing is
+    existentially bound and there's no ditransitive object to drop -
+    "himself" just doubles the named subject as both arguments of an
+    ordinary binary relation. Returns None when the shape doesn't
+    match."""
+    if subject.head != "UsePN" or len(subject.args) != 1:
+        return None
+    if vp.head != "ReflVP" or len(vp.args) != 1:
+        return None
+    inner = vp.args[0]
+    if inner.head != "SlashV2a" or len(inner.args) != 1:
+        return None
+    name = camel_name(_leaf_words(subject))
+    verb_name = camel_name(_leaf_words(inner))
+    return Translation(
+        lean_prop=f"{verb_name} {name} {name}",
+        free_predicates=[verb_name],
+        free_individuals=[name],
+        binary_predicates=[verb_name],
+    )
+
+
+def _unwrap_bare_usecl(t):
+    """Strips a BARE `UseCl tense PPos clause` (no outer `UttS` the way
+    `_unwrap_tense` expects) down to `clause` - needed for an EMBEDDED
+    clause under `ComplVS` (fracas_140's own "said [that] Bill had hurt
+    himself"), which this grammar never wraps in its own `UttS` (that
+    wrapper only ever appears at the top of a whole utterance). Only
+    PPos is handled, the same restriction `_unwrap_tense` already has."""
+    if t.head == "UseCl" and len(t.args) == 3 and t.args[1].head == "PPos":
+        return t.args[2]
+    return t
+
+
+def _try_translate_sentential_complement(subject, vp):
+    """Handles a `ComplVS verb embedded` VP - "John said [that] Bill had
+    hurt himself" -> `said john (hurt bill bill)`, confirmed by
+    fracas_140's own real theorem (`said : A -> Prop -> Prop`, a flat
+    embedding with no factivity/implicativity modeled - this project's
+    own Section 9, Attitudes, explicitly doesn't attempt that in
+    general; see `translate.py`'s own module-level comment on why
+    Section 9 isn't in the generic pipeline). The embedded clause is
+    translated RECURSIVELY via `translate_cl` itself (after stripping
+    its own bare `UseCl` tense wrapper), reusing every existing single-
+    sentence case - including `_try_translate_reflexive_named_subject`
+    above - rather than re-parsing it by hand.
+
+    Only `say_VS` is handled: `gf/run_gf_tests.py` confirms several
+    OTHER attitude verbs share the same `_VS` lexical suffix (`claim_VS`/
+    `know_VS`/`believe_VS`, across Section 4/9's own ids), but each of
+    those ids' own real theorem needs checking individually before
+    reusing this same flat-embedding treatment for it - not attempted
+    here, same "only what's confirmed needed" discipline as
+    `_LEXICAL_SUFFIXES` itself. Returns None when the shape doesn't
+    match."""
+    if vp.head != "ComplVS" or len(vp.args) != 2:
+        return None
+    verb_lemma, embedded = vp.args
+    if verb_lemma.head != "say_VS" or verb_lemma.args:
+        return None
+    embedded_t = translate_cl(_unwrap_bare_usecl(embedded))
+    subject_name = camel_name(_leaf_words(subject))
+    return Translation(
+        lean_prop=f"said {subject_name} ({embedded_t.lean_prop})",
+        free_predicates=["said", *embedded_t.free_predicates],
+        free_individuals=[subject_name, *embedded_t.free_individuals],
+        binary_predicates=list(embedded_t.binary_predicates),
+    )
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:
@@ -1174,6 +1298,18 @@ def translate_cl(t) -> Translation:
             f"only 'PredVP (DetCN det cn) vp' is handled so far, got head={t.head!r}"
         )
     subject, vp = t.args
+
+    sentential_complement = _try_translate_sentential_complement(subject, vp)
+    if sentential_complement is not None:
+        return sentential_complement
+
+    reflexive = _try_translate_reflexive_indefinite_subject(subject, vp)
+    if reflexive is not None:
+        return reflexive
+
+    reflexive_named = _try_translate_reflexive_named_subject(subject, vp)
+    if reflexive_named is not None:
+        return reflexive_named
 
     inverted = _try_translate_partitive_identity(subject, vp)
     if inverted is not None:

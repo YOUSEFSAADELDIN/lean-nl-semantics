@@ -561,21 +561,23 @@ def _build_fracas_139(roles: dict) -> "tuple[str, str, str]":
     director" is ERASED entirely (the real theorem existentially
     quantifies over ANY individual, not specifically company directors
     - a real semantic simplification, not a translation gap), and only
-    the reflexive "awarded... a large payrise" relation survives. The
-    verb's own GF lexical item (`award_V3`) uses a `_V3` suffix this
-    translator's `_LEXICAL_SUFFIXES` table doesn't recognize (the
-    ditransitive award_V3/ReflVP construction has never come up before
-    this problem), so "award" is prepended by hand rather than picked
-    up automatically - names don't need to match the real theorem's own
-    choice regardless. Returns (binders, arrow_chain, proof)."""
+    the reflexive "awarded... a large payrise" relation survives. Built
+    via `translate.py`'s own `translate_cl` directly (now a genuine new
+    case, `_try_translate_reflexive_indefinite_subject`, not a one-off
+    hand translation): `_V3` (a ditransitive verb, e.g. `award_V3`) was
+    added to `_LEXICAL_SUFFIXES` since this is the only id in the whole
+    corpus using one, so the verb's own name is now picked up the same
+    way every other lexical item is, not prepended by hand. The
+    hypothesis's own tree (a different active/passive-conjoined
+    surface form) is never translated independently, matching the real
+    theorem's own `:= id` proof directly reusing the premise's exact
+    proposition as the conclusion. Returns (binders, arrow_chain, proof).
+    """
     p = _unwrap_tense(parse_tree(roles["_premise"]))
-    obj_cn = p.args[1].args[0].args[1]
-    payrise_name = camel_name(_leaf_words(obj_cn))
-    verb_name = "award" + payrise_name[0].upper() + payrise_name[1:]
+    t = translate_cl(p)
 
-    combined = f"∃ d, {verb_name} d d"
-    arrow_chain = f"({combined}) → {combined}"
-    binders = f"{{A : Type*}} ({verb_name} : A → A → Prop)"
+    arrow_chain = f"({t.lean_prop}) → {t.lean_prop}"
+    binders = f"{{A : Type*}} ({t.free_predicates[0]} : A → A → Prop)"
     proof = "fun h => fracas_139 _ h"
     return binders, arrow_chain, proof
 
@@ -585,25 +587,24 @@ def _build_fracas_140(roles: dict) -> "tuple[str, str, str]":
     hurt." Confirmed by reading the real theorem's own `:= id` proof
     directly (`said john (hurt bill bill) -> said john (hurt bill
     bill)`) - "said" takes a Prop as its own second argument (`A -> Prop
-    -> Prop`, an embedded-clause-as-argument shape no other id in this
-    generator needs), and "himself" resolves to Bill, giving the
-    reflexive `hurt bill bill`. Both `say_VS`'s own GF lexical item and
-    "said" itself use suffixes (`_VS`) this translator doesn't recognize
-    as lexical, so "said" is supplied by hand, same reason as
-    fracas_139's own `award_V3`. Returns (binders, arrow_chain, proof)."""
+    -> Prop`), and "himself" resolves to Bill, giving the reflexive
+    `hurt bill bill`. Built via `translate.py`'s own `translate_cl`
+    directly now (`_try_translate_sentential_complement`, recursing into
+    `_try_translate_reflexive_named_subject` for the embedded clause),
+    not a one-off hand translation - `say_VS` is matched by name
+    specifically (its `_VS` suffix is shared by several OTHER attitude
+    verbs across Section 4/9's own ids, each needing its own real
+    theorem checked before reusing this same flat-embedding treatment,
+    so it isn't added to `_LEXICAL_SUFFIXES` generically yet). Returns
+    (binders, arrow_chain, proof)."""
     p = _unwrap_tense(parse_tree(roles["_premise"]))
-    john_name = camel_name(_leaf_words(p.args[0]))
-    embedded = p.args[1].args[1].args[2]
-    bill_name = camel_name(_leaf_words(embedded.args[0]))
-    hurt_name = camel_name(_leaf_words(embedded.args[1]))
-    said_name = "said"
+    t = translate_cl(p)
 
-    hurt_fact = f"{hurt_name} {bill_name} {bill_name}"
-    combined = f"{said_name} {john_name} ({hurt_fact})"
-    arrow_chain = f"{combined} → {combined}"
+    arrow_chain = f"{t.lean_prop} → {t.lean_prop}"
     binders = (
-        f"{{A : Type*}} ({john_name} {bill_name} : A) "
-        f"({said_name} : A → Prop → Prop) ({hurt_name} : A → A → Prop)"
+        f"{{A : Type*}} ({' '.join(t.free_individuals)} : A) "
+        f"({t.free_predicates[0]} : A → Prop → Prop) "
+        f"({' '.join(t.free_predicates[1:])} : A → A → Prop)"
     )
     proof = "fun h => fracas_140 _ _ _ _ h"
     return binders, arrow_chain, proof
@@ -3238,19 +3239,23 @@ def main() -> None:
         "`existential_objects=False` - a ternary PP-complement relation over",
         "three sentences, confirmed by `translate_discourse`'s own proper-",
         "noun-vs-indefinite salience preference correctly resolving \"them\"",
-        "to ITEL rather than the just-introduced report/invoice); and nine",
-        "further fully hand-built cross-sentential-anaphora theorems",
-        "bypassing both `translate_cl` AND `translate_discourse` entirely",
-        "(122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - nested donkey-",
+        "to ITEL rather than the just-introduced report/invoice); two more",
+        "(139/140, `CUSTOM_BUILD`) built through `translate_cl` itself -",
+        "`_try_translate_reflexive_indefinite_subject` (139's own",
+        "ditransitive reflexive, existentially binding the subject and",
+        "dropping the ditransitive object) and `_try_translate_sentential_",
+        "complement` composed with `_try_translate_reflexive_named_subject`",
+        "(140's own \"said [that] ... himself\", the embedded clause",
+        "translated RECURSIVELY through `translate_cl` rather than by hand);",
+        "and seven further fully hand-built cross-sentential-anaphora",
+        "theorems bypassing `translate_cl`/`translate_discourse` entirely",
+        "(122/124/128/129/131-133/138, `CUSTOM_BUILD` - nested donkey-",
         "pronoun quantifier binding, cardinal/set-based anaphora, genuine",
         "multi-reading referential ambiguity, dependent-plural/paycheque",
         "Skolemization, e-type \"upgrade the witness set to the whole set\"",
-        "anaphora, a definite-description-licensed total function, and",
-        "reflexive/embedded-clause VP shapes (`ReflVP`/`Slash2V3`/`ComplVS`)",
-        "neither pipeline parses at all - each a genuinely different",
-        "resolution mechanism from `translate_discourse`'s own flat,",
-        "top-level discourse-referent threading, not an incremental",
-        "extension of it). Not every",
+        "anaphora, and a definite-description-licensed total function -",
+        "each a genuinely different resolution mechanism from either",
+        "pipeline's own, not an incremental extension of one). Not every",
         "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",
         "a genuinely unstated extra premise (\"the other eight machines were",
