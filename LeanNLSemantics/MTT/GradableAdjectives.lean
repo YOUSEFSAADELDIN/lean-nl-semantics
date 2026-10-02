@@ -1,0 +1,209 @@
+import LeanNLSemantics.FraCaS.Section5.Batch1
+import LeanNLSemantics.FraCaS.Section5.Batch2
+import LeanNLSemantics.FraCaS.Section6.Batch1
+
+/-!
+# A measure/threshold model for gradable adjectives (degree-semantics pilot)
+
+This is a **port**, not novel theory. The idea — model a gradable
+adjective pair (`small`/`large`, `fast`/`slow`, ...) as a single real-
+(here, integer-) valued *measure* plus two *thresholds*, with "small"
+below the low threshold and "large" above the high one, leaving a gap
+in between for the middle ground — is exactly the device used by:
+
+- Chatzikyriakidis, `CoqLACL` (github.com/StergiosCha/CoqLACL),
+  `Adjectives.v`/`FracasCoq.v`: contrary adjectives built from one
+  underlying comparison rather than two independent axioms.
+- Chatzikyriakidis & Luo, "Adjectival and adverbial modification: The
+  view from modern type theories" (JoLLI 2017), and their forthcoming
+  monograph *Formal Semantics in Modern Type Theories*
+  (github.com/StergiosCha/MTT-semantics_book, `Book_gradable.v`).
+- Bernardy & Chatzikyriakidis, "A Wide-Coverage Symbolic Natural
+  Language Inference System" (NAACL 2019, W19-6131): one uniform
+  measure+threshold-in-ℤ representation, closed automatically by linear
+  arithmetic (there, Coq's `omega`/`lia`; here, Lean's `omega`).
+
+## What this buys the existing port
+
+This project's own Section 5/6 FraCaS theorems (`fracas_204`, `205`,
+`208`, `209`, `220`, `223`, `224`, `227`, `229`) each had to take, as an
+extra hypothesis, an assumed "connecting fact" relating a pair of
+gradable adjectives or comparatives — e.g. `204`'s
+`∀ x, small x → ¬ large x`, or `208`'s
+`∀ x y, small x → large y → smallerThan x y`. FraCaS's own `<why>` notes
+for these problems call such facts genuinely assumed world knowledge,
+not derivable from the sentences alone — and that remains true in
+general (nothing here changes how those 9 theorems are stated or
+proved). What this file adds is a *concrete model* in which all 9 of
+those assumed facts turn out to be theorems: give `small`/`large` (or
+`fast`/`slow`, `asFastAs`, ...) a shared integer `measure` and a
+threshold gap, and each fact is a one-line `omega` consequence of that
+gap. The 9 corollaries below apply the real, already-proved `fracas_NNN`
+theorems to these derived facts, rather than re-proving or modifying
+them — this file is purely additive.
+-/
+
+namespace MTT
+
+open FraCaS.Section5 FraCaS.Section6
+
+/-- A gradable adjective pair over `A`, modeled the Bernardy &
+Chatzikyriakidis way: one integer `measure`, and two thresholds with a
+gap between them (`small_lt_large`) for the "neither small nor large"
+middle ground that FraCaS's own 206/207 rely on. -/
+structure Gradable (A : Type*) where
+  measure : A → ℤ
+  smallThreshold : ℤ
+  largeThreshold : ℤ
+  small_lt_large : smallThreshold < largeThreshold
+
+variable {A : Type*}
+
+/-- Below the low threshold. -/
+def small (G : Gradable A) (x : A) : Prop := G.measure x < G.smallThreshold
+
+/-- Above the high threshold. -/
+def large (G : Gradable A) (x : A) : Prop := G.largeThreshold < G.measure x
+
+/-- The comparative read off the same measure (strict). -/
+def smallerThan (G : Gradable A) (x y : A) : Prop := G.measure x < G.measure y
+
+/-- The reverse comparative. -/
+def largerThan (G : Gradable A) (x y : A) : Prop := G.measure y < G.measure x
+
+/-- "Faster than" (or any strict comparative): greater measure. -/
+def fasterThan (G : Gradable A) (x y : A) : Prop := G.measure y < G.measure x
+
+/-- "At least as fast as" — the "at least as", not "exactly as", reading
+`Section6.Batch1`'s own 224/225/226/227/228 comment already calls for. -/
+def asFastAs (G : Gradable A) (x y : A) : Prop := G.measure y ≤ G.measure x
+
+/-- "Slower than": the reverse strict comparative. -/
+def slowerThan (G : Gradable A) (x y : A) : Prop := G.measure x < G.measure y
+
+/-! ## The 9 derived "connecting facts" -/
+
+/-- Feeds `fracas_204`: small and large can't both hold, via the gap. -/
+theorem small_not_large (G : Gradable A) : ∀ x, small G x → ¬ large G x := by
+  intro x hs hl
+  have hgap := G.small_lt_large
+  unfold small at hs
+  unfold large at hl
+  omega
+
+/-- Feeds `fracas_205`, the mirror image of `small_not_large`. -/
+theorem large_not_small (G : Gradable A) : ∀ x, large G x → ¬ small G x := by
+  intro x hl hs
+  have hgap := G.small_lt_large
+  unfold small at hs
+  unfold large at hl
+  omega
+
+/-- Feeds `fracas_208`: anything small measures below anything large. -/
+theorem small_lt_large_measure (G : Gradable A) :
+    ∀ x y, small G x → large G y → smallerThan G x y := by
+  intro x y hs hl
+  have hgap := G.small_lt_large
+  unfold small at hs
+  unfold large at hl
+  unfold smallerThan
+  omega
+
+/-- Feeds `fracas_209`, the `largerThan`-flavored mirror of the above. -/
+theorem not_larger_of_small_large (G : Gradable A) :
+    ∀ x y, small G x → large G y → ¬ largerThan G x y := by
+  intro x y hs hl hcontra
+  have hgap := G.small_lt_large
+  unfold small at hs
+  unfold large at hl
+  unfold largerThan at hcontra
+  omega
+
+/-- Feeds `fracas_220`: faster than something large is itself large. -/
+theorem large_of_fasterThan_large (G : Gradable A) :
+    ∀ x y, fasterThan G x y → large G y → large G x := by
+  intro x y hf hy
+  unfold fasterThan at hf
+  unfold large at hy ⊢
+  omega
+
+/-- Feeds `fracas_223`: faster than something small rules out the
+*other* one being large (the faster one is already small, so the
+slower one is even smaller). -/
+theorem not_large_of_fasterThan_small (G : Gradable A) :
+    ∀ x y, fasterThan G x y → small G x → ¬ large G y := by
+  intro x y hf hx hy
+  have hgap := G.small_lt_large
+  unfold fasterThan at hf
+  unfold small at hx
+  unfold large at hy
+  omega
+
+/-- Feeds `fracas_224`: at-least-as-fast-as something large is itself
+large. -/
+theorem large_of_asFastAs_large (G : Gradable A) :
+    ∀ x y, asFastAs G x y → large G y → large G x := by
+  intro x y ha hy
+  unfold asFastAs at ha
+  unfold large at hy ⊢
+  omega
+
+/-- Feeds `fracas_227`, the `asFastAs`-flavored mirror of
+`not_large_of_fasterThan_small`. -/
+theorem not_large_of_asFastAs_small (G : Gradable A) :
+    ∀ x y, asFastAs G x y → small G x → ¬ large G y := by
+  intro x y ha hx hy
+  have hgap := G.small_lt_large
+  unfold asFastAs at ha
+  unfold small at hx
+  unfold large at hy
+  omega
+
+/-- Feeds `fracas_229`: at-least-as-fast-as directly refutes
+slower-than, by pure arithmetic (no threshold gap needed). -/
+theorem not_slowerThan_of_asFastAs (G : Gradable A) :
+    ∀ x y, asFastAs G x y → ¬ slowerThan G x y := by
+  intro x y ha hcontra
+  unfold asFastAs at ha
+  unfold slowerThan at hcontra
+  omega
+
+/-! ## The 9 corollaries: the real FraCaS theorems, discharged -/
+
+theorem fracas_204_degree_based (G : Gradable A) (mickey : A) :
+    small G mickey → ¬ large G mickey :=
+  fracas_204 (small G) (large G) mickey (small_not_large G)
+
+theorem fracas_205_degree_based (G : Gradable A) (dumbo : A) :
+    large G dumbo → ¬ small G dumbo :=
+  fracas_205 (small G) (large G) dumbo (large_not_small G)
+
+theorem fracas_208_degree_based (G : Gradable A) (mickey dumbo : A) :
+    small G mickey → large G dumbo → smallerThan G mickey dumbo :=
+  fracas_208 (small G) (large G) (smallerThan G) mickey dumbo (small_lt_large_measure G)
+
+theorem fracas_209_degree_based (G : Gradable A) (mickey dumbo : A) :
+    small G mickey → large G dumbo → ¬ largerThan G mickey dumbo :=
+  fracas_209 (small G) (large G) (largerThan G) mickey dumbo (not_larger_of_small_large G)
+
+theorem fracas_220_degree_based (G : Gradable A) (pc itel : A) :
+    fasterThan G pc itel → large G itel → large G pc :=
+  fracas_220 (fasterThan G) (large G) pc itel (large_of_fasterThan_large G)
+
+theorem fracas_223_degree_based (G : Gradable A) (pc itel : A) :
+    fasterThan G pc itel → small G pc → ¬ large G itel :=
+  fracas_223 (fasterThan G) (large G) (small G) pc itel (not_large_of_fasterThan_small G)
+
+theorem fracas_224_degree_based (G : Gradable A) (pc itel : A) :
+    asFastAs G pc itel → large G itel → large G pc :=
+  fracas_224 (asFastAs G) (large G) pc itel (large_of_asFastAs_large G)
+
+theorem fracas_227_degree_based (G : Gradable A) (pc itel : A) :
+    asFastAs G pc itel → small G pc → ¬ large G itel :=
+  fracas_227 (asFastAs G) (large G) (small G) pc itel (not_large_of_asFastAs_small G)
+
+theorem fracas_229_degree_based (G : Gradable A) (pc itel : A) :
+    asFastAs G pc itel → ¬ slowerThan G pc itel :=
+  fracas_229 (asFastAs G) (slowerThan G) pc itel (not_slowerThan_of_asFastAs G)
+
+end MTT
