@@ -1859,6 +1859,139 @@ def _try_translate_named_verb_pronoun_object(subject, vp):
     return camel_name(_leaf_words(vp))
 
 
+# ---------------------------------------------------------------------
+# 3i. Single-sentence donkey relative clause with a TWO-SORTED domain
+#     (fracas_134/135's shared "Every customer that owns a computer has
+#     a service contract for it." -> `∀x, customer x → ∀c, own x c →
+#     haveServiceContract x c`). Unlike every other donkey/Skolem
+#     pipeline in this file (120-122/131/132, all built across TWO
+#     sentences), this donkey binding is internal to ONE sentence's own
+#     subject-gap relative clause (`RelCN`+`RelVP IdRP`), continued by a
+#     pronoun in the SAME sentence's main-clause object ("for it"). The
+#     customer/computer distinction also needs a genuinely two-sorted
+#     Lean domain (`{A B : Type*}`) - every other id in this corpus
+#     (every CUSTOM_BUILD function before this one) uses a single
+#     `{A : Type*}`, but nothing about the GENERATOR's own dispatch
+#     mechanism requires that - `binders`/`arrow_chain` are plain
+#     strings a builder function is free to write however its own real
+#     theorem needs, so a second sort is just a matter of actually
+#     doing it, not a structural blocker.
+
+
+def _unwrap_rel_tense(t):
+    """Strips a `UseRCl tense PPos relvp` wrapper down to `relvp` - the
+    relative-clause analog of `_unwrap_tense`."""
+    if t.head == "UseRCl" and len(t.args) == 3 and t.args[1].head == "PPos":
+        return t.args[2]
+    return t
+
+
+def _try_translate_donkey_relative_premise(subject, vp):
+    """Recognizes "every CN that V2s a [indefinite] CN2 V2s [complex
+    object] for it" (fracas_134/135's own shared premise 1, "Every
+    customer that owns a computer has a service contract for it") - a
+    subject-gap relative clause (`RelCN`+`RelVP IdRP`) introducing a
+    donkey-bound indefinite, continued by a pronoun in the MAIN
+    clause's own object ("for it"), the standard donkey-sentence
+    construction (the same strong/weak donkey logical shape 134/135/136
+    already document, built here directly from ONE sentence's own
+    internal structure rather than across two sentences the way every
+    other donkey/Skolem pipeline in this file is). `translate_cl`'s own
+    general restrictor-fusion path ALSO parses this tree shape without
+    erroring, but commits to the WRONG reading for it (fusing the
+    relative clause into one conjunctive restrictor and the whole "for
+    it" object into one unary predicate, discarding the donkey
+    pronoun's own link entirely) - confirmed by direct comparison, not
+    assumed, the same "check what translate_cl already does before
+    writing a new case" discipline every other pipeline this session
+    followed. Returns None on shape mismatch, else (restrictor_name,
+    donkey_verb_name, main_verb_name)."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, relcn = subject.args
+    if det.head != "every_Det" or det.args:
+        return None
+    if relcn.head != "RelCN" or len(relcn.args) != 2:
+        return None
+    outer_cn, rel_clause = relcn.args
+    rel_clause = _unwrap_rel_tense(rel_clause)
+    if rel_clause.head != "RelVP" or len(rel_clause.args) != 2 or rel_clause.args[0].head != "IdRP":
+        return None
+    inner_vp = rel_clause.args[1]
+    if (
+        inner_vp.head != "ComplSlash"
+        or len(inner_vp.args) != 2
+        or inner_vp.args[0].head != "SlashV2a"
+        or len(inner_vp.args[0].args) != 1
+    ):
+        return None
+    donkey_obj = inner_vp.args[1]
+    if (
+        donkey_obj.head != "DetCN"
+        or len(donkey_obj.args) != 2
+        or donkey_obj.args[0].head != "DetQuant"
+        or len(donkey_obj.args[0].args) != 2
+        or donkey_obj.args[0].args[0].head != "IndefArt"
+        or donkey_obj.args[0].args[1].head != "NumSg"
+    ):
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    main_obj = vp.args[1]
+    if main_obj.head != "AdvNP" or len(main_obj.args) != 2 or main_obj.args[1].head != "PrepNP":
+        return None
+    pp = main_obj.args[1]
+    if (
+        len(pp.args) != 2
+        or pp.args[1].head != "UsePron"
+        or len(pp.args[1].args) != 1
+        or pp.args[1].args[0].head != "it_Pron"
+    ):
+        return None
+    restrictor_name = camel_name(_leaf_words(outer_cn))
+    donkey_verb_name = camel_name(_leaf_words(inner_vp.args[0]))
+    main_verb_name = camel_name(_leaf_words(vp))
+    return restrictor_name, donkey_verb_name, main_verb_name
+
+
+def _try_translate_named_copula_relative_restrictor(subject, vp):
+    """Recognizes "NAME is a CN that ..." (fracas_134/135's own shared
+    premise 2 shape, "MFI is a customer that owns exactly one/several
+    computers") - the relative clause's own content is a pure
+    distractor, confirmed by reading the real theorem's own stated type
+    directly (both 134 and 135 reduce premise 2 to just `customer mfi`,
+    discarding whether it's "exactly one" or "several" entirely, so
+    this function never even looks past the relative clause's own
+    opening `RelCN` node). Returns None on shape mismatch, else
+    (subject_name, restrictor_name)."""
+    if subject.head != "UsePN":
+        return None
+    if vp.head != "UseComp" or len(vp.args) != 1 or vp.args[0].head != "CompNP":
+        return None
+    np = vp.args[0].args[0] if vp.args[0].args else None
+    if np is None or np.head != "DetCN" or len(np.args) != 2:
+        return None
+    det, cn = np.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "IndefArt"
+        or det.args[1].head != "NumSg"
+    ):
+        return None
+    if cn.head != "RelCN" or len(cn.args) != 2:
+        return None
+    outer_cn = cn.args[0]
+    subject_name = camel_name(_leaf_words(subject))
+    restrictor_name = camel_name(_leaf_words(outer_cn))
+    return subject_name, restrictor_name
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:

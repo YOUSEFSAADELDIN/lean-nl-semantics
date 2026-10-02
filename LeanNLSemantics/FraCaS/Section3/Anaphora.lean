@@ -155,19 +155,56 @@ fracas_103's identical tree shape ("Jones has a company car" →
 byte-for-byte (`ownComputer`/`maintain`). Confirmed via
 `_build_fracas_133`.
 
-All twelve ids in this file with their own GF trees (120/121/122/124/
-128/129/131/132/133/138/139/140) are now reproduced through one of
-these eight pipelines or `translate_cl` directly, rather than by
-hand-indexed positional extraction — each pipeline earning its own
-name because it resolves a genuinely different kind of ambiguity or
-discourse continuation (120/121/122/131/132: a context-dependent
-reading choice an explicit flag or a later sentence's own shape
-decides; 124/128/129/133: a single, undisputed reading recovered via
-shape-checked extraction in place of blind indexing, not a competing
-interpretation). Extending any one of them further, or adding a ninth,
-happens only when another confirmed GF tree needs it — the same
-incremental discipline `translate.py`'s own `_try_translate_*`
-functions already follow.
+A ninth pipeline, `_try_translate_donkey_relative_premise`/`_try_
+translate_named_copula_relative_restrictor`, reproduces 134 and 135's
+own strong/universal donkey reading: "Every customer that owns a
+computer has a service contract for it" — unlike every other donkey/
+Skolem pipeline above (built across TWO sentences), this donkey binding
+is internal to ONE sentence's own subject-gap relative clause
+(`RelCN`+`RelVP IdRP`), continued by a pronoun in that SAME sentence's
+main-clause object ("for it"). `translate_cl`'s own general restrictor-
+fusion path also parses this tree shape without erroring, but commits
+to the WRONG reading for it (fusing the relative clause into one
+conjunctive restrictor and "a service contract for it" into one unary
+predicate, discarding the donkey pronoun's own link to the relative
+clause's indefinite entirely) — confirmed by direct comparison before
+writing a new case, not assumed. "Customer" and "computer" are
+genuinely different sorts, so this is also the FIRST two-sorted Lean
+domain (`{A B : Type*}`) this file's own generator has ever produced —
+nothing in the generator's own dispatch mechanism required a single
+domain; every prior id simply never needed more than one sort. Both
+134 and 135 share the identical premise 1 and reduce premise 2 to just
+`customer mfi` (discarding "exactly one" vs. "several" entirely, per
+both real theorems' own identical stated type and identical proof);
+the hypothesis is never independently translated either — the real
+proof is just premise 1's own universal instantiated at `mfi`, so the
+conclusion is built the same way directly. Confirmed via
+`_build_fracas_134`/`_build_fracas_135`.
+
+All fourteen ids in this file with their own GF trees (120/121/122/
+124/128/129/131/132/133/134/135/138/139/140) are now reproduced
+through one of these nine pipelines or `translate_cl` directly, rather
+than by hand-indexed positional extraction — each pipeline earning its
+own name because it resolves a genuinely different kind of ambiguity
+or discourse continuation (120/121/122/131/132/134/135: a context-
+dependent reading choice an explicit flag, a later sentence's own
+shape, or an in-sentence donkey pronoun decides; 124/128/129/133: a
+single, undisputed reading recovered via shape-checked extraction in
+place of blind indexing, not a competing interpretation). Three ids
+remain genuinely out of this generator's reach, for reasons that don't
+shrink with more pipeline work: 125/130/136/141 are countermodel-only
+(a witness construction, not an entailment chain — a different KIND of
+theorem, not a missing case); 126 and 137 each need an extra premise
+with no corresponding FraCaS sentence and no GF tree to recover it from
+(137 also bundles five separate sentences into one predicate); 127
+stacks FOUR separate novel mechanisms (a conjoined two-clause premise,
+cumulative-plural distribution across two referents, a disjunctive-
+existential weakening, and its own unstated distinctness premise) on
+top of a two-sorted domain, a substantially bigger undertaking than
+134/135's own single, reusable shape. Extending any of these nine
+pipelines further, or adding a tenth, happens only when another
+confirmed GF tree needs it — the same incremental discipline
+`translate.py`'s own `_try_translate_*` functions already follow.
 -/
 
 namespace FraCaS.Section3

@@ -59,6 +59,8 @@ from translate import (  # noqa: E402
     _try_translate_pronoun_verb_pronoun,
     _try_translate_named_verb_several,
     _try_translate_named_verb_pronoun_object,
+    _try_translate_donkey_relative_premise,
+    _try_translate_named_copula_relative_restrictor,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -577,6 +579,63 @@ def _build_fracas_133(roles: dict) -> "tuple[str, str, str]":
     binders = f"{{A : Type*}} ({owns_name} {maintain_name} : A → Prop)"
     proof = "fun h1 h2 => fracas_133 _ _ h1 h2"
     return binders, arrow_chain, proof
+
+
+def _build_fracas_134_or_135(roles: dict, fracas_name: str) -> "tuple[str, str, str]":
+    """Shared builder for fracas_134/135: "Every customer that owns a
+    computer has a service contract for it. MFI is a customer that owns
+    exactly one/several computers." -> "MFI has a service contract for
+    all its computers." Confirmed by reading both real theorems' own
+    stated types directly (`(forall x, customer x -> forall c, owns x c
+    -> hasContract x c) -> customer mfi -> forall c, owns mfi c ->
+    hasContract mfi c`, IDENTICAL for both ids - "exactly one" vs.
+    "several" never appears in either real theorem's own type at all).
+    Built through `translate.py`'s own `_try_translate_donkey_relative_
+    premise` (premise 1 - a donkey relative clause, "customer"/
+    "computer" genuinely two-sorted) and `_try_translate_named_copula_
+    relative_restrictor` (premise 2, discarding its own relative
+    clause's content entirely). The hypothesis is never independently
+    translated at all: the real proof (`fun h hmfi => h mfi hmfi`) is
+    just premise 1's own universal instantiated at `mfi`, so the
+    conclusion is built the same way directly, without parsing the
+    hypothesis's own "all its computers" tree (a `PredetNP`+possessive-
+    pronoun-plural shape this translator has no support for). The first
+    TWO-SORTED domain (`{A B : Type*}`) this generator has ever
+    produced - nothing in the dispatch mechanism itself required a
+    single domain; `binders`/`arrow_chain` are plain strings, so this
+    is just a builder actually using two sorts, not a structural change
+    elsewhere. Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_donkey_relative_premise(*p1.args)
+    if result1 is None:
+        raise ValueError(f"{fracas_name}'s premise 1 no longer matches the donkey-relative shape")
+    restrictor_name, donkey_verb_name, main_verb_name = result1
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    result2 = _try_translate_named_copula_relative_restrictor(*p2.args)
+    if result2 is None:
+        raise ValueError(f"{fracas_name}'s premise 2 no longer matches the named-copula-relative shape")
+    subject_name, restrictor_name2 = result2
+    if restrictor_name2 != restrictor_name:
+        raise ValueError(f"{fracas_name}'s premise 1 and premise 2 disagree on the restrictor name")
+
+    premise1_text = f"∀ x, {restrictor_name} x → ∀ c, {donkey_verb_name} x c → {main_verb_name} x c"
+    premise2_text = f"{restrictor_name} {subject_name}"
+    conclusion = f"∀ c, {donkey_verb_name} {subject_name} c → {main_verb_name} {subject_name} c"
+    arrow_chain = f"({premise1_text}) → {premise2_text} → ({conclusion})"
+    binders = (
+        f"{{A B : Type*}} ({restrictor_name} : A → Prop) "
+        f"({donkey_verb_name} {main_verb_name} : A → B → Prop) ({subject_name} : A)"
+    )
+    proof = f"fun h hmfi => {fracas_name} _ _ _ _ h hmfi"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_134(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_134_or_135(roles, "fracas_134")
+
+
+def _build_fracas_135(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_134_or_135(roles, "fracas_135")
 
 
 def _build_fracas_138(roles: dict) -> "tuple[str, str, str]":
@@ -2925,11 +2984,27 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # with no corresponding FraCaS sentence at all - confirmed by reading
 # its stated type directly - the same "genuinely unstated background
 # premise" gap as id 5's `hNonempty`, not fixable by any translation
-# mechanism. fracas_127/134/135 (two-sorted domains, `{Person Machine}`/
-# `{A B}`) and fracas_137 (needs a `Fintype.card` premise plus a single
-# predicate bundling five separate FraCaS sentences) are structurally
-# blocked the same way - confirmed by reading their own stated types
-# directly, not attempted.
+# mechanism. fracas_134/135 (two-sorted donkey relative clause, "every
+# customer that owns a computer has a service contract for it") ARE now
+# built, through `translate.py`'s own `_try_translate_donkey_relative_
+# premise`/`_try_translate_named_copula_relative_restrictor` - the
+# first genuinely TWO-SORTED domain (`{A B : Type*}`) this generator has
+# ever produced. Nothing in the dispatch mechanism just above required
+# a single domain - `binders`/`arrow_chain` have always been plain
+# strings a builder is free to write however its own real theorem
+# needs - the single-domain convention up to this point was simply
+# every PRIOR id's own real theorem never needing more than one sort,
+# not a structural limit. fracas_127 (two-sorted, `{Person Machine}`,
+# but ALSO a conjoined two-clause premise, a cumulative-plural "they
+# put them" distribution across two previously-introduced referents, a
+# disjunctive-existential weakening of a determinate pairing, AND an
+# unstated distinctness premise `hne : m1 ≠ m2` with no corresponding
+# FraCaS sentence - four separate novel mechanisms stacked on one
+# id, a substantially bigger undertaking than 134/135's own single,
+# reusable donkey-relative-clause shape) and fracas_137 (needs a
+# `Fintype.card` premise plus a single predicate bundling five separate
+# FraCaS sentences) remain structurally blocked - confirmed by reading
+# their own stated types directly, not attempted.
 #
 # Section 4 (ellipsis, 142-196) adds 23 more ids, all via the same
 # mechanism: per Ellipsis.lean's own approach note, this project never
@@ -2940,7 +3015,11 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # sentence, not a domain-quantified predicate at all - see
 # `_atomic_name`). Not attempted: 150/151/152/153/196 (three- or
 # two-sorted domains - `{Person City Vehicle}`/`{Student City Vehicle}`/
-# `{Person Report}` - the same structural blocker as 127/134/135);
+# `{Person Report}` - a multi-sorted domain is no longer itself a
+# structural blocker, per 134/135's own two-sorted pipeline above, but
+# each of these ids has its own distinct sentence shape that hasn't
+# been individually read and built yet, same as any other unattempted
+# id);
 # 163/171/172/173/174/191-195 (genuine grammar gaps - embedded questions
 # under "know"/"want", relativizing a quantificational pronoun NP, and a
 # passive-impersonal-plus-reciprocal construction this grammar has no
@@ -2962,9 +3041,12 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # 203 (adjective-drop, splitting an `AdjCN` into separate adjective/noun
 # conjuncts rather than fusing them). fracas_197 looked tractable at
 # first glance (same adjective-drop shape as 203) but its own `variable`
-# block is actually two-sorted (`{Person Thing}`), the same structural
-# blocker as 127/134/135/150-153/196 - caught by reading its stated type
-# directly before building, not after.
+# block is actually two-sorted (`{Person Thing}`), the same reason
+# 127/150-153/196 above remain unattempted (two-sortedness itself is
+# no longer a blocker per 134/135's own pipeline, but 197's own
+# adjective-drop shape combined with it hasn't been individually
+# built) - caught by reading its stated type directly before building,
+# not after.
 #
 # The remaining 9 (202/204/205/208/209/210/211/212/214) each needed a
 # genuinely new "assumed world-knowledge fact" mechanism confirmed by
@@ -3024,6 +3106,8 @@ CUSTOM_BUILD = {
     131: _build_fracas_131,
     132: _build_fracas_132,
     133: _build_fracas_133,
+    134: _build_fracas_134,
+    135: _build_fracas_135,
     138: _build_fracas_138,
     139: _build_fracas_139,
     140: _build_fracas_140,
@@ -3409,20 +3493,42 @@ def main() -> None:
         "`ownComputer gfi` - correct for fracas_103's identical shape,",
         "wrong for this one), confirmed to reproduce the prior hand-built",
         "derivation byte-for-byte (`ownComputer`/`maintain`). This was the",
-        "last of this file's cross-sentential-anaphora ids (120-141) still",
-        "using hand-indexed positional extraction rather than a named,",
+        "last of this file's cross-sentential-anaphora ids using",
+        "hand-indexed positional extraction rather than a named,",
         "shape-checked function - 114-119/123 are handled by the generic",
         "BUNDLE_PROJECT/SKOLEM_PROJECT/SYNTHESIZE_PREMISE mechanisms",
-        "documented separately above, not by these eight pipelines. Not",
-        "every",
+        "documented separately above, not by these pipelines. A ninth",
+        "pipeline, `_try_translate_donkey_relative_premise`/`_try_",
+        "translate_named_copula_relative_restrictor`, reproduces 134/135's",
+        "own strong/universal donkey reading (\"Every customer that owns a",
+        "computer has a service contract for it\") - unlike every other",
+        "donkey/Skolem pipeline above (built across TWO sentences), this",
+        "donkey binding is internal to ONE sentence's own subject-gap",
+        "relative clause, continued by a pronoun in that SAME sentence's",
+        "main-clause object; `translate_cl`'s own general restrictor-",
+        "fusion path also parses this tree shape without erroring, but",
+        "commits to the WRONG reading for it - confirmed by direct",
+        "comparison, not assumed. Also the FIRST two-sorted Lean domain",
+        "(`{A B : Type*}`) this generator has ever produced - nothing in",
+        "the dispatch mechanism itself required a single domain; every",
+        "prior id simply never needed more than one sort. Both ids share",
+        "the identical premise 1 and reduce premise 2 to just",
+        "`customer mfi`; the hypothesis is never independently",
+        "translated either - the real proof is just premise 1's own",
+        "universal instantiated at `mfi`. Confirmed to reproduce both",
+        "real theorems' own identical stated type and proof. Not every",
         "Section 3 id is covered: 125/130/136/141 are",
-        "countermodel-only (no bare theorem to cross-check at all); 126 needs",
-        "a genuinely unstated extra premise (\"the other eight machines were",
-        "also here yesterday\", no corresponding FraCaS sentence); and",
-        "127/134/135 (two-sorted `{Person Machine}`/`{A B}` domains - this",
-        "generator hardcodes a single domain `{A : Type*}` throughout) and 137",
-        "(needs a `Fintype.card` premise plus one predicate bundling five",
-        "separate FraCaS sentences) are structurally blocked. Section 4",
+        "countermodel-only (a witness construction, not an entailment",
+        "chain - a different KIND of theorem, not a missing case); 126",
+        "and 137 each need an extra premise with no corresponding FraCaS",
+        "sentence and no tree to recover it from (137 also bundles five",
+        "separate sentences into one predicate); and 127 stacks FOUR",
+        "separate novel mechanisms (a conjoined two-clause premise,",
+        "cumulative-plural distribution across two referents, a",
+        "disjunctive-existential weakening, and its own unstated",
+        "distinctness premise) on top of a two-sorted domain - a",
+        "substantially bigger undertaking than 134/135's own single,",
+        "reusable shape, not attempted here. Section 4",
         "(ellipsis, 142-196) adds 23 more ids, all via `CUSTOM_BUILD`: per",
         "Ellipsis.lean's own approach note, this project never models",
         "ellipsis RESOLUTION itself, only the already-resolved content, so",
@@ -3438,7 +3544,10 @@ def main() -> None:
         "guess at fracas_196's own direct `∃`/`∀` over a two-sorted",
         "`{Person Report}` domain), every Section 4 id goes through",
         "`CUSTOM_BUILD` or not at all. Not covered: 150/151/152/153/196",
-        "(three- or two-sorted domains, the same blocker as 127/134/135);",
+        "(three- or two-sorted domains - no longer itself a structural",
+        "blocker, per 134/135's own two-sorted pipeline in Section 3",
+        "above, but each of these ids has its own distinct sentence shape",
+        "not yet individually read and built);",
         "163/171/172/173/174/191-195 (genuine grammar gaps - embedded",
         "questions, relativizing a quantificational pronoun NP, a passive-",
         "impersonal-plus-reciprocal construction with no combinator -",
@@ -3463,7 +3572,10 @@ def main() -> None:
         "predicate (210's `smallAnimal`, alongside a separate `animal`).",
         "Not covered: 197 (looked like 203's own adjective-drop shape at",
         "first glance, but its own stated type is actually two-sorted",
-        "`{Person Thing}`, the same blocker as 127/134/135/150-153/196);",
+        "`{Person Thing}`, the same reason 127/150-153/196 remain",
+        "unattempted - two-sortedness alone is no longer a blocker, per",
+        "Section 3's own 134/135, but 197's adjective-drop shape",
+        "combined with it hasn't been individually built);",
         "200/201/206/207/213/215/217/219 (countermodel-only, already",
         "excluded automatically). Section 6 (comparatives, 220-250) adds 10",
         "more ids: 220/223/224/227/229 chain in an assumed comparative-",

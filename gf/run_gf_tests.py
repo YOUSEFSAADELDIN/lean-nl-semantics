@@ -1502,6 +1502,16 @@ BASE_CHECKS += [
         "MFI is a customer that owns exactly one computer",
     ),
     (
+        # fracas_135's own gold premise 1 is identical to fracas_134's
+        # ("Every customer that owns a computer has a service contract
+        # for it.") - reusing 134's own already-confirmed tree rather
+        # than re-linearizing it, the same precedent fracas_132's own
+        # premise 1 entry set reusing fracas_131's.
+        "fracas_135_premise1",
+        "linearize PredVP (DetCN every_Det (RelCN (UseN customer_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (UseN computer_N))))))) (ComplSlash (SlashV2a have_V2) (AdvNP (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN service_N) (UseN contract_N))) (PrepNP for_Prep (UsePron it_Pron))))",
+        "every customer that owns a computer has a service contract for it",
+    ),
+    (
         "fracas_135_premise2",
         "linearize PredVP (UsePN mfi_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (RelCN (UseN customer_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN several_Det (UseN computer_N)))))))))",
         "MFI is a customer that owns several computers",

@@ -145,20 +145,42 @@ general fused-predicate path, which keeps the subject and gives
 `ownComputer gfi` - correct for fracas_103's identical shape,
 wrong for this one), confirmed to reproduce the prior hand-built
 derivation byte-for-byte (`ownComputer`/`maintain`). This was the
-last of this file's cross-sentential-anaphora ids (120-141) still
-using hand-indexed positional extraction rather than a named,
+last of this file's cross-sentential-anaphora ids using
+hand-indexed positional extraction rather than a named,
 shape-checked function - 114-119/123 are handled by the generic
 BUNDLE_PROJECT/SKOLEM_PROJECT/SYNTHESIZE_PREMISE mechanisms
-documented separately above, not by these eight pipelines. Not
-every
+documented separately above, not by these pipelines. A ninth
+pipeline, `_try_translate_donkey_relative_premise`/`_try_
+translate_named_copula_relative_restrictor`, reproduces 134/135's
+own strong/universal donkey reading ("Every customer that owns a
+computer has a service contract for it") - unlike every other
+donkey/Skolem pipeline above (built across TWO sentences), this
+donkey binding is internal to ONE sentence's own subject-gap
+relative clause, continued by a pronoun in that SAME sentence's
+main-clause object; `translate_cl`'s own general restrictor-
+fusion path also parses this tree shape without erroring, but
+commits to the WRONG reading for it - confirmed by direct
+comparison, not assumed. Also the FIRST two-sorted Lean domain
+(`{A B : Type*}`) this generator has ever produced - nothing in
+the dispatch mechanism itself required a single domain; every
+prior id simply never needed more than one sort. Both ids share
+the identical premise 1 and reduce premise 2 to just
+`customer mfi`; the hypothesis is never independently
+translated either - the real proof is just premise 1's own
+universal instantiated at `mfi`. Confirmed to reproduce both
+real theorems' own identical stated type and proof. Not every
 Section 3 id is covered: 125/130/136/141 are
-countermodel-only (no bare theorem to cross-check at all); 126 needs
-a genuinely unstated extra premise ("the other eight machines were
-also here yesterday", no corresponding FraCaS sentence); and
-127/134/135 (two-sorted `{Person Machine}`/`{A B}` domains - this
-generator hardcodes a single domain `{A : Type*}` throughout) and 137
-(needs a `Fintype.card` premise plus one predicate bundling five
-separate FraCaS sentences) are structurally blocked. Section 4
+countermodel-only (a witness construction, not an entailment
+chain - a different KIND of theorem, not a missing case); 126
+and 137 each need an extra premise with no corresponding FraCaS
+sentence and no tree to recover it from (137 also bundles five
+separate sentences into one predicate); and 127 stacks FOUR
+separate novel mechanisms (a conjoined two-clause premise,
+cumulative-plural distribution across two referents, a
+disjunctive-existential weakening, and its own unstated
+distinctness premise) on top of a two-sorted domain - a
+substantially bigger undertaking than 134/135's own single,
+reusable shape, not attempted here. Section 4
 (ellipsis, 142-196) adds 23 more ids, all via `CUSTOM_BUILD`: per
 Ellipsis.lean's own approach note, this project never models
 ellipsis RESOLUTION itself, only the already-resolved content, so
@@ -174,7 +196,10 @@ caught - a single-domain guess at fracas_150's own three-sorted
 guess at fracas_196's own direct `∃`/`∀` over a two-sorted
 `{Person Report}` domain), every Section 4 id goes through
 `CUSTOM_BUILD` or not at all. Not covered: 150/151/152/153/196
-(three- or two-sorted domains, the same blocker as 127/134/135);
+(three- or two-sorted domains - no longer itself a structural
+blocker, per 134/135's own two-sorted pipeline in Section 3
+above, but each of these ids has its own distinct sentence shape
+not yet individually read and built);
 163/171/172/173/174/191-195 (genuine grammar gaps - embedded
 questions, relativizing a quantificational pronoun NP, a passive-
 impersonal-plus-reciprocal construction with no combinator -
@@ -199,7 +224,10 @@ implicitly animals) while others fuse adjective+noun into one
 predicate (210's `smallAnimal`, alongside a separate `animal`).
 Not covered: 197 (looked like 203's own adjective-drop shape at
 first glance, but its own stated type is actually two-sorted
-`{Person Thing}`, the same blocker as 127/134/135/150-153/196);
+`{Person Thing}`, the same reason 127/150-153/196 remain
+unattempted - two-sortedness alone is no longer a blocker, per
+Section 3's own 134/135, but 197's adjective-drop shape
+combined with it hasn't been individually built);
 200/201/206/207/213/215/217/219 (countermodel-only, already
 excluded automatically). Section 6 (comparatives, 220-250) adds 10
 more ids: 220/223/224/227/229 chain in an assumed comparative-
@@ -640,6 +668,14 @@ theorem fracas_132_from_gf {A : Type*} (department : A → Prop) (dedicatedLineO
 theorem fracas_133_from_gf {A : Type*} (ownComputer maintain : A → Prop) :
     (∃ x, ownComputer x) → (∀ x, ownComputer x → maintain x) → (∀ x, ownComputer x → maintain x) :=
   fun h1 h2 => fracas_133 _ _ h1 h2
+
+theorem fracas_134_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContract : A → B → Prop) (mfi : A) :
+    (∀ x, customer x → ∀ c, own x c → haveServiceContract x c) → customer mfi → (∀ c, own mfi c → haveServiceContract mfi c) :=
+  fun h hmfi => fracas_134 _ _ _ _ h hmfi
+
+theorem fracas_135_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContract : A → B → Prop) (mfi : A) :
+    (∀ x, customer x → ∀ c, own x c → haveServiceContract x c) → customer mfi → (∀ c, own mfi c → haveServiceContract mfi c) :=
+  fun h hmfi => fracas_135 _ _ _ _ h hmfi
 
 theorem fracas_138_from_gf {A : Type*} (report : A → Prop) (coverPageOf : A → A) (smith r95103 : A) (sign : A → A → Prop) :
     report r95103 → sign smith (coverPageOf r95103) → sign smith (coverPageOf r95103) :=
