@@ -252,36 +252,85 @@ inhabitant and the corollaries fire on real data, the same way
 `CN.lean`'s `john`/`johnI` and `LinglibBridge.lean`'s `toyLexicon` give
 their own abstract structures a concrete witness. -/
 
-/-- Two animals distinguished only by measure: Mickey (a mouse) is
-small, Dumbo (an elephant) is large, with the threshold gap sitting
-strictly between them. -/
+/-- Three animals distinguished only by measure: Mickey (a mouse) is
+small, Dumbo (an elephant) is large, and a third, `medium`, sits in the
+gap between them — neither small nor large. -/
 inductive ToyAnimal where
   | mickey
+  | medium
   | dumbo
 
-/-- Mickey measures `1`, Dumbo measures `100`; the gap `(10, 50)` puts
-Mickey below the low threshold and Dumbo above the high one. -/
+/-- Mickey measures `1`, Dumbo measures `100`, and `medium` measures
+`25` — strictly inside the gap `(10, 50)`, below neither threshold's
+wrong side and above neither's right one. -/
 def toyGradable : Gradable ToyAnimal where
   measure := fun
     | .mickey => 1
+    | .medium => 25
     | .dumbo => 100
   smallThreshold := 10
   largeThreshold := 50
   small_lt_large := by norm_num
 
-example : small toyGradable .mickey := by unfold small; decide
+theorem toy_mickey_small : small toyGradable .mickey := by unfold small; decide
 
-example : large toyGradable .dumbo := by unfold large; decide
+theorem toy_dumbo_large : large toyGradable .dumbo := by unfold large; decide
 
 /-- The fully concrete form of `fracas_204_degree_based`: Mickey really
 is not large. -/
-example : ¬ large toyGradable .mickey :=
+theorem toy_fracas_204_not_large : ¬ large toyGradable .mickey :=
   fracas_204_degree_based toyGradable .mickey (by unfold small; decide)
 
 /-- The fully concrete form of `fracas_208_degree_based`: Mickey really
 does measure below Dumbo. -/
-example : smallerThan toyGradable .mickey .dumbo :=
+theorem toy_fracas_208_smallerThan : smallerThan toyGradable .mickey .dumbo :=
   fracas_208_degree_based toyGradable .mickey .dumbo
     (by unfold small; decide) (by unfold large; decide)
+
+/-- `.medium` sits strictly inside the threshold gap — this is the
+concrete form of FraCaS's own 206/207 independence ("not small" doesn't
+give "large", and vice versa). The gap in `Gradable` isn't a loose end
+in the model; it's exactly the middle ground 206/207 rely on, and this
+is a genuine witness of it, not just an assertion in prose. -/
+theorem fracas_206_207_gap_witness :
+    ¬ small toyGradable .medium ∧ ¬ large toyGradable .medium := by
+  refine ⟨?_, ?_⟩
+  · unfold small; decide
+  · unfold large; decide
+
+/-! ## Axiom audit
+
+Same discipline as `AssumptionAudit.lean`'s port of `MTT.v` Part 9,
+applied to this file's own theorems: `#print axioms` on everything
+proved above, to check rather than assume that this pilot's proofs
+don't quietly depend on anything beyond what the originals need. -/
+
+#print axioms small_not_large
+#print axioms large_not_small
+#print axioms small_lt_large_measure
+#print axioms not_larger_of_small_large
+#print axioms large_of_fasterThan_large
+#print axioms not_large_of_fasterThan_small
+#print axioms large_of_asFastAs_large
+#print axioms not_large_of_asFastAs_small
+#print axioms not_slowerThan_of_asFastAs
+#print axioms large_gt_small_measure
+#print axioms fracas_204_degree_based
+#print axioms fracas_205_degree_based
+#print axioms fracas_208_degree_based
+#print axioms fracas_209_degree_based
+#print axioms fracas_210_degree_based
+#print axioms fracas_211_degree_based
+#print axioms fracas_212_degree_based
+#print axioms fracas_220_degree_based
+#print axioms fracas_223_degree_based
+#print axioms fracas_224_degree_based
+#print axioms fracas_227_degree_based
+#print axioms fracas_229_degree_based
+#print axioms toy_mickey_small
+#print axioms toy_dumbo_large
+#print axioms toy_fracas_204_not_large
+#print axioms toy_fracas_208_smallerThan
+#print axioms fracas_206_207_gap_witness
 
 end MTT
