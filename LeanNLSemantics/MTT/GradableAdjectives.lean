@@ -244,4 +244,43 @@ theorem fracas_229_degree_based (G : Gradable A) (pc itel : A) :
     asFastAs G pc itel → ¬ slowerThan G pc itel :=
   fracas_229 (asFastAs G) (slowerThan G) pc itel (not_slowerThan_of_asFastAs G)
 
+/-! ## A concrete, non-vacuous instance
+
+Everything above is stated for an arbitrary `G : Gradable A` — worth
+checking it isn't vacuous, i.e. that `Gradable` actually has an
+inhabitant and the corollaries fire on real data, the same way
+`CN.lean`'s `john`/`johnI` and `LinglibBridge.lean`'s `toyLexicon` give
+their own abstract structures a concrete witness. -/
+
+/-- Two animals distinguished only by measure: Mickey (a mouse) is
+small, Dumbo (an elephant) is large, with the threshold gap sitting
+strictly between them. -/
+inductive ToyAnimal where
+  | mickey
+  | dumbo
+
+/-- Mickey measures `1`, Dumbo measures `100`; the gap `(10, 50)` puts
+Mickey below the low threshold and Dumbo above the high one. -/
+def toyGradable : Gradable ToyAnimal where
+  measure := fun
+    | .mickey => 1
+    | .dumbo => 100
+  smallThreshold := 10
+  largeThreshold := 50
+  small_lt_large := by norm_num
+
+example : small toyGradable .mickey := by decide
+
+example : large toyGradable .dumbo := by decide
+
+/-- The fully concrete form of `fracas_204_degree_based`: Mickey really
+is not large. -/
+example : ¬ large toyGradable .mickey :=
+  fracas_204_degree_based toyGradable .mickey (by decide)
+
+/-- The fully concrete form of `fracas_208_degree_based`: Mickey really
+does measure below Dumbo. -/
+example : smallerThan toyGradable .mickey .dumbo :=
+  fracas_208_degree_based toyGradable .mickey .dumbo (by decide) (by decide)
+
 end MTT
