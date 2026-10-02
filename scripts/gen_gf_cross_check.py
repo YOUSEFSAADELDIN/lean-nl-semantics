@@ -52,6 +52,9 @@ from translate import (  # noqa: E402
     _try_translate_skolem_continuation,
     _try_translate_universal_existential_premise,
     _try_translate_universal_existential_continuation,
+    _try_translate_cardinal_adjective_property,
+    _try_translate_cardinal_passive_property,
+    _try_translate_definite_skolem_application,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -352,34 +355,37 @@ def _build_fracas_124(roles: dict) -> "tuple[str, str, str]":
     trivial `fun _ => True` restrictor, not a named one (unlike every
     other restrictor this generator has ever produced) - only fracas_126
     (excluded separately, see CUSTOM_BUILD's own comment) needs that
-    cardinality made explicit. Premise 2 ("They have been removed") is
-    never translated at all (no tree needed): its only real content is
-    an aux scope-entailment fact bridging premise 1's own scope
-    ("missing") to the hypothesis's own ("removed"), built directly the
-    same way SYNTHESIZE_PREMISE's own `_scope_aux` already does, just
-    inlined here since the trivial restrictor doesn't fit that
-    mechanism's generic "reuse free_predicates[0]" hypothesis rebuild
-    (there IS no such free predicate to reuse). Returns (binders,
-    arrow_chain, proof)."""
+    cardinality made explicit. Built through `translate.py`'s own
+    `_try_translate_cardinal_adjective_property`/`_try_translate_
+    cardinal_passive_property` - a shape-checked pair recognizing
+    premise 1's own partitive-cardinal-adjective shape and the
+    hypothesis's own cardinal-passive shape, confirmed to reproduce the
+    prior hand-built derivation byte-for-byte (count `2`, `missing`/
+    `remove`). Premise 2 ("They have been removed") is still never
+    translated at all (no tree needed): its only real content is an aux
+    scope-entailment fact bridging premise 1's own scope ("missing") to
+    the hypothesis's own ("removed"), built directly the same way
+    SYNTHESIZE_PREMISE's own `_scope_aux` already does, just inlined
+    here since the trivial restrictor doesn't fit that mechanism's
+    generic "reuse free_predicates[0]" hypothesis rebuild (there IS no
+    such free predicate to reuse). Returns (binders, arrow_chain,
+    proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_cardinal_adjective_property(*p1.args)
+    if result1 is None:
+        raise ValueError("fracas_124's premise 1 no longer matches the cardinal-adjective shape")
+    count1, p1_scope = result1
     hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_cardinal_passive_property(*hyp.args)
+    if result2 is None:
+        raise ValueError("fracas_124's hypothesis no longer matches the cardinal-passive shape")
+    count2, hyp_scope = result2
+    if count1 != count2:
+        raise ValueError("fracas_124's premise 1 and hypothesis counts disagree")
 
-    if (
-        p1.args[0].head != "AdvNP"
-        or p1.args[0].args[1].head != "PrepNP"
-        or p1.args[0].args[1].args[0].head != "out_of_Prep"
-    ):
-        raise ValueError("premise 1's subject isn't the expected 'N out of M Xs' shape")
-    det_np = p1.args[0].args[0]
-    count, approx = _decode_card(det_np.args[0].args[1].args[0])
-    if approx is not None:
-        raise ValueError("premise 1's own count is AdNum-wrapped, expected a bare numeral")
-    p1_scope = camel_name(_leaf_words(p1.args[1]))
-    hyp_scope = camel_name(_leaf_words(hyp.args[1]))
-
-    combined_premise = f"Exactly {count} (fun _ : A => True) {p1_scope}"
+    combined_premise = f"Exactly {count1} (fun _ : A => True) {p1_scope}"
     aux = f"(∀ x, {p1_scope} x → {hyp_scope} x)"
-    conclusion = f"AtLeast {count} (fun _ : A => True) {hyp_scope}"
+    conclusion = f"AtLeast {count1} (fun _ : A => True) {hyp_scope}"
     arrow_chain = f"{combined_premise} → {aux} → {conclusion}"
     binders = f"{{A : Type*}} [Fintype A] ({p1_scope} {hyp_scope} : A → Prop)"
     proof = "fun h1 h2 => fracas_124 _ _ h1 h2"
@@ -559,21 +565,41 @@ def _build_fracas_138(roles: dict) -> "tuple[str, str, str]":
     the real theorem at all - the reverse of AUX_HYPOTHESIS's own
     pattern, which always ADDS a hypothesis, never removes one).
     Premise 2 ("R-95-103 is a report") translates fine via translate_cl
-    directly and is reused as-is; premise 3 and the hypothesis both get
-    hand-built from the same coverPageOf Skolem function and r95103
-    individual, since the hypothesis's own independent translation
-    would otherwise bake r95103 directly into a fused predicate name
-    rather than applying a separate function to it as an argument.
-    Returns (binders, arrow_chain, proof)."""
+    directly and is reused as-is. The Skolem function's own name is
+    still read off premise 1's tree, but now through `translate.py`'s
+    own `_try_translate_skolem_universal_premise` (the SAME "every X has
+    a [possibly compound] Y" shape fracas_131/132 share - only the
+    Skolem name itself is used here, not the bound/witness variables
+    131/132's own continuation needs, since 138 never weakens back to
+    an existential). Premise 3 is no longer read at all: `_try_
+    translate_definite_skolem_application` instead recovers the SAME
+    fact directly from the HYPOTHESIS's own tree (its fully explicit
+    "the cover page OF R-95-103", an `of`-PP-linked definite
+    description) - premise 3's own bare "the cover page" has no link to
+    R-95-103 in its own tree at all (that link is a discourse fact), and
+    premise 3/the hypothesis share the identical fact textually anyway,
+    so deriving it once from the hypothesis's own fuller tree is more
+    robust than reading the same names off two separate sentences and
+    hoping they agree. Confirmed to reproduce the prior hand-built
+    derivation byte-for-byte. Returns (binders, arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    skolem = noun_name + "Of"
+    result1 = _try_translate_skolem_universal_premise(*p1.args)
+    if result1 is None:
+        raise ValueError("fracas_138's premise 1 no longer matches the Skolem-universal shape")
+    template, _premise1_only_text = result1
+    skolem = template.skolem
     report_fact = translate_cl(parse_tree(roles["_premise2"]))
     report_name = report_fact.free_predicates[0]
     r_name = report_fact.free_individuals[0]
-    p3 = _unwrap_tense(parse_tree(roles["_premise3"]))
-    smith_name = camel_name(_leaf_words(p3.args[0]))
-    sign_name = camel_name(_leaf_words(p3.args[1].args[0]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_definite_skolem_application(*hyp.args)
+    if result2 is None:
+        raise ValueError("fracas_138's hypothesis no longer matches the definite-Skolem-application shape")
+    smith_name, sign_name, hyp_skolem, hyp_r_name = result2
+    if hyp_skolem != skolem:
+        raise ValueError("fracas_138's premise 1 and hypothesis disagree on the Skolem function's own name")
+    if hyp_r_name != r_name:
+        raise ValueError("fracas_138's premise 2 and hypothesis disagree on the named individual")
 
     fact = f"{sign_name} {smith_name} ({skolem} {r_name})"
     arrow_chain = f"{report_name} {r_name} → {fact} → {fact}"
@@ -3310,13 +3336,35 @@ def main() -> None:
         "bound var `c`/witness var `ch`, the last falling back to a",
         "two-letter prefix to avoid colliding with the bound variable,",
         "since both \"committee\" and \"chairman\" start with the same",
-        "letter); and five further fully hand-built cross-sentential-",
-        "anaphora theorems bypassing all four pipelines entirely",
-        "(124/128/129/133/138, `CUSTOM_BUILD` - cardinal/set-based",
-        "anaphora, genuine multi-reading referential ambiguity, e-type",
-        "\"upgrade the witness set to the whole set\" anaphora, and a",
-        "definite-description-licensed total function - each a genuinely",
-        "different resolution mechanism from any of the four pipelines",
+        "letter); cardinal/set-based anaphora (124, `CUSTOM_BUILD`) built",
+        "through a FIFTH pipeline, `_try_translate_cardinal_adjective_",
+        "property`/`_try_translate_cardinal_passive_property` - a",
+        "shape-checked pair recognizing premise 1's own partitive-",
+        "cardinal-adjective shape (\"two out of ten machines are missing\")",
+        "and the hypothesis's own cardinal-passive shape (\"two machines",
+        "have been removed\"), confirmed to reproduce the prior hand-built",
+        "derivation byte-for-byte (count `2`, `missing`/`remove` - the",
+        "restrictor noun and the partitive's own denominator both carry",
+        "NO information in this id's own real theorem at all); a",
+        "definite-description-licensed total function (138, `CUSTOM_",
+        "BUILD`) reusing 131/132/138's own SHARED premise-1 recognizer,",
+        "`_try_translate_skolem_universal_premise` (only the Skolem",
+        "function's own name is needed here, not the bound/witness",
+        "variables 131/132's own continuation uses, since 138 never",
+        "weakens back to an existential), with a new `_try_translate_",
+        "definite_skolem_application` recovering the Skolem function's",
+        "application to a named individual directly from the",
+        "HYPOTHESIS's own fully explicit \"the cover page OF R-95-103\"",
+        "(an `of`-PP-linked definite description) rather than from",
+        "premise 3's own bare \"the cover page\" (whose tree has no link",
+        "to R-95-103 at all - that link is a discourse fact, and premise",
+        "3/the hypothesis share the identical fact textually anyway, so",
+        "premise 3 is no longer read at all); and three further fully",
+        "hand-built cross-sentential-anaphora theorems bypassing all six",
+        "pipelines entirely (128/129/133, `CUSTOM_BUILD` - genuine",
+        "multi-reading referential ambiguity and e-type \"upgrade the",
+        "witness set to the whole set\" anaphora - each a genuinely",
+        "different resolution mechanism from any of the six pipelines",
         "above, not an incremental extension of one). Not every",
         "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",

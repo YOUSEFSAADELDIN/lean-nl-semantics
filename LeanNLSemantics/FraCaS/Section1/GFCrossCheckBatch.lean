@@ -97,13 +97,35 @@ derivation byte-for-byte (`committee`/`chairman`/`appointMember`/
 bound var `c`/witness var `ch`, the last falling back to a
 two-letter prefix to avoid colliding with the bound variable,
 since both "committee" and "chairman" start with the same
-letter); and five further fully hand-built cross-sentential-
-anaphora theorems bypassing all four pipelines entirely
-(124/128/129/133/138, `CUSTOM_BUILD` - cardinal/set-based
-anaphora, genuine multi-reading referential ambiguity, e-type
-"upgrade the witness set to the whole set" anaphora, and a
-definite-description-licensed total function - each a genuinely
-different resolution mechanism from any of the four pipelines
+letter); cardinal/set-based anaphora (124, `CUSTOM_BUILD`) built
+through a FIFTH pipeline, `_try_translate_cardinal_adjective_
+property`/`_try_translate_cardinal_passive_property` - a
+shape-checked pair recognizing premise 1's own partitive-
+cardinal-adjective shape ("two out of ten machines are missing")
+and the hypothesis's own cardinal-passive shape ("two machines
+have been removed"), confirmed to reproduce the prior hand-built
+derivation byte-for-byte (count `2`, `missing`/`remove` - the
+restrictor noun and the partitive's own denominator both carry
+NO information in this id's own real theorem at all); a
+definite-description-licensed total function (138, `CUSTOM_
+BUILD`) reusing 131/132/138's own SHARED premise-1 recognizer,
+`_try_translate_skolem_universal_premise` (only the Skolem
+function's own name is needed here, not the bound/witness
+variables 131/132's own continuation uses, since 138 never
+weakens back to an existential), with a new `_try_translate_
+definite_skolem_application` recovering the Skolem function's
+application to a named individual directly from the
+HYPOTHESIS's own fully explicit "the cover page OF R-95-103"
+(an `of`-PP-linked definite description) rather than from
+premise 3's own bare "the cover page" (whose tree has no link
+to R-95-103 at all - that link is a discourse fact, and premise
+3/the hypothesis share the identical fact textually anyway, so
+premise 3 is no longer read at all); and three further fully
+hand-built cross-sentential-anaphora theorems bypassing all six
+pipelines entirely (128/129/133, `CUSTOM_BUILD` - genuine
+multi-reading referential ambiguity and e-type "upgrade the
+witness set to the whole set" anaphora - each a genuinely
+different resolution mechanism from any of the six pipelines
 above, not an incremental extension of one). Not every
 Section 3 id is covered: 125/130/136/141 are
 countermodel-only (no bare theorem to cross-check at all); 126 needs

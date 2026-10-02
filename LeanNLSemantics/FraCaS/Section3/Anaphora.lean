@@ -99,16 +99,38 @@ witness variable `ch` falling back to a two-letter prefix to avoid
 colliding with the bound variable `c`, since "committee" and "chairman"
 start with the same letter). Confirmed via `_build_fracas_122`.
 
-Together these seven ids (120/121/122/131/132/139/140) do not cover any
-other id in this file — cardinal/set-based anaphora (124), genuine
-multi-reading referential ambiguity (128-130), e-type "upgrade the
-witness set to the whole set" anaphora (133), or a definite-
-description-licensed total function (138) are each a genuinely
-different resolution mechanism from all four pipelines above, not an
-incremental extension of any of them — left hand-resolved exactly as
-this header already describes, extended only when another confirmed GF
-tree needs more, the same incremental discipline `translate.py`'s own
-`_try_translate_*` functions already follow.
+A fifth pipeline, `_try_translate_cardinal_adjective_property`/
+`_try_translate_cardinal_passive_property`, reproduces 124's own
+cardinal/set-based anaphora: "two out of ten machines are missing"
+(premise 1) and "two machines have been removed" (the hypothesis) each
+reduce to just a count plus an adjective's/verb's own name — the
+restrictor noun ("machines") and the partitive's own denominator ("out
+of ten") carry no information in this id's own real theorem at all,
+which treats the whole domain as being exactly the ten machines via a
+trivial `fun _ => True` restrictor. Confirmed via `_build_fracas_124`.
+
+A definite-description-licensed total function (138) reuses 131/132's
+own `_try_translate_skolem_universal_premise` directly for its premise
+1 (the Skolem function's own name only, not the bound/witness
+variables 131/132's own continuation needs, since 138 never weakens
+back to an existential), paired with a new `_try_translate_definite_
+skolem_application` that recovers the Skolem function's application to
+a named individual straight from the HYPOTHESIS's own fully explicit
+"the cover page OF R-95-103" (an `of`-PP-linked definite description) —
+not from premise 3's own bare "the cover page", whose tree has no link
+to R-95-103 at all (that link is a discourse fact, and premise 3/the
+hypothesis share the identical fact textually anyway, so premise 3 is
+no longer read at all). Confirmed via `_build_fracas_138`.
+
+Together these nine ids (120/121/122/124/131/132/138/139/140) do not
+cover any other id in this file — genuine multi-reading referential
+ambiguity (128-130) or e-type "upgrade the witness set to the whole
+set" anaphora (133) are each a genuinely different resolution mechanism
+from all six pipelines above, not an incremental extension of any of
+them — left hand-resolved exactly as this header already describes,
+extended only when another confirmed GF tree needs more, the same
+incremental discipline `translate.py`'s own `_try_translate_*`
+functions already follow.
 -/
 
 namespace FraCaS.Section3

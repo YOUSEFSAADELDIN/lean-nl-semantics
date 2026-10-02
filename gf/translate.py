@@ -1315,15 +1315,25 @@ def _try_translate_sentential_complement(subject, vp):
 
 def _head_noun_word(cn):
     """The innermost `UseN`'s own lexical head word, stripping any
-    `AdjCN` adjective wrapper - distinct from `camel_name(_leaf_words(
-    cn))`, which keeps the WHOLE compound (used to name the Skolem
-    function itself, "dedicated line" -> `dedicatedLineOf`), whereas
-    picking a short Lean bound-variable letter ("l" from "line", not "d"
-    from "dedicated") wants just the head noun. Returns None if the
-    shape isn't a bare or AdjCN-wrapped `UseN`."""
+    `AdjCN` adjective wrapper (descending into the modified noun) or
+    `CompoundCN` noun-noun compounding (descending into the RIGHTMOST
+    component, the standard English compound-noun headedness rule -
+    "cover page" -> "page", confirmed needed by fracas_138's own "cover
+    page" Skolem object) - distinct from `camel_name(_leaf_words(cn))`,
+    which keeps the WHOLE compound (used to name the Skolem function
+    itself, "dedicated line" -> `dedicatedLineOf`, "cover page" ->
+    `coverPageOf`), whereas picking a short Lean bound-variable letter
+    ("l" from "line", not "d" from "dedicated"; "p" from "page") wants
+    just the head noun. Returns None if the shape isn't a bare, AdjCN-
+    wrapped, or CompoundCN-wrapped `UseN`."""
     node = cn
-    while node.head == "AdjCN" and len(node.args) == 2:
-        node = node.args[1]
+    while True:
+        if node.head == "AdjCN" and len(node.args) == 2:
+            node = node.args[1]
+        elif node.head == "CompoundCN" and len(node.args) == 2:
+            node = node.args[1]
+        else:
+            break
     if node.head == "UseN" and len(node.args) == 1:
         leaf = node.args[0]
         for suf in _LEXICAL_SUFFIXES:
@@ -1586,6 +1596,139 @@ def _try_translate_universal_existential_continuation(subject, vp, template: Exi
     ):
         return None
     return camel_name(_leaf_words(vp))
+
+
+# ---------------------------------------------------------------------
+# 3e. Cardinal/set-based anaphora (fracas_124's own "Two out of ten
+#     machines are missing. They have been removed." -> "Two machines
+#     have been removed."). The "ten" (the partitive's own denominator)
+#     and the restrictor noun ("machines") both carry NO information in
+#     this id's own real theorem - the whole domain is treated as being
+#     exactly the ten machines, via a trivial `fun _ => True` restrictor
+#     rather than a named one - so only the numerator count and the
+#     adjective's/verb's own name are recovered from each sentence.
+
+
+def _try_translate_cardinal_adjective_property(subject, vp):
+    """Recognizes "N out of M Xs are ADJ" (fracas_124's own premise 1,
+    "two out of ten machines are missing"). Returns None on shape
+    mismatch, else (count, adj_name) - the restrictor noun and the
+    partitive's own denominator M are both discarded, confirmed by
+    this id's own real theorem never mentioning either."""
+    if (
+        subject.head != "AdvNP"
+        or len(subject.args) != 2
+        or subject.args[0].head != "DetNP"
+        or len(subject.args[0].args) != 1
+        or subject.args[1].head != "PrepNP"
+        or len(subject.args[1].args) != 2
+        or subject.args[1].args[0].head != "out_of_Prep"
+    ):
+        return None
+    det_quant = subject.args[0].args[0]
+    if (
+        det_quant.head != "DetQuant"
+        or len(det_quant.args) != 2
+        or det_quant.args[0].head != "IndefArt"
+        or det_quant.args[1].head != "NumCard"
+        or len(det_quant.args[1].args) != 1
+    ):
+        return None
+    count, approx = _decode_card(det_quant.args[1].args[0])
+    if approx is not None:
+        return None
+    if vp.head != "UseComp" or len(vp.args) != 1 or vp.args[0].head != "CompAP":
+        return None
+    return count, camel_name(_leaf_words(vp))
+
+
+def _try_translate_cardinal_passive_property(subject, vp):
+    """Recognizes "N Xs have been PASSIVE-VERBed" (fracas_124's own
+    hypothesis, "two machines have been removed"). Returns None on
+    shape mismatch, else (count, verb_name) - the restrictor noun is
+    again discarded, same reason as `_try_translate_cardinal_adjective_
+    property`."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "IndefArt"
+        or det.args[1].head != "NumCard"
+        or len(det.args[1].args) != 1
+    ):
+        return None
+    count, approx = _decode_card(det.args[1].args[0])
+    if approx is not None:
+        return None
+    if vp.head != "PassV2" or len(vp.args) != 1:
+        return None
+    return count, camel_name(_leaf_words(vp))
+
+
+# ---------------------------------------------------------------------
+# 3f. Definite-description-licensed total function (fracas_138's own
+#     "Every report has a cover page [...] Smith signed the cover page
+#     of R-95-103." -> `signed smith (coverPageOf r95103)`). Premise 1
+#     reuses `_try_translate_skolem_universal_premise` directly (the
+#     SAME "every X has a [possibly compound] Y" shape 131/132/138 all
+#     share - only the Skolem function's own NAME is needed here, not
+#     the bound/witness variables 131/132's own continuation uses,
+#     since 138 never weakens back to an existential at all). The
+#     hypothesis's own fully explicit "the cover page OF R-95-103" (an
+#     `AdvCN`-wrapped definite description with its own `of`-PP) is what
+#     licenses applying that Skolem function to a NAMED individual - not
+#     premise 3's own bare "the cover page" alone, whose tree has no
+#     link to R-95-103 at all (that link is a discourse fact, recovered
+#     here from the hypothesis's own fuller tree instead, since premise
+#     3 and the hypothesis share the identical fact textually anyway).
+
+
+def _try_translate_definite_skolem_application(subject, vp):
+    """Recognizes a named subject predicated of a definite description
+    explicitly linked to ANOTHER named individual via an `of`-PP -
+    "Smith signed the cover page of R-95-103" (fracas_138's own
+    hypothesis). Returns None on shape mismatch, else (subject_name,
+    verb_name, skolem_name, pn_name) - `skolem_name` matches the SAME
+    `camel_name(_leaf_words(cn)) + "Of"` convention `_try_translate_
+    skolem_universal_premise` already uses, so the two agree on the
+    Skolem function's own name without either calling the other."""
+    if subject.head != "UsePN":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    obj_det, obj_cn = obj.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "DefArt"
+        or obj_det.args[1].head != "NumSg"
+    ):
+        return None
+    if obj_cn.head != "AdvCN" or len(obj_cn.args) != 2:
+        return None
+    base_cn, pp = obj_cn.args
+    if (
+        pp.head != "PrepNP"
+        or len(pp.args) != 2
+        or pp.args[0].head != "of_Prep"
+        or pp.args[1].head != "UsePN"
+    ):
+        return None
+    subject_name = camel_name(_leaf_words(subject))
+    verb_name = camel_name(_leaf_words(vp.args[0]))
+    skolem_name = camel_name(_leaf_words(base_cn)) + "Of"
+    pn_name = camel_name(_leaf_words(pp.args[1]))
+    return subject_name, verb_name, skolem_name, pn_name
 
 
 def translate_cl(t) -> Translation:
