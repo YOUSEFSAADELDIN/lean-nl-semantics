@@ -1291,6 +1291,163 @@ def _try_translate_sentential_complement(subject, vp):
     )
 
 
+# ---------------------------------------------------------------------
+# 3c. Skolem-function continuation across a sentence pair (fracas_131/
+#     132's shared "Each department has a dedicated line." premise,
+#     continued either by a universally-bound pronoun subject ("They
+#     rent them from BT.", 131) or by a definite-description subject
+#     naming ONE specific instance ("The sales department rents it from
+#     BT.", 132)). This is a THIRD, separate pipeline alongside
+#     `translate_cl` and `translate_discourse` above - not a case inside
+#     either - because the Skolem-function reading it builds is exactly
+#     as context-dependent as `translate_discourse`'s own
+#     `existential_objects` flag: "every department has a dedicated
+#     line", read on its own, fuses into one unary predicate the same
+#     way fracas_103's "Jones has a company car" does (confirmed - there
+#     is no POSSESSIVE PRONOUN inside this sentence at all, the signal
+#     `_try_translate_possessive_presupposition` relies on instead);
+#     it's only a LATER sentence's own anaphoric
+#     continuation that forces "a dedicated line" to become a function
+#     of the department instead. Kept deliberately narrow to the one
+#     shape confirmed needed by 131/132's own real theorems, not a
+#     general "any later sentence licenses a Skolem function" rule.
+
+
+def _head_noun_word(cn):
+    """The innermost `UseN`'s own lexical head word, stripping any
+    `AdjCN` adjective wrapper - distinct from `camel_name(_leaf_words(
+    cn))`, which keeps the WHOLE compound (used to name the Skolem
+    function itself, "dedicated line" -> `dedicatedLineOf`), whereas
+    picking a short Lean bound-variable letter ("l" from "line", not "d"
+    from "dedicated") wants just the head noun. Returns None if the
+    shape isn't a bare or AdjCN-wrapped `UseN`."""
+    node = cn
+    while node.head == "AdjCN" and len(node.args) == 2:
+        node = node.args[1]
+    if node.head == "UseN" and len(node.args) == 1:
+        leaf = node.args[0]
+        for suf in _LEXICAL_SUFFIXES:
+            if leaf.head.endswith(suf):
+                return leaf.head[: -len(suf)]
+    return None
+
+
+@dataclass
+class SkolemTemplate:
+    restrictor: str
+    skolem: str
+    has_name: str
+    bound_var: str
+    witness_var: str
+
+
+def _try_translate_skolem_universal_premise(subject, vp):
+    """Recognizes "every/each X has a [possibly Adj-modified] Y" with NO
+    possessive pronoun inside (unlike `_try_translate_possessive_
+    presupposition`'s own single-sentence Skolem case) - confirmed
+    needed by fracas_131/132's shared premise 1 ("Each department has a
+    dedicated line"). Returns None on shape mismatch, else a
+    (SkolemTemplate, this sentence's own universally-quantified Lean
+    statement) pair; the caller decides, via which continuation
+    function it goes on to use, whether the Skolem reading or the
+    simpler fused one is the one actually wanted (matching this id's own
+    real theorem) - this function alone never commits to that choice."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if det.head not in ("every_Det", "each_Det") or det.args:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[0].args[0].head != "have_V2"
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    obj_det, obj_cn = obj.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "IndefArt"
+        or obj_det.args[1].head != "NumSg"
+    ):
+        return None
+    head_noun = _head_noun_word(obj_cn)
+    if head_noun is None:
+        return None
+    restrictor = camel_name(_leaf_words(cn))
+    skolem = camel_name(_leaf_words(obj_cn)) + "Of"
+    template = SkolemTemplate(
+        restrictor=restrictor,
+        skolem=skolem,
+        has_name="has",
+        bound_var=restrictor[0].lower(),
+        witness_var=head_noun[0].lower(),
+    )
+    v = template.bound_var
+    lean_prop = f"∀ {v}, {restrictor} {v} → has {v} ({skolem} {v})"
+    return template, lean_prop
+
+
+def _try_translate_skolem_continuation(subject, vp, template: SkolemTemplate):
+    """Recognizes premise 2's own two shapes continuing a
+    `SkolemTemplate`: a universally-bound pronoun subject ("they rent
+    them from BT", 131) or a definite-description subject naming ONE
+    instance ("the sales department rents it from BT", 132). Both are a
+    ternary PP-complement VP ("rent ... from BT") whose own name is
+    derived the SAME way `_try_translate_possessive_presupposition`'s
+    own fused names are - `camel_name(_leaf_words(...))` over the WHOLE
+    verb phrase INCLUDING its PP, which silently drops the preposition
+    itself (`_Prep` isn't a recognized lexical suffix) and keeps just
+    the verb and the PP's own object ("rent" + "BT" -> `rentBt`) -
+    because nothing in this discourse ever refers back to the PP's
+    object (BT) pronominally the way fracas_121's ITEL is (there "them"/
+    "it" pick out ITEL specifically; here "from BT" is a fixed,
+    never-anaphorically-continued modifier, so fusing it into the
+    predicate name is the intended reading, not an explicit ternary
+    argument). Returns None on shape mismatch, else (is_bound,
+    instantiation, rel_name): `instantiation` is None for the bound
+    (131) case, the camel-cased named individual for the named (132)
+    case."""
+    if (
+        subject.head == "UsePron"
+        and len(subject.args) == 1
+        and subject.args[0].head == "they_Pron"
+    ):
+        is_bound = True
+        instantiation = None
+    elif subject.head == "DetCN" and len(subject.args) == 2:
+        det, cn = subject.args
+        if (
+            det.head == "DetQuant"
+            and len(det.args) == 2
+            and det.args[0].head == "DefArt"
+            and det.args[1].head == "NumSg"
+        ):
+            is_bound = False
+            instantiation = camel_name(_leaf_words(cn))
+        else:
+            return None
+    else:
+        return None
+    if vp.head != "AdvVP" or len(vp.args) != 2 or vp.args[1].head != "PrepNP":
+        return None
+    inner, pp = vp.args
+    if (
+        inner.head != "ComplSlash"
+        or len(inner.args) != 2
+        or inner.args[0].head != "SlashV2a"
+        or inner.args[1].head != "UsePron"
+    ):
+        return None
+    rel_name = camel_name(_leaf_words(vp))
+    return is_bound, instantiation, rel_name
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:

@@ -69,17 +69,31 @@ subject` handles 140's "John said that Bill had hurt himself," recursing
 (`said john (hurt bill bill)`). Confirmed via `_build_fracas_139`/
 `_build_fracas_140`.
 
-Together these four ids (120/121/139/140) do not cover any other id in
-this file — the donkey-pronoun quantifier nesting (122), cardinal/set-
-based anaphora (124), genuine multi-reading referential ambiguity
-(128-130), dependent-plural/paycheque Skolemization (131/132), e-type
-"upgrade the witness set to the whole set" anaphora (133), or a
-definite-description-licensed total function (138) are each a genuinely
-different resolution mechanism from `translate_discourse`'s flat,
-top-level discourse-referent threading and from `translate_cl`'s
-per-sentence dispatch alike, not an incremental extension of either —
-left hand-resolved exactly as this header already describes, extended
-only when another confirmed GF tree needs more, the same incremental
+A third pipeline, `_try_translate_skolem_universal_premise`/
+`_try_translate_skolem_continuation`, reproduces 131 and 132's shared
+dependent-plural/paycheque pattern: "each department has a dedicated
+line" only becomes a Skolem function (one line per department) because
+a LATER sentence anaphorically continues it — "they rent them from BT"
+(131) continues at the bound variable itself, giving `∀d, department d
+→ rentBt d (dedicatedLineOf d)`; "the sales department rents it from
+BT" (132) continues at one named instance instead,
+`rentBt salesDepartment (dedicatedLineOf salesDepartment)` — the exact
+same context-dependence `translate_discourse`'s own `existential_objects`
+flag already makes explicit for 120/121. Confirmed via
+`_build_fracas_131`/`_build_fracas_132`.
+
+Together these six ids (120/121/131/132/139/140) do not cover any other
+id in this file — the donkey-pronoun quantifier nesting merged with a
+passive-voice agent phrase and a relational possessive NP (122, two
+further missing parser features stacked on the donkey-binding problem
+itself, not just a bigger instance of 131/132's own mechanism),
+cardinal/set-based anaphora (124), genuine multi-reading referential
+ambiguity (128-130), e-type "upgrade the witness set to the whole set"
+anaphora (133), or a definite-description-licensed total function (138)
+are each a genuinely different resolution mechanism from all three
+pipelines above, not an incremental extension of any of them — left
+hand-resolved exactly as this header already describes, extended only
+when another confirmed GF tree needs more, the same incremental
 discipline `translate.py`'s own `_try_translate_*` functions already
 follow.
 -/

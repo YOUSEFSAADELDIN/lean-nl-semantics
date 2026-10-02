@@ -66,15 +66,33 @@ dropping the ditransitive object) and `_try_translate_sentential_
 complement` composed with `_try_translate_reflexive_named_subject`
 (140's own "said [that] ... himself", the embedded clause
 translated RECURSIVELY through `translate_cl` rather than by hand);
-and seven further fully hand-built cross-sentential-anaphora
-theorems bypassing `translate_cl`/`translate_discourse` entirely
-(122/124/128/129/131-133/138, `CUSTOM_BUILD` - nested donkey-
-pronoun quantifier binding, cardinal/set-based anaphora, genuine
-multi-reading referential ambiguity, dependent-plural/paycheque
-Skolemization, e-type "upgrade the witness set to the whole set"
-anaphora, and a definite-description-licensed total function -
-each a genuinely different resolution mechanism from either
-pipeline's own, not an incremental extension of one). Not every
+a Skolem-function-continuation PAIR (131/132, `CUSTOM_BUILD`) built
+through a THIRD pipeline, `_try_translate_skolem_universal_premise`/
+`_try_translate_skolem_continuation` - "each department has a
+dedicated line" only becomes a Skolem function (one line per
+department, not a fused unary predicate) because a LATER sentence
+anaphorically continues it, the exact same context-dependence
+`translate_discourse`'s own `existential_objects` flag already
+makes explicit elsewhere; 131 continues at the bound variable
+itself ("they rent them"), 132 at one named instance ("the sales
+department rents it"), both reusing the identical premise 1 and
+reproducing the prior hand-built derivation byte-for-byte,
+including the preposition-dropping fused name `rentBt` and the
+witness-letter convention (the object CN's own head noun, "line",
+stripped of its "dedicated" modifier, unlike the Skolem function's
+own name which keeps the whole compound); and six further fully
+hand-built cross-sentential-anaphora theorems bypassing all three
+pipelines entirely (122/124/128/129/133/138, `CUSTOM_BUILD` -
+nested donkey-pronoun quantifier binding merged with a passive-
+voice "by its members" agent phrase and a relational "members of
+the committee" possessive NP (122, two further missing parser
+features stacked on top of the donkey-binding problem itself, a
+strictly bigger lift than 131/132's own shared mechanism), cardinal/
+set-based anaphora, genuine multi-reading referential ambiguity,
+e-type "upgrade the witness set to the whole set" anaphora, and a
+definite-description-licensed total function - each a genuinely
+different resolution mechanism from any of the three pipelines
+above, not an incremental extension of one). Not every
 Section 3 id is covered: 125/130/136/141 are
 countermodel-only (no bare theorem to cross-check at all); 126 needs
 a genuinely unstated extra premise ("the other eight machines were

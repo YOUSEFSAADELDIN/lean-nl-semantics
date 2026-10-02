@@ -48,6 +48,8 @@ from translate import (  # noqa: E402
     Translation,
     translate_cl,
     translate_discourse,
+    _try_translate_skolem_universal_premise,
+    _try_translate_skolem_continuation,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -424,32 +426,39 @@ def _build_fracas_131(roles: dict) -> "tuple[str, str, str]":
     the real theorem's own stated type directly (`(forall d, department
     d -> hasLine d (lineOf d)) -> (forall d, department d -> rentsFromBT
     d (lineOf d)) -> forall d, department d -> exists l, rentsFromBT d
-    l`): "a dedicated line" becomes a Skolem function (one line per
-    department, the same device 117-119 use for a BOUND possessive
-    pronoun, except triggered here by plain anaphoric continuation of
-    an indefinite object, not a possessive pronoun at all) - "they"/
-    "them" in premise 2 and the hypothesis's own weaker existential
-    conclusion are both built directly rather than independently
-    translated, since neither sentence's own compositional reading
-    matches the real theorem's shape (the hypothesis's own "rents A
-    line from BT" would otherwise fuse into one unary predicate, not
-    split into the needed `exists l, rentsFromBT d l`). Returns
-    (binders, arrow_chain, proof)."""
+    l`). Built through `translate.py`'s own `_try_translate_skolem_
+    universal_premise`/`_try_translate_skolem_continuation` - a real,
+    shape-checked (not blind-positional) pair of functions recognizing
+    "every/each X has a [Adj] Y" continued by a universally-bound
+    pronoun subject, confirmed to reproduce this same derivation
+    byte-for-byte (`dedicatedLineOf`/`rentBt`/bound var `d`/witness var
+    `l`, all exactly as before this refactor). The hypothesis's own
+    weaker existential conclusion is still built directly rather than
+    independently translated (the hypothesis's own "rents A line from
+    BT" would otherwise fuse into one unary predicate, not split into
+    the needed `exists l, rentsFromBT d l`) - that weakening step has no
+    GF tree of its own to recover it from. Returns (binders, arrow_chain,
+    proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    restrictor = camel_name(_leaf_words(p1.args[0]))
-    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    skolem = noun_name + "Of"
-    has_name = "has"
+    result = _try_translate_skolem_universal_premise(*p1.args)
+    if result is None:
+        raise ValueError("fracas_131's premise 1 no longer matches the Skolem-universal shape")
+    template, premise1_text = result
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    rel_name = camel_name(_leaf_words(p2.args[1]))
+    cont = _try_translate_skolem_continuation(*p2.args, template)
+    if cont is None:
+        raise ValueError("fracas_131's premise 2 no longer matches the Skolem-continuation shape")
+    is_bound, _instantiation, rel_name = cont
+    if not is_bound:
+        raise ValueError("fracas_131 needs the universally-bound continuation, got a named one")
+    v, w = template.bound_var, template.witness_var
 
-    premise1_text = f"∀ d, {restrictor} d → {has_name} d ({skolem} d)"
-    premise2_text = f"∀ d, {restrictor} d → {rel_name} d ({skolem} d)"
-    conclusion = f"∀ d, {restrictor} d → ∃ l, {rel_name} d l"
+    premise2_text = f"∀ {v}, {template.restrictor} {v} → {rel_name} {v} ({template.skolem} {v})"
+    conclusion = f"∀ {v}, {template.restrictor} {v} → ∃ {w}, {rel_name} {v} {w}"
     arrow_chain = f"({premise1_text}) → ({premise2_text}) → ({conclusion})"
     binders = (
-        f"{{A : Type*}} ({restrictor} : A → Prop) ({skolem} : A → A) "
-        f"({has_name} {rel_name} : A → A → Prop)"
+        f"{{A : Type*}} ({template.restrictor} : A → Prop) ({template.skolem} : A → A) "
+        f"({template.has_name} {rel_name} : A → A → Prop)"
     )
     proof = "fun h1 h2 => fracas_131 _ _ _ _ h1 h2"
     return binders, arrow_chain, proof
@@ -463,24 +472,30 @@ def _build_fracas_132(roles: dict) -> "tuple[str, str, str]":
     sales department") instead of the bound variable - confirmed by
     reading the real theorem's own stated type directly (`(forall d,
     department d -> hasLine d (lineOf d)) -> rentsFromBT salesDept
-    (lineOf salesDept) -> exists l, rentsFromBT salesDept l`). Returns
-    (binders, arrow_chain, proof)."""
+    (lineOf salesDept) -> exists l, rentsFromBT salesDept l`). Built
+    through the SAME `translate.py` pair of functions as fracas_131's
+    own builder, confirmed to reproduce this derivation byte-for-byte.
+    Returns (binders, arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    restrictor = camel_name(_leaf_words(p1.args[0]))
-    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    skolem = noun_name + "Of"
-    has_name = "has"
+    result = _try_translate_skolem_universal_premise(*p1.args)
+    if result is None:
+        raise ValueError("fracas_132's premise 1 no longer matches the Skolem-universal shape")
+    template, premise1_text = result
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    sales_dept_name = camel_name(_leaf_words(p2.args[0]))
-    rel_name = camel_name(_leaf_words(p2.args[1]))
+    cont = _try_translate_skolem_continuation(*p2.args, template)
+    if cont is None:
+        raise ValueError("fracas_132's premise 2 no longer matches the Skolem-continuation shape")
+    is_bound, instantiation, rel_name = cont
+    if is_bound:
+        raise ValueError("fracas_132 needs the named-individual continuation, got the bound one")
+    w = template.witness_var
 
-    premise1_text = f"∀ d, {restrictor} d → {has_name} d ({skolem} d)"
-    premise2_text = f"{rel_name} {sales_dept_name} ({skolem} {sales_dept_name})"
-    conclusion = f"∃ l, {rel_name} {sales_dept_name} l"
+    premise2_text = f"{rel_name} {instantiation} ({template.skolem} {instantiation})"
+    conclusion = f"∃ {w}, {rel_name} {instantiation} {w}"
     arrow_chain = f"({premise1_text}) → {premise2_text} → {conclusion}"
     binders = (
-        f"{{A : Type*}} ({restrictor} : A → Prop) ({skolem} : A → A) "
-        f"({sales_dept_name} : A) ({has_name} {rel_name} : A → A → Prop)"
+        f"{{A : Type*}} ({template.restrictor} : A → Prop) ({template.skolem} : A → A) "
+        f"({instantiation} : A) ({template.has_name} {rel_name} : A → A → Prop)"
     )
     proof = "fun h1 h2 => fracas_132 _ _ _ _ _ h1 h2"
     return binders, arrow_chain, proof
@@ -3247,15 +3262,33 @@ def main() -> None:
         "complement` composed with `_try_translate_reflexive_named_subject`",
         "(140's own \"said [that] ... himself\", the embedded clause",
         "translated RECURSIVELY through `translate_cl` rather than by hand);",
-        "and seven further fully hand-built cross-sentential-anaphora",
-        "theorems bypassing `translate_cl`/`translate_discourse` entirely",
-        "(122/124/128/129/131-133/138, `CUSTOM_BUILD` - nested donkey-",
-        "pronoun quantifier binding, cardinal/set-based anaphora, genuine",
-        "multi-reading referential ambiguity, dependent-plural/paycheque",
-        "Skolemization, e-type \"upgrade the witness set to the whole set\"",
-        "anaphora, and a definite-description-licensed total function -",
-        "each a genuinely different resolution mechanism from either",
-        "pipeline's own, not an incremental extension of one). Not every",
+        "a Skolem-function-continuation PAIR (131/132, `CUSTOM_BUILD`) built",
+        "through a THIRD pipeline, `_try_translate_skolem_universal_premise`/",
+        "`_try_translate_skolem_continuation` - \"each department has a",
+        "dedicated line\" only becomes a Skolem function (one line per",
+        "department, not a fused unary predicate) because a LATER sentence",
+        "anaphorically continues it, the exact same context-dependence",
+        "`translate_discourse`'s own `existential_objects` flag already",
+        "makes explicit elsewhere; 131 continues at the bound variable",
+        "itself (\"they rent them\"), 132 at one named instance (\"the sales",
+        "department rents it\"), both reusing the identical premise 1 and",
+        "reproducing the prior hand-built derivation byte-for-byte,",
+        "including the preposition-dropping fused name `rentBt` and the",
+        "witness-letter convention (the object CN's own head noun, \"line\",",
+        "stripped of its \"dedicated\" modifier, unlike the Skolem function's",
+        "own name which keeps the whole compound); and six further fully",
+        "hand-built cross-sentential-anaphora theorems bypassing all three",
+        "pipelines entirely (122/124/128/129/133/138, `CUSTOM_BUILD` -",
+        "nested donkey-pronoun quantifier binding merged with a passive-",
+        "voice \"by its members\" agent phrase and a relational \"members of",
+        "the committee\" possessive NP (122, two further missing parser",
+        "features stacked on top of the donkey-binding problem itself, a",
+        "strictly bigger lift than 131/132's own shared mechanism), cardinal/",
+        "set-based anaphora, genuine multi-reading referential ambiguity,",
+        "e-type \"upgrade the witness set to the whole set\" anaphora, and a",
+        "definite-description-licensed total function - each a genuinely",
+        "different resolution mechanism from any of the three pipelines",
+        "above, not an incremental extension of one). Not every",
         "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",
         "a genuinely unstated extra premise (\"the other eight machines were",
