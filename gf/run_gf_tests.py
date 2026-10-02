@@ -2582,6 +2582,17 @@ BASE_CHECKS += [
         "the ITEL-XZ is fast",
     ),
     (
+        # fracas_224's own hypothesis ("the PC-6082 is fast") is
+        # identical to fracas_220's own hypothesis - reused byte-
+        # identical under its own role name (the generic cross-check
+        # generator needs its own registered tree per id, unlike the
+        # hand-built proof this once fed, which synthesized this text
+        # directly from the two premises' own names instead).
+        "fracas_224_hypothesis",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (PositA fast_A)))",
+        "the PC-6082 is fast",
+    ),
+    (
         # fracas_227's own three roles are each identical to an
         # already-confirmed sibling id's own tree: premise 1 to
         # fracas_224's, premise 2 to fracas_223's, and the hypothesis
@@ -2639,6 +2650,20 @@ BASE_CHECKS += [
         "the ITEL-ZX is an ITEL computer",
     ),
     (
+        # fracas_246's own hypothesis ("the PC-6082 is faster than the
+        # ITEL-ZX") is a genuinely new tree - not registered anywhere
+        # else (unlike 220's/223's own "faster than the ITEL-XZ", a
+        # DIFFERENT named individual, "ITEL-XZ" not "ITEL-ZX" - FraCaS's
+        # own distinct computers, confirmed directly against the real
+        # corpus text) - the generic cross-check generator needs its own
+        # registered tree per id, unlike the hand-built proof this once
+        # fed, which synthesized this text directly from premise 1's own
+        # relation name and premise 2's own subject instead.
+        "fracas_246_hypothesis",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (UsePN itelZX_PN))))",
+        "the PC-6082 is faster than the ITEL-ZX",
+    ),
+    (
         "fracas_247_premise1",
         "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N)))))",
         "the PC-6082 is faster than an ITEL computer",
@@ -2658,6 +2683,13 @@ BASE_CHECKS += [
         "fracas_248_premise2",
         "linearize PredVP (UsePN itelZX_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (UseN itelComputer_N))))",
         "the ITEL-ZX is an ITEL computer",
+    ),
+    (
+        # Byte-identical to fracas_246's own hypothesis (reused rather
+        # than re-linearized).
+        "fracas_248_hypothesis",
+        "linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (UsePN itelZX_PN))))",
+        "the PC-6082 is faster than the ITEL-ZX",
     ),
     (
         "fracas_249_premise",

@@ -454,6 +454,50 @@ not about the words "small"/"large" themselves - moving it to the
 generic pipeline would mean adding a rule usable by nothing else,
 which is CUSTOM_BUILD's own job already, not a real
 generalization.
+
+Section 6 (comparatives) extends the SAME comparative machinery
+Section 5's 208/209 piloted - its own Comparatives.lean header
+states this directly ("continues Section 5's... pattern") - to 9
+more ids, all genuinely blind: 220/223/224/227 add a new
+AUX_HYPOTHESIS_PREPEND pair (`_comparative_transfer_aux`/`_neg`)
+for "Adj-er than"/"as Adj as" TRANSFERRING a shared bare adjective
+across the relation (`fasterThan x y -> fast y -> fast x`, not
+deriving the relation itself the way 208/209 do); 224/227 also
+needed one new `translate.py` case, `CAdvAP as_CAdv`, for the
+equative "as Adj as" construction (named `{adj}As`, the
+equative's own analogue of `ComparA`'s `{adj}Than`); 229 adds a
+binary analogue of `_privative_aux` (`_binary_privative_aux`) for
+"as fast as" directly refuting "slower than". 246/248
+("faster than every/any ITEL computer") needed the biggest single
+extension: `ComparA`'s own standard argument can itself be a
+QUANTIFIED NP, not just a named individual - ComparA's own case
+now dispatches on the standard's shape and reuses this project's
+existing `Every`/`Some` machinery directly (`_resolve_quantifier`/
+`_restrictor_expr`, the same combinators Sections 1-5 already
+share throughout - "any" gets the same universal reading as
+"every" here, Comparatives.lean's own approach note, so needs no
+separate case). 249/250 ("faster than the ITEL-ZX and/or the
+ITEL-ZY") needed a THIRD standard shape, a conjoined/disjoined
+pair of named individuals, producing a CONJUNCTION of the
+relation applied to each one - confirmed directly against both
+real theorems, which need the identical conjunction for EITHER
+connective (FraCaS's own stipulated conjunctive reading of "or"
+here, Comparatives.lean's own "on one reading of the premise" -
+a genuine non-compositional modeling choice for this ONE
+construction, not a general "or means and" rule). Their own
+hypothesis (the premise's own first conjunct, restated) reuses
+`BUNDLE_PROJECT` directly from the new `conjuncts` this case sets,
+the same mechanism 114-116 already use, rather than needing a
+separately GF-toolchain-confirmed tree for that restatement.
+230/232/233/235/236/237/238/239/241/243/244/245 stay unattempted,
+for the same pre-existing reason already documented above (44/81/
+82/92): FraCaS's own "more N than NP"/"twice as many" cardinal-
+comparative-quantifier construction has no combinator in this
+grammar at all, so there's no GF tree to translate in the first
+place, genuinely orthogonal to anything a Python-level
+classification could close. 242 stays on CUSTOM_BUILD: real `Nat`
+arithmetic over a number phrase, a fundamentally different kind
+of content than every adjective-classification case above.
 -/
 
 open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9
@@ -868,45 +912,45 @@ theorem fracas_218_from_gf (kimClever : Prop) :
     kimClever → kimClever :=
   fun h => fracas_218 _ h
 
-theorem fracas_220_from_gf {A : Type*} (fastThan : A → A → Prop) (fast : A → Prop) (pc6082 itelXZ : A) :
+theorem fracas_220_from_gf {A : Type*} (fast : A → Prop) (fastThan : A → A → Prop) (pc6082 : A) (itelXZ : A) :
     (∀ x y, fastThan x y → fast y → fast x) → fastThan pc6082 itelXZ → fast itelXZ → fast pc6082 :=
-  fun h hf hi => fracas_220 _ _ _ _ h hf hi
+  fun h1 h2 h3 => fracas_220 _ _ _ _ h1 h2 h3
 
-theorem fracas_223_from_gf {A : Type*} (fastThan : A → A → Prop) (fast slow : A → Prop) (pc6082 itelXZ : A) :
-    (∀ x y, fastThan x y → slow x → ¬ fast y) → fastThan pc6082 itelXZ → slow pc6082 → ¬ fast itelXZ :=
-  fun h hf hs => fracas_223 _ _ _ _ _ h hf hs
+theorem fracas_223_from_gf {A : Type*} (slow fast : A → Prop) (fastThan : A → A → Prop) (pc6082 : A) (itelXZ : A) :
+    (∀ x y, fastThan x y → slow x → ¬ fast y) → fastThan pc6082 itelXZ → slow pc6082 → ¬ (fast itelXZ) :=
+  fun h1 h2 h3 => fracas_223 _ _ _ _ _ h1 h2 h3
 
-theorem fracas_224_from_gf {A : Type*} (fastAs : A → A → Prop) (fast : A → Prop) (pc6082 itelXZ : A) :
+theorem fracas_224_from_gf {A : Type*} (fast : A → Prop) (fastAs : A → A → Prop) (pc6082 : A) (itelXZ : A) :
     (∀ x y, fastAs x y → fast y → fast x) → fastAs pc6082 itelXZ → fast itelXZ → fast pc6082 :=
-  fun h hf hi => fracas_224 _ _ _ _ h hf hi
+  fun h1 h2 h3 => fracas_224 _ _ _ _ h1 h2 h3
 
-theorem fracas_227_from_gf {A : Type*} (fastAs : A → A → Prop) (fast slow : A → Prop) (pc6082 itelXZ : A) :
-    (∀ x y, fastAs x y → slow x → ¬ fast y) → fastAs pc6082 itelXZ → slow pc6082 → ¬ fast itelXZ :=
-  fun h hf hs => fracas_227 _ _ _ _ _ h hf hs
+theorem fracas_227_from_gf {A : Type*} (slow fast : A → Prop) (fastAs : A → A → Prop) (pc6082 : A) (itelXZ : A) :
+    (∀ x y, fastAs x y → slow x → ¬ fast y) → fastAs pc6082 itelXZ → slow pc6082 → ¬ (fast itelXZ) :=
+  fun h1 h2 h3 => fracas_227 _ _ _ _ _ h1 h2 h3
 
-theorem fracas_229_from_gf {A : Type*} (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A) :
-    (∀ x y, fastAs x y → ¬ slowThan x y) → fastAs pc6082 itelXZ → ¬ slowThan pc6082 itelXZ :=
-  fun h ha => fracas_229 _ _ _ _ h ha
+theorem fracas_229_from_gf {A : Type*} (fastAs slowThan : A → A → Prop) (pc6082 : A) (itelXZ : A) :
+    (∀ x y, fastAs x y → ¬ slowThan x y) → fastAs pc6082 itelXZ → ¬ (slowThan pc6082 itelXZ) :=
+  fun h1 h2 => fracas_229 _ _ _ _ h1 h2
 
 theorem fracas_242_from_gf (speedPc6082 speedItelZX : Nat) :
     speedPc6082 > 500 → speedItelZX < 500 → speedPc6082 > speedItelZX :=
   by omega
 
-theorem fracas_246_from_gf {A : Type*} (fastThan : A → A → Prop) (itelComputer : A → Prop) (pc6082 itelZX : A) :
+theorem fracas_246_from_gf {A : Type*} (itelComputer : A → Prop) (fastThan : A → A → Prop) (pc6082 : A) (itelZX : A) :
     Every itelComputer (fastThan pc6082) → itelComputer itelZX → fastThan pc6082 itelZX :=
-  fun h hz => fracas_246 _ _ _ _ h hz
+  fun h1 h2 => fracas_246 _ _ _ _ h1 h2
 
-theorem fracas_248_from_gf {A : Type*} (fastThan : A → A → Prop) (itelComputer : A → Prop) (pc6082 itelZX : A) :
+theorem fracas_248_from_gf {A : Type*} (itelComputer : A → Prop) (fastThan : A → A → Prop) (pc6082 : A) (itelZX : A) :
     Every itelComputer (fastThan pc6082) → itelComputer itelZX → fastThan pc6082 itelZX :=
-  fun h hz => fracas_248 _ _ _ _ h hz
+  fun h1 h2 => fracas_248 _ _ _ _ h1 h2
 
-theorem fracas_249_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A) :
-    fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY → fastThan pc6082 itelZX :=
-  fun h => fracas_249 _ _ _ _ h
+theorem fracas_249_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 : A) (itelZX : A) (itelZY : A) :
+    (fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY) → fastThan pc6082 itelZX :=
+  fun h1 => fracas_249 _ _ _ _ h1
 
-theorem fracas_250_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A) :
-    fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY → fastThan pc6082 itelZX :=
-  fun h => fracas_250 _ _ _ _ h
+theorem fracas_250_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 : A) (itelZX : A) (itelZY : A) :
+    (fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY) → fastThan pc6082 itelZX :=
+  fun h1 => fracas_250 _ _ _ _ h1
 
 theorem fracas_251_from_gf (itelHaveFactoryBirmingham : Prop) :
     itelHaveFactoryBirmingham → itelHaveFactoryBirmingham :=

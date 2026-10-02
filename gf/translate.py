@@ -723,10 +723,115 @@ def _try_translate_named_individual_fact(subject, vp):
         and len(vp.args[0].args) == 1
         and vp.args[0].args[0].head == "ComparA"
         and len(vp.args[0].args[0].args) == 2
-        and vp.args[0].args[0].args[1].head == "UsePN"
     ):
-        adj_tree, standard_pn = vp.args[0].args[0].args
+        adj_tree, standard = vp.args[0].args[0].args
         relation_name = camel_name(_leaf_words(adj_tree)) + "Than"
+        if standard.head == "UsePN":
+            standard_name = camel_name(_leaf_words(standard))
+            return Translation(
+                lean_prop=f"{relation_name} {individual_name} {standard_name}",
+                free_predicates=[relation_name],
+                free_individuals=[individual_name, standard_name],
+                binary_predicates=[relation_name],
+            )
+        # A QUANTIFIED standard ("faster than every/any ITEL computer",
+        # fracas_246's/248's own premise) distributes the comparative
+        # relation across the restrictor via this project's own usual
+        # `Every`/`Some` machinery (`_resolve_quantifier`/
+        # `_restrictor_expr`, the same combinators Sections 1-5 already
+        # reuse throughout) - `Every itelComputer (fasterThan pc)`, a
+        # partially-applied binary relation as `Every`'s own scope
+        # predicate, confirmed directly against fracas_246's/248's own
+        # stated type (no lambda needed - GQ.lean's `Every P Q` already
+        # takes `Q` as a bare `A -> Prop`, and `fasterThan pc` already IS
+        # one, point-free). "any" gets the SAME universal reading as
+        # "every" here (Comparatives.lean's own approach note: "any" is
+        # universal in this construction, not an NPI), so no separate
+        # case is needed for it.
+        if standard.head == "DetCN" and len(standard.args) == 2:
+            det, cn = standard.args
+            quant = _resolve_quantifier(det)
+            restrictor_expr, restrictor_preds = _restrictor_expr(cn)
+            return Translation(
+                lean_prop=f"{quant} {restrictor_expr} ({relation_name} {individual_name})",
+                free_predicates=[*restrictor_preds, relation_name],
+                free_individuals=[individual_name],
+                binary_predicates=[relation_name],
+            )
+        # A conjoined/disjoined standard of NAMED individuals ("faster
+        # than the ITEL-ZX and the ITEL-ZY"/"... or the ITEL-ZY",
+        # fracas_249's/250's own premise) becomes a CONJUNCTION of the
+        # relation applied to each one - confirmed directly against both
+        # real theorems' own stated types, which need the identical `∧`
+        # conjunction for EITHER connective: FraCaS's own stipulated
+        # reading of "or" here is conjunctive ("faster than both"), per
+        # Comparatives.lean's own approach note ("on one reading of the
+        # premise") - a genuine non-compositional modeling choice this
+        # project makes for THIS construction specifically, not a general
+        # "or means and" rule, so both `and_Conj`/`or_Conj` map to the
+        # same `∧` output rather than only `and_Conj` doing so. Only the
+        # two-standard case is handled, the same restriction every other
+        # binary conjunction case in this translator already has.
+        if (
+            standard.head == "ConjNP"
+            and len(standard.args) == 2
+            and standard.args[0].head in ("and_Conj", "or_Conj")
+            and standard.args[1].head == "BaseNP"
+            and len(standard.args[1].args) == 2
+        ):
+            pn1, pn2 = standard.args[1].args
+            name1 = camel_name(_leaf_words(pn1))
+            name2 = camel_name(_leaf_words(pn2))
+            conjunct1 = Translation(
+                lean_prop=f"{relation_name} {individual_name} {name1}",
+                free_predicates=[relation_name],
+                free_individuals=[individual_name, name1],
+                binary_predicates=[relation_name],
+            )
+            conjunct2 = Translation(
+                lean_prop=f"{relation_name} {individual_name} {name2}",
+                free_predicates=[relation_name],
+                free_individuals=[individual_name, name2],
+                binary_predicates=[relation_name],
+            )
+            # Exposes its own two conjuncts via `Translation.conjuncts`
+            # (the same mechanism `_try_translate_conjnp_subject` already
+            # uses) - fracas_249's/250's own real theorem states this
+            # SAME sentence as its one real premise directly (no
+            # projection needed there), but their own hypothesis is just
+            # its FIRST conjunct alone ("the PC-6082 is faster than the
+            # ITEL-ZX") restated - `BUNDLE_PROJECT` in
+            # scripts/gen_gf_cross_check.py reuses this conjunct directly
+            # rather than this sentence needing its own separately
+            # registered (and separately GF-toolchain-confirmed) tree.
+            return Translation(
+                lean_prop=f"({conjunct1.lean_prop} ∧ {conjunct2.lean_prop})",
+                free_predicates=[relation_name],
+                free_individuals=[individual_name, name1, name2],
+                binary_predicates=[relation_name],
+                conjuncts=[conjunct1, conjunct2],
+            )
+    # "As fast as", the equative counterpart of ComparA's own comparative
+    # - FraCaS's own Section 6 reads this as an "at least as", not
+    # "exactly as", bound (Comparatives.lean's own header) - same binary-
+    # relation treatment as the comparative case above, general over any
+    # "as Adj as" construction this grammar can produce, named `{adj}As`
+    # rather than `{adj}Than` only to keep the two constructions'
+    # auto-generated names visibly distinct (neither name has to match
+    # the real theorem's own choice either way).
+    if (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompAP"
+        and len(vp.args[0].args) == 1
+        and vp.args[0].args[0].head == "CAdvAP"
+        and len(vp.args[0].args[0].args) == 3
+        and vp.args[0].args[0].args[0].head == "as_CAdv"
+        and vp.args[0].args[0].args[1].head == "PositA"
+        and vp.args[0].args[0].args[2].head == "UsePN"
+    ):
+        _as_cadv, adj_tree, standard_pn = vp.args[0].args[0].args
+        relation_name = camel_name(_leaf_words(adj_tree)) + "As"
         standard_name = camel_name(_leaf_words(standard_pn))
         return Translation(
             lean_prop=f"{relation_name} {individual_name} {standard_name}",

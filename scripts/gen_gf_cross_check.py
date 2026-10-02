@@ -180,6 +180,54 @@ def _comparative_aux_neg(ps, h) -> str:
     )
 
 
+def _comparative_transfer_aux(ps, h) -> str:
+    """`(forall x y, <premise1's own comparative relation> x y ->
+    <premise2's own bare adjective, applied to the STANDARD> y ->
+    <hypothesis's own bare adjective, applied to the SUBJECT> x)` -
+    Section 6's own "Adj-er than"/"as Adj as" licensing a bare "Adj"
+    predication via an assumed connecting fact (Comparatives.lean's own
+    comment, the same move as Section 5's 208/209 but TRANSFERRING a
+    shared property across the relation rather than deriving the
+    relation itself) - fracas_220's/224's own shape (`fasterThan x y ->
+    fast y -> fast x`), confirmed directly against each one's own
+    stated type. `ps[0]` is always the premise carrying the binary
+    relation (confirmed, not assumed uniform, since 223/227 below need
+    the premises in the SAME order but the bare adjective applied to
+    the OPPOSITE individual)."""
+    return (
+        f"(∀ x y, {ps[0].free_predicates[-1]} x y → {ps[1].free_predicates[-1]} y → "
+        f"{h.free_predicates[-1]} x)"
+    )
+
+
+def _comparative_transfer_aux_neg(ps, h) -> str:
+    """`_comparative_transfer_aux`'s own mirror: the bare adjective
+    applies to the relation's SUBJECT instead of its standard, and the
+    hypothesis's own bare adjective (applied to the standard) comes out
+    NEGATED - fracas_223's/227's own shape (`fasterThan x y -> slow x ->
+    not fast y`, "if the faster one is already slow, the slower one
+    certainly isn't fast"), confirmed directly against each one's own
+    stated type."""
+    return (
+        f"(∀ x y, {ps[0].free_predicates[-1]} x y → {ps[1].free_predicates[-1]} x → "
+        f"¬ {h.free_predicates[-1]} y)"
+    )
+
+
+def _binary_privative_aux(ps, h) -> str:
+    """`_privative_aux`'s own BINARY-relation analogue: `(forall x y,
+    <premise's own binary relation> x y -> not <hypothesis's own binary
+    relation> x y)` - fracas_229's own shape (`asFastAs x y -> not
+    slowerThan x y`, "as fast as" directly refutes "slower than"),
+    confirmed directly against its own stated type. `_privative_aux`
+    itself can't be reused here (unlike 204's/205's own reuse of it):
+    that one applies each predicate to a SINGLE individual (`P x`,
+    always correct for `free_predicates[-1]`'s own one-argument
+    convention), but a binary relation needs BOTH bound variables
+    applied (`P x y`)."""
+    return f"(∀ x y, {ps[-1].free_predicates[-1]} x y → ¬ {h.free_predicates[-1]} x y)"
+
+
 # Ids needing their one AUX_HYPOTHESIS-style extra fact BEFORE their real
 # FraCaS premise instead of after it, matching each one's own real
 # argument order directly (fracas_198's own stated type is `(forall x,
@@ -197,6 +245,11 @@ AUX_HYPOTHESIS_PREPEND = {
     205: _privative_aux,
     208: _comparative_aux,
     209: _comparative_aux_neg,
+    220: _comparative_transfer_aux,
+    223: _comparative_transfer_aux_neg,
+    224: _comparative_transfer_aux,
+    227: _comparative_transfer_aux_neg,
+    229: _binary_privative_aux,
 }
 
 # Ids whose real theorem's own conclusion needs a DIFFERENT individual
@@ -219,7 +272,11 @@ HYPOTHESIS_FROM_PREMISE = {204: 1, 205: 1}
 # `_SPLITTING_ADJECTIVES` for 202/214) before being added here - the
 # exact due-diligence step the guard itself exists to force, just done
 # by hand for these seven instead of trusted from arrow-count alone.
-GENERIC_PIPELINE_ALLOWED_142_PLUS = {198, 202, 204, 205, 208, 209, 214}
+GENERIC_PIPELINE_ALLOWED_142_PLUS = {
+    198, 202, 204, 205, 208, 209, 214,
+    220, 223, 224, 227, 229,
+    246, 248, 249, 250,
+}
 
 # Ids whose real theorem's own HYPOTHESIS is itself stated as a bare,
 # unparenthesized `forall x, P x -> Q x` (never wrapped in `Every`/`Some`/
@@ -274,7 +331,15 @@ PROJECT_CONJUNCT = {85: (1, 0), 86: (1, 1)}
 # "Mary has a workstation" read in isolation would otherwise get
 # translate_cl's usual fused-unary-predicate treatment, structurally
 # incompatible with the bundle's own binary `has owner possessed`).
-BUNDLE_PROJECT = {114: 2, 115: 1, 116: 0}
+# 249/250 share this same mechanism for a different reason: their own
+# premise IS the real theorem's own premise, unchanged (no projection on
+# the PREMISE side at all) - only the HYPOTHESIS is the premise's own
+# first conjunct restated ("the PC-6082 is faster than the ITEL-ZX"),
+# confirmed directly against each real theorem's own `:= fun h => h.1`
+# proof. Reusing `translate.py`'s own `conjuncts` (set by its ComparA-
+# with-a-conjoined-standard case) avoids needing a SEPARATE, freshly
+# GF-toolchain-confirmed tree for that restated hypothesis sentence.
+BUNDLE_PROJECT = {114: 2, 115: 1, 116: 0, 249: 0, 250: 0}
 
 # fracas_117/118's shared premise 1 ("every student used her
 # workstation") and fracas_119's own premise 1 ("no student used her
@@ -1538,152 +1603,6 @@ def _build_fracas_212(roles: dict) -> "tuple[str, str, str]":
 # ---------------------------------------------------------------------
 
 
-def _comp_ap(p):
-    """PredVP subj (UseComp (CompAP ap)) -> (subj_name, ap) - the
-    copular "X is Adj(-er (than Y))" shape every id in this section
-    shares; callers then destructure `ap` by its own head (`PositA`,
-    `ComparA`, or `CAdvAP`)."""
-    subj = camel_name(_leaf_words(p.args[0]))
-    ap = p.args[1].args[0].args[0]
-    return subj, ap
-
-
-def _build_fracas_220(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is faster than the ITEL-XZ. The ITEL-XZ is fast."
-    -> "The PC-6082 is fast." Confirmed by reading the real theorem's
-    own stated type directly (`(∀x y, fasterThan x y -> fast y -> fast
-    x) -> fasterThan pc itel -> fast itel -> fast pc`) - the comparative
-    licenses a bare "fast" predication via an assumed connecting fact,
-    same move as Section 5's 208/209. Returns (binders, arrow_chain,
-    proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    pc, ap1 = _comp_ap(p1)
-    adj = camel_name(_leaf_words(ap1.args[0]))
-    itel = camel_name(_leaf_words(ap1.args[1]))
-    relation = adj + "Than"
-    _itel2, ap2 = _comp_ap(p2)
-    fast = camel_name(_leaf_words(ap2))
-    arrow_chain = (
-        f"(∀ x y, {relation} x y → {fast} y → {fast} x) → "
-        f"{relation} {pc} {itel} → {fast} {itel} → {fast} {pc}"
-    )
-    binders = f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} : A → Prop) ({pc} {itel} : A)"
-    proof = "fun h hf hi => fracas_220 _ _ _ _ h hf hi"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_223(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is faster than the ITEL-XZ. The PC-6082 is slow."
-    -> not "The ITEL-XZ is fast." Confirmed by reading the real
-    theorem's own stated type directly (`(∀x y, fasterThan x y -> slow x
-    -> ¬ fast y) -> fasterThan pc itel -> slow pc -> ¬ fast itel`) - if
-    the faster one is already slow, the slower one certainly isn't fast.
-    premise 1 reuses fracas_220's own premise 1 (identical text); the
-    hypothesis, resolved before negation, reuses fracas_220's own
-    premise 2 (`fracas_223_premise1`/`fracas_223_hypothesis` in
-    run_gf_tests.py). Returns (binders, arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    hyp = parse_tree(roles["_hypothesis"])
-    pc, ap1 = _comp_ap(p1)
-    adj = camel_name(_leaf_words(ap1.args[0]))
-    itel = camel_name(_leaf_words(ap1.args[1]))
-    relation = adj + "Than"
-    _pc2, ap2 = _comp_ap(p2)
-    slow = camel_name(_leaf_words(ap2))
-    _itel2, ap3 = _comp_ap(hyp)
-    fast = camel_name(_leaf_words(ap3))
-    aux = f"∀ x y, {relation} x y → {slow} x → ¬ {fast} y"
-    arrow_chain = f"({aux}) → {relation} {pc} {itel} → {slow} {pc} → ¬ {fast} {itel}"
-    binders = (
-        f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} {slow} : A → Prop) "
-        f"({pc} {itel} : A)"
-    )
-    proof = "fun h hf hs => fracas_223 _ _ _ _ _ h hf hs"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_224(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is as fast as the ITEL-XZ. The ITEL-XZ is fast." ->
-    "The PC-6082 is fast." Confirmed by reading the real theorem's own
-    stated type directly (`(∀x y, asFastAs x y -> fast y -> fast x) ->
-    asFastAs pc itel -> fast itel -> fast pc`) - same shape as 220, via
-    the equative `CAdvAP`/`as_CAdv` construction instead of `ComparA`;
-    premise 2 reuses fracas_220's own premise 2 (identical text,
-    `fracas_224_premise2`). Returns (binders, arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    pc, ap1 = _comp_ap(p1)
-    adj = camel_name(_leaf_words(ap1.args[1]))
-    itel = camel_name(_leaf_words(ap1.args[2]))
-    relation = adj + "As"
-    _itel2, ap2 = _comp_ap(p2)
-    fast = camel_name(_leaf_words(ap2))
-    arrow_chain = (
-        f"(∀ x y, {relation} x y → {fast} y → {fast} x) → "
-        f"{relation} {pc} {itel} → {fast} {itel} → {fast} {pc}"
-    )
-    binders = f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} : A → Prop) ({pc} {itel} : A)"
-    proof = "fun h hf hi => fracas_224 _ _ _ _ h hf hi"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_227(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is as fast as the ITEL-XZ. The PC-6082 is slow." ->
-    not "The ITEL-XZ is fast." Confirmed by reading the real theorem's
-    own stated type directly (`(∀x y, asFastAs x y -> slow x -> ¬ fast
-    y) -> asFastAs pc itel -> slow pc -> ¬ fast itel`) - same shape as
-    223, via the equative construction; all three roles reuse
-    fracas_224's/223's/220's own already-confirmed trees
-    (`fracas_227_premise1`/`fracas_227_premise2`/
-    `fracas_227_hypothesis`). Returns (binders, arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    hyp = parse_tree(roles["_hypothesis"])
-    pc, ap1 = _comp_ap(p1)
-    adj = camel_name(_leaf_words(ap1.args[1]))
-    itel = camel_name(_leaf_words(ap1.args[2]))
-    relation = adj + "As"
-    _pc2, ap2 = _comp_ap(p2)
-    slow = camel_name(_leaf_words(ap2))
-    _itel2, ap3 = _comp_ap(hyp)
-    fast = camel_name(_leaf_words(ap3))
-    aux = f"∀ x y, {relation} x y → {slow} x → ¬ {fast} y"
-    arrow_chain = f"({aux}) → {relation} {pc} {itel} → {slow} {pc} → ¬ {fast} {itel}"
-    binders = (
-        f"{{A : Type*}} ({relation} : A → A → Prop) ({fast} {slow} : A → Prop) "
-        f"({pc} {itel} : A)"
-    )
-    proof = "fun h hf hs => fracas_227 _ _ _ _ _ h hf hs"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_229(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is as fast as the ITEL-XZ." -> not "The PC-6082 is
-    slower than the ITEL-XZ." Confirmed by reading the real theorem's
-    own stated type directly (`(∀x y, asFastAs x y -> ¬ slowerThan x y)
-    -> asFastAs pc itel -> ¬ slowerThan pc itel`) - "as fast as" (an "at
-    least as fast" lower bound) directly refutes "slower than", an
-    assumed fact connecting the two comparatives; the premise reuses
-    fracas_224's own premise 1 (identical text, `fracas_229_premise`).
-    Returns (binders, arrow_chain, proof)."""
-    p = parse_tree(roles["_premise"])
-    hyp = parse_tree(roles["_hypothesis"])
-    pc, ap1 = _comp_ap(p)
-    asFastAsAdj = camel_name(_leaf_words(ap1.args[1]))
-    itel = camel_name(_leaf_words(ap1.args[2]))
-    asFastAs = asFastAsAdj + "As"
-    _pc2, ap2 = _comp_ap(hyp)
-    slowAdj = camel_name(_leaf_words(ap2.args[0]))
-    slowerThan = slowAdj + "Than"
-    aux = f"∀ x y, {asFastAs} x y → ¬ {slowerThan} x y"
-    arrow_chain = f"({aux}) → {asFastAs} {pc} {itel} → ¬ {slowerThan} {pc} {itel}"
-    binders = f"{{A : Type*}} ({asFastAs} {slowerThan} : A → A → Prop) ({pc} {itel} : A)"
-    proof = "fun h ha => fracas_229 _ _ _ _ h ha"
-    return binders, arrow_chain, proof
-
-
 def _build_fracas_242(roles: dict) -> "tuple[str, str, str]":
     """"The PC-6082 is faster than 500 MIPS. The ITEL-ZX is slower than
     500 MIPS." -> "The PC-6082 is faster than the ITEL-ZX." Confirmed by
@@ -1722,103 +1641,6 @@ def _build_fracas_242(roles: dict) -> "tuple[str, str, str]":
     binders = f"({speed1} {speed2} : Nat)"
     proof = "by omega"
     return binders, arrow_chain, proof
-
-
-def _build_fracas_246(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is faster than every ITEL computer. The ITEL-ZX is
-    an ITEL computer." -> "The PC-6082 is faster than the ITEL-ZX."
-    Confirmed by reading the real theorem's own stated type directly
-    (`Every itelComputer (fasterThan pc) -> itelComputer itelzx ->
-    fasterThan pc itelzx`) - a quantified comparative standard, reusing
-    `Every` from `FraCaS.Section1.GQ` exactly as Sections 1-5 do
-    throughout. Returns (binders, arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    pc, ap1 = _comp_ap(p1)
-    adj = camel_name(_leaf_words(ap1.args[0]))
-    relation = adj + "Than"
-    restrictor_cn = ap1.args[1].args[1]
-    restrictor = camel_name(_leaf_words(restrictor_cn))
-    itelzx = camel_name(_leaf_words(p2.args[0]))
-    arrow_chain = (
-        f"Every {restrictor} ({relation} {pc}) → {restrictor} {itelzx} → "
-        f"{relation} {pc} {itelzx}"
-    )
-    binders = (
-        f"{{A : Type*}} ({relation} : A → A → Prop) ({restrictor} : A → Prop) "
-        f"({pc} {itelzx} : A)"
-    )
-    proof = "fun h hz => fracas_246 _ _ _ _ h hz"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_248(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is faster than any ITEL computer. The ITEL-ZX is an
-    ITEL computer." -> "The PC-6082 is faster than the ITEL-ZX."
-    Confirmed by reading the real theorem's own stated type directly
-    (identical to fracas_246's own: `Every itelComputer (fasterThan pc)
-    -> itelComputer itelzx -> fasterThan pc itelzx`) - "any" is
-    universal here (not an NPI under negation), same shape as 246;
-    both premises reuse fracas_246's own already-confirmed trees
-    (`fracas_248_premise1`/`fracas_248_premise2` in run_gf_tests.py).
-    Returns (binders, arrow_chain, proof)."""
-    p1 = parse_tree(roles["_premise1"])
-    p2 = parse_tree(roles["_premise2"])
-    pc, ap1 = _comp_ap(p1)
-    adj = camel_name(_leaf_words(ap1.args[0]))
-    relation = adj + "Than"
-    restrictor_cn = ap1.args[1].args[1]
-    restrictor = camel_name(_leaf_words(restrictor_cn))
-    itelzx = camel_name(_leaf_words(p2.args[0]))
-    arrow_chain = (
-        f"Every {restrictor} ({relation} {pc}) → {restrictor} {itelzx} → "
-        f"{relation} {pc} {itelzx}"
-    )
-    binders = (
-        f"{{A : Type*}} ({relation} : A → A → Prop) ({restrictor} : A → Prop) "
-        f"({pc} {itelzx} : A)"
-    )
-    proof = "fun h hz => fracas_248 _ _ _ _ h hz"
-    return binders, arrow_chain, proof
-
-
-def _conj_fact(roles: dict, idn: int) -> "tuple[str, str, str]":
-    p = parse_tree(roles["_premise"])
-    pc, ap = _comp_ap(p)
-    adj = camel_name(_leaf_words(ap.args[0]))
-    relation = adj + "Than"
-    conj = ap.args[1]
-    basenp = conj.args[1]
-    itelzx = camel_name(_leaf_words(basenp.args[0]))
-    itelzy = camel_name(_leaf_words(basenp.args[1]))
-    fact = f"{relation} {pc} {itelzx} ∧ {relation} {pc} {itelzy}"
-    conclusion = f"{relation} {pc} {itelzx}"
-    arrow_chain = f"{fact} → {conclusion}"
-    binders = f"{{A : Type*}} ({relation} : A → A → Prop) ({pc} {itelzx} {itelzy} : A)"
-    proof = f"fun h => fracas_{idn} _ _ _ _ h"
-    return binders, arrow_chain, proof
-
-
-def _build_fracas_249(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is faster than the ITEL-ZX and the ITEL-ZY." ->
-    "The PC-6082 is faster than the ITEL-ZX." Confirmed by reading the
-    real theorem's own `:= fun h => h.1` proof directly (`fasterThan pc
-    itelzx ∧ fasterThan pc itelzy -> fasterThan pc itelzx`) - a plain
-    conjunction-drop, splitting the premise's own `ConjNP and_Conj
-    (BaseNP ...)` into its two conjuncts. Returns (binders, arrow_chain,
-    proof)."""
-    return _conj_fact(roles, 249)
-
-
-def _build_fracas_250(roles: dict) -> "tuple[str, str, str]":
-    """"The PC-6082 is faster than the ITEL-ZX or the ITEL-ZY." -> "The
-    PC-6082 is faster than the ITEL-ZX." Confirmed by reading the real
-    theorem's own `:= fun h => h.1` proof directly (`fasterThan pc
-    itelzx ∧ fasterThan pc itelzy -> fasterThan pc itelzx`) - FraCaS's
-    own "or" read conjunctively (faster than both), the same bundled
-    reading as 249's "and", per FraCaS's own "on one reading of the
-    premise". Returns (binders, arrow_chain, proof)."""
-    return _conj_fact(roles, 250)
 
 
 def _year_from_adv(head: str) -> int:
@@ -2898,16 +2720,7 @@ CUSTOM_BUILD = {
     210: _build_fracas_210,
     211: _build_fracas_211,
     212: _build_fracas_212,
-    220: _build_fracas_220,
-    223: _build_fracas_223,
-    224: _build_fracas_224,
-    227: _build_fracas_227,
-    229: _build_fracas_229,
     242: _build_fracas_242,
-    246: _build_fracas_246,
-    248: _build_fracas_248,
-    249: _build_fracas_249,
-    250: _build_fracas_250,
     251: _build_fracas_251,
     252: _build_fracas_252,
     255: _build_fracas_255,
@@ -3552,6 +3365,50 @@ def main() -> None:
         "generic pipeline would mean adding a rule usable by nothing else,",
         "which is CUSTOM_BUILD's own job already, not a real",
         "generalization.",
+        "",
+        "Section 6 (comparatives) extends the SAME comparative machinery",
+        "Section 5's 208/209 piloted - its own Comparatives.lean header",
+        "states this directly (\"continues Section 5's... pattern\") - to 9",
+        "more ids, all genuinely blind: 220/223/224/227 add a new",
+        "AUX_HYPOTHESIS_PREPEND pair (`_comparative_transfer_aux`/`_neg`)",
+        "for \"Adj-er than\"/\"as Adj as\" TRANSFERRING a shared bare adjective",
+        "across the relation (`fasterThan x y -> fast y -> fast x`, not",
+        "deriving the relation itself the way 208/209 do); 224/227 also",
+        "needed one new `translate.py` case, `CAdvAP as_CAdv`, for the",
+        "equative \"as Adj as\" construction (named `{adj}As`, the",
+        "equative's own analogue of `ComparA`'s `{adj}Than`); 229 adds a",
+        "binary analogue of `_privative_aux` (`_binary_privative_aux`) for",
+        "\"as fast as\" directly refuting \"slower than\". 246/248",
+        "(\"faster than every/any ITEL computer\") needed the biggest single",
+        "extension: `ComparA`'s own standard argument can itself be a",
+        "QUANTIFIED NP, not just a named individual - ComparA's own case",
+        "now dispatches on the standard's shape and reuses this project's",
+        "existing `Every`/`Some` machinery directly (`_resolve_quantifier`/",
+        "`_restrictor_expr`, the same combinators Sections 1-5 already",
+        "share throughout - \"any\" gets the same universal reading as",
+        "\"every\" here, Comparatives.lean's own approach note, so needs no",
+        "separate case). 249/250 (\"faster than the ITEL-ZX and/or the",
+        "ITEL-ZY\") needed a THIRD standard shape, a conjoined/disjoined",
+        "pair of named individuals, producing a CONJUNCTION of the",
+        "relation applied to each one - confirmed directly against both",
+        "real theorems, which need the identical conjunction for EITHER",
+        "connective (FraCaS's own stipulated conjunctive reading of \"or\"",
+        "here, Comparatives.lean's own \"on one reading of the premise\" -",
+        "a genuine non-compositional modeling choice for this ONE",
+        "construction, not a general \"or means and\" rule). Their own",
+        "hypothesis (the premise's own first conjunct, restated) reuses",
+        "`BUNDLE_PROJECT` directly from the new `conjuncts` this case sets,",
+        "the same mechanism 114-116 already use, rather than needing a",
+        "separately GF-toolchain-confirmed tree for that restatement.",
+        "230/232/233/235/236/237/238/239/241/243/244/245 stay unattempted,",
+        "for the same pre-existing reason already documented above (44/81/",
+        "82/92): FraCaS's own \"more N than NP\"/\"twice as many\" cardinal-",
+        "comparative-quantifier construction has no combinator in this",
+        "grammar at all, so there's no GF tree to translate in the first",
+        "place, genuinely orthogonal to anything a Python-level",
+        "classification could close. 242 stays on CUSTOM_BUILD: real `Nat`",
+        "arithmetic over a number phrase, a fundamentally different kind",
+        "of content than every adjective-classification case above.",
         "-/",
         "",
         "open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Section5 FraCaS.Section6 FraCaS.Section7 FraCaS.Section8 FraCaS.Section9",
