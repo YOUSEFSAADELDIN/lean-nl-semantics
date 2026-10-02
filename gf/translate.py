@@ -1448,6 +1448,146 @@ def _try_translate_skolem_continuation(subject, vp, template: SkolemTemplate):
     return is_bound, instantiation, rel_name
 
 
+# ---------------------------------------------------------------------
+# 3d. Donkey-pronoun MERGE across a sentence pair (fracas_122's own
+#     "Every committee has a chairman. He is appointed by its members."
+#     -> ONE combined statement, `∀c, committee c → ∃ch, chairman ch c
+#     ∧ appointedByMembers ch c`, confirmed by the real theorem's own
+#     `:= id` proof). This is a FOURTH pipeline, not a variant of 3c's
+#     Skolem-continuation one: the SAME "every/each X has a [Adj] Y"
+#     premise-1 shape needs a THIRD distinct reading here (an
+#     existentially-bound witness SHARED with - not a function
+#     parameter OF - the later sentence's own continuation, nested
+#     INSIDE the same `∀` scope as one conjunction, not two separate
+#     top-level antecedents), alongside fracas_103's fused-unary-
+#     predicate reading and fracas_131/132's Skolem-function one - each
+#     decided only by how (or whether) a later sentence continues it,
+#     never recoverable from this one sentence's own syntax. Premise
+#     2's own passive-voice continuation ("He is appointed by its
+#     members") additionally needs PASSIVE-VP parsing (`PassV2` +
+#     `by8agent_Prep`) and a POSSESSIVE-PRONOUN-governed agent phrase,
+#     neither handled anywhere else in this translator - both kept
+#     deliberately narrow to the one shape confirmed needed here.
+
+
+@dataclass
+class ExistentialTemplate:
+    restrictor: str
+    obj_name: str
+    bound_var: str
+    witness_var: str
+
+
+def _try_translate_universal_existential_premise(subject, vp):
+    """Recognizes the SAME "every/each X has a [possibly Adj-modified]
+    Y" shape `_try_translate_skolem_universal_premise` does, but commits
+    to a DIFFERENT reading of it: an existentially-bound witness SHARED
+    with a later sentence's own continuation inside the SAME `∀` scope,
+    rather than a Skolem function of the bound variable - confirmed
+    needed by fracas_122's own premise 1 ("Every committee has a
+    chairman"), whose real theorem merges it with "he is appointed by
+    its members" into ONE statement, `∀c, committee c → ∃ch, chairman
+    ch c ∧ appointedByMembers ch c` (see `_try_translate_universal_
+    existential_continuation` for the second conjunct). The witness
+    variable avoids colliding with the bound variable (both "committee"
+    and "chairman" start with the same letter here) by falling back to
+    a two-letter prefix - the same "ch" the prior hand-built version
+    already used. Returns None on shape mismatch, else (
+    ExistentialTemplate, this premise's own standalone existential
+    statement - not used to assemble the final combined theorem, which
+    needs premise 2's own continuation first, but kept for
+    documentation/debugging parity with `_try_translate_skolem_
+    universal_premise`'s own return shape)."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if det.head not in ("every_Det", "each_Det") or det.args:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[0].args[0].head != "have_V2"
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    obj_det, obj_cn = obj.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "IndefArt"
+        or obj_det.args[1].head != "NumSg"
+    ):
+        return None
+    head_noun = _head_noun_word(obj_cn)
+    if head_noun is None:
+        return None
+    restrictor = camel_name(_leaf_words(cn))
+    obj_name = camel_name(_leaf_words(obj_cn))
+    bound_var = restrictor[0].lower()
+    witness_var = head_noun[0].lower()
+    if witness_var == bound_var:
+        witness_var = head_noun[:2].lower()
+    template = ExistentialTemplate(
+        restrictor=restrictor, obj_name=obj_name, bound_var=bound_var, witness_var=witness_var
+    )
+    v, w = bound_var, witness_var
+    lean_prop = f"∀ {v}, {restrictor} {v} → ∃ {w}, {obj_name} {w} {v}"
+    return template, lean_prop
+
+
+def _try_translate_universal_existential_continuation(subject, vp, template: ExistentialTemplate):
+    """Recognizes premise 2's own passive-voice continuation of an
+    `ExistentialTemplate` - "he is appointed by its members"
+    (fracas_122) - a personal pronoun subject referring back to the
+    existentially-bound witness (not the universally-bound restrictor),
+    predicated by a passive VP (`PassV2`) whose own agent phrase
+    (`by8agent_Prep`) is a plural NP governed by a POSSESSIVE PRONOUN
+    referring back to the restrictor's own bound variable instead of a
+    fixed individual - neither passive voice nor a possessive-pronoun-
+    governed agent phrase is handled ANYWHERE else in this translator;
+    both are confirmed needed here and nowhere else, so kept narrowly
+    scoped to this one shape, the same "only what's confirmed needed"
+    discipline as every other `_try_translate_*` function. The
+    predicate name is derived the SAME way fracas_103's own fused names
+    are - `camel_name(_leaf_words(vp))` over the WHOLE verb phrase,
+    which (since neither `_Pron` nor the `by8agent_Prep`'s own `_Prep`
+    is a recognized lexical suffix) keeps just the verb and the agent
+    noun ("appoint" + "member" -> `appointMember`), silently dropping
+    the preposition and the pronoun itself - the same way `_Prep`
+    already drops "from" in fracas_131/132's own `rentBt`. Only
+    `he_Pron`/`it_Pron` are recognized (confirmed sufficient for
+    fracas_122 - the only id in this corpus using this shape at all).
+    Returns None on shape mismatch, else the predicate name (the caller
+    already has the template's own bound/witness variable names to
+    apply it to)."""
+    if subject.head != "UsePron" or len(subject.args) != 1 or subject.args[0].head != "he_Pron":
+        return None
+    if vp.head != "AdvVP" or len(vp.args) != 2 or vp.args[1].head != "PrepNP":
+        return None
+    inner, pp = vp.args
+    if inner.head != "PassV2" or len(inner.args) != 1:
+        return None
+    if len(pp.args) != 2 or pp.args[0].head != "by8agent_Prep":
+        return None
+    agent_np = pp.args[1]
+    if agent_np.head != "DetCN" or len(agent_np.args) != 2:
+        return None
+    agent_det, agent_cn = agent_np.args
+    if (
+        agent_det.head != "DetQuant"
+        or len(agent_det.args) != 2
+        or agent_det.args[0].head != "PossPron"
+        or len(agent_det.args[0].args) != 1
+        or agent_det.args[0].args[0].head != "it_Pron"
+    ):
+        return None
+    return camel_name(_leaf_words(vp))
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:

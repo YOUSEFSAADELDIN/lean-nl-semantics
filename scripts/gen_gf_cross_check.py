@@ -50,6 +50,8 @@ from translate import (  # noqa: E402
     translate_discourse,
     _try_translate_skolem_universal_premise,
     _try_translate_skolem_continuation,
+    _try_translate_universal_existential_premise,
+    _try_translate_universal_existential_continuation,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -300,26 +302,41 @@ def _build_fracas_122(roles: dict) -> "tuple[str, str, str]":
     of the committee" - the bound "he"/"its" fold into ONE combined
     statement, confirmed by reading the real theorem's own `:= id` proof
     directly (`(forall c, committee c -> exists ch, chairman ch c and
-    appointedByMembers ch c) -> ...`, the same statement restated). The
-    hypothesis's own GF tree (a single self-contained sentence using a
-    passive post-nominal modifier, "a chairman appointed by members of
-    the committee") is never translated independently - it would need
-    passive-post-nominal-modifier support this translator doesn't have,
-    for a shape that's provably equal to the premise anyway, so this
-    just reuses the SAME combined text as both. Built by hand for the
-    same reason as fracas_120/121's own builders: "he"/"its" resolving
-    to a NESTED bound variable, not a fixed individual, is one-off.
-    Returns (binders, arrow_chain, proof)."""
+    appointedByMembers ch c) -> ...`, the same statement restated).
+    Built through `translate.py`'s own `_try_translate_universal_
+    existential_premise`/`_try_translate_universal_existential_
+    continuation` - a real, shape-checked pair recognizing premise 1's
+    "every X has a Y" (merged into an existentially-bound witness SHARED
+    with premise 2, rather than fracas_103's fused unary predicate or
+    fracas_131/132's Skolem function - the THIRD distinct reading this
+    one tree shape needs) and premise 2's own passive-voice "is
+    appointed by its members" continuation, confirmed to reproduce this
+    same derivation byte-for-byte (`committee`/`chairman`/`appointMember`/
+    bound var `c`/witness var `ch`, all exactly as before this
+    refactor). The hypothesis's own GF tree (a single self-contained
+    sentence using a passive post-nominal modifier, "a chairman
+    appointed by members of the committee") is still never translated
+    independently - it would need passive-post-nominal-modifier support
+    this translator doesn't have, for a shape that's provably equal to
+    the premise anyway, so this still just reuses the SAME combined
+    text as both. Returns (binders, arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result = _try_translate_universal_existential_premise(*p1.args)
+    if result is None:
+        raise ValueError("fracas_122's premise 1 no longer matches the universal-existential shape")
+    template, _premise1_only_text = result
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    rel_name = _try_translate_universal_existential_continuation(*p2.args, template)
+    if rel_name is None:
+        raise ValueError("fracas_122's premise 2 no longer matches the passive-continuation shape")
+    v, w = template.bound_var, template.witness_var
 
-    committee_name = camel_name(_leaf_words(p1.args[0]))
-    chairman_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    appoint_name = camel_name(_leaf_words(p2.args[1]))
-
-    combined = f"(∀ c, {committee_name} c → ∃ ch, {chairman_name} ch c ∧ {appoint_name} ch c)"
+    combined = f"(∀ {v}, {template.restrictor} {v} → ∃ {w}, {template.obj_name} {w} {v} ∧ {rel_name} {w} {v})"
     arrow_chain = f"{combined} → {combined}"
-    binders = f"{{A : Type*}} ({committee_name} : A → Prop) ({chairman_name} {appoint_name} : A → A → Prop)"
+    binders = (
+        f"{{A : Type*}} ({template.restrictor} : A → Prop) "
+        f"({template.obj_name} {rel_name} : A → A → Prop)"
+    )
     proof = "fun h => fracas_122 _ _ _ h"
     return binders, arrow_chain, proof
 
@@ -3276,18 +3293,30 @@ def main() -> None:
         "including the preposition-dropping fused name `rentBt` and the",
         "witness-letter convention (the object CN's own head noun, \"line\",",
         "stripped of its \"dedicated\" modifier, unlike the Skolem function's",
-        "own name which keeps the whole compound); and six further fully",
-        "hand-built cross-sentential-anaphora theorems bypassing all three",
-        "pipelines entirely (122/124/128/129/133/138, `CUSTOM_BUILD` -",
-        "nested donkey-pronoun quantifier binding merged with a passive-",
-        "voice \"by its members\" agent phrase and a relational \"members of",
-        "the committee\" possessive NP (122, two further missing parser",
-        "features stacked on top of the donkey-binding problem itself, a",
-        "strictly bigger lift than 131/132's own shared mechanism), cardinal/",
-        "set-based anaphora, genuine multi-reading referential ambiguity,",
-        "e-type \"upgrade the witness set to the whole set\" anaphora, and a",
+        "own name which keeps the whole compound); a donkey-pronoun MERGE",
+        "(122, `CUSTOM_BUILD`) built through a FOURTH pipeline,",
+        "`_try_translate_universal_existential_premise`/`_try_translate_",
+        "universal_existential_continuation` - the SAME \"every/each X has",
+        "a Y\" shape 131/132's premise 1 uses, but needing a THIRD distinct",
+        "reading of it here (an existentially-bound witness SHARED with -",
+        "not a function parameter of - premise 2's own continuation,",
+        "nested INSIDE the same universal scope as one conjunction, not two",
+        "separate antecedents), plus passive-VP parsing (`PassV2` +",
+        "`by8agent_Prep`) and a possessive-pronoun-governed agent phrase",
+        "for premise 2's own \"is appointed by its members\" - neither",
+        "handled anywhere else in this translator, both narrowly scoped to",
+        "this one shape - confirmed to reproduce the prior hand-built",
+        "derivation byte-for-byte (`committee`/`chairman`/`appointMember`/",
+        "bound var `c`/witness var `ch`, the last falling back to a",
+        "two-letter prefix to avoid colliding with the bound variable,",
+        "since both \"committee\" and \"chairman\" start with the same",
+        "letter); and five further fully hand-built cross-sentential-",
+        "anaphora theorems bypassing all four pipelines entirely",
+        "(124/128/129/133/138, `CUSTOM_BUILD` - cardinal/set-based",
+        "anaphora, genuine multi-reading referential ambiguity, e-type",
+        "\"upgrade the witness set to the whole set\" anaphora, and a",
         "definite-description-licensed total function - each a genuinely",
-        "different resolution mechanism from any of the three pipelines",
+        "different resolution mechanism from any of the four pipelines",
         "above, not an incremental extension of one). Not every",
         "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",

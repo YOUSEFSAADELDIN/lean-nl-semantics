@@ -82,20 +82,33 @@ same context-dependence `translate_discourse`'s own `existential_objects`
 flag already makes explicit for 120/121. Confirmed via
 `_build_fracas_131`/`_build_fracas_132`.
 
-Together these six ids (120/121/131/132/139/140) do not cover any other
-id in this file — the donkey-pronoun quantifier nesting merged with a
-passive-voice agent phrase and a relational possessive NP (122, two
-further missing parser features stacked on the donkey-binding problem
-itself, not just a bigger instance of 131/132's own mechanism),
-cardinal/set-based anaphora (124), genuine multi-reading referential
-ambiguity (128-130), e-type "upgrade the witness set to the whole set"
-anaphora (133), or a definite-description-licensed total function (138)
-are each a genuinely different resolution mechanism from all three
-pipelines above, not an incremental extension of any of them — left
-hand-resolved exactly as this header already describes, extended only
-when another confirmed GF tree needs more, the same incremental
-discipline `translate.py`'s own `_try_translate_*` functions already
-follow.
+A fourth pipeline, `_try_translate_universal_existential_premise`/
+`_try_translate_universal_existential_continuation`, reproduces 122's
+own donkey-pronoun MERGE: "every committee has a chairman" uses the
+SAME "every X has a Y" shape 131/132's premise 1 does, but needs a
+THIRD distinct reading of it here — an existentially-bound witness
+SHARED with (not a function of) premise 2's own continuation, nested
+INSIDE the same universal scope as one conjunction rather than two
+separate antecedents. Premise 2's own "he is appointed by its members"
+additionally needed passive-VP parsing (`PassV2` + `by8agent_Prep`) and
+a possessive-pronoun-governed agent phrase, neither handled anywhere
+else in this translator — both narrowly scoped to this one shape,
+confirmed to reproduce the prior hand-built derivation byte-for-byte
+(`∀c, committee c → ∃ch, chairman ch c ∧ appointMember ch c`, the
+witness variable `ch` falling back to a two-letter prefix to avoid
+colliding with the bound variable `c`, since "committee" and "chairman"
+start with the same letter). Confirmed via `_build_fracas_122`.
+
+Together these seven ids (120/121/122/131/132/139/140) do not cover any
+other id in this file — cardinal/set-based anaphora (124), genuine
+multi-reading referential ambiguity (128-130), e-type "upgrade the
+witness set to the whole set" anaphora (133), or a definite-
+description-licensed total function (138) are each a genuinely
+different resolution mechanism from all four pipelines above, not an
+incremental extension of any of them — left hand-resolved exactly as
+this header already describes, extended only when another confirmed GF
+tree needs more, the same incremental discipline `translate.py`'s own
+`_try_translate_*` functions already follow.
 -/
 
 namespace FraCaS.Section3

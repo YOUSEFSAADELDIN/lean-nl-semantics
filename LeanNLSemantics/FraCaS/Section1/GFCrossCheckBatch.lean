@@ -80,18 +80,30 @@ reproducing the prior hand-built derivation byte-for-byte,
 including the preposition-dropping fused name `rentBt` and the
 witness-letter convention (the object CN's own head noun, "line",
 stripped of its "dedicated" modifier, unlike the Skolem function's
-own name which keeps the whole compound); and six further fully
-hand-built cross-sentential-anaphora theorems bypassing all three
-pipelines entirely (122/124/128/129/133/138, `CUSTOM_BUILD` -
-nested donkey-pronoun quantifier binding merged with a passive-
-voice "by its members" agent phrase and a relational "members of
-the committee" possessive NP (122, two further missing parser
-features stacked on top of the donkey-binding problem itself, a
-strictly bigger lift than 131/132's own shared mechanism), cardinal/
-set-based anaphora, genuine multi-reading referential ambiguity,
-e-type "upgrade the witness set to the whole set" anaphora, and a
+own name which keeps the whole compound); a donkey-pronoun MERGE
+(122, `CUSTOM_BUILD`) built through a FOURTH pipeline,
+`_try_translate_universal_existential_premise`/`_try_translate_
+universal_existential_continuation` - the SAME "every/each X has
+a Y" shape 131/132's premise 1 uses, but needing a THIRD distinct
+reading of it here (an existentially-bound witness SHARED with -
+not a function parameter of - premise 2's own continuation,
+nested INSIDE the same universal scope as one conjunction, not two
+separate antecedents), plus passive-VP parsing (`PassV2` +
+`by8agent_Prep`) and a possessive-pronoun-governed agent phrase
+for premise 2's own "is appointed by its members" - neither
+handled anywhere else in this translator, both narrowly scoped to
+this one shape - confirmed to reproduce the prior hand-built
+derivation byte-for-byte (`committee`/`chairman`/`appointMember`/
+bound var `c`/witness var `ch`, the last falling back to a
+two-letter prefix to avoid colliding with the bound variable,
+since both "committee" and "chairman" start with the same
+letter); and five further fully hand-built cross-sentential-
+anaphora theorems bypassing all four pipelines entirely
+(124/128/129/133/138, `CUSTOM_BUILD` - cardinal/set-based
+anaphora, genuine multi-reading referential ambiguity, e-type
+"upgrade the witness set to the whole set" anaphora, and a
 definite-description-licensed total function - each a genuinely
-different resolution mechanism from any of the three pipelines
+different resolution mechanism from any of the four pipelines
 above, not an incremental extension of one). Not every
 Section 3 id is covered: 125/130/136/141 are
 countermodel-only (no bare theorem to cross-check at all); 126 needs
