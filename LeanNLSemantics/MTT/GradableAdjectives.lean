@@ -35,9 +35,11 @@ below only ever chains `<`/`≤` facts by transitivity (`LT.lt.trans`,
 `LT.lt.trans_le`, `not_lt`), so `omega`/`linarith` were never actually
 load-bearing — the device is a genuine order-theoretic fact, provable
 for *any* linearly ordered degree scale (`ℤ`, `ℚ`, `ℝ`, or anything
-else), not an artifact of integer arithmetic. The concrete worked
-example near the end instantiates `D := ℚ` rather than `ℤ`, precisely
-to demonstrate the generalization is exercised, not just available.
+else), not an artifact of integer arithmetic. (The concrete worked
+example near the end still instantiates `D := ℤ` — not because the
+development is ℤ-specific, but because of an unrelated Mathlib-instance
+quirk; see that section's own comment for what was actually tried and
+found.)
 
 ## What this buys the existing port
 
@@ -273,8 +275,20 @@ checking it isn't vacuous, i.e. that `Gradable` actually has an
 inhabitant and the corollaries fire on real data, the same way
 `CN.lean`'s `john`/`johnI` and `LinglibBridge.lean`'s `toyLexicon` give
 their own abstract structures a concrete witness. This instance uses
-`D := ℚ` rather than `ℤ`, to exercise the generalization rather than
-just type-check it against the one scale the original version used. -/
+`D := ℤ`: `ℚ` was tried first (to exercise the generalization on a
+genuinely non-integer scale, not just type-check it), but every proof
+that constructs a concrete `Gradable ℚ ToyAnimal` — regardless of
+whether the individual numeral facts were closed with `norm_num` or
+with a cast from an already-clean `omega`-proved `ℤ` fact — came back
+depending on `Classical.choice`, while the exact same reasoning over
+`ℤ` doesn't. That dependency lives in this Mathlib version's own
+`LinearOrder ℚ` instance, not in anything above: the abstract
+`Gradable D A` development is already proven to work uniformly for any
+`[LinearOrder D]` including `ℚ` and `ℝ` (see the axiom-clean abstract
+lemmas above, none of which ever commit to a specific `D`) — only the
+*concrete, fully-applied* witness needs a scale whose particular
+Mathlib instance doesn't carry a stray classical dependency, and `ℤ`'s
+does not. -/
 
 /-- Three animals distinguished only by measure: Mickey (a mouse) is
 small, Dumbo (an elephant) is large, and a third, `medium`, sits in the
@@ -285,38 +299,30 @@ inductive ToyAnimal where
   | dumbo
 
 /-- Mickey measures `1`, Dumbo measures `100`, and `medium` measures
-`25` — strictly inside the gap `(10, 50)`, below neither threshold's
-wrong side and above neither's right one. All four values are rational
-(not integer) literals, over the degree scale `ℚ`. -/
-def toyGradable : Gradable ℚ ToyAnimal where
+`25` — strictly inside the gap `(10, 50)`. -/
+def toyGradable : Gradable ℤ ToyAnimal where
   measure := fun
     | .mickey => 1
     | .medium => 25
     | .dumbo => 100
   smallThreshold := 10
   largeThreshold := 50
-  small_lt_large := by exact_mod_cast (show (10:ℤ) < 50 by omega)
+  small_lt_large := by omega
 
-theorem toy_mickey_small : small toyGradable .mickey := by
-  show (1:ℚ) < 10
-  exact_mod_cast (show (1:ℤ) < 10 by omega)
+theorem toy_mickey_small : small toyGradable .mickey := by show (1:ℤ) < 10; omega
 
-theorem toy_dumbo_large : large toyGradable .dumbo := by
-  show (50:ℚ) < 100
-  exact_mod_cast (show (50:ℤ) < 100 by omega)
+theorem toy_dumbo_large : large toyGradable .dumbo := by show (50:ℤ) < 100; omega
 
 /-- The fully concrete form of `fracas_204_degree_based`: Mickey really
 is not large. -/
 theorem toy_fracas_204_not_large : ¬ large toyGradable .mickey :=
-  fracas_204_degree_based toyGradable .mickey
-    (by show (1:ℚ) < 10; exact_mod_cast (show (1:ℤ) < 10 by omega))
+  fracas_204_degree_based toyGradable .mickey (by show (1:ℤ) < 10; omega)
 
 /-- The fully concrete form of `fracas_208_degree_based`: Mickey really
 does measure below Dumbo. -/
 theorem toy_fracas_208_smallerThan : smallerThan toyGradable .mickey .dumbo :=
   fracas_208_degree_based toyGradable .mickey .dumbo
-    (by show (1:ℚ) < 10; exact_mod_cast (show (1:ℤ) < 10 by omega))
-    (by show (50:ℚ) < 100; exact_mod_cast (show (50:ℤ) < 100 by omega))
+    (by show (1:ℤ) < 10; omega) (by show (50:ℤ) < 100; omega)
 
 /-- `.medium` sits strictly inside the threshold gap — this is the
 concrete form of FraCaS's own 206/207 independence ("not small" doesn't
@@ -326,10 +332,8 @@ is a genuine witness of it, not just an assertion in prose. -/
 theorem fracas_206_207_gap_witness :
     ¬ small toyGradable .medium ∧ ¬ large toyGradable .medium := by
   refine ⟨?_, ?_⟩
-  · show ¬ (25:ℚ) < 10
-    exact_mod_cast (show ¬ (25:ℤ) < 10 by omega)
-  · show ¬ (50:ℚ) < 25
-    exact_mod_cast (show ¬ (50:ℤ) < 25 by omega)
+  · show ¬ (25:ℤ) < 10; omega
+  · show ¬ (50:ℤ) < 25; omega
 
 /-! ## Axiom audit
 
@@ -340,17 +344,27 @@ don't quietly depend on anything beyond what the originals need. The
 abstract lemmas and corollaries (parametrized by an arbitrary
 `G : Gradable D A`) never needed `omega`/`decide`/`norm_num` at all —
 pure order-lemma composition closes them, so there is no concrete
-numeral reduction for anything to go wrong on. The one place the
-earlier `ℤ`-only version of this file *did* pick up a stray
-`Classical.choice` dependency was in the concrete `toyGradable`
-instance's own `small_lt_large` field proof (there, `by norm_num`
-proving `(10:ℤ) < 50`) — not in any of the downstream goals that
-mention it, which was the wrong place three separate debugging attempts
-looked first. Worth re-checking here since the scale changed to `ℚ`
-and the field proof is `norm_num` again (rationals' order is decidable
-and `norm_num`'s numeral-comparison certificates are ordinarily
-constructive, but "ordinarily" is exactly the kind of claim this file's
-own history says to verify, not assume). -/
+numeral reduction for anything to go wrong on, and they come back even
+cleaner than the arithmetic-based original version (no `Quot.sound`
+either, since there's no `omega` call left to pull it in).
+
+The concrete `toyGradable` instance is a different story, and the
+actual history is worth recording precisely because the first two
+guesses were both wrong. With `D := ℤ`, `by norm_num` proving
+`(10:ℤ) < 50` in `toyGradable`'s own `small_lt_large` field picked up a
+stray `Classical.choice` dependency that `by omega` on the exact same
+goal doesn't — not in any of the downstream goals that mention
+`toyGradable`, which was the wrong place to look first. Trying `D := ℚ`
+instead (to exercise the generalization on a genuinely non-integer
+scale) reintroduced `Classical.choice` on the same five theorems, and
+neither of the next two fixes — switching the field proof to
+`exact_mod_cast` from an `omega`-proved `ℤ` fact, then doing the same
+for the five downstream goals — removed it. That rules out the proof
+technique entirely: the dependency is inherent to this Mathlib
+version's own `LinearOrder ℚ` instance, not anything in how any of
+these goals get closed. `ℤ`'s own instance doesn't carry it, so the
+concrete witness stays on `D := ℤ`, with `omega` throughout (the
+tactic already confirmed clean twice over). -/
 
 #print axioms small_not_large
 #print axioms large_not_small
