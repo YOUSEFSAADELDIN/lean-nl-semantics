@@ -122,15 +122,32 @@ to R-95-103 at all (that link is a discourse fact, and premise 3/the
 hypothesis share the identical fact textually anyway, so premise 3 is
 no longer read at all). Confirmed via `_build_fracas_138`.
 
-Together these nine ids (120/121/122/124/131/132/138/139/140) do not
-cover any other id in this file — genuine multi-reading referential
-ambiguity (128-130) or e-type "upgrade the witness set to the whole
-set" anaphora (133) are each a genuinely different resolution mechanism
-from all six pipelines above, not an incremental extension of any of
-them — left hand-resolved exactly as this header already describes,
-extended only when another confirmed GF tree needs more, the same
-incremental discipline `translate.py`'s own `_try_translate_*`
-functions already follow.
+A seventh pipeline, `_try_translate_conjoined_possessive_restrictor`/
+`_try_translate_pronoun_verb_pronoun`, reproduces 128 and 129's own
+genuine multi-reading referential ambiguity: "John and his colleagues
+went to a meeting. They hated it." is already formalized as TWO
+SEPARATE theorems, one per reading of "they" (128: excludes John,
+`Every colleague hate → Every colleague hate`; 129: includes him,
+distributively, `Every (fun x => x = john ∨ colleague x) hate → hate
+john`) — the correct response to genuine ambiguity is splitting it into
+separate theorems per reading, never collapsing it into one pipeline
+that silently picks a winner (this is exactly what a question about
+this ambiguity should prompt — the project already had this right by
+hand). Both readings share the identical premise 1 ("NAME and his/her
+Ns", a `ConjNP`+`BaseNP`+possessive-pronoun shape) and premise 2
+("PronSubj V2 PronObj", contributing only the verb's own name, same as
+every other pronoun this project's generator has seen), confirmed to
+reproduce the prior hand-built derivation byte-for-byte. Confirmed via
+`_build_fracas_128`/`_build_fracas_129`.
+
+Together these eleven ids (120/121/122/124/128/129/131/132/138/139/140)
+do not cover any other id in this file — e-type "upgrade the witness
+set to the whole set" anaphora (133) is the one remaining genuinely
+different resolution mechanism from all seven pipelines above, not an
+incremental extension of any of them — left hand-resolved exactly as
+this header already describes, extended only when another confirmed GF
+tree needs more, the same incremental discipline `translate.py`'s own
+`_try_translate_*` functions already follow.
 -/
 
 namespace FraCaS.Section3

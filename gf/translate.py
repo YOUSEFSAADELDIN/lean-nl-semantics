@@ -1731,6 +1731,72 @@ def _try_translate_definite_skolem_application(subject, vp):
     return subject_name, verb_name, skolem_name, pn_name
 
 
+# ---------------------------------------------------------------------
+# 3g. Genuine multi-reading referential ambiguity (fracas_128/129's own
+#     shared premises, "John and his colleagues went to a meeting. They
+#     hated it." - already formalized as TWO SEPARATE theorems, one per
+#     reading of "they" (128: excludes John; 129: includes him), rather
+#     than one theorem picking a winner - the correct response to
+#     genuine ambiguity, not something either reading's own pipeline
+#     should try to resolve automatically. Both readings share the
+#     IDENTICAL premise 1 and premise 2 trees; only the hypothesis
+#     (translated separately per id) differs.
+
+
+def _try_translate_conjoined_possessive_restrictor(subject):
+    """Recognizes "NAME and his/her Ns" (fracas_128/129's own shared
+    premise 1 subject, "John and his colleagues") - a `ConjNP` of a
+    named individual with a plural NP governed by a possessive pronoun
+    referring back to that SAME individual. Returns None on shape
+    mismatch, else (person_name, restrictor_name); only the restrictor
+    name is used by either of this corpus's two callers - premise 1's
+    own VP ("went to a meeting") is a pure distractor neither 128 nor
+    129's real theorem ever uses, so the caller passes only `subject`,
+    never `vp`."""
+    if subject.head != "ConjNP" or len(subject.args) != 2 or subject.args[0].head != "and_Conj":
+        return None
+    base = subject.args[1]
+    if base.head != "BaseNP" or len(base.args) != 2:
+        return None
+    person, poss_np = base.args
+    if person.head != "UsePN":
+        return None
+    if poss_np.head != "DetCN" or len(poss_np.args) != 2:
+        return None
+    det, cn = poss_np.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "PossPron"
+        or len(det.args[0].args) != 1
+        or det.args[1].head != "NumPl"
+    ):
+        return None
+    person_name = camel_name(_leaf_words(person))
+    restrictor_name = camel_name(_leaf_words(cn))
+    return person_name, restrictor_name
+
+
+def _try_translate_pronoun_verb_pronoun(subject, vp):
+    """Recognizes a plain "PronSubj V2 PronObj" VP ("they hated it",
+    fracas_128/129's own shared premise 2) where BOTH the subject and
+    object are pronouns contributing nothing to naming - confirmed by
+    this corpus's own two callers, which only ever need the verb's own
+    name (same as every other pronoun this generator's builders have
+    seen). Returns None on shape mismatch, else the verb name."""
+    if subject.head != "UsePron":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[1].head != "UsePron"
+    ):
+        return None
+    return camel_name(_leaf_words(vp))
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:

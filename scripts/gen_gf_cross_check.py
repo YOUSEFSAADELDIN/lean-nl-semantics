@@ -55,6 +55,8 @@ from translate import (  # noqa: E402
     _try_translate_cardinal_adjective_property,
     _try_translate_cardinal_passive_property,
     _try_translate_definite_skolem_application,
+    _try_translate_conjoined_possessive_restrictor,
+    _try_translate_pronoun_verb_pronoun,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -402,12 +404,20 @@ def _build_fracas_128(roles: dict) -> "tuple[str, str, str]":
     supplies the restrictor name. Premise 2 ("they hated it") supplies
     the scope name directly (both pronouns contribute nothing to
     naming, same as every other pronoun this generator's builders have
-    seen). Returns (binders, arrow_chain, proof)."""
+    seen). Built through `translate.py`'s own `_try_translate_conjoined_
+    possessive_restrictor`/`_try_translate_pronoun_verb_pronoun` - a
+    shape-checked pair confirmed to reproduce this same derivation
+    byte-for-byte (`colleague`/`hate`). Returns (binders, arrow_chain,
+    proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    colleague_cn = p1.args[0].args[1].args[1].args[1]
-    colleague_name = camel_name(_leaf_words(colleague_cn))
+    result1 = _try_translate_conjoined_possessive_restrictor(p1.args[0])
+    if result1 is None:
+        raise ValueError("fracas_128's premise 1 no longer matches the conjoined-possessive shape")
+    _person_name, colleague_name = result1
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    hate_name = camel_name(_leaf_words(p2.args[1]))
+    hate_name = _try_translate_pronoun_verb_pronoun(*p2.args)
+    if hate_name is None:
+        raise ValueError("fracas_128's premise 2 no longer matches the pronoun-verb-pronoun shape")
 
     combined = f"Every {colleague_name} {hate_name}"
     arrow_chain = f"{combined} → {combined}"
@@ -428,10 +438,15 @@ def _build_fracas_129(roles: dict) -> "tuple[str, str, str]":
     restrictor has no GF tree of its own to translate at all (it's a
     hand-combination of fracas_128's own colleague name with John's own
     individual, read off the real theorem's own stated shape directly).
-    Returns (binders, arrow_chain, proof)."""
+    Premise 1's own restrictor is read through the SAME `_try_translate_
+    conjoined_possessive_restrictor` fracas_128's own builder uses (the
+    two ids share the identical premise 1 tree). Returns (binders,
+    arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    colleague_cn = p1.args[0].args[1].args[1].args[1]
-    colleague_name = camel_name(_leaf_words(colleague_cn))
+    result1 = _try_translate_conjoined_possessive_restrictor(p1.args[0])
+    if result1 is None:
+        raise ValueError("fracas_129's premise 1 no longer matches the conjoined-possessive shape")
+    _person_name, colleague_name = result1
     hyp = translate_cl(parse_tree(roles["_hypothesis"]))
     hate_name = hyp.free_predicates[-1]
     john_name = hyp.free_individuals[0]
@@ -3359,13 +3374,24 @@ def main() -> None:
         "premise 3's own bare \"the cover page\" (whose tree has no link",
         "to R-95-103 at all - that link is a discourse fact, and premise",
         "3/the hypothesis share the identical fact textually anyway, so",
-        "premise 3 is no longer read at all); and three further fully",
-        "hand-built cross-sentential-anaphora theorems bypassing all six",
-        "pipelines entirely (128/129/133, `CUSTOM_BUILD` - genuine",
-        "multi-reading referential ambiguity and e-type \"upgrade the",
-        "witness set to the whole set\" anaphora - each a genuinely",
-        "different resolution mechanism from any of the six pipelines",
-        "above, not an incremental extension of one). Not every",
+        "premise 3 is no longer read at all); genuine multi-reading",
+        "referential ambiguity (128/129, `CUSTOM_BUILD`) built through a",
+        "SEVENTH pipeline, `_try_translate_conjoined_possessive_",
+        "restrictor`/`_try_translate_pronoun_verb_pronoun` - \"John and",
+        "his colleagues went to a meeting. They hated it.\" is already",
+        "formalized as TWO SEPARATE theorems, one per reading of \"they\"",
+        "(128: excludes John; 129: includes him) - the correct response",
+        "to genuine ambiguity, never collapsed into one pipeline picking a",
+        "winner; both readings share the identical premise 1 (\"NAME and",
+        "his/her Ns\", a `ConjNP`+`BaseNP`+possessive-pronoun shape) and",
+        "premise 2 (\"PronSubj V2 PronObj\", contributing only the verb's",
+        "own name), confirmed to reproduce the prior hand-built derivation",
+        "byte-for-byte (`colleague`/`hate`); and one further fully",
+        "hand-built cross-sentential-anaphora theorem bypassing all seven",
+        "pipelines entirely (133, `CUSTOM_BUILD` - e-type \"upgrade the",
+        "witness set to the whole set\" anaphora, a genuinely different",
+        "resolution mechanism from any of the seven pipelines above, not",
+        "an incremental extension of one). Not every",
         "Section 3 id is covered: 125/130/136/141 are",
         "countermodel-only (no bare theorem to cross-check at all); 126 needs",
         "a genuinely unstated extra premise (\"the other eight machines were",

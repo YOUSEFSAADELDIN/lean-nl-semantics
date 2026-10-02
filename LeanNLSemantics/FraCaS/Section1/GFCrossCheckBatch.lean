@@ -120,13 +120,24 @@ HYPOTHESIS's own fully explicit "the cover page OF R-95-103"
 premise 3's own bare "the cover page" (whose tree has no link
 to R-95-103 at all - that link is a discourse fact, and premise
 3/the hypothesis share the identical fact textually anyway, so
-premise 3 is no longer read at all); and three further fully
-hand-built cross-sentential-anaphora theorems bypassing all six
-pipelines entirely (128/129/133, `CUSTOM_BUILD` - genuine
-multi-reading referential ambiguity and e-type "upgrade the
-witness set to the whole set" anaphora - each a genuinely
-different resolution mechanism from any of the six pipelines
-above, not an incremental extension of one). Not every
+premise 3 is no longer read at all); genuine multi-reading
+referential ambiguity (128/129, `CUSTOM_BUILD`) built through a
+SEVENTH pipeline, `_try_translate_conjoined_possessive_
+restrictor`/`_try_translate_pronoun_verb_pronoun` - "John and
+his colleagues went to a meeting. They hated it." is already
+formalized as TWO SEPARATE theorems, one per reading of "they"
+(128: excludes John; 129: includes him) - the correct response
+to genuine ambiguity, never collapsed into one pipeline picking a
+winner; both readings share the identical premise 1 ("NAME and
+his/her Ns", a `ConjNP`+`BaseNP`+possessive-pronoun shape) and
+premise 2 ("PronSubj V2 PronObj", contributing only the verb's
+own name), confirmed to reproduce the prior hand-built derivation
+byte-for-byte (`colleague`/`hate`); and one further fully
+hand-built cross-sentential-anaphora theorem bypassing all seven
+pipelines entirely (133, `CUSTOM_BUILD` - e-type "upgrade the
+witness set to the whole set" anaphora, a genuinely different
+resolution mechanism from any of the seven pipelines above, not
+an incremental extension of one). Not every
 Section 3 id is covered: 125/130/136/141 are
 countermodel-only (no bare theorem to cross-check at all); 126 needs
 a genuinely unstated extra premise ("the other eight machines were
