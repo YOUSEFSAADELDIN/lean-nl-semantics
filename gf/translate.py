@@ -1992,6 +1992,120 @@ def _try_translate_named_copula_relative_restrictor(subject, vp):
     return subject_name, restrictor_name
 
 
+# ---------------------------------------------------------------------
+# Section 4 (ellipsis/gapping). Per Ellipsis.lean's own approach note,
+# this project never models ellipsis/gapping RESOLUTION itself, only
+# the already-resolved content - most Section 4 ids already go through
+# `_atomic_name` (fusing a whole resolved sentence into one bare `Prop`
+# atom, gen_gf_cross_check.py's own helper, not translate.py's, since
+# there's no domain-quantified structure left to preserve once
+# resolved). These two functions are for the MINORITY of ids whose own
+# real theorem keeps real domain-quantified structure after resolution.
+
+
+def _try_translate_double_pp_verb(vp):
+    """Recognizes an intransitive verb with two PP adjuncts - "goes to
+    Paris by car" (fracas_150-153's own shared gapping pattern,
+    `AdvVP(AdvVP(UseV verb)(PrepNP prep1 obj1))(PrepNP prep2 obj2)`).
+    Returns None on shape mismatch, else (verb_name, pp1_name,
+    pp2_name)."""
+    if vp.head != "AdvVP" or len(vp.args) != 2 or vp.args[1].head != "PrepNP":
+        return None
+    inner, pp2 = vp.args
+    if inner.head != "AdvVP" or len(inner.args) != 2 or inner.args[1].head != "PrepNP":
+        return None
+    verb_vp, pp1 = inner.args
+    if verb_vp.head != "UseV" or len(verb_vp.args) != 1:
+        return None
+    if len(pp1.args) != 2 or len(pp2.args) != 2:
+        return None
+    verb_name = camel_name(_leaf_words(verb_vp))
+    pp1_name = camel_name(_leaf_words(pp1.args[1]))
+    pp2_name = camel_name(_leaf_words(pp2.args[1]))
+    return verb_name, pp1_name, pp2_name
+
+
+def _try_translate_gapped_travel_fact(subject, vp):
+    """Recognizes a full "X goes/went to CITY by VEHICLE" sentence
+    (fracas_150-153's own shared gapping pattern), subject either a
+    named individual (150-152's own "John"/"Bill") or a definite plural
+    (153's own "the students", this project's usual distributive-
+    universal convention for definite plurals, with a TRIVIAL
+    restrictor over the whole domain - the same `fun _ => True` device
+    id 124's own cardinal-anaphora case already established, since
+    "the students" here names the WHOLE domain, not a named subset of
+    a larger one). Returns None on shape mismatch, else (is_universal,
+    subject_name_or_restrictor, verb_name, pp1_name, pp2_name)."""
+    result = _try_translate_double_pp_verb(vp)
+    if result is None:
+        return None
+    verb_name, pp1_name, pp2_name = result
+    if subject.head == "UsePN":
+        return False, camel_name(_leaf_words(subject)), verb_name, pp1_name, pp2_name
+    if subject.head == "DetCN" and len(subject.args) == 2:
+        det, cn = subject.args
+        if (
+            det.head == "DetQuant"
+            and len(det.args) == 2
+            and det.args[0].head == "DefArt"
+            and det.args[1].head == "NumPl"
+        ):
+            return True, camel_name(_leaf_words(cn)), verb_name, pp1_name, pp2_name
+    return None
+
+
+def _try_translate_existential_universal_object(subject, vp):
+    """Recognizes "one N1 V2s all the N2s" (fracas_196's own premise 2/
+    hypothesis shape, "one lawyer signed all the reports") - a
+    cardinal-one subject taking EXISTENTIAL scope over an inner
+    universal, the wide-scope "so did" reading ("there is a single N1
+    who V2s every N2"), as opposed to `translate_cl`'s own general path
+    for this tree shape, which instead produces a cardinal-quantified
+    `Exactly 1` GQ statement fusing the whole VP into one unary
+    predicate - confirmed by direct comparison, not assumed, the wrong
+    reading for this id. Returns None on shape mismatch, else
+    (subject_cn_name, verb_name, object_cn_name)."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "IndefArt"
+        or det.args[1].head != "NumCard"
+        or len(det.args[1].args) != 1
+    ):
+        return None
+    count, approx = _decode_card(det.args[1].args[0])
+    if count != 1 or approx is not None:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "PredetNP" or len(obj.args) != 2 or obj.args[0].head != "all_Predet":
+        return None
+    obj_np = obj.args[1]
+    if obj_np.head != "DetCN" or len(obj_np.args) != 2:
+        return None
+    obj_det, obj_cn = obj_np.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "DefArt"
+        or obj_det.args[1].head != "NumPl"
+    ):
+        return None
+    subject_cn_name = camel_name(_leaf_words(cn))
+    verb_name = camel_name(_leaf_words(vp.args[0]))
+    object_cn_name = camel_name(_leaf_words(obj_cn))
+    return subject_cn_name, verb_name, object_cn_name
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head != "PredVP" or len(t.args) != 2:

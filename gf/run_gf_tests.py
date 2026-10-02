@@ -2031,9 +2031,24 @@ _SECTION4_TENSED_CHECKS = [
         "Bill went to Paris by train",
     ),
     (
+        # fracas_151's own gold premise 1 is identical to fracas_150's
+        # ("John went to Paris by car.") - reusing 150's own
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_151_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN car_N))))))",
+        "John went to Paris by car",
+    ),
+    (
         "fracas_151_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN berlin_PN))) (PrepNP by8means_Prep (MassNP (UseN train_N))))))",
         "Bill went to Berlin by train",
+    ),
+    (
+        # fracas_152's own gold premise 1 is identical to fracas_150's
+        # own - same precedent as fracas_151's own entry just above.
+        "fracas_152_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN car_N))))))",
+        "John went to Paris by car",
     ),
     (
         "fracas_152_hypothesis",

@@ -195,16 +195,39 @@ caught - a single-domain guess at fracas_150's own three-sorted
 `{Person City Vehicle}` domain, and a `Some`/`Exactly`-quantified
 guess at fracas_196's own direct `∃`/`∀` over a two-sorted
 `{Person Report}` domain), every Section 4 id goes through
-`CUSTOM_BUILD` or not at all. Not covered: 150/151/152/153/196
-(three- or two-sorted domains - no longer itself a structural
-blocker, per 134/135's own two-sorted pipeline in Section 3
-above, but each of these ids has its own distinct sentence shape
-not yet individually read and built);
-163/171/172/173/174/191-195 (genuine grammar gaps - embedded
-questions, relativizing a quantificational pronoun NP, a passive-
-impersonal-plus-reciprocal construction with no combinator -
-confirmed via `run_gf_tests.py`'s own comment on exactly these
-ids); 168/169/170/175/176/179/180 (each needs a genuinely new GF
+`CUSTOM_BUILD` or not at all. 150/151/152/153 (gapping with PP
+modifiers, three-sorted `{A B C}`) ARE now built, through
+`translate.py`'s own `_try_translate_gapped_travel_fact` -
+"John went to Paris by car" (an intransitive verb with two PP
+adjuncts) continued by either a second named individual
+(150-152) or a definite-plural distributive universal over a
+TRIVIAL whole-domain restrictor (153, the same `fun _ => True`
+device id 124's own cardinal case established). All three share
+the identical premise 1, confirmed by `run_gf_tests.py`'s own
+`fracas_151_premise1`/`fracas_152_premise1` entries reusing
+fracas_150's tree. 196 (existential-over-universal wide scope,
+two-sorted `{A B}`) is also now built, through `_try_translate_
+existential_universal_object` - "one lawyer signed all the
+reports" needs an existential SUBJECT taking scope OVER an
+inner universal object, the wide-scope "so did" reading -
+`translate_cl`'s own general path parses the identical tree
+shape without erroring but commits to the WRONG `Exactly 1`
+cardinal-quantified reading instead, confirmed by direct
+comparison. Premise 1 is a pure distractor, never read; the
+premise's own SECOND conjunct ("so did one auditor") has no
+tree of its own either - built from the hypothesis's own tree
+instead, the same "elided sentence = reuse the hypothesis's own
+tree" convention 142/145-149's own builders already use. All
+five confirmed to typecheck against their own real `fracas_NNN`
+lemmas via Lean's own elaborator, the same cross-check every
+other id in this corpus gets - none of these were previously
+attempted at all (not a refactor of existing hand-built code).
+Still not covered: 163/171/172/173/174/191-195 (genuine grammar
+gaps - embedded questions, relativizing a quantificational
+pronoun NP, a passive-impersonal-plus-reciprocal construction
+with no combinator - confirmed via `run_gf_tests.py`'s own
+comment on exactly these ids); 168/169/170/175/176/179/180
+(each needs a genuinely new GF
 tree or an `AdvS`-headed conditional top level not yet built,
 left for a future round); and 143/156/158/161/174/177/181/184/
 188/192/194 (countermodel-only, already excluded automatically).
@@ -224,10 +247,11 @@ implicitly animals) while others fuse adjective+noun into one
 predicate (210's `smallAnimal`, alongside a separate `animal`).
 Not covered: 197 (looked like 203's own adjective-drop shape at
 first glance, but its own stated type is actually two-sorted
-`{Person Thing}`, the same reason 127/150-153/196 remain
-unattempted - two-sortedness alone is no longer a blocker, per
-Section 3's own 134/135, but 197's adjective-drop shape
-combined with it hasn't been individually built);
+`{Person Thing}` - two-sortedness alone is no longer a blocker,
+per 134/135's and 150-153/196's own pipelines, but 197's
+adjective-drop shape combined with it hasn't been individually
+built, the same remaining reason fracas_127 is still
+unattempted);
 200/201/206/207/213/215/217/219 (countermodel-only, already
 excluded automatically). Section 6 (comparatives, 220-250) adds 10
 more ids: 220/223/224/227/229 chain in an assumed comparative-
@@ -713,6 +737,22 @@ theorem fracas_149_from_gf {A : Type*} (student speakMary : A → Prop) :
     Every student speakMary → Every student speakMary :=
   fun h => fracas_149 _ _ h
 
+theorem fracas_150_from_gf {A B C : Type*} (go : A → B → C → Prop) (john bill : A) (paris : B) (car train : C) :
+    (go john paris car ∧ go bill paris train) → go bill paris train :=
+  fun h => fracas_150 _ _ _ _ _ _ h
+
+theorem fracas_151_from_gf {A B C : Type*} (go : A → B → C → Prop) (john bill : A) (paris berlin : B) (car train : C) :
+    (go john paris car ∧ go bill berlin train) → go bill berlin train :=
+  fun h => fracas_151 _ _ _ _ _ _ _ h
+
+theorem fracas_152_from_gf {A B C : Type*} (go : A → B → C → Prop) (john bill : A) (paris berlin : B) (car : C) :
+    (go john paris car ∧ go bill berlin car) → go bill berlin car :=
+  fun h => fracas_152 _ _ _ _ _ _ h
+
+theorem fracas_153_from_gf {A B C : Type*} (go : A → B → C → Prop) (john : A) (paris : B) (car train : C) :
+    (go john paris car ∧ Every (fun _ : B => True) (fun s => go s paris train)) → Every (fun _ : B => True) (fun s => go s paris train) :=
+  fun h => fracas_153 _ _ _ _ _ h
+
 theorem fracas_155_from_gf {A : Type*} (car : A → Prop) (own : A → A → Prop) (john bill : A) :
     (∃ c, car c ∧ own john c) ∧ (∃ c, car c ∧ own bill c) → ∃ c, car c ∧ own bill c :=
   fun h => fracas_155 _ _ _ _ h
@@ -780,6 +820,10 @@ theorem fracas_189_from_gf {A : Type*} (represent : A → A → Prop) (companyOf
 theorem fracas_190_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (john mary : A) (man woman : A → Prop) :
     (man john ∧ woman mary) → (represent john (companyOf john) ∧ represent mary (companyOf john)) → represent mary (companyOf john) :=
   fun hd h => fracas_190 _ _ _ _ _ _ hd h
+
+theorem fracas_196_from_gf {A B : Type*} (lawyer auditor : A → Prop) (report : B → Prop) (sign : A → B → Prop) :
+    (∃ l, lawyer l ∧ ∀ r, report r → sign l r) ∧ (∃ a, auditor a ∧ ∀ r, report r → sign a r) → (∃ a, auditor a ∧ ∀ r, report r → sign a r) :=
+  fun h => fracas_196 _ _ _ _ h
 
 theorem fracas_198_from_gf {A : Type*} (formerUniversityStudent universityStudent : A → Prop) (john : A) :
     (∀ x, formerUniversityStudent x → ¬ universityStudent x) → formerUniversityStudent john → ¬ universityStudent john :=

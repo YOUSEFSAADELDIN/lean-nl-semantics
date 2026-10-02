@@ -61,6 +61,8 @@ from translate import (  # noqa: E402
     _try_translate_named_verb_pronoun_object,
     _try_translate_donkey_relative_premise,
     _try_translate_named_copula_relative_restrictor,
+    _try_translate_gapped_travel_fact,
+    _try_translate_existential_universal_object,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -877,6 +879,110 @@ def _build_fracas_149(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+def _build_fracas_150_151_152(roles: dict, fracas_name: str) -> "tuple[str, str, str]":
+    """"John went to Paris by car. Bill [did] [too/to X/by Y]." -> "Bill
+    went to [Paris/Berlin] by [car/train]." Gapping with PP modifiers -
+    confirmed by reading each real theorem's own stated type directly
+    (`wentTo john paris car ∧ wentTo bill CITY VEHICLE -> wentTo bill
+    CITY VEHICLE`, CITY/VEHICLE varying per id). Built through
+    `translate.py`'s own `_try_translate_gapped_travel_fact` - premise 1
+    is IDENTICAL across all three ids ("John went to Paris by car"),
+    confirmed by `gf/run_gf_tests.py`'s own `fracas_151_premise1`/
+    `fracas_152_premise1` entries reusing fracas_150's tree, the same
+    precedent fracas_132/135's own premise 1 entries set. Which names
+    get ONE shared binder vs. TWO separate ones depends on whether this
+    id's own city/vehicle happen to match between premise 1 and the
+    hypothesis (150: same city, different vehicle; 151: both differ;
+    152: different city, same vehicle) - read directly off each pair's
+    own resolved text, not assumed from the id number. Returns (binders,
+    arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_gapped_travel_fact(*p1.args)
+    if result1 is None:
+        raise ValueError(f"{fracas_name}'s premise 1 no longer matches the gapped-travel shape")
+    _is_u1, subj1, verb, pp1a, pp2a = result1
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_gapped_travel_fact(*hyp.args)
+    if result2 is None:
+        raise ValueError(f"{fracas_name}'s hypothesis no longer matches the gapped-travel shape")
+    is_u2, subj2, verb2, pp1b, pp2b = result2
+    if is_u2:
+        raise ValueError(f"{fracas_name} needs a named (not universal) hypothesis subject")
+    if verb2 != verb:
+        raise ValueError(f"{fracas_name}'s premise 1 and hypothesis disagree on the verb name")
+
+    fact1 = f"{verb} {subj1} {pp1a} {pp2a}"
+    fact2 = f"{verb} {subj2} {pp1b} {pp2b}"
+    arrow_chain = f"({fact1} ∧ {fact2}) → {fact2}"
+
+    subj_names = [subj1] if subj1 == subj2 else [subj1, subj2]
+    pp1_names = [pp1a] if pp1a == pp1b else [pp1a, pp1b]
+    pp2_names = [pp2a] if pp2a == pp2b else [pp2a, pp2b]
+    binders = (
+        f"{{A B C : Type*}} ({verb} : A → B → C → Prop) "
+        f"({' '.join(subj_names)} : A) ({' '.join(pp1_names)} : B) ({' '.join(pp2_names)} : C)"
+    )
+    num_explicit = 1 + len(subj_names) + len(pp1_names) + len(pp2_names)
+    underscores = " ".join(["_"] * num_explicit)
+    proof = f"fun h => {fracas_name} {underscores} h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_150(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_150_151_152(roles, "fracas_150")
+
+
+def _build_fracas_151(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_150_151_152(roles, "fracas_151")
+
+
+def _build_fracas_152(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_150_151_152(roles, "fracas_152")
+
+
+def _build_fracas_153(roles: dict) -> "tuple[str, str, str]":
+    """"John goes to Paris by car. The students [go] by train." -> "The
+    students go to Paris by train." Confirmed by reading the real
+    theorem's own stated type directly (`goingTo john paris car ∧ Every
+    (fun _ : Student => True) (fun s => goingTo s paris train) -> Every
+    (fun _ : Student => True) (fun s => goingTo s paris train)`) - "the
+    students" is a TRIVIAL restrictor over the whole domain (the same
+    `fun _ => True` device id 124's own cardinal-anaphora case already
+    established), not a named subset of a larger one. Built through
+    `translate.py`'s own `_try_translate_gapped_travel_fact`, reused
+    from 150-152's own builder but requiring the UNIVERSAL (not named)
+    continuation this time. Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_gapped_travel_fact(*p1.args)
+    if result1 is None:
+        raise ValueError("fracas_153's premise 1 no longer matches the gapped-travel shape")
+    _is_u1, subj1, verb, pp1a, pp2a = result1
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    result2 = _try_translate_gapped_travel_fact(*p2.args)
+    if result2 is None:
+        raise ValueError("fracas_153's premise 2 no longer matches the gapped-travel shape")
+    is_u2, _restrictor2, verb2, pp1b, pp2b = result2
+    if not is_u2:
+        raise ValueError("fracas_153 needs a universal (definite-plural) continuation")
+    if verb2 != verb:
+        raise ValueError("fracas_153's premise 1 and premise 2 disagree on the verb name")
+
+    fact1 = f"{verb} {subj1} {pp1a} {pp2a}"
+    fact2 = f"Every (fun _ : B => True) (fun s => {verb} s {pp1b} {pp2b})"
+    arrow_chain = f"({fact1} ∧ {fact2}) → {fact2}"
+
+    pp1_names = [pp1a] if pp1a == pp1b else [pp1a, pp1b]
+    pp2_names = [pp2a] if pp2a == pp2b else [pp2a, pp2b]
+    binders = (
+        f"{{A B C : Type*}} ({verb} : A → B → C → Prop) "
+        f"({subj1} : A) ({' '.join(pp1_names)} : B) ({' '.join(pp2_names)} : C)"
+    )
+    num_explicit = 1 + 1 + len(pp1_names) + len(pp2_names)
+    underscores = " ".join(["_"] * num_explicit)
+    proof = f"fun h => fracas_153 {underscores} h"
+    return binders, arrow_chain, proof
+
+
 def _build_fracas_164(roles: dict) -> "tuple[str, str, str]":
     """"John spoke to Mary. [He spoke] to Sue [too]." -> "John spoke to
     Sue." Confirmed by reading the real theorem's own stated type
@@ -1331,6 +1437,56 @@ def _build_fracas_190(roles: dict) -> "tuple[str, str, str]":
         f"({john} {mary} : A) ({man} {woman} : A → Prop)"
     )
     proof = "fun hd h => fracas_190 _ _ _ _ _ _ hd h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_196(roles: dict) -> "tuple[str, str, str]":
+    """"A lawyer signed every report. One lawyer signed all the
+    reports. So did one auditor." -> "One auditor signed all the
+    reports." (the wide-scope "so did" reading, restated). Confirmed by
+    reading the real theorem's own stated type directly (`(exists l,
+    lawyer l and forall r, report r -> signed l r) and (exists a,
+    auditor a and forall r, report r -> signed a r) -> exists a, auditor
+    a and forall r, report r -> signed a r`) - premise 1 ("a lawyer
+    signed every report") is a PURE DISTRACTOR, never read at all
+    (confirmed by the real theorem's own type never mentioning it).
+    Premise 2's own resolved content ("one lawyer signed all the
+    reports") supplies the FIRST conjunct of the real premise; the
+    SECOND conjunct ("so did one auditor") is never given its own tree
+    at all - it's built directly from the hypothesis's own tree instead
+    (the same "elided sentence = reuse the hypothesis's own tree"
+    convention 142/145-149's own builders already use), since the
+    resolved "one auditor signed all the reports" is textually
+    identical either way. Built through `translate.py`'s own
+    `_try_translate_existential_universal_object` - the wide-scope
+    existential-over-universal reading `translate_cl`'s own general
+    path does NOT produce for this tree shape (it instead fuses the
+    whole VP into one unary predicate under an `Exactly 1` GQ reading -
+    confirmed by direct comparison, the wrong reading for this id).
+    Returns (binders, arrow_chain, proof)."""
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    result1 = _try_translate_existential_universal_object(*p2.args)
+    if result1 is None:
+        raise ValueError("fracas_196's premise 2 no longer matches the existential-universal shape")
+    lawyer_name, verb, report_name = result1
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_existential_universal_object(*hyp.args)
+    if result2 is None:
+        raise ValueError("fracas_196's hypothesis no longer matches the existential-universal shape")
+    auditor_name, verb2, report_name2 = result2
+    if verb2 != verb:
+        raise ValueError("fracas_196's premise 2 and hypothesis disagree on the verb name")
+    if report_name2 != report_name:
+        raise ValueError("fracas_196's premise 2 and hypothesis disagree on the object restrictor name")
+
+    fact_lawyer = f"∃ l, {lawyer_name} l ∧ ∀ r, {report_name} r → {verb} l r"
+    fact_auditor = f"∃ a, {auditor_name} a ∧ ∀ r, {report_name} r → {verb} a r"
+    arrow_chain = f"({fact_lawyer}) ∧ ({fact_auditor}) → ({fact_auditor})"
+    binders = (
+        f"{{A B : Type*}} ({lawyer_name} {auditor_name} : A → Prop) "
+        f"({report_name} : B → Prop) ({verb} : A → B → Prop)"
+    )
+    proof = "fun h => fracas_196 _ _ _ _ h"
     return binders, arrow_chain, proof
 
 
@@ -3041,11 +3197,12 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # 203 (adjective-drop, splitting an `AdjCN` into separate adjective/noun
 # conjuncts rather than fusing them). fracas_197 looked tractable at
 # first glance (same adjective-drop shape as 203) but its own `variable`
-# block is actually two-sorted (`{Person Thing}`), the same reason
-# 127/150-153/196 above remain unattempted (two-sortedness itself is
-# no longer a blocker per 134/135's own pipeline, but 197's own
-# adjective-drop shape combined with it hasn't been individually
-# built) - caught by reading its stated type directly before building,
+# block is actually two-sorted (`{Person Thing}`) - two-sortedness
+# itself is no longer a blocker per 134/135's and 150-153/196's own
+# pipelines above, but 197's own adjective-drop shape combined with it
+# hasn't been individually built, the same remaining reason fracas_127
+# is still unattempted - caught by reading its stated type directly
+# before building,
 # not after.
 #
 # The remaining 9 (202/204/205/208/209/210/211/212/214) each needed a
@@ -3117,6 +3274,10 @@ CUSTOM_BUILD = {
     147: _build_fracas_147,
     148: _build_fracas_148,
     149: _build_fracas_149,
+    150: _build_fracas_150,
+    151: _build_fracas_151,
+    152: _build_fracas_152,
+    153: _build_fracas_153,
     155: _build_fracas_155,
     157: _build_fracas_157,
     159: _build_fracas_159,
@@ -3134,6 +3295,7 @@ CUSTOM_BUILD = {
     187: _build_fracas_187,
     189: _build_fracas_189,
     190: _build_fracas_190,
+    196: _build_fracas_196,
     198: _build_fracas_198,
     199: _build_fracas_199,
     203: _build_fracas_203,
@@ -3543,16 +3705,39 @@ def main() -> None:
         "`{Person City Vehicle}` domain, and a `Some`/`Exactly`-quantified",
         "guess at fracas_196's own direct `∃`/`∀` over a two-sorted",
         "`{Person Report}` domain), every Section 4 id goes through",
-        "`CUSTOM_BUILD` or not at all. Not covered: 150/151/152/153/196",
-        "(three- or two-sorted domains - no longer itself a structural",
-        "blocker, per 134/135's own two-sorted pipeline in Section 3",
-        "above, but each of these ids has its own distinct sentence shape",
-        "not yet individually read and built);",
-        "163/171/172/173/174/191-195 (genuine grammar gaps - embedded",
-        "questions, relativizing a quantificational pronoun NP, a passive-",
-        "impersonal-plus-reciprocal construction with no combinator -",
-        "confirmed via `run_gf_tests.py`'s own comment on exactly these",
-        "ids); 168/169/170/175/176/179/180 (each needs a genuinely new GF",
+        "`CUSTOM_BUILD` or not at all. 150/151/152/153 (gapping with PP",
+        "modifiers, three-sorted `{A B C}`) ARE now built, through",
+        "`translate.py`'s own `_try_translate_gapped_travel_fact` -",
+        "\"John went to Paris by car\" (an intransitive verb with two PP",
+        "adjuncts) continued by either a second named individual",
+        "(150-152) or a definite-plural distributive universal over a",
+        "TRIVIAL whole-domain restrictor (153, the same `fun _ => True`",
+        "device id 124's own cardinal case established). All three share",
+        "the identical premise 1, confirmed by `run_gf_tests.py`'s own",
+        "`fracas_151_premise1`/`fracas_152_premise1` entries reusing",
+        "fracas_150's tree. 196 (existential-over-universal wide scope,",
+        "two-sorted `{A B}`) is also now built, through `_try_translate_",
+        "existential_universal_object` - \"one lawyer signed all the",
+        "reports\" needs an existential SUBJECT taking scope OVER an",
+        "inner universal object, the wide-scope \"so did\" reading -",
+        "`translate_cl`'s own general path parses the identical tree",
+        "shape without erroring but commits to the WRONG `Exactly 1`",
+        "cardinal-quantified reading instead, confirmed by direct",
+        "comparison. Premise 1 is a pure distractor, never read; the",
+        "premise's own SECOND conjunct (\"so did one auditor\") has no",
+        "tree of its own either - built from the hypothesis's own tree",
+        "instead, the same \"elided sentence = reuse the hypothesis's own",
+        "tree\" convention 142/145-149's own builders already use. All",
+        "five confirmed to typecheck against their own real `fracas_NNN`",
+        "lemmas via Lean's own elaborator, the same cross-check every",
+        "other id in this corpus gets - none of these were previously",
+        "attempted at all (not a refactor of existing hand-built code).",
+        "Still not covered: 163/171/172/173/174/191-195 (genuine grammar",
+        "gaps - embedded questions, relativizing a quantificational",
+        "pronoun NP, a passive-impersonal-plus-reciprocal construction",
+        "with no combinator - confirmed via `run_gf_tests.py`'s own",
+        "comment on exactly these ids); 168/169/170/175/176/179/180",
+        "(each needs a genuinely new GF",
         "tree or an `AdvS`-headed conditional top level not yet built,",
         "left for a future round); and 143/156/158/161/174/177/181/184/",
         "188/192/194 (countermodel-only, already excluded automatically).",
@@ -3572,10 +3757,11 @@ def main() -> None:
         "predicate (210's `smallAnimal`, alongside a separate `animal`).",
         "Not covered: 197 (looked like 203's own adjective-drop shape at",
         "first glance, but its own stated type is actually two-sorted",
-        "`{Person Thing}`, the same reason 127/150-153/196 remain",
-        "unattempted - two-sortedness alone is no longer a blocker, per",
-        "Section 3's own 134/135, but 197's adjective-drop shape",
-        "combined with it hasn't been individually built);",
+        "`{Person Thing}` - two-sortedness alone is no longer a blocker,",
+        "per 134/135's and 150-153/196's own pipelines, but 197's",
+        "adjective-drop shape combined with it hasn't been individually",
+        "built, the same remaining reason fracas_127 is still",
+        "unattempted);",
         "200/201/206/207/213/215/217/219 (countermodel-only, already",
         "excluded automatically). Section 6 (comparatives, 220-250) adds 10",
         "more ids: 220/223/224/227/229 chain in an assumed comparative-",
