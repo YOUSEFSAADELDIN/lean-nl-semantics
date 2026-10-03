@@ -6,12 +6,14 @@ import LeanNLSemantics.MTT.Adjectives
 
 `LinglibBridge.lean`'s own closing note flagged `toyLexicon` as "not a
 real fragment's lexicon" — this file is the first real one, built over
-five of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
-(`fracas_198`, `fracas_202` from `Batch1.lean`; `fracas_210`,
-`fracas_211`, `fracas_212` from `Batch2.lean`) rather than `CN.lean`'s
-standalone toy model.
+six of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
+(`fracas_198`, `fracas_202`, `fracas_214` from `Batch1.lean`;
+`fracas_210`, `fracas_211`, `fracas_212` from `Batch2.lean`) rather than
+`CN.lean`'s standalone toy model — and, per the closing note at the
+bottom of this file, the complete set of Section 5 problems this
+mechanism has anything to add to.
 
-Six things are demonstrated:
+Seven things are demonstrated:
 
 1. **`fracas_202` re-derived through the bridge's `CN'`.** The
    predicate-style proof in `Batch1.lean` takes `∀ x, mammal x →
@@ -86,18 +88,68 @@ Six things are demonstrated:
    facts and the comparative assumption — with *both* `mouse ≤ animal`
    and `elephant ≤ animal` gone from the premise list rather than
    merely satisfied.
+
+7. **`fracas_214`: a whole unused premise, not just half of one.**
+   `Batch2.lean`'s own proof takes both directions of
+   `legalAuth`/`lawLect` coextension as premises but only uses one.
+   `fracas_214_bridge` encodes only that one direction as a tag edge —
+   deliberately *not* the reverse, which would force the two tags equal
+   by antisymmetry, a strictly stronger (and here unneeded, unjustified)
+   claim than the one-directional subtyping the proof actually uses.
+
+## What's left in Section 5, and why this mechanism stops here
+
+Every other Section 5 problem (199–201, 203–209, 213, 215–219 — 16 of
+the section's 22) was checked against this bridge and genuinely has
+nothing for it to add, for one of two concrete reasons rather than a
+general impression:
+
+- **No CN subtyping is involved at all.** 199–201/213/215–219 are
+  already fully resolved in `Batch1.lean`/`Batch2.lean` into trivial
+  facts (`id`, or a `True ∧ ¬False`/`True ∧ True` independence pair) —
+  there is no subtyping step, free or assumed, for `CN'`/`Lexicon` to
+  touch. 204/205/208/209 assume a contrary or comparative relation
+  directly between adjectival predicates (`small`/`large`,
+  `smallerThan`) over an already-fixed individual, with no CN tag
+  anywhere in the premise — the same "stays a free predicate, not a
+  tag" boundary `fracas_210`'s own entry above already established, but
+  here there is no subtyping half at all to isolate, so re-deriving
+  these through the bridge would just restate `Batch2.lean`'s own proof
+  term verbatim with zero bridge-specific content.
+- **203 is a trivial projection** (`fourLegged dumbo ∧ animal dumbo →
+  fourLegged dumbo := fun h => h.1`) with no inference content to
+  re-derive through anything.
+
+That leaves `{198, 202, 210, 211, 212, 214}` as the complete, now fully
+covered set of Section 5 ids this mechanism has real content for.
+
+The same check was run across every other FraCaS section this project
+covers (1, 2, 6, 7, 8, 9 — read directly from each section's own
+`*.lean` approach file, not from memory): none involve a common-noun
+*type* hierarchy at all. Section 1 is quantifier monotonicity over a
+single shared domain (`Every`/`Some`/`No`), Section 2 is cardinality
+and plural phenomena, Section 6/8/9 lean on assumed comparative/
+implicative/factive relations the same way 204/208 do, and Section 7 is
+temporal/Aktionsart reasoning closed by `omega` over `Nat` timestamps —
+genuinely different semantic machinery in each case, none of it CN
+subtyping. Section 5 (Adjectives) is the one section built around
+exactly the phenomenon (`Intersective`/`SubsCN`/privative adjectives
+modifying CN-typed objects) this bridge's `Lexicon`/`CN'` exists to
+capture, which is why it is the only section this file touches.
 -/
 
 namespace MTT.LinglibBridge
 
 /-! ## The tag lattice -/
 
-/-- Seven tags: a shared root, two independent branches under `.animal`
+/-- Nine tags: a shared root, two independent branches under `.animal`
 (`.mammal` for `fracas_202`, `.mouse` for `fracas_210`'s own "all mice
 are small animals"), `.elephant` nested a level deeper under `.mammal`
 (`fracas_211`'s own subject, and a real three-level chain to widen
-along), and the `univStudent`/`former` pair `fracas_198` needs — kept
-deliberately disconnected from each other (see `S5Tag.ancestors`). -/
+along), the `univStudent`/`former` pair `fracas_198` needs, and a second
+one-directional edge (`.legalAuth ≤ .lawLect`) `fracas_214` needs —
+kept deliberately disconnected from each other and from `.animal` (see
+`S5Tag.ancestors`). -/
 inductive S5Tag where
   | thing
   | animal
@@ -106,6 +158,8 @@ inductive S5Tag where
   | mouse
   | univStudent
   | former
+  | legalAuth
+  | lawLect
   deriving DecidableEq, Repr
 
 /-- Written by hand rather than `deriving Fintype`, matching `CN.lean`'s
@@ -113,7 +167,8 @@ own `CNTag` instance and for the same reason: a derived completeness
 proof is the fragile part on this toolchain, not the case analysis
 itself. -/
 instance : Fintype S5Tag where
-  elems := {.thing, .animal, .mammal, .elephant, .mouse, .univStudent, .former}
+  elems := {.thing, .animal, .mammal, .elephant, .mouse, .univStudent, .former,
+    .legalAuth, .lawLect}
   complete x := by cases x <;> decide
 
 /-- Each tag's ancestors, itself first — same shape as `CN.lean`'s
@@ -121,7 +176,9 @@ instance : Fintype S5Tag where
 `.animal` (two branches of the same root, not nested in each other);
 `.elephant` is nested a level deeper, under `.mammal`; `.former` and
 `.univStudent` are siblings under `.thing` only: no edge between them,
-on purpose. -/
+on purpose; `.legalAuth ≤ .lawLect` is a one-directional edge, the
+*reverse* of which (`.lawLect ≤ .legalAuth`) is deliberately absent —
+see `fracas_214_bridge`'s own comment for why. -/
 def S5Tag.ancestors : S5Tag → List S5Tag
   | .thing => [.thing]
   | .animal => [.animal, .thing]
@@ -130,6 +187,8 @@ def S5Tag.ancestors : S5Tag → List S5Tag
   | .mouse => [.mouse, .animal, .thing]
   | .univStudent => [.univStudent, .thing]
   | .former => [.former, .thing]
+  | .legalAuth => [.legalAuth, .lawLect, .thing]
+  | .lawLect => [.lawLect, .thing]
 
 instance : PartialOrder S5Tag where
   le a b := b ∈ a.ancestors
@@ -219,6 +278,25 @@ example (fourLegged isAnimal : S5Individual → Prop) :
       MTT.Some' (CN' section5Lexicon .mammal) (fun x => fourLegged x.1) :=
   MTT.inter_adj_drop (A := CN' section5Lexicon .mammal)
     (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+/-! ## `fracas_214`, the same move for a whole premise -/
+
+/-- `Batch2.lean`'s own `fracas_214` takes BOTH `∀ x, legalAuth x →
+lawLect x` (`h1`) and `∀ x, lawLect x → legalAuth x` (`h2`) as premises
+but its proof (`fun h1 _ x ⟨hla, hf⟩ => ⟨h1 x hla, hf⟩`) only ever uses
+`h1` — `h2` is dead weight, the same "half the premise is unused"
+pattern `fracas_210`/`211`/`212` already found for `animal`, now for a
+*whole* premise rather than half of a conjunction. The tag lattice only
+gets `.legalAuth ≤ .lawLect`: encoding `h2` as the reverse edge would
+force `.legalAuth = .lawLect` by antisymmetry (a strictly stronger claim
+— these two classes being not just coextensive in this one scenario but
+definitionally the same type), which the proof never needs and this
+project has no grounds to assert in general, so it's left out entirely
+rather than encoded either way. -/
+def fracas_214_bridge (fat : S5Individual → Prop) :
+    MTT.Intersective (CN' section5Lexicon .legalAuth) (fun z => fat z.1) →
+      MTT.Intersective (CN' section5Lexicon .lawLect) (fun z => fat z.1) :=
+  fun ⟨x, hx⟩ => ⟨CN'.widen section5Lexicon (by decide) x, hx⟩
 
 /-! ## Coherence survives the generalization -/
 
