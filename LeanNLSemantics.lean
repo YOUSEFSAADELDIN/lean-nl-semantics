@@ -23,6 +23,7 @@ import LeanNLSemantics.FraCaS.Section1.Monotonicity.Signature
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.CNAdapter
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Trace
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Scan
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.CrossCheck
