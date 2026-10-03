@@ -6,12 +6,12 @@ import LeanNLSemantics.MTT.Adjectives
 
 `LinglibBridge.lean`'s own closing note flagged `toyLexicon` as "not a
 real fragment's lexicon" — this file is the first real one, built over
-four of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
+five of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
 (`fracas_198`, `fracas_202` from `Batch1.lean`; `fracas_210`,
-`fracas_211` from `Batch2.lean`) rather than `CN.lean`'s standalone toy
-model.
+`fracas_211`, `fracas_212` from `Batch2.lean`) rather than `CN.lean`'s
+standalone toy model.
 
-Five things are demonstrated:
+Six things are demonstrated:
 
 1. **`fracas_202` re-derived through the bridge's `CN'`.** The
    predicate-style proof in `Batch1.lean` takes `∀ x, mammal x →
@@ -77,6 +77,15 @@ Five things are demonstrated:
    time: `dumbo` is tagged `.elephant`, nested under `.mammal`, so
    `.elephant ≤ .animal` goes through an intermediate tag rather than
    being a direct edge, and is still free.
+
+6. **`fracas_212` combines both branches at once.** `Batch2.lean`'s own
+   proof reuses `fracas_210`/`fracas_211`'s exact setups together,
+   discarding both subtyping halves, to reach an assumed comparative
+   conclusion (`largerThan dumbo mickey`). `fracas_212_bridge` keeps
+   only the three things that proof actually uses — the two lexical
+   facts and the comparative assumption — with *both* `mouse ≤ animal`
+   and `elephant ≤ animal` gone from the premise list rather than
+   merely satisfied.
 -/
 
 namespace MTT.LinglibBridge
@@ -350,5 +359,23 @@ theorem fracas_211_bridge
     ¬ smallAnimal dumbo :=
   animal_branch_contrary_bridge .elephant largeAnimal smallAnimal hcontrary hAllElephantLarge
     dumbo (by decide)
+
+/-- `fracas_212` combines `fracas_210`'s and `fracas_211`'s own setups
+(`Batch2.lean`'s own proof literally reuses both `h1`/`h2`'s `.2`
+projections, discarding both `.1`s) with an assumed comparative relation
+between `smallAnimal`/`largeAnimal`. Through the bridge, BOTH subtyping
+halves (`mouse ≤ animal`, `elephant ≤ animal`) are gone from the premise
+list, not merely discarded after being supplied — only the two lexical
+facts and the comparative assumption, the three things `Batch2.lean`'s
+own proof actually uses, remain. -/
+theorem fracas_212_bridge
+    (smallAnimal largeAnimal : S5Individual → Prop) (largerThan : S5Individual → S5Individual → Prop)
+    (hMouseSmall : ∀ x : CN' section5Lexicon .mouse, smallAnimal x.1)
+    (hElephantLarge : ∀ x : CN' section5Lexicon .elephant, largeAnimal x.1)
+    (hcomp : ∀ x y, smallAnimal x → largeAnimal y → largerThan y x) :
+    largerThan dumbo mickey :=
+  hcomp mickey dumbo
+    (hMouseSmall ⟨mickey, (by decide : mickey.kind ≤ S5Tag.mouse)⟩)
+    (hElephantLarge ⟨dumbo, (by decide : dumbo.kind ≤ S5Tag.elephant)⟩)
 
 end MTT.LinglibBridge
