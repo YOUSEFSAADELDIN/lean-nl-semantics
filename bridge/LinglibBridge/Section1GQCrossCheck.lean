@@ -94,6 +94,54 @@ theorem every_restrict_is_restrictorAntitone_every {A : Type} (P Q R : A → Pro
     FraCaS.Section1.Every R Q → FraCaS.Section1.Every P R → FraCaS.Section1.Every P Q :=
   fun h hpr => Quantifier.GQ.restrictorAntitone_every Q hpr h
 
+/-- `some_mono_scope`, rederived the same way as `every_mono_scope`
+above, from linglib's `scopeMonotone_some` instead of `scopeMonotone_
+every` (`Monotone (GQ.some P)`, the other half of Barwise-Cooper's
+scope-monotonicity pair — `some` is upward scope-monotone where `every`
+also is; both happen to share the same direction, unlike restrictor
+monotonicity below where they diverge). -/
+theorem some_mono_scope_is_scopeMonotone_some {A : Type} (P Q R : A → Prop) :
+    FraCaS.Section1.Some P Q → (∀ x, Q x → R x) → FraCaS.Section1.Some P R :=
+  fun h hqr => Quantifier.GQ.scopeMonotone_some P hqr h
+
+/-- `some_restrict`, rederived: `restrictorMonotone_some Q` is `Monotone
+(fun R => GQ.some R Q)`, i.e. "`P ≤ R` gives `some P Q ≤ some R Q`"
+(growing the restrictor can only add witnesses) — the restrictor
+direction `some` actually takes, the mirror image of `every_restrict`'s
+`Antitone` above (shrinking a restrictor preserves a universal; growing
+one preserves an existential - the two Barwise-Cooper quantifiers move
+in genuinely opposite directions here, not the same one twice). -/
+theorem some_restrict_is_restrictorMonotone_some {A : Type} (P Q R : A → Prop) :
+    FraCaS.Section1.Some P Q → FraCaS.Section1.Every P R → FraCaS.Section1.Some R Q :=
+  fun h hpr => Quantifier.GQ.restrictorMonotone_some Q hpr h
+
+/-! ## Conservativity: a universal B&C requires of every simple determiner
+
+The four `Iff.rfl`/`rfl` checks above (`every_eq_gq_every`, `some_eq_gq_
+some`, `no_eq_gq_no`, `card_eq_count`) only confirm that both sides'
+*definitions* line up — real, but narrow: they'd catch linglib changing
+one of these shapes, but don't themselves call anything linglib has
+*proved*, the way the monotonicity rederivations above do. Barwise and
+Cooper's conservativity universal (`Q(A, B) ↔ Q(A, A ∩ B)` — only the
+restrictor-and-scope overlap matters, never the rest of the scope) is
+proved once, generally, for `every`/`GQ.some`/`no` in `Quantification/
+Basic.lean`; stating it here, in FraCaS's own `Every`/`Some`/`No`, is a
+genuine additional check of the same kind the two lemmas above already
+are, closing that gap for all three determiners at once rather than
+leaving it only at the weaker, definitional tier. -/
+
+theorem every_conservative {A : Type} (P Q : A → Prop) :
+    FraCaS.Section1.Every P Q ↔ FraCaS.Section1.Every P (fun x => P x ∧ Q x) :=
+  Quantifier.GQ.conservative_every P Q
+
+theorem some_conservative {A : Type} (P Q : A → Prop) :
+    FraCaS.Section1.Some P Q ↔ FraCaS.Section1.Some P (fun x => P x ∧ Q x) :=
+  Quantifier.GQ.conservative_some P Q
+
+theorem no_conservative {A : Type} (P Q : A → Prop) :
+    FraCaS.Section1.No P Q ↔ FraCaS.Section1.No P (fun x => P x ∧ Q x) :=
+  Quantifier.GQ.conservative_no P Q
+
 /-! ## Section 2's `Exactly` coincides with linglib's `exactly`, too
 
 `FraCaS.Section2.Exactly n P Q := card (fun x => P x ∧ Q x) = n`, the

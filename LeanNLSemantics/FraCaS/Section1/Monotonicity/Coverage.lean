@@ -1,5 +1,6 @@
 import Lean
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Scan
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 import LeanNLSemantics
@@ -76,11 +77,6 @@ open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Lean.Elab.Command
 
 namespace FraCaS.Section1.Monotonicity
 
-/-- The last component of a (possibly namespaced) declaration name, as a
-plain string - e.g. `FraCaS.Section3.fracas_114` ↦ `"fracas_114"`. -/
-def lastComponent (n : Lean.Name) : String :=
-  (toString n).splitOn "." |>.getLast!
-
 /-- The underlying FraCaS problem number a theorem name names, regardless
 of which variant proved it - `"fracas_018"` ↦ `some 18`,
 `"fracas_066_via_mono_nl"` ↦ `some 66`, `"fracas_012_dir1"` ↦ `some 12`.
@@ -97,17 +93,14 @@ def problemId (n : Lean.Name) : Option Nat :=
 implication chain, is headed by one of the four quantifiers the
 fragment covers at all - independent of whether `mono_nl`'s own search
 then succeeds. This is the eligible/outside-fragment line; `mono_nl`
-itself draws the proved/eligible-but-failed line within it. Reuses
-`introAll`/`quantifierHeads` from `Tactic.lean` rather than
-re-implementing the same head check a second, possibly-inconsistent
-way. -/
+itself draws the proved/eligible-but-failed line within it. Built on
+`Scan.lean`'s shared `goalHeadConst`/`introAll`/`quantifierHeads`
+rather than re-implementing the same head check a second,
+possibly-inconsistent way. -/
 def isEligible (ty : Expr) : MetaM Bool := do
-  let mvar ← mkFreshExprMVar ty (kind := .synthetic)
-  let (_, goal) ← introAll mvar.mvarId!
-  goal.withContext do
-    match (← goal.getType).getAppFn.constName? with
-    | some n => return (quantifierHeads.lookup n).isSome
-    | none => return false
+  match ← goalHeadConst ty with
+  | some n => return (quantifierHeads.lookup n).isSome
+  | none => return false
 
 /-- Whether a theorem's goal, after introducing its implication chain, is
 already exactly one hypothesis's own type (an `id`-shaped restatement),
@@ -133,25 +126,6 @@ def isTrivial (ty : Expr) : MetaM Bool := do
         if (← isDefEq r goalTy) then return true
       | _ => pure ()
     return false
-
-/-- The head constant name of an eligible-or-not goal's conclusion, for
-the "outside the fragment" breakdown - `none` when it isn't even a named
-application (e.g. a bare `∀`/`∃` left over from a definition unfolding,
-or a `Prop` variable). -/
-def concludingHead (ty : Expr) : MetaM (Option Lean.Name) := do
-  let mvar ← mkFreshExprMVar ty (kind := .synthetic)
-  let (_, goal) ← introAll mvar.mvarId!
-  goal.withContext do
-    return (← goal.getType).getAppFn.constName?
-
-/-- Renders a caught tactic exception's message to plain text, for
-grouping - falls back to a fixed string rather than propagating a second
-failure if formatting itself somehow fails. -/
-def renderException (e : Exception) : MetaM String :=
-  try
-    e.toMessageData.toString
-  catch _ =>
-    pure "<error message could not be rendered>"
 
 /-- Buckets an eligible failure's raw message into a small number of
 named reasons, using `Tactic.lean`'s own fixed error strings (updated for
@@ -210,7 +184,7 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
       outsideFragment := outsideFragment.push name
       let headKey ←
         try
-          match ← concludingHead ty with
+          match ← goalHeadConst ty with
           | some n => pure (toString n)
           | none => pure "<no named head>"
         catch _ =>
@@ -234,19 +208,6 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
     -- a theorem closed by any of them counts as proved with no "which
     -- one" ambiguity left over - each tactic's own `logInfo` trace in the
     -- build log already says which.
-    let runTactic (tacticStx : Lean.TSyntax `tactic) : TermElabM (Except String Unit) :=
-      try
-        let mvar ← mkFreshExprMVar ty (kind := .synthetic)
-        let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
-          Lean.Elab.Tactic.evalTactic tacticStx
-        if remaining.isEmpty then
-          pure (.ok ())
-        else
-          pure (.error "tactic left goals open")
-      catch e =>
-        let msg ← renderException e
-        pure (.error msg)
-
     -- `exist_nl` rejects any non-`Some`-headed goal immediately, before
     -- looking at a single hypothesis, and `mono_nl_compose` is `mono_nl`'s
     -- own search widened (never a quick head-mismatch rejection, since
@@ -262,15 +223,15 @@ elab "#mono_nl_coverage" : command => liftTermElabM do
     -- marker to group them. Purely a log-format concern; changes nothing
     -- about what gets proved or how.
     logInfo m!"mono_nl_coverage: attempting {name}"
-    let monoOutcome ← runTactic (← `(tactic| mono_nl))
+    let monoOutcome ← runTacticOn ty (← `(tactic| mono_nl))
     let outcome : Except String Unit ←
       match monoOutcome with
       | .ok () => pure (.ok ())
       | .error _monoMsg =>
-        match ← runTactic (← `(tactic| exist_nl)) with
+        match ← runTacticOn ty (← `(tactic| exist_nl)) with
         | .ok () => pure (.ok ())
         | .error _existMsg =>
-          match ← runTactic (← `(tactic| mono_nl_compose)) with
+          match ← runTacticOn ty (← `(tactic| mono_nl_compose)) with
           | .ok () => pure (.ok ())
           | .error composeMsg => pure (.error composeMsg)
 

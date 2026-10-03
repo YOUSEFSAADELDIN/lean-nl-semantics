@@ -1,5 +1,6 @@
 import Lean
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Scan
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 import LeanNLSemantics.FraCaS.Data.Problems
@@ -95,9 +96,6 @@ open FraCaS (Answer)
 
 namespace FraCaS.Section1.Monotonicity.BlindEval
 
-def lastComponent (n : Lean.Name) : String :=
-  (toString n).splitOn "." |>.getLast!
-
 /-- The FraCaS problem number a **bare** `fracas_NNN` name names - `none`
 for anything with a trailing suffix (`_dir1`, `_via_mono_nl`, ...), which
 this scan deliberately excludes (see this file's header). -/
@@ -121,16 +119,14 @@ def blindEvalHeads : List Lean.Name :=
    ``FraCaS.Section1.Both, ``FraCaS.Section1.Neither, ``FraCaS.Section2.Exactly]
 
 /-- Whether a theorem's conclusion, after introducing its implication
-chain, is headed by one of `blindEvalHeads` - reuses `introAll` from
-`Tactic.lean` (raw, non-`whnf` Pi-check; see its own comment for why)
-rather than a second, possibly-inconsistent traversal. -/
+chain, is headed by one of `blindEvalHeads` - built on `Scan.lean`'s
+shared `goalHeadConst` (reuses `introAll` from `Tactic.lean`, raw,
+non-`whnf` Pi-check; see its own comment for why) rather than a second,
+possibly-inconsistent traversal. -/
 def isEntailmentShaped (ty : Expr) : MetaM Bool := do
-  let mvar ← mkFreshExprMVar ty (kind := .synthetic)
-  let (_, goal) ← introAll mvar.mvarId!
-  goal.withContext do
-    match (← goal.getType).getAppFn.constName? with
-    | some n => return blindEvalHeads.contains n
-    | none => return false
+  match ← goalHeadConst ty with
+  | some n => return blindEvalHeads.contains n
+  | none => return false
 
 /-- Rebuilds `ty`'s Pi-telescope with its final (non-Pi) body wrapped in
 `Not` - the "neg" goal's type. Recurses one binder at a time via
@@ -146,18 +142,11 @@ partial def negateConclusion (ty : Expr) : MetaM Expr := do
   else
     mkAppM ``Not #[ty]
 
-/-- Attempts one tactic against a *fresh* metavariable of type `ty`,
-discarding any partial assignment on failure (fresh per attempt, exactly
-`Coverage.lean`'s own `runTactic` pattern) - `true` iff it fully closed
-the goal. -/
-def runTactic (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM Bool := do
-  try
-    let mvar ← mkFreshExprMVar ty (kind := .synthetic)
-    let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
-      Lean.Elab.Tactic.evalTactic tacticStx
-    return remaining.isEmpty
-  catch _ =>
-    return false
+/-- `Scan.lean`'s shared `runTacticOn`/`runTacticBool` (fresh metavariable
+per attempt, exactly `Coverage.lean`'s own pattern), named `runTactic`
+here to match this file's existing call sites. -/
+def runTactic (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM Bool :=
+  runTacticBool ty tacticStx
 
 /-- Reads `Most`'s own restrictor/scope predicates back out of a fully-
 applied occurrence's argument array - `Most`'s own signature, verified
