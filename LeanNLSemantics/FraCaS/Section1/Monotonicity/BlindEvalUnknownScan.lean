@@ -1,4 +1,4 @@
-import LeanNLSemantics.FraCaS.Section1.Monotonicity.BlindEval
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.BlindEvalCore
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.BlindEvalUnknown
 
 /-!
@@ -14,8 +14,10 @@ a bare `Prop`-valued `def` per problem, the *generic* form of what that
 problem's own dir1/dir2 pair already demonstrates concretely - never
 proved, since a genuine independence claim is not a theorem in either
 direction. This file feeds each one's value through the exact same
-`attemptClose`/`negateConclusion` pipeline `BlindEval.lean` already uses,
-expecting **both** directions to fail: that failure (not a yes/no verdict)
+`attemptClose`/`negateConclusion` pipeline `BlindEvalCore.lean` provides
+(factored out of `BlindEval.lean` for exactly this reuse - see that
+file's own header), expecting **both** directions to fail: that failure
+(not a yes/no verdict)
 is itself the correct automated outcome here, and failure on both sides is
 compared against the gold `.unknown`/`.undef` answer exactly the way
 `BlindEval.lean`'s own `answerMatches` already collapses that distinction
