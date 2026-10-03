@@ -211,8 +211,10 @@ consistency check, not a blind-prediction accuracy score.
   the rest of this project holds to, not a probabilistic fallback.
   `Coverage.lean`'s own header tracks the one current, authoritative
   corpus-wide count (not duplicated here, so it can't go stale in two
-  places): as of the last CI run, **zero** eligible-but-failed problems
-  remain across 472 scanned theorems. A separate blind evaluation
+  places — see that file for the current scanned/proved/eligible-failed
+  numbers and, as of the corpus's growth past Phase 5, a breakdown of
+  what the remaining eligible-but-failed cases actually are). A separate
+  blind evaluation
   (`BlindEval.lean`) addresses the obvious follow-up question — whether
   that count reflects real automated entailment-checking or just a
   human confirming a proof they already knew existed — by taking each

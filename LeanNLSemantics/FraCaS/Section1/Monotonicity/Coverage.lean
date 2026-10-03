@@ -20,14 +20,55 @@ so it can't go stale in one copy while another gets updated):
 | 36310612545 | b2da508 | + Phase 3 (`mono_nl_compose`, #123 only) | 14 | 59 (36) | 3 | 469 |
 | 36312200141 | 8934c04 | + Phase 4 (`exactly_atLeast`/`exactly_atMost` for #124, `some_entails_and` for #27) | 14 | 63 (38) | 1 | 471 |
 | 36316374524 | 5628f63 | + Phase 5 (`entails_narrow`/`atMost_mono_scope_conditioned` for #044) | 14 | 65 (**39**) | **0** | 472 |
+| 37148383433 | 1f52f19 | corpus growth since Phase 5 (Sections 3-9, `GFCrossCheckBatch.lean`'s 153 theorems, `CNAdapter.lean`'s demos) - no fragment change | 24 | 79 (37) | **8** | 630 |
 
-The Phase 5 row is current: **zero** eligible-but-failed problems remain
-- every theorem this scan's own `isEligible`/`isTrivial` split calls
-genuinely eligible now closes automatically, across five principled
-extensions (Phase 1/2's substitution, Category B's existential-
-transfer/positive-cardinality, Phase 3/4's composition, Phase 5's
-conditioned narrowing), none of them a rule invented to fit one FraCaS
-example - see each phase's own file header for its grounding.
+The last row is current, **not zero** - and that is the honest number, not
+a regression to chase. The corpus more than tripled since Phase 5 (472 →
+630 scanned) purely from later sections and generated files being added;
+none of it changed this fragment, which is exactly `Signature.lean`'s
+table, Phase 2's combine step, and Phase 3's composition, still unchanged
+since Phase 5. The 8 eligible-but-failed break down into three kinds,
+checked by hand against each one's own real content (not assumed from the
+bucket label) rather than treated as one lump "regression":
+
+1. **`MTT.fracas_044_from_cn`/`MTT.fracas_029_from_cn`** - `CNAdapter.lean`'s
+   own standalone demo re-derivations, which that file's header already
+   says have no current consumer (not wired into `fracas_029`/`fracas_044`
+   themselves). Not real corpus problems; nothing to close here.
+2. **`FraCaS.Section3.fracas_123`/`fracas_123_from_gf`** - the *correct*
+   consequence of fixing problem 123's mistranslation (see the commit
+   that fixed `fracas_123`'s conclusion from `Some reportsNeeded onDesk`
+   to `Some sentByItel onDesk`): the old, wrong conclusion fit
+   `some_mono_scope`'s flat substitution shape by coincidence, which is
+   why this scan used to "prove" it automatically; the corrected
+   conclusion's real proof is a direct existential-witness projection out
+   of `most_some`'s pair, not a substitution at all, so reporting it as
+   outside this fragment now is accurate, not a miss to patch.
+3. **`fracas_010_from_gf`/`fracas_015_from_gf`/`fracas_063_from_gf`/
+   `fracas_124_from_gf`** - every one of these four has a real,
+   hand-written counterpart (`fracas_010`/`015`/`063`/`124`) that *is*
+   closed by this exact fragment, unchanged. The one consistent
+   difference, checked directly against all four pairs: each real
+   theorem declares an explicit `variable [DecidablePred ...]` instance;
+   none of the four `scripts/gen_gf_cross_check.py`-generated `_from_gf`
+   wrappers does, so Lean fills that slot via `Classical.propDecidable`
+   instead at elaboration time. That's a generator/instance-robustness
+   gap specific to these auto-generated restatements, not a missing
+   monotonicity principle - the underlying mathematical fact is already
+   proved, by this same fragment, in every one of these four cases. Fixing
+   it would mean making the tactic's `isDefEq`-based matching robust to
+   Classical-synthesized vs. variable-bound `Decidable` instances (or
+   having the generator emit matching `variable`s), neither of which this
+   sandbox's lack of a local Lean toolchain makes safe to attempt blind;
+   flagged here rather than silently absorbed into "eligible but failed"
+   with no explanation.
+
+None of the three categories calls for a new rule in `Signature.lean`'s
+table - the fragment itself (Phase 1/2's substitution, Category B's
+existential-transfer/positive-cardinality, Phase 3/4's composition,
+Phase 5's conditioned narrowing) is unchanged and still correctly closes
+every theorem that's both genuinely in scope and genuinely as it should
+be stated.
 
 `#mono_nl_coverage` scans every already-proved theorem in the whole
 FraCaS suite (`import LeanNLSemantics`, the project's own root umbrella
