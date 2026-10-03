@@ -10,16 +10,18 @@ import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 The reusable part of `BlindEval.lean`'s own methodology - negate a
 goal's conclusion, and attempt to automatically close a goal via this
 corpus's certified fragment (`mono_nl`/`exist_nl`/`mono_nl_compose`)
-plus `most_nl`/`every_most_nl`/`aesop`/`grind` - factored out here
-because none of it actually needs the whole corpus in scope, unlike
+plus `most_nl`/`every_most_nl`/`aesop`/`grind`/`omega` - factored out
+here because none of it actually needs the whole corpus in scope, unlike
 `BlindEval.lean`'s own `runBlindEval` (which imports the root
 `LeanNLSemantics` umbrella to scan every already-proved theorem, and so
-can never itself be imported back). `BlindEvalUnknownScan.lean` needs
-exactly this part, not the corpus-scanning part, and importing
-`BlindEval.lean` directly for it would hit the same circularity
-`BlindEval.lean`'s own header already explains for `Coverage.lean` -
-this file is how both avoid it, the same way `Scan.lean` already does
-one layer down for `Coverage.lean`/`BlindEval.lean` themselves.
+can never itself be imported back). `BlindEvalUnknownScan.lean` and
+`BlindEvalSections3to9.lean` both need exactly this part, not the
+corpus-scanning part each builds for its own section range, and
+importing `BlindEval.lean` directly for it would hit the same
+circularity `BlindEval.lean`'s own header already explains for
+`Coverage.lean` - this file is how all three avoid it, the same way
+`Scan.lean` already does one layer down for `Coverage.lean`/
+`BlindEval.lean` themselves.
 -/
 open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic
 
@@ -161,8 +163,16 @@ own certified monotonicity fragment first (`mono_nl`, `exist_nl`,
 `mono_nl_compose`), then `most_nl`/`every_most_nl`, then one `aesop`
 call - unfolding the plain-`def` quantifiers (`Every`/`Some`/`No`) it
 can't see through on its own, and armed with every general GQ.lean
-lemma above - then `grind` as a last resort. Stops at the first
-success. -/
+lemma above - then `grind`, then `intros; omega` as a last resort (the
+one addition made when this chain started covering Sections 3-9 too:
+several of those problems - FraCaS's own cardinal comparatives in
+particular, see `Section6/Comparatives.lean`'s own header - are literal
+`Nat` inequalities their own hand proofs already close with bare
+`omega`, so leaving it out would fail every one of those by omission,
+not by any real limit on what a generic, non-problem-specific arithmetic
+decision procedure can do; `intros` first since `omega` itself doesn't
+peel a goal's own leading implications the way `aesop`/`grind` already
+do). Stops at the first success. -/
 def attemptClose (ty : Expr) : TermElabM Bool := do
   if ← runTacticBool ty (← `(tactic| mono_nl)) then return true
   if ← runTacticBool ty (← `(tactic| exist_nl)) then return true
@@ -190,6 +200,7 @@ def attemptClose (ty : Expr) : TermElabM Bool := do
           safe apply FraCaS.Section2.exactly_atMost, safe apply FraCaS.Section2.every_most)))
   then return true
   if ← runTacticBool ty (← `(tactic| grind)) then return true
+  if ← runTacticBool ty (← `(tactic| intros; omega)) then return true
   return false
 
 end FraCaS.Section1.Monotonicity.BlindEval

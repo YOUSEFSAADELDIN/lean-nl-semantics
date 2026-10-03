@@ -71,6 +71,16 @@ jobs:
       # this step's `lake env lean` runs, same as BlindEvalCore.lean).
       - name: Blind evaluation, unknown/undef pairs (Sections 1-2)
         run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/BlindEvalUnknownScan.lean
+
+      # Same circularity reason as BlindEval.lean just above (imports the
+      # root LeanNLSemantics umbrella to scan every already-proved
+      # theorem in Sections 3-9) - run directly, reusing the oleans
+      # `lake build` already produced, including BlindEvalCore.lean's
+      # (added to the main import list specifically so files like this
+      # one can reuse its attemptClose/negateConclusion without importing
+      # BlindEval.lean itself - see BlindEvalCore.lean's own header).
+      - name: Blind evaluation (Sections 3-9)
+        run: lake env lean LeanNLSemantics/FraCaS/BlindEvalSections3to9.lean
       # AssumptionAudit.lean is deliberately not imported by anything
       # either, same reason as Coverage.lean above (it imports the root
       # LeanNLSemantics umbrella, so importing it back would be
