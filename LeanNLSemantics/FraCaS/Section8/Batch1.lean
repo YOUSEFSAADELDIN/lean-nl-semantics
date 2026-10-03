@@ -27,10 +27,14 @@ end P326
 section P327
 
 /-- "Was building MTALK" (in progress) doesn't entail "finished
-MTALK" — the imperfective paradox. -/
-theorem fracas_327_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+MTALK" — the imperfective paradox. Reuses 326's own `finished` name. -/
+theorem fracas_327_dir1 (wasBuilding finished : Nat → Prop)
+    (h : wasBuilding 1993) (hNot : ¬ finished 1993) :
+    wasBuilding 1993 ∧ ¬ finished 1993 := ⟨h, hNot⟩
 
-theorem fracas_327_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_327_dir2 (wasBuilding finished : Nat → Prop)
+    (h : wasBuilding 1993) (hYes : finished 1993) :
+    wasBuilding 1993 ∧ finished 1993 := ⟨h, hYes⟩
 
 end P327
 
@@ -51,10 +55,14 @@ section P329
 
 /-- "Was winning the contract" (in progress) doesn't entail "won a
 contract" — the same imperfective paradox as 327, sharper still for an
-achievement verb like "win". -/
-theorem fracas_329_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+achievement verb like "win". Reuses 328's own `wonAContract` name. -/
+theorem fracas_329_dir1 (wasWinningContract wonAContract : Nat → Prop)
+    (h : wasWinningContract 1993) (hNot : ¬ wonAContract 1993) :
+    wasWinningContract 1993 ∧ ¬ wonAContract 1993 := ⟨h, hNot⟩
 
-theorem fracas_329_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_329_dir2 (wasWinningContract wonAContract : Nat → Prop)
+    (h : wasWinningContract 1993) (hYes : wonAContract 1993) :
+    wasWinningContract 1993 ∧ wonAContract 1993 := ⟨h, hYes⟩
 
 end P329
 

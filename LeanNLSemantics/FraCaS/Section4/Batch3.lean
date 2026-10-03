@@ -90,10 +90,16 @@ section P177
 /-- The doubled "that" ("said that Mary wrote a report, and that Bill
 did too") forces *both* conjuncts to be complements of John's "said" —
 so the sentence never attributes any act of saying to Bill at all, and
-"Bill said Mary wrote a report" is simply unaddressed. -/
-theorem fracas_177_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+"Bill said Mary wrote a report" is simply unaddressed. `johnMadeDoubledClaim`
+is the given fact (John's own two-part utterance); `billSaidMaryWroteReport`
+reuses 175's exact hypothesis, now left unaddressed rather than derived. -/
+theorem fracas_177_dir1 (johnMadeDoubledClaim billSaidMaryWroteReport : Prop)
+    (h : johnMadeDoubledClaim) (hNot : ¬ billSaidMaryWroteReport) :
+    johnMadeDoubledClaim ∧ ¬ billSaidMaryWroteReport := ⟨h, hNot⟩
 
-theorem fracas_177_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_177_dir2 (johnMadeDoubledClaim billSaidMaryWroteReport : Prop)
+    (h : johnMadeDoubledClaim) (hYes : billSaidMaryWroteReport) :
+    johnMadeDoubledClaim ∧ billSaidMaryWroteReport := ⟨h, hYes⟩
 
 end P177
 
@@ -127,10 +133,15 @@ end P180
 section P181
 
 /-- "Bill did" resolves to "Bill needed to buy a car", not "Bill bought
-a car" — needing and buying are different, unconnected predicates. -/
-theorem fracas_181_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+a car" — needing and buying are different, unconnected predicates.
+Named to parallel 180's `johnWantedBuyCar`/`johnBoughtCar`, just for Bill. -/
+theorem fracas_181_dir1 (billNeededBuyCar billBoughtCar : Prop)
+    (h : billNeededBuyCar) (hNot : ¬ billBoughtCar) :
+    billNeededBuyCar ∧ ¬ billBoughtCar := ⟨h, hNot⟩
 
-theorem fracas_181_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_181_dir2 (billNeededBuyCar billBoughtCar : Prop)
+    (h : billNeededBuyCar) (hYes : billBoughtCar) :
+    billNeededBuyCar ∧ billBoughtCar := ⟨h, hYes⟩
 
 end P181
 
@@ -164,10 +175,23 @@ section P184
 
 /-- "Smith represents Jones' company" is neither the sloppy nor the
 strict resolution (both of those describe *Jones*, not Smith) — not
-addressed by either available reading, genuine independence. -/
-theorem fracas_184_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+addressed by either available reading, genuine independence. Reuses
+182/183's own `represents`/`companyOf`/`smith`/`jones` vocabulary: the
+premise is the shared antecedent both readings start from, the question
+is the unaddressed cross combination. -/
+theorem fracas_184_dir1 {A : Type*} (represents : A → A → Prop) (companyOf : A → A)
+    (smith jones : A)
+    (h : represents smith (companyOf smith) ∧ represents jones (companyOf jones))
+    (hNot : ¬ represents smith (companyOf jones)) :
+    (represents smith (companyOf smith) ∧ represents jones (companyOf jones)) ∧
+      ¬ represents smith (companyOf jones) := ⟨h, hNot⟩
 
-theorem fracas_184_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_184_dir2 {A : Type*} (represents : A → A → Prop) (companyOf : A → A)
+    (smith jones : A)
+    (h : represents smith (companyOf smith) ∧ represents jones (companyOf jones))
+    (hYes : represents smith (companyOf jones)) :
+    (represents smith (companyOf smith) ∧ represents jones (companyOf jones)) ∧
+      represents smith (companyOf jones) := ⟨h, hYes⟩
 
 end P184
 

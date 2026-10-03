@@ -54,9 +54,11 @@ section P240
 /-- "ITEL won more than APCOM lost" bounds ITEL's wins from below via
 APCOM's losses, but says nothing about whether APCOM lost anything at
 all. -/
-theorem fracas_240_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_240_dir1 (wonITEL lostAPCOM : Nat) (h : wonITEL > lostAPCOM)
+    (hNot : ¬ lostAPCOM > 0) : wonITEL > lostAPCOM ∧ ¬ lostAPCOM > 0 := ⟨h, hNot⟩
 
-theorem fracas_240_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_240_dir2 (wonITEL lostAPCOM : Nat) (h : wonITEL > lostAPCOM)
+    (hYes : lostAPCOM > 0) : wonITEL > lostAPCOM ∧ lostAPCOM > 0 := ⟨h, hYes⟩
 
 end P240
 
@@ -120,10 +122,19 @@ section P247
 
 /-- "Faster than *some* ITEL computer" doesn't tell you it's faster than
 *this particular* one — the same "a specific named instance doesn't
-follow from `Some`" independence as Section 1's problem 33. -/
-theorem fracas_247_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+follow from `Some`" independence as Section 1's problem 33. Reuses
+246/248's `fasterThan`/`itelComputer`/`pc`/`itelzx` vocabulary. -/
+theorem fracas_247_dir1 {A : Type*} (fasterThan : A → A → Prop) (itelComputer : A → Prop)
+    (pc itelzx : A) (h : Some itelComputer (fasterThan pc)) (hz : itelComputer itelzx)
+    (hNot : ¬ fasterThan pc itelzx) :
+    (Some itelComputer (fasterThan pc) ∧ itelComputer itelzx) ∧ ¬ fasterThan pc itelzx :=
+  ⟨⟨h, hz⟩, hNot⟩
 
-theorem fracas_247_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_247_dir2 {A : Type*} (fasterThan : A → A → Prop) (itelComputer : A → Prop)
+    (pc itelzx : A) (h : Some itelComputer (fasterThan pc)) (hz : itelComputer itelzx)
+    (hYes : fasterThan pc itelzx) :
+    (Some itelComputer (fasterThan pc) ∧ itelComputer itelzx) ∧ fasterThan pc itelzx :=
+  ⟨⟨h, hz⟩, hYes⟩
 
 end P247
 

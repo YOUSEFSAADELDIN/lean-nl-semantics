@@ -80,9 +80,13 @@ at all without a clear comparison class from context — FraCaS's own
 gold is itself a hedge ("Yes for a mouse; No for an animal"), the same
 presupposition-failure shape as Section 1/2's `.undef` problems
 (61/62/77/78/109): genuinely independent of a fixed yes/no answer. -/
-theorem fracas_213_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_213_dir1 (miceSmallAnimalsAndMickeyLargeMouse mickeyIsSmall : Prop)
+    (h : miceSmallAnimalsAndMickeyLargeMouse) (hNot : ¬ mickeyIsSmall) :
+    miceSmallAnimalsAndMickeyLargeMouse ∧ ¬ mickeyIsSmall := ⟨h, hNot⟩
 
-theorem fracas_213_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_213_dir2 (miceSmallAnimalsAndMickeyLargeMouse mickeyIsSmall : Prop)
+    (h : miceSmallAnimalsAndMickeyLargeMouse) (hYes : mickeyIsSmall) :
+    miceSmallAnimalsAndMickeyLargeMouse ∧ mickeyIsSmall := ⟨h, hYes⟩
 
 end P213
 
@@ -108,9 +112,13 @@ description is used as the comparison class (competent-as-a-legal-
 -authority need not track competent-as-a-law-lecturer, even though the
 two classes are coextensive) — genuine independence, contrasting with
 214's extensional "fat". -/
-theorem fracas_215_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_215_dir1 (competentAsLegalAuth competentAsLawLect : Prop)
+    (h : competentAsLegalAuth) (hNot : ¬ competentAsLawLect) :
+    competentAsLegalAuth ∧ ¬ competentAsLawLect := ⟨h, hNot⟩
 
-theorem fracas_215_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_215_dir2 (competentAsLegalAuth competentAsLawLect : Prop)
+    (h : competentAsLegalAuth) (hYes : competentAsLawLect) :
+    competentAsLegalAuth ∧ competentAsLawLect := ⟨h, hYes⟩
 
 end P215
 
@@ -130,9 +138,13 @@ section P217
 
 /-- "A cleverer politician than Bill" — intensional: cleverer-as-a-
 politician need not track cleverer-in-general, genuine independence. -/
-theorem fracas_217_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_217_dir1 (cleverPoliticianThanBill clevererThanBill : Prop)
+    (h : cleverPoliticianThanBill) (hNot : ¬ clevererThanBill) :
+    cleverPoliticianThanBill ∧ ¬ clevererThanBill := ⟨h, hNot⟩
 
-theorem fracas_217_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_217_dir2 (cleverPoliticianThanBill clevererThanBill : Prop)
+    (h : cleverPoliticianThanBill) (hYes : clevererThanBill) :
+    cleverPoliticianThanBill ∧ clevererThanBill := ⟨h, hYes⟩
 
 end P217
 
@@ -151,10 +163,15 @@ section P219
 
 /-- "Politician" is a narrower, non-default comparison class, so
 "clever politician" doesn't transfer to bare "clever" — genuine
-independence, contrasting with 218. -/
-theorem fracas_219_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+independence, contrasting with 218. `cleverKim` reuses 218's exact
+hypothesis name. -/
+theorem fracas_219_dir1 (cleverPolitician cleverKim : Prop)
+    (h : cleverPolitician) (hNot : ¬ cleverKim) :
+    cleverPolitician ∧ ¬ cleverKim := ⟨h, hNot⟩
 
-theorem fracas_219_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_219_dir2 (cleverPolitician cleverKim : Prop)
+    (h : cleverPolitician) (hYes : cleverKim) :
+    cleverPolitician ∧ cleverKim := ⟨h, hYes⟩
 
 end P219
 

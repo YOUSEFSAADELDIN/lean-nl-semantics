@@ -20,10 +20,15 @@ namespace FraCaS.Section7
 section P277
 
 /-- Without an explicit "since"/continuity premise (contrast 252/255),
-a bare past-tense state at one year says nothing about the next. -/
-theorem fracas_277_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+a bare past-tense state at one year says nothing about the next. Reuses
+252's own `inBirmingham` name. -/
+theorem fracas_277_dir1 (inBirmingham : Nat → Prop)
+    (h : inBirmingham 1991) (hNot : ¬ inBirmingham 1992) :
+    inBirmingham 1991 ∧ ¬ inBirmingham 1992 := ⟨h, hNot⟩
 
-theorem fracas_277_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_277_dir2 (inBirmingham : Nat → Prop)
+    (h : inBirmingham 1991) (hYes : inBirmingham 1992) :
+    inBirmingham 1991 ∧ inBirmingham 1992 := ⟨h, hYes⟩
 
 end P277
 
@@ -50,9 +55,13 @@ section P280
 /-- Unlike 278/279's unique referent ("his first novel", "it"), "a
 novel" in 1992 could be a *different* novel, so the second year is
 left open. -/
-theorem fracas_280_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_280_dir1 (wroteNovelIn : Nat → Prop)
+    (h : wroteNovelIn 1991) (hNot : ¬ wroteNovelIn 1992) :
+    wroteNovelIn 1991 ∧ ¬ wroteNovelIn 1992 := ⟨h, hNot⟩
 
-theorem fracas_280_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_280_dir2 (wroteNovelIn : Nat → Prop)
+    (h : wroteNovelIn 1991) (hYes : wroteNovelIn 1992) :
+    wroteNovelIn 1991 ∧ wroteNovelIn 1992 := ⟨h, hYes⟩
 
 end P280
 
@@ -60,9 +69,15 @@ end P280
 
 section P281
 
-theorem fracas_281_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- "Smith was running a business in 1991. Was Smith running it in
+1992?" — same bare-state-doesn't-project shape as 277. -/
+theorem fracas_281_dir1 (runningBusinessIn : Nat → Prop)
+    (h : runningBusinessIn 1991) (hNot : ¬ runningBusinessIn 1992) :
+    runningBusinessIn 1991 ∧ ¬ runningBusinessIn 1992 := ⟨h, hNot⟩
 
-theorem fracas_281_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_281_dir2 (runningBusinessIn : Nat → Prop)
+    (h : runningBusinessIn 1991) (hYes : runningBusinessIn 1992) :
+    runningBusinessIn 1991 ∧ runningBusinessIn 1992 := ⟨h, hYes⟩
 
 end P281
 
@@ -79,9 +94,16 @@ end P282
 
 section P283
 
-theorem fracas_283_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- "Smith discovered a new species in 1991. Did Smith discover a new
+species in 1992?" — a *repeatable* achievement, unlike 282's unique
+referent, so (same shape as 280) the second year is left open. -/
+theorem fracas_283_dir1 (discoveredSpeciesIn : Nat → Prop)
+    (h : discoveredSpeciesIn 1991) (hNot : ¬ discoveredSpeciesIn 1992) :
+    discoveredSpeciesIn 1991 ∧ ¬ discoveredSpeciesIn 1992 := ⟨h, hNot⟩
 
-theorem fracas_283_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_283_dir2 (discoveredSpeciesIn : Nat → Prop)
+    (h : discoveredSpeciesIn 1991) (hYes : discoveredSpeciesIn 1992) :
+    discoveredSpeciesIn 1991 ∧ discoveredSpeciesIn 1992 := ⟨h, hYes⟩
 
 end P283
 
@@ -103,10 +125,13 @@ section P285
 
 /-- "Wrote a report in two hours" is ambiguous between "took exactly
 two hours" and "took at most two hours" — it doesn't settle "spent
-[exactly] two hours". -/
-theorem fracas_285_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+[exactly] two hours". Reuses 286's own `spentHours` name and its
+"in N hours = at most N" reading. -/
+theorem fracas_285_dir1 (spentHours : Nat) (h : spentHours ≤ 2) (hNot : spentHours ≠ 2) :
+    spentHours ≤ 2 ∧ spentHours ≠ 2 := ⟨h, hNot⟩
 
-theorem fracas_285_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_285_dir2 (spentHours : Nat) (h : spentHours ≤ 2) (hYes : spentHours = 2) :
+    spentHours ≤ 2 ∧ spentHours = 2 := ⟨h, hYes⟩
 
 end P285
 
@@ -123,9 +148,13 @@ end P286
 
 section P287
 
-theorem fracas_287_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- "Wrote a report in two hours. Did Smith write a report in one
+hour?" — neither follows nor is refuted; reuses 286's `spentHours`. -/
+theorem fracas_287_dir1 (spentHours : Nat) (h : spentHours ≤ 2) (hNot : ¬ spentHours ≤ 1) :
+    spentHours ≤ 2 ∧ ¬ spentHours ≤ 1 := ⟨h, hNot⟩
 
-theorem fracas_287_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_287_dir2 (spentHours : Nat) (h : spentHours ≤ 2) (hYes : spentHours ≤ 1) :
+    spentHours ≤ 2 ∧ spentHours ≤ 1 := ⟨h, hYes⟩
 
 end P287
 

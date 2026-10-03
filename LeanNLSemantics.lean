@@ -57,3 +57,4 @@ import LeanNLSemantics.FraCaS.Section8.Verbs
 import LeanNLSemantics.FraCaS.Section8.Batch1
 import LeanNLSemantics.FraCaS.Section9.Attitudes
 import LeanNLSemantics.FraCaS.Section9.Batch1
+import LeanNLSemantics.FraCaS.BlindEvalUnknown3to9

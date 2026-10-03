@@ -28,11 +28,15 @@ section P143
 /-- "So did Bill" was resolved (in 142) *before* premise 3 adds a
 temporal adverbial to John's case — that adverbial doesn't retroactively
 apply to Bill, so it's silent on whether Bill spoke to Mary specifically
-*at four o'clock*. `True`/`False` stand in for the two unconnected
-facts. -/
-theorem fracas_143_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+*at four o'clock*. `spokeBillMary` is the already-established fact (142's
+own content); `spokeAt4BillMary` is the independent question. -/
+theorem fracas_143_dir1 (spokeBillMary spokeAt4BillMary : Prop)
+    (h : spokeBillMary) (hNot : ¬ spokeAt4BillMary) :
+    spokeBillMary ∧ ¬ spokeAt4BillMary := ⟨h, hNot⟩
 
-theorem fracas_143_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_143_dir2 (spokeBillMary spokeAt4BillMary : Prop)
+    (h : spokeBillMary) (hYes : spokeAt4BillMary) :
+    spokeBillMary ∧ spokeAt4BillMary := ⟨h, hYes⟩
 
 end P143
 

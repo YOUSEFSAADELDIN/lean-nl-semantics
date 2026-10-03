@@ -25,10 +25,13 @@ end P334
 section P335
 
 /-- "Believed that ITEL had won" doesn't entail ITEL actually won —
-"believe" is not factive, unlike "knew" at 334. -/
-theorem fracas_335_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+"believe" is not factive, unlike "knew" at 334. Reuses 334's own `won`
+name. -/
+theorem fracas_335_dir1 (believedWon won : Prop) (h : believedWon) (hNot : ¬ won) :
+    believedWon ∧ ¬ won := ⟨h, hNot⟩
 
-theorem fracas_335_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_335_dir2 (believedWon won : Prop) (h : believedWon) (hYes : won) :
+    believedWon ∧ won := ⟨h, hYes⟩
 
 end P335
 
@@ -45,10 +48,12 @@ section P337
 
 /-- "Tried to win" doesn't entail winning — "try" is not implicative,
 unlike "managed to" at 336; the control-verb analogue of Section 8's
-imperfective paradox. -/
-theorem fracas_337_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+imperfective paradox. Reuses 336's own `won` name. -/
+theorem fracas_337_dir1 (triedToWin won : Prop) (h : triedToWin) (hNot : ¬ won) :
+    triedToWin ∧ ¬ won := ⟨h, hNot⟩
 
-theorem fracas_337_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_337_dir2 (triedToWin won : Prop) (h : triedToWin) (hYes : won) :
+    triedToWin ∧ won := ⟨h, hYes⟩
 
 end P337
 

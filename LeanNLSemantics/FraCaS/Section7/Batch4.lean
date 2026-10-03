@@ -25,9 +25,13 @@ section P292
 /-- "Was running his own business in two years" reports how long it
 took to *get to* running the business, not how long the running
 lasted — so it doesn't settle "spent two years running it". -/
-theorem fracas_292_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_292_dir1 (inceptionYears spentYearsRunning : Nat)
+    (h : inceptionYears = 2) (hNot : spentYearsRunning ≠ 2) :
+    inceptionYears = 2 ∧ spentYearsRunning ≠ 2 := ⟨h, hNot⟩
 
-theorem fracas_292_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_292_dir2 (inceptionYears spentYearsRunning : Nat)
+    (h : inceptionYears = 2) (hYes : spentYearsRunning = 2) :
+    inceptionYears = 2 ∧ spentYearsRunning = 2 := ⟨h, hYes⟩
 
 end P292
 
@@ -35,9 +39,15 @@ end P292
 
 section P293
 
-theorem fracas_293_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- Same premise as 292; the question is "more than two years" instead
+of "two years". -/
+theorem fracas_293_dir1 (inceptionYears spentYearsRunning : Nat)
+    (h : inceptionYears = 2) (hNot : ¬ spentYearsRunning > 2) :
+    inceptionYears = 2 ∧ ¬ spentYearsRunning > 2 := ⟨h, hNot⟩
 
-theorem fracas_293_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_293_dir2 (inceptionYears spentYearsRunning : Nat)
+    (h : inceptionYears = 2) (hYes : spentYearsRunning > 2) :
+    inceptionYears = 2 ∧ spentYearsRunning > 2 := ⟨h, hYes⟩
 
 end P293
 
@@ -54,17 +64,29 @@ end P294
 
 section P295
 
-theorem fracas_295_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- "In two years Smith owned a chain of businesses. Did Smith own a
+chain of businesses for two years?" — same inception-vs-duration shape
+as 292, over "owned a chain" instead of "ran his own business". -/
+theorem fracas_295_dir1 (inceptionYearsChain ownedChainYears : Nat)
+    (h : inceptionYearsChain = 2) (hNot : ownedChainYears ≠ 2) :
+    inceptionYearsChain = 2 ∧ ownedChainYears ≠ 2 := ⟨h, hNot⟩
 
-theorem fracas_295_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_295_dir2 (inceptionYearsChain ownedChainYears : Nat)
+    (h : inceptionYearsChain = 2) (hYes : ownedChainYears = 2) :
+    inceptionYearsChain = 2 ∧ ownedChainYears = 2 := ⟨h, hYes⟩
 
 end P295
 
 section P296
 
-theorem fracas_296_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- Same premise as 295; the question is "more than two years". -/
+theorem fracas_296_dir1 (inceptionYearsChain ownedChainYears : Nat)
+    (h : inceptionYearsChain = 2) (hNot : ¬ ownedChainYears > 2) :
+    inceptionYearsChain = 2 ∧ ¬ ownedChainYears > 2 := ⟨h, hNot⟩
 
-theorem fracas_296_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_296_dir2 (inceptionYearsChain ownedChainYears : Nat)
+    (h : inceptionYearsChain = 2) (hYes : ownedChainYears > 2) :
+    inceptionYearsChain = 2 ∧ ownedChainYears > 2 := ⟨h, hYes⟩
 
 end P296
 
@@ -139,9 +161,13 @@ section P304
 /-- The key contrast with 288's "in two hours": "wrote a report *for*
 two hours" coerces the accomplishment into a bounded-activity reading,
 which doesn't entail the report got finished. -/
-theorem fracas_304_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_304_dir1 (wroteForTwoHours finishedReport : Prop)
+    (h : wroteForTwoHours) (hNot : ¬ finishedReport) :
+    wroteForTwoHours ∧ ¬ finishedReport := ⟨h, hNot⟩
 
-theorem fracas_304_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_304_dir2 (wroteForTwoHours finishedReport : Prop)
+    (h : wroteForTwoHours) (hYes : finishedReport) :
+    wroteForTwoHours ∧ finishedReport := ⟨h, hYes⟩
 
 end P304
 
@@ -172,10 +198,24 @@ section P308
 
 /-- Narrow-scope/distributive reading ("every week, wrote to *some*
 representative, possibly a different one each time"): doesn't give a
-single representative written to every week. -/
-theorem fracas_308_narrow_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+single representative written to every week - the classic "∀∃ doesn't
+give ∃∀" failure. Two weeks and two representatives already suffice to
+witness it: direction 1 pairs week with the identically-indexed
+representative (`w = r`), so every week has *some* match but no single
+representative matches both weeks; direction 2 uses the trivial
+always-true relation, where the same representative trivially matches
+every week too. -/
+theorem fracas_308_narrow_dir1 :
+    (∀ w : Bool, ∃ r : Bool, w = r) ∧ ¬ ∃ r : Bool, ∀ w : Bool, w = r := by
+  refine ⟨fun w => ⟨w, rfl⟩, ?_⟩
+  rintro ⟨r, hr⟩
+  have h1 := hr true
+  have h2 := hr false
+  simp_all
 
-theorem fracas_308_narrow_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_308_narrow_dir2 :
+    (∀ _w : Bool, ∃ _r : Bool, True) ∧ ∃ _r : Bool, ∀ _w : Bool, True :=
+  ⟨fun _ => ⟨true, trivial⟩, true, fun _ => trivial⟩
 
 variable (existsRepWrittenEveryWeek : Prop)
 
