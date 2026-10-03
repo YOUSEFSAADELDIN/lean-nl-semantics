@@ -27,10 +27,11 @@ rev = "8cd728cf2c0386b11ad7057ecac4946dff58a668"
 # internal `import` lines use (`Adjectives.lean` imports
 # `LeanNLSemantics.MTT.Quantifiers`, not `MTT.Quantifiers`) — so a
 # reused file's own cross-imports resolve unchanged no matter how many
-# more of them get pulled in later. `FraCaS.Section1.GQ` is the one file
-# from the suite reused here (for `Section1GQCrossCheck.lean`): it only
-# `import Mathlib` itself, no other FraCaS file, so including it is
-# still one specific file, not a path to the whole suite.
+# more of them get pulled in later. `FraCaS.Section1.GQ`/`Section2.Plurals`
+# are the two files from the suite reused here (for
+# `Section1GQCrossCheck.lean`): `GQ.lean` only `import Mathlib`, and
+# `Plurals.lean` only imports `GQ.lean` back, so together they're still
+# two specific files, not a path to the whole suite.
 [[lean_lib]]
 name = "MTTCore"
 srcDir = ".."
@@ -39,6 +40,7 @@ roots = [
   "LeanNLSemantics.MTT.Quantifiers",
   "LeanNLSemantics.MTT.Adjectives",
   "LeanNLSemantics.FraCaS.Section1.GQ",
+  "LeanNLSemantics.FraCaS.Section2.Plurals",
 ]
 
 [[lean_lib]]
