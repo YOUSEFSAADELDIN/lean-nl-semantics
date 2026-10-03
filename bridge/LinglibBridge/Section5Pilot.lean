@@ -34,7 +34,10 @@ Two things are demonstrated:
    `.former` has no ancestor edge to `.univStudent` at all, so the
    *only* obligation `CN'.widen` ever asks a fragment author to
    discharge — the `≤` proof — is false by `decide`, with nothing to
-   prove and nothing assumed.
+   prove and nothing assumed. `fracas_198_bridge` strengthens this from
+   one missing coercion to the full entailment `fracas_198` itself
+   needs (`∀ x, formerUnivStudent x → ¬ univStudent x`), proved rather
+   than assumed, for every individual the fragment could ever have.
 -/
 
 namespace MTT.LinglibBridge
@@ -133,5 +136,41 @@ example (fourLegged isAnimal : S5Individual → Prop) :
         (fun x => fourLegged x.1 → isAnimal x.1) :=
   MTT.intersective_every_iff (A := CN' section5Lexicon .mammal)
     (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+/-! ## `fracas_198`, strengthened -/
+
+/-- A concrete former-university-student individual, the `.former`-side
+counterpart to `dumbo` above. -/
+def pat : S5Individual := ⟨.former, "pat"⟩
+
+/-- `pat` is not, under this lexicon, a university student — the
+concrete instance of the missing-edge fact above, the same payoff
+`CN.lean`'s own `decide`-checked examples give for its toy model. -/
+example : ¬ section5Lexicon.embed .univStudent pat := by decide
+
+/-- The missing edge, generalized from one pair of tags to *every* tag
+this fragment has: no tag is ever both `.former`-typed and
+`.univStudent`-typed. Proved by cases over the whole (finite) tag set
+at once, the same move `S5Tag`'s own `Fintype`/`PartialOrder` instances
+above already use — not assumed per-pair, derived once for the lattice
+as a whole. -/
+theorem former_univStudent_tags_disjoint :
+    ∀ t : S5Tag, ¬ (t ≤ S5Tag.former ∧ t ≤ .univStudent) := by
+  intro t
+  cases t <;> decide
+
+/-- The real, fully spelled-out form of `fracas_198`'s own premise
+(`∀ x, formerUnivStudent x → ¬ univStudent x`) — except here it is a
+**proved theorem**, holding for every individual this fragment could
+ever have (not just the one FraCaS names), derived from
+`former_univStudent_tags_disjoint` rather than assumed as a hypothesis
+or derived from a sum type's `noConfusion`. This is the bridge's actual
+payoff over the single missing-edge fact above: that fact only rules
+out one *coercion*; this theorem rules out the entailment itself, for
+every individual, the same strength `fracas_198`'s own premise is
+stipulated to have. -/
+theorem fracas_198_bridge (x : S5Individual) :
+    section5Lexicon.embed .former x → ¬ section5Lexicon.embed .univStudent x :=
+  fun h1 h2 => former_univStudent_tags_disjoint x.kind ⟨h1, h2⟩
 
 end MTT.LinglibBridge
