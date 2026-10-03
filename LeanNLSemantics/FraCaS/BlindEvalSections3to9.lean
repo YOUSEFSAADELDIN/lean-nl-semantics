@@ -104,22 +104,34 @@ def answerToString : Answer → String
   | .unknown => "unknown"
   | .undef => "undef"
 
+/-- Whether a (post-Pi-peeling) head constant name is a negation this
+scan knows how to strip - `Not` directly, or `Ne` (`a ≠ b`), itself just
+a separate `def` wrapping `Not (a = b)`, so a raw, non-unfolding head
+check sees `Ne`, not `Not` - `fracas_279`'s own `novelYear ≠ 1992`
+conclusion is exactly this case, caught only on a second pass after the
+first `flipConclusion` fix still mislabeled every `Ne`-conclusion
+problem the same way (CI run 37157413753: `fracas_278/279/282/289` all
+still `(no, yes)` after that first fix, all four literal `_ ≠ _`
+conclusions). -/
+def isNegHead (headName : Option Lean.Name) : Bool :=
+  headName == some ``Not || headName == some ``Ne
+
 /-- Like `BlindEvalCore.lean`'s own `negateConclusion`, but polarity-
-aware: strips a leading `Not` from the conclusion instead of wrapping a
-second one around it, when the conclusion is already negated. Needed
-because, unlike Section 1/2's own entailment-shaped bare theorems
-(always literally headed by a positive GQ application - `Every`/`Some`/
-`Most`/...), many Sections 3-9 bare theorems state a `.no` gold answer
-by writing the conclusion as `¬ hypothesis` directly (e.g. `fracas_210`'s
-own `¬ largeAnimal mickey`, or `fracas_147`'s trivial `¬X → ¬X`), not as
-a positive `hypothesis` whose negation this scan would need to derive
-separately. Wrapping a second `Not` around an already-negated conclusion
-asks for `¬¬hypothesis` - a strictly stronger, usually-false claim, not
-"does the raw hypothesis hold" - so blindly reusing `negateConclusion`
-here mislabels every one of these as a false "mismatch" even though the
-tactic chain's own underlying inference was correct (CI-confirmed: see
-this file's own commit history for the real run that first surfaced
-this, 100% of whose `(no, yes)`-shaped mismatches were exactly this). -/
+aware: strips a leading negation from the conclusion instead of wrapping
+a second one around it, when the conclusion is already negated (`Not`
+directly, or `Ne` - see `isNegHead`). Needed because, unlike Section
+1/2's own entailment-shaped bare theorems (always literally headed by a
+positive GQ application - `Every`/`Some`/`Most`/...), many Sections 3-9
+bare theorems state a `.no` gold answer by writing the conclusion as
+`¬ hypothesis` (or `a ≠ b`) directly (e.g. `fracas_210`'s own
+`¬ largeAnimal mickey`, `fracas_147`'s trivial `¬X → ¬X`, or
+`fracas_279`'s `novelYear ≠ 1992`), not as a positive `hypothesis` whose
+negation this scan would need to derive separately. Wrapping a second
+negation around an already-negated conclusion asks for a strictly
+stronger, usually-false claim, not "does the raw hypothesis hold" - so
+blindly reusing `negateConclusion` here mislabels every one of these as
+a false "mismatch" even though the tactic chain's own underlying
+inference was correct. -/
 partial def flipConclusion (ty : Expr) : MetaM Expr := do
   if ty.isForall then
     forallBoundedTelescope ty (some 1) fun fvars body => do
@@ -128,6 +140,12 @@ partial def flipConclusion (ty : Expr) : MetaM Expr := do
   else
     match ty.getAppFn.constName? with
     | some ``Not => return ty.getAppArgs[0]!
+    | some ``Ne =>
+      -- `Ne {α} (a b : α) : Prop := ¬(a = b)` - exactly 3 arguments once
+      -- fully applied (`α`, `a`, `b`), so the last two (whatever
+      -- implicit/instance arguments precede them) are always `a`/`b`.
+      let args := ty.getAppArgs
+      mkEq args[args.size - 2]! args[args.size - 1]!
     | _ => mkAppM ``Not #[ty]
 
 /-- The shared scan every `#blind_eval_section{3..9}` command runs,
@@ -163,7 +181,7 @@ def runBlindEvalGeneric (namePrefix : Lean.Name) (label : String) : TermElabM Un
     -- `continue`/`break` and `catch` with no local compiler to check it.
     let result ←
       try
-        let isNeg := (← goalHeadConst ty) == some ``Not
+        let isNeg := isNegHead (← goalHeadConst ty)
         let closesAsWritten ← attemptClose ty
         let tyFlipped ← flipConclusion ty
         let closesFlipped ← attemptClose tyFlipped
