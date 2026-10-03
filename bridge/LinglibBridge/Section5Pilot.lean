@@ -118,8 +118,8 @@ entailment `h` as a hypothesis: here the identical move (keep the
 because `CN'.widen`'s own proof obligation is discharged by `decide`
 against `section5Lexicon`'s tag lattice instead. -/
 def fracas_202_bridge (fourLegged : S5Individual → Prop) :
-    MTT.Intersective (CN' section5Lexicon .mammal) fourLegged →
-      MTT.Intersective (CN' section5Lexicon .animal) fourLegged :=
+    MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1) →
+      MTT.Intersective (CN' section5Lexicon .animal) (fun z => fourLegged z.1) :=
   fun ⟨x, hx⟩ => ⟨CN'.widen section5Lexicon (by decide) x, hx⟩
 
 /-- The quantified reading of the same fact, obtained by invoking
