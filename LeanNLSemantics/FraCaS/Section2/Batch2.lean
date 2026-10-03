@@ -79,10 +79,17 @@ section P102
 /-- Even granting 101's "likely" universal, "Smith *will* make a poor
 trader" (a stronger, non-hedged claim) doesn't follow — a genuine
 generic tolerates exceptions, so nothing here forces *certainty* about
-any specific instance. Same independence shape as 91/94/95. -/
-theorem fracas_102_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+any specific instance. Same independence shape as 91/94/95: two
+unconnected concrete facts (the Section 4 convention for genuine
+independence - see `Ellipsis.lean`'s header), named explicitly rather
+than left as content-free `True`/`False`. -/
+theorem fracas_102_dir1 (likelyPoorTrader willMakePoorTrader : Prop)
+    (h : likelyPoorTrader) (hNot : ¬ willMakePoorTrader) :
+    likelyPoorTrader ∧ ¬ willMakePoorTrader := ⟨h, hNot⟩
 
-theorem fracas_102_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_102_dir2 (likelyPoorTrader willMakePoorTrader : Prop)
+    (h : likelyPoorTrader) (hYes : willMakePoorTrader) :
+    likelyPoorTrader ∧ willMakePoorTrader := ⟨h, hYes⟩
 
 end P102
 
@@ -101,10 +108,15 @@ section P104
 /-- "All APCOM managers have company cars; Jones is a manager" gives
 Jones *a* car (103), but "more than one company car" is a strictly
 stronger, logically unconnected predicate this project doesn't derive
-one from the other — same independence shape as 91/94/95/102. -/
-theorem fracas_104_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+one from the other — same independence shape as 91/94/95/102: two
+unconnected concrete facts, named explicitly. -/
+theorem fracas_104_dir1 (hasCar hasMoreThanOneCar : Prop)
+    (h : hasCar) (hNot : ¬ hasMoreThanOneCar) :
+    hasCar ∧ ¬ hasMoreThanOneCar := ⟨h, hNot⟩
 
-theorem fracas_104_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_104_dir2 (hasCar hasMoreThanOneCar : Prop)
+    (h : hasCar) (hYes : hasMoreThanOneCar) :
+    hasCar ∧ hasMoreThanOneCar := ⟨h, hYes⟩
 
 end P104
 

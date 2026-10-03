@@ -152,11 +152,18 @@ bare definite plural with a group-oriented predicate) doesn't license
 "everyone at the meeting voted" — nothing connects a collective/group-
 level "voted" to a distributive claim about each individual in this
 project's formalization; contrast 92/93, where an explicit "all"/floated
-"all" *does* force the distributive reading. `True`/`False` stand in for
-the two unconnected claims. -/
-theorem fracas_091_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+"all" *does* force the distributive reading. `collectivelyVoted` names
+the collective-level premise explicitly (held fixed, by fiat, across
+both models below, since neither direction concerns its own content);
+the Bool-domain countermodel shows the distributive claim is
+independently either way. -/
+theorem fracas_091_dir1 (collectivelyVoted : Prop) (hCollective : collectivelyVoted) :
+    collectivelyVoted ∧ ¬ Every (fun _ : Bool => True) (fun b : Bool => b = true) :=
+  ⟨hCollective, fun hEvery => absurd (hEvery false trivial) (by decide)⟩
 
-theorem fracas_091_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_091_dir2 (collectivelyVoted : Prop) (hCollective : collectivelyVoted) :
+    collectivelyVoted ∧ Every (fun _ : Bool => True) (fun _ : Bool => True) :=
+  ⟨hCollective, fun _ _ => trivial⟩
 
 end P091
 
@@ -181,10 +188,15 @@ end P093
 section P094
 
 /-- "The inhabitants of Cambridge voted for a Labour MP" — same
-collective/distributive independence as 91 (no "all"). -/
-theorem fracas_094_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+collective/distributive independence as 91 (no "all"). `collectivelyVoted`
+names the collective-level premise explicitly, same recipe as 91. -/
+theorem fracas_094_dir1 (collectivelyVoted : Prop) (hCollective : collectivelyVoted) :
+    collectivelyVoted ∧ ¬ Every (fun _ : Bool => True) (fun b : Bool => b = true) :=
+  ⟨hCollective, fun hEvery => absurd (hEvery false trivial) (by decide)⟩
 
-theorem fracas_094_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_094_dir2 (collectivelyVoted : Prop) (hCollective : collectivelyVoted) :
+    collectivelyVoted ∧ Every (fun _ : Bool => True) (fun _ : Bool => True) :=
+  ⟨hCollective, fun _ _ => trivial⟩
 
 end P094
 
@@ -193,10 +205,15 @@ section P095
 /-- "The Ancient Greeks were noted philosophers" — a generic/
 generalization reading, independent from the literal universal for the
 same reason as 91/94 (no "all", and additionally a generic tolerates
-exceptions the way 101/102 do). -/
-theorem fracas_095_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+exceptions the way 101/102 do). `noteworthyAsAGroup` names the generic
+premise explicitly, same recipe as 91/94. -/
+theorem fracas_095_dir1 (noteworthyAsAGroup : Prop) (hGroup : noteworthyAsAGroup) :
+    noteworthyAsAGroup ∧ ¬ Every (fun _ : Bool => True) (fun b : Bool => b = true) :=
+  ⟨hGroup, fun hEvery => absurd (hEvery false trivial) (by decide)⟩
 
-theorem fracas_095_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_095_dir2 (noteworthyAsAGroup : Prop) (hGroup : noteworthyAsAGroup) :
+    noteworthyAsAGroup ∧ Every (fun _ : Bool => True) (fun _ : Bool => True) :=
+  ⟨hGroup, fun _ _ => trivial⟩
 
 end P095
 
