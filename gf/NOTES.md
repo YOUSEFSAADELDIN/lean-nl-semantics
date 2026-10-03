@@ -31,12 +31,17 @@ runners have normal, unrestricted internet access, so
 toolchain from source (independently of whatever's cached in this
 sandbox) and runs `gf/run_gf_tests.py`'s automated `linearize` checks
 on every push. All 342 FraCaS problems' worth of sentence shapes across
-all nine FraCaS sections (633 `linearize` checks in total) have been
-built and fully validated against the local toolchain described above
-before being pushed - but, as of this note, none of that has yet been
-proven green through an actual GitHub Actions run; `build-gf`'s own
-`continue-on-error` stays on until a real CI run confirms the two
-environments agree. See `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for
+all nine FraCaS sections (803 `linearize` checks in total, as the suite
+has grown since this note was first written) are built and validated
+against the local toolchain described above before ever being pushed.
+This has been proven green on real GitHub Actions across multiple runs
+(PR #13 first confirmed it, continue-on-error removed from `build-gf`
+since), confirming the local and CI environments agree — the "prove
+it, don't assume it" bar the rest of this project holds to. If this
+count or that status claim drifts again, re-run `gf/run_gf_tests.py`
+and update this paragraph by hand, the same discipline the top-level
+README's own Roadmap section now holds to after being caught stale.
+See `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for
 the grammar itself and each file's own per-section comments for what
 each FraCaS section needed and what it deliberately skipped.
 

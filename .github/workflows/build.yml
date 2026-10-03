@@ -102,7 +102,7 @@ jobs:
   # Phase 3: build the GF toolchain from source and run the confirmed
   # `linearize` checks (gf/run_gf_tests.py) automatically on every push.
   # All 342 FraCaS problems' worth of sentence shapes (all nine
-  # sections, 633 linearize checks) were built and validated against a
+  # sections, 803 linearize checks) were built and validated against a
   # locally-built copy of this exact same toolchain (gf-core/gf-rgl
   # pinned to the commits below) before ever being pushed - see
   # gf/NOTES.md for the full setup and every gotcha hit getting there,

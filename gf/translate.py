@@ -206,15 +206,35 @@ def camel_name(words: list[str]) -> str:
 _QUANTIFIER_BY_DET = {
     "every_Det": "Every",
     "each_Det": "Every",
-    "both_Det": "Every",  # "both" treated as "every" restricted to two - GQ.lean
+    "both_Det": "Every",  # restrictor-invariant cases ONLY - see note below
     "someSg_Det": "Some",
     "somePl_Det": "Some",
     "many_Det": "Some",
     "several_Det": "Some",
     "aFew_Det": "Some",
     "most_Det": "Most",
-    "neither_Det": "No",  # "neither" treated as "no" restricted to two - GQ.lean
+    "neither_Det": "No",  # restrictor-invariant cases ONLY - see note below
 }
+# CAUTION - `both_Det`/`neither_Det` -> "Every"/"No" is NOT a general
+# translation of "both"/"neither": `GQ.lean`'s own `Both`/`Neither`
+# types carry a real cardinality presupposition (`card P = 2 ∧ Every
+# P Q`) that bare `Every`/`No` drop entirely, and `GQ.lean`'s own doc
+# comment is explicit about when dropping it is harmless versus not -
+# safe exactly when the restrictor never changes between premise and
+# hypothesis (13/29/46, confirmed by reading each real theorem's own
+# stated type: `fracas_029_from_gf` below genuinely needs this mapping,
+# matching `fracas_029`'s own `Every commissioner leadingBusinessman`),
+# unsafe the moment it does (77/78: "both/neither commissioners"
+# narrowed to "both/neither FEMALE commissioners" of unknown size -
+# `GQ.lean`'s own comment on `Both`/`Neither` names this exact pair as
+# the reason those types exist at all). This translator has no way to
+# tell the two apart from the determiner alone (that's a fact about the
+# REST of the sentence, not about "both"/"neither" itself), so it
+# can't safely attempt 77/78 at all - they are deliberately absent from
+# the examples below and from `GFCrossCheckBatch.lean`, not silently
+# mistranslated. Whoever wires 77/78 through this translator next needs
+# to build the real `Both`/`Neither`-aware case first, not reuse this
+# mapping assuming it generalizes.
 
 # Determiners that are Quant-typed instead (no_Quant, this_Quant, ...):
 # DetCN's first argument is then `DetQuant <quant> <num>` (mkDet's own
@@ -1281,6 +1301,17 @@ if __name__ == "__main__":
             "(AdvVP (ComplSlash (SlashV2a finish_V2) (DetCN (DetQuant DefArt NumSg) (UseN report_N))) "
             "(PrepNP on_Prep (MassNP (UseN time_N))))"
         ),
+        # CAUTION, not a counterexample to fix: 077's "both" and 078's
+        # "neither" are exactly the UNSAFE case `_QUANTIFIER_BY_DET`'s
+        # own comment names (the restrictor narrows between premise and
+        # hypothesis - "commissioners" to "female commissioners" -
+        # unlike 029/046's restrictor-invariant cases) - the `Every`/
+        # `No` output these two print below is the WRONG reading
+        # (confirmed against `Batch2.lean`'s real `fracas_077`/
+        # `fracas_078`, which correctly use `Both`/`Neither` instead),
+        # kept here deliberately so the failure mode stays visible
+        # rather than quietly dropped, not wired into any `_from_gf`
+        # theorem (neither id has one).
         "fracas_077 (premise)": (
             "PredVP (DetCN both_Det (UseN commissioner_N)) "
             "(UseComp (CompAdv (PrepNP in_Prep (MassNP (UseN business_N)))))"

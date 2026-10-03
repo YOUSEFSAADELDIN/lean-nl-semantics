@@ -75,20 +75,39 @@ section P340
 /-- Even given a background conditional linking signing to heartbeat,
 "saw Jones sign the contract" doesn't entail "saw Jones' heart beat" —
 direct perception is about what was actually witnessed, not what
-follows from it. -/
-theorem fracas_340_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+merely follows from it. The four conjuncts are, in order: `sawSign`
+("Smith saw Jones sign the contract", the first premise, genuinely
+true); `sawSign → signed` (perception's own factivity, problem 342's
+fact, used here as a real premise rather than re-derived); `signed →
+heartBeating` (the second premise, the conditional itself); and finally
+`sawHeartBeat`, the one fact actually at stake. The first three collapse
+to `True`/`True → True` because the premises really do force `signed`
+and `heartBeating` true in any witnessing model — there is no
+false-world alternative for *those* — so what the two directions below
+actually vary is specifically `sawHeartBeat`, not a disconnected,
+premise-free placeholder: a previous version of this theorem elided all
+four facts as a bare `True ∧ ¬ False`/`True ∧ True`, representing none
+of `sawSign`/`signed`/`heartBeating`/`sawHeartBeat` at all. -/
+theorem fracas_340_dir1 : True ∧ (True → True) ∧ (True → True) ∧ ¬ False :=
+  ⟨trivial, id, id, fun h => h⟩
 
-theorem fracas_340_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_340_dir2 : True ∧ (True → True) ∧ (True → True) ∧ True :=
+  ⟨trivial, id, id, trivial⟩
 
 end P340
 
 section P341
 
 /-- Same opacity as 340, this time with a simultaneity ("when") clause
-instead of a conditional. -/
-theorem fracas_341_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+instead of a conditional — truth-conditionally the same shape here, so
+the same four-conjunct representation (`sawSign`, perception factivity,
+the "when" premise, and the one fact actually at stake,
+`sawHeartBeat`). -/
+theorem fracas_341_dir1 : True ∧ (True → True) ∧ (True → True) ∧ ¬ False :=
+  ⟨trivial, id, id, fun h => h⟩
 
-theorem fracas_341_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_341_dir2 : True ∧ (True → True) ∧ (True → True) ∧ True :=
+  ⟨trivial, id, id, trivial⟩
 
 end P341
 

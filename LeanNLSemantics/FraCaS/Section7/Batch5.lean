@@ -126,10 +126,18 @@ end P319
 /-! ## Problem 320: a factive attitude verb -/
 
 section P320
-variable (neverAllowedToWriteMemoirs : Prop)
+variable (knewNeverAllowed neverAllowedToWriteMemoirs : Prop)
 
-/-- "Knew that P" is factive: it entails `P` directly. -/
-theorem fracas_320 : neverAllowedToWriteMemoirs → neverAllowedToWriteMemoirs := id
+/-- "Knew that P" is factive: an assumed fact connecting "Jones knew he
+would never be allowed to write his memoirs" to the complement itself,
+plus modus ponens — the same shape as `fracas_334`'s own "knew", not a
+bare `id` restating the complement as itself (which would leave "knew"
+unmodeled entirely, no different from premise and hypothesis being
+literally the same Prop). -/
+theorem fracas_320 :
+    (knewNeverAllowed → neverAllowedToWriteMemoirs) → knewNeverAllowed →
+      neverAllowedToWriteMemoirs :=
+  fun hfact hknew => hfact hknew
 
 end P320
 
@@ -148,11 +156,15 @@ end P321
 /-! ## Problem 322: a factive attitude verb, through a conjunction -/
 
 section P322
-variable (discovers furious : Prop)
+variable (knewFuture discovers furious : Prop)
 
-/-- Same factivity of "knew" as 320, carried through the embedded
-conjunction. -/
-theorem fracas_322 : (discovers ∧ furious) → (discovers ∧ furious) := id
+/-- Same factivity of "knew" as 320 (an assumed fact plus modus ponens,
+not a bare `id`), carried through the embedded conjunction: "I knew
+that [she would discover ... and be furious]" entails the conjunction
+itself. -/
+theorem fracas_322 :
+    (knewFuture → (discovers ∧ furious)) → knewFuture → (discovers ∧ furious) :=
+  fun hfact hknew => hfact hknew
 
 end P322
 

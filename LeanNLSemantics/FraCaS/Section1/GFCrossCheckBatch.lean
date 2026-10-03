@@ -516,7 +516,7 @@ theorem fracas_122_from_gf {A : Type*} (committee : A → Prop) (chairman appoin
   fun h => fracas_122 _ _ _ h
 
 theorem fracas_123_from_gf {A : Type*} [Fintype A] (reportSmithNeed sendItel smithDesk : A → Prop) :
-    Most reportSmithNeed sendItel → (∀ x, sendItel x → smithDesk x) → Some reportSmithNeed smithDesk :=
+    Most reportSmithNeed sendItel → (∀ x, sendItel x → smithDesk x) → Some sendItel smithDesk :=
   fun h1 h2 => fracas_123 _ _ _ h1 h2
 
 theorem fracas_124_from_gf {A : Type*} [Fintype A] (missing remove : A → Prop) :
@@ -815,9 +815,9 @@ theorem fracas_286_from_gf (spentHours : Nat) :
     spentHours ≤ 2 → ¬ spentHours > 2 :=
   fun h => fracas_286 _ h
 
-theorem fracas_288_from_gf (smithWriteReportIn : Nat → Prop) (smithWriteReport : Prop) :
-    (∃ h, smithWriteReportIn h) → smithWriteReport → smithWriteReport :=
-  fun hex h => fracas_288 _ _ hex h
+theorem fracas_288_from_gf (smithWriteReport : Prop) :
+    smithWriteReport → smithWriteReport :=
+  fun h => fracas_288 _ h
 
 theorem fracas_289_from_gf (discoveryDuration : Nat) :
     discoveryDuration = 0 → discoveryDuration ≠ 2 :=

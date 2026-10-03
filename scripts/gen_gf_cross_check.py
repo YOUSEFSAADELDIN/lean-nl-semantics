@@ -205,7 +205,7 @@ SKOLEM_PROJECT = {117: (1, "verb"), 118: (1, "has"), 119: (1, "verb")}
 # scope ("sent by ITEL") to the hypothesis's own scope ("on Smith's
 # desk"), confirmed by reading fracas_123's own stated type directly
 # (`Most reportsNeeded sentByItel -> (forall x, sentByItel x -> onDesk
-# x) -> Some reportsNeeded onDesk`). Maps an id to (which premise
+# x) -> Some sentByItel onDesk`). Maps an id to (which premise
 # position to synthesize, 1-based; which of _scope_aux/_restrict_aux/
 # their *_rev variants to synthesize it with) - synthesized from the
 # PRIOR premises and the hypothesis, the same two aux-fact builders
@@ -214,8 +214,9 @@ SKOLEM_PROJECT = {117: (1, "verb"), 118: (1, "has"), 119: (1, "verb")}
 # (when one exists at all, as fracas_123_premise2 does) is never fed to
 # translate_cl for these ids. The third element is the quantifier word
 # the FINAL hypothesis is rebuilt with (see below) - "Some" for 123,
-# confirmed by reading its own stated conclusion `Some reportsNeeded
-# onDesk` directly.
+# confirmed by reading its own stated conclusion `Some sentByItel
+# onDesk` directly (fixed from a prior bug that dropped the
+# ITEL-provenance the hypothesis is actually about).
 SYNTHESIZE_PREMISE = {123: (2, _scope_aux, "Some")}
 
 
@@ -2308,31 +2309,20 @@ def _build_fracas_306(roles: dict) -> "tuple[str, str, str]":
 
 
 def _build_fracas_288(roles: dict) -> "tuple[str, str, str]":
-    """"Smith wrote a report in two hours." -> "Smith wrote a report." ->
-    "Smith wrote a report." Confirmed by reading the real theorem's own
-    stated type directly (`(exists h, wroteReportIn h) -> wroteReport ->
-    wroteReport`, proved `fun _ h => h` - the existential hypothesis is
-    unused, only its shape matters). Unlike every other builder in this
-    file, `wroteReportIn` isn't translate_cl's own generic output for any
-    sentence - it's this real theorem's own hand-invented Nat-indexed
-    encoding of "wrote a report, taking h hours" (the same kind of
-    one-off invented shape as 252's own `_since_interval`). Built by
-    stripping the premise's own duration adverbial to get the core
-    clause's atomic name (`smithWriteReportIn`), reusing the hypothesis's
-    bare-restatement atom (`smithWriteReport`) for the rest - both names
-    still genuinely read off the real premise/hypothesis trees
-    (`fracas_288_premise` reuses `fracas_284_premise1`'s own tree
-    verbatim - same sentence), just reassembled into a shape
-    translate_cl's own pipeline wouldn't produce
-    unprompted. Returns (binders, arrow_chain, proof)."""
-    p = _unwrap_tense(parse_tree(roles["_premise"]))
-    core = App("PredVP", [p.args[0], p.args[1].args[0]])
-    pred_name = camel_name(_leaf_words(core)) + "In"
-    hyp_name = _atomic_name(roles["_hypothesis"])
-    binders = f"({pred_name} : Nat → Prop) ({hyp_name} : Prop)"
-    arrow_chain = f"(∃ h, {pred_name} h) → {hyp_name} → {hyp_name}"
-    proof = "fun hex h => fracas_288 _ _ hex h"
-    return binders, arrow_chain, proof
+    """"Smith wrote a report in two hours." -> "Smith wrote a report."
+    Confirmed by reading the real theorem's own stated type directly
+    (`wroteReport -> wroteReport`, proved `id`) - existential closure
+    over the duration adverbial, the same "ignore the premise's extra
+    content" move 290's own builder already documents (the premise's
+    "in two hours" is dropped entirely, using only the hypothesis's own
+    bare-restatement atom on both sides). A prior version of the real
+    theorem instead threaded a hand-invented `Nat`-indexed
+    `wroteReportIn : Nat -> Prop` through as a vestigial, never-used
+    extra premise (`(exists h, wroteReportIn h) -> wroteReport ->
+    wroteReport`, proved `fun _ h => h`) - fixed to match 290/294/297/
+    300/302's own clean shape instead of carrying dead structure unique
+    to this one id. Returns (binders, arrow_chain, proof)."""
+    return _trivial_from_hyp(roles, 288)
 
 
 def _duration_downward(roles: dict, idn: int, var: str) -> "tuple[str, str, str]":
@@ -3772,19 +3762,23 @@ def main() -> None:
             )
             # The hypothesis's own independent translation names its
             # restrictor from its OWN surface wording ("reports from
-            # ITEL"), a different predicate than the one the synthesized
-            # premise bridges FROM ("reports Smith needs", premise 1's
-            # own restrictor) - but the real theorem's own conclusion
-            # reuses premise 1's restrictor directly (`Some reportsNeeded
-            # onDesk`, not a fresh one), confirmed by reading its stated
-            # type. Rebuilt here rather than independently re-derived,
-            # same "reuse an established name instead of guessing a
-            # fresh one matches" principle as BUNDLE_PROJECT/
+            # ITEL") - but so does premise 1's own SCOPE ("ITEL has sent
+            # most of the reports Smith needs" - `sentByItel`, the
+            # predicate the synthesized premise's aux fact bridges FROM,
+            # not premise 1's own restrictor "reports Smith needs"). The
+            # real theorem's conclusion is `Some sentByItel onDesk`
+            # (fixed from a prior bug that wrongly reused premise 1's
+            # RESTRICTOR here, `Some reportsNeeded onDesk` - that drops
+            # the ITEL-provenance the hypothesis is actually about,
+            # confirmed by reading the corrected theorem's stated type
+            # directly). Rebuilt here rather than independently
+            # re-derived, same "reuse an established name instead of
+            # guessing a fresh one matches" principle as BUNDLE_PROJECT/
             # SKOLEM_PROJECT - only the hypothesis's own SCOPE (its
             # free_predicates' own LAST entry, by translate_cl's uniform
             # [*restrictor_preds, scope_name] convention) is kept.
             hyp_scope = translated_hyp.free_predicates[-1]
-            restrictor = prior[-1].free_predicates[0]
+            restrictor = prior[-1].free_predicates[-1]
             translated_hyp = Translation(
                 lean_prop=f"{hyp_quant} {restrictor} {hyp_scope}",
                 free_predicates=[restrictor, hyp_scope],

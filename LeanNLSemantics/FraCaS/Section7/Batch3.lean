@@ -132,9 +132,9 @@ end P287
 /-! ## Problem 288: existential closure -/
 
 section P288
-variable (wroteReportIn : Nat → Prop) (wroteReport : Prop)
+variable (wroteReport : Prop)
 
-theorem fracas_288 : (∃ h, wroteReportIn h) → wroteReport → wroteReport := fun _ h => h
+theorem fracas_288 : wroteReport → wroteReport := id
 
 end P288
 

@@ -19,7 +19,8 @@ This makes almost every problem one of two shapes:
   hypothesis** — `.yes`/`.no`, proved by projection, instantiation, or
   direct negation, no new machinery needed.
 - **Two different resolutions are both grammatically available and
-  FraCaS asks about each separately** (169/170's "before" scope
+  FraCaS asks about each separately** (160/161's "fast red car" vs.
+  "fast car" modifier-scope ambiguity; 169/170's "before" scope
   ambiguity; 175/176/182/183/185–187/189/190's sloppy-vs-strict
   identity; 191/193/195's parallel plural-pronoun resolution) — each
   reading gets its own theorem stating what *that* reading gives,

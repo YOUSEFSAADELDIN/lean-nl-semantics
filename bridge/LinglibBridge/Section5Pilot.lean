@@ -116,8 +116,8 @@ Eight things are demonstrated:
 
 ## What's left in Section 5, and why this mechanism stops here
 
-Every other Section 5 problem (199–201, 203–209, 213, 215–219 — 16 of
-the section's 22) was checked against this bridge and genuinely has
+Every other Section 5 problem (197, 199–201, 203–209, 213, 215–219 — 17
+of the section's 23) was checked against this bridge and genuinely has
 nothing for it to add, for one of two concrete reasons rather than a
 general impression:
 
@@ -133,9 +133,10 @@ general impression:
   here there is no subtyping half at all to isolate, so re-deriving
   these through the bridge would just restate `Batch2.lean`'s own proof
   term verbatim with zero bridge-specific content.
-- **203 is a trivial projection** (`fourLegged dumbo ∧ animal dumbo →
-  fourLegged dumbo := fun h => h.1`) with no inference content to
-  re-derive through anything.
+- **197/203 are trivial projections** (`fracas_203`:
+  `fourLegged dumbo ∧ animal dumbo → fourLegged dumbo := fun h => h.1`;
+  `fracas_197`: the same shape, one conjunct of three) with no
+  inference content to re-derive through anything.
 
 That leaves `{198, 202, 210, 211, 212, 214}` as the complete, now fully
 covered set of Section 5 ids this mechanism has real content for.
