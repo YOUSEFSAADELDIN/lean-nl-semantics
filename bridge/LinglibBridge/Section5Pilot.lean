@@ -10,7 +10,7 @@ two of `LeanNLSemantics/FraCaS/Section5/Batch1.lean`'s own actual
 problems (`fracas_198`, `fracas_202`) rather than `CN.lean`'s standalone
 toy model.
 
-Two things are demonstrated:
+Three things are demonstrated:
 
 1. **`fracas_202` re-derived through the bridge's `CN'`.** The
    predicate-style proof in `Batch1.lean` takes `∀ x, mammal x →
@@ -18,11 +18,23 @@ Two things are demonstrated:
    `decide`-checked fact about this fragment's own tag lattice instead
    — no premise needed — and the conclusion follows via `CN'.widen`
    plus `Adjectives.lean`'s *already-proved* `Intersective`/
-   `intersective_every_iff`, reused completely unchanged at
-   `A := CN' section5Lexicon .mammal`. Zero new proof content for the
-   "adjective passes through a subtyping step" part of the inference.
+   `intersective_every_iff`/`inter_noun_drop`/`inter_adj_drop`, reused
+   completely unchanged at `A := CN' section5Lexicon .mammal`. Zero new
+   proof content for the "adjective passes through a subtyping step"
+   part of the inference — four of `Adjectives.lean`'s own theorems
+   transfer, not just one.
 
-2. **`fracas_198`'s privativity, encoded a third way.** This project
+2. **Coherence survives the generalization.** `CN.lean`'s own closing
+   example checks that widening `john` from `Man` to `Thing` agrees
+   whether taken directly or via `Human` — the payoff of basing
+   subtyping on a `Prop`-valued (hence proof-irrelevant) `≤`.
+   Generalizing `Lexicon`/`CN'` away from `CN.lean`'s own hardcoded tag
+   type (earlier in this file's history) could have silently lost that;
+   a `rfl`-checked example re-runs the identical check — widening
+   `mammal → thing` directly vs. via `animal` — over `section5Lexicon`'s
+   real `S5Tag` lattice, confirming it didn't.
+
+3. **`fracas_198`'s privativity, encoded a third way.** This project
    already has two treatments of "a former university student is not a
    university student": `Batch1.lean`'s own `fracas_198`, which takes it
    as an assumed premise (`∀ x, formerUnivStudent x → ¬ univStudent x`),
@@ -136,6 +148,42 @@ example (fourLegged isAnimal : S5Individual → Prop) :
         (fun x => fourLegged x.1 → isAnimal x.1) :=
   MTT.intersective_every_iff (A := CN' section5Lexicon .mammal)
     (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+/-- Two more of `Adjectives.lean`'s intersective theorems, reused the
+same way: "some four-legged mammal is Q" entails both "some mammal is
+Q" (`inter_noun_drop`, the existential form of `fracas_202`'s own move)
+and "some mammal is four-legged" (`inter_adj_drop`, recovering the
+adjective itself). Neither needs a new proof — both are `Adjectives.lean`
+applied at `A := CN' section5Lexicon .mammal`, exactly like
+`intersective_every_iff` above. -/
+example (fourLegged isAnimal : S5Individual → Prop) :
+    MTT.Some' (MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1))
+        (fun z => isAnimal z.forget.1) →
+      MTT.Some' (CN' section5Lexicon .mammal) (fun x => isAnimal x.1) :=
+  MTT.inter_noun_drop (A := CN' section5Lexicon .mammal)
+    (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+example (fourLegged isAnimal : S5Individual → Prop) :
+    MTT.Some' (MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1))
+        (fun z => isAnimal z.forget.1) →
+      MTT.Some' (CN' section5Lexicon .mammal) (fun x => fourLegged x.1) :=
+  MTT.inter_adj_drop (A := CN' section5Lexicon .mammal)
+    (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+/-! ## Coherence survives the generalization -/
+
+/-- `CN.lean`'s own closing example checks that widening `john` from
+`Man` to `Thing` agrees whether taken directly or via `Human` — the
+payoff of basing subtyping on a `Prop`-valued (hence proof-irrelevant)
+`≤`. Generalizing `Lexicon`/`CN'` to an arbitrary tag type earlier in
+this file could have silently lost that: this is the same check, over
+`section5Lexicon`'s real `S5Tag` lattice instead of `CN.lean`'s own
+`CNTag` toy model, confirming it didn't. -/
+example (x : CN' section5Lexicon .mammal) :
+    CN'.widen section5Lexicon (a := .animal) (b := .thing) (by decide)
+        (CN'.widen section5Lexicon (a := .mammal) (b := .animal) (by decide) x)
+      = CN'.widen section5Lexicon (a := .mammal) (b := .thing) (by decide) x :=
+  rfl
 
 /-! ## `fracas_198`, strengthened -/
 
