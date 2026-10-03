@@ -22,6 +22,7 @@ import LeanNLSemantics.FraCaS.Section1.Batch4
 import LeanNLSemantics.FraCaS.Section1.Batch5
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Polarity
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Signature
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.CNAdapter
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Trace
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
