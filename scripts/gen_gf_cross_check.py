@@ -55,15 +55,6 @@ from translate import (  # noqa: E402
     App,
 )
 
-CONFIRMED_STATUS = """\
-**Validation status - CI-confirmed** (CI run TBD, commit TBD, branch
-blind-eval-section1): all N generated theorems below type-check against
-their already-proved fracas_NNN counterparts. See
-`scripts/gen_gf_cross_check.py` for how this list was derived. If this
-file's own theorem count no longer matches, this status is stale -
-re-run the script and update this constant by hand."""
-
-
 CONJUNCT_IDS = {89: ["_hypothesis_rep", "_hypothesis_client"]}
 
 
@@ -3623,14 +3614,11 @@ def main() -> None:
             skipped[idn] = "a/b premise variant present - ambiguous, skipped"
             continue
         if (
-            not has_hyp
-            and idn not in BUNDLE_PROJECT
+            idn not in BUNDLE_PROJECT
             and idn not in SKOLEM_PROJECT
-            or (
-                idn not in CONJUNCT_IDS
-                and idn not in BUNDLE_PROJECT
-                and idn not in SKOLEM_PROJECT
-                and "_hypothesis" not in roles
+            and (
+                not has_hyp
+                or (idn not in CONJUNCT_IDS and "_hypothesis" not in roles)
             )
         ):
             skipped[idn] = "no hypothesis tree"

@@ -81,9 +81,6 @@ class App:
     args: list
 
 
-Tree = "str | App"
-
-
 def tokenize(s: str) -> list[str]:
     tokens = []
     i = 0
@@ -1293,8 +1290,8 @@ if __name__ == "__main__":
         "fracas_069 (premise 2)": (
             "PredVP (PredetNP all_Predet (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
             "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA major_A) (AdjCN (PositA western_A) (UseN country_N))))))) "
-            "(UseComp (CompNP (DetCN (DetQuant IndefArt NumPl) (AdvCN (UseN resident_N) "
-            "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N))))))))"
+            "(UseComp (CompNP (AdvNP (DetCN (DetQuant IndefArt NumPl) (UseN resident_N)) "
+            "(PrepNP of_Prep (DetCN (DetQuant IndefArt NumPl) (AdjCN (PositA western_A) (UseN country_N)))))))"
         ),
         "fracas_070 (premise)": (
             "PredVP (DetCN (DetQuant no_Quant NumSg) (UseN delegate_N)) "

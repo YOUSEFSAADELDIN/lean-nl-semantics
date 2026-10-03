@@ -8,9 +8,7 @@ import LeanNLSemantics.MTT.DotTypes
 import LeanNLSemantics.MTT.Individuation
 import LeanNLSemantics.MTT.NLIExamples
 import LeanNLSemantics.MTT.AssumptionAudit
-import LeanNLSemantics.MTT.Tense
 import LeanNLSemantics.MTT.AxiomModel
-import LeanNLSemantics.Tactic.NLI
 import LeanNLSemantics.FraCaS.Types
 import LeanNLSemantics.FraCaS.Data.Problems
 import LeanNLSemantics.FraCaS.Section1.GQ

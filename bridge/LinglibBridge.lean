@@ -94,16 +94,13 @@ def CN'.intersective_widen {T E : Type} [LE T] (L : Lexicon T E) {a b : T} (h : 
 
 /-- The predicate reading is recovered for free — this *is* the bridge:
 an MTT quantifier over `CN' L t` and a Montagovian generalized quantifier
-over `L.embed t : Ty.Domain E W .et` are talking about the same set. -/
-def CN'.toPredicate {T E : Type} [LE T] (L : Lexicon T E) (t : T) : E → Prop :=
-  L.embed t
-
-/-- Not just "the same shape" asserted in prose: `CN'.toPredicate`'s
-output is *definitionally* a term of linglib's own Montagovian
-common-noun type `Ty.Domain E W .et`, for any index type `W` a fragment
-chooses — the kernel checks this, `rfl` needs no unfolding lemma. -/
+over `L.embed t : Ty.Domain E W .et` are talking about the same set. Not
+just "the same shape" asserted in prose: `L.embed t` is *definitionally*
+a term of linglib's own Montagovian common-noun type `Ty.Domain E W
+.et`, for any index type `W` a fragment chooses — the kernel checks
+this, `rfl` needs no unfolding lemma. -/
 example {T E W : Type} [LE T] (L : Lexicon T E) (t : T) :
-    CN'.toPredicate L t = (L.embed t : Ty.Domain E W .et) :=
+    (L.embed t : E → Prop) = (L.embed t : Ty.Domain E W .et) :=
   rfl
 
 /-- A lexicon that assigns each individual a single most-specific tag and

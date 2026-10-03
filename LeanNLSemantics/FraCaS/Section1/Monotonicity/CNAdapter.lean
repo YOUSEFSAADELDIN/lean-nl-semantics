@@ -36,6 +36,15 @@ for Section 5. Genericizing over `kind` rather than committing to one
 concrete domain is what makes these two lemmas actually reusable by
 whatever concrete type a future fragment brings, matching `Signature.lean`'s
 own framing of the lattice as a *source*, not a fixed dependency.
+
+Standalone demo, no current consumer: `fracas_029_from_cn`/
+`fracas_044_from_cn` below are self-contained re-derivations, not a
+replacement for `Batch2.lean`'s `fracas_029` or `Batch3.lean`'s
+`fracas_044` — those theorems still state and discharge their
+subtyping premise by hand, unchanged. Swapping them over to this
+adapter (so the lattice fact really is a proved lemma rather than an
+assumed hypothesis, for these two problems) is the integration step
+that hasn't been taken yet.
 -/
 
 namespace MTT

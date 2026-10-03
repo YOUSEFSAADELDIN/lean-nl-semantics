@@ -48,7 +48,7 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   used to cross-check the FraCaS formalizations above against real
   English via `linearize`. Every one of the 342 problems' sentences
   that this grammar can build at all now has a real, independently-
-  confirmed GF tree — 633 `linearize` checks across all nine FraCaS
+  confirmed GF tree — 803 `linearize` checks across all nine FraCaS
   sections (`gf/run_gf_tests.py`), validated against a real local
   GF/RGL toolchain (not just parsed as text) before ever being pushed.
   `gf/translate.py` additionally cross-checks a subset of Sections 1-2
@@ -90,9 +90,6 @@ LeanNLSemantics/
     Adverbs.lean              -- veridical adverbs
     DotTypes.lean             -- copredication (Pustejovsky dot-types)
     Individuation.lean        -- identity criteria
-    Tense.lean                -- event/time skeleton
-  Tactic/
-    NLI.lean                  -- proof automation helpers
   FraCaS/
     Types.lean                -- Problem/Answer representation
     Data/                     -- fracas.xml + the 342 parsed Problem records
@@ -100,6 +97,11 @@ LeanNLSemantics/
 bridge/                      -- the linglib bridge, a separate Lake package
   lakefile.toml
   LinglibBridge.lean
+gf/                           -- Grammatical Framework grammar + cross-checks
+scripts/                      -- generators for the files gf/ and FraCaS/ commit
+viz/                          -- data exports + the three live visualizer pages
+lake-manifest.json            -- pinned Mathlib commit
+LICENSE
 CREDITS.md                   -- sources and licensing
 ```
 
@@ -122,9 +124,10 @@ lake exe cache get
 lake build
 ```
 
-CI (`.github/workflows/build.yml`) builds both on every push — the main
-build must stay green; the bridge build is informational and won't fail
-the workflow if it breaks.
+CI (`.github/workflows/build.yml`) runs three jobs on every push: `build`
+(the main package, must stay green), `build-linglib-bridge`
+(informational, won't fail the workflow if it breaks), and `build-gf`
+(the GF/RGL toolchain plus all 803 `linearize` checks, must stay green).
 
 ## The FraCaS suite
 
@@ -141,10 +144,12 @@ FraCaS's own gold answer, flagged in the relevant theorem's doc comment
 rather than silently mismatched — mostly from this project's simplified
 treatment of "many"/"several"/"a few" as a plain existential and of
 "both"/"neither" as a plain universal/negation, without a proportional
-or exactly-two-elements reading. A script cross-checks every theorem's
-proof shape against its recorded gold answer across all 342 problems;
-as of the last run, 338/342 match exactly, the remaining 4 are the
-documented divergences above, and there are no unexplained mismatches.
+or exactly-two-elements reading. Every theorem's proof shape has been
+checked by hand against its recorded gold answer across all 342
+problems; as of the last audit, 338/342 match exactly, the remaining 4
+are the documented divergences above, and there are no unexplained
+mismatches. (This is a manual audit, not a reproducible script — nothing
+in this repo automates it yet.)
 
 This isn't directly comparable to prior published accuracy numbers
 (e.g. FraCoq's 83%/81%): those come from a pipeline that predicts an
@@ -169,7 +174,7 @@ consistency check, not a blind-prediction accuracy score.
   "Status" above.
 - **GF integration** (`gf/`) — done, for the scope it set out to cover.
   A Grammatical Framework grammar producing real, `linearize`-confirmed
-  English for every FraCaS sentence this grammar can build (633 checks
+  English for every FraCaS sentence this grammar can build (803 checks
   across all nine sections), rather than each sentence being hand-
   formalized with no independent check on its own English gloss.
   `gf/translate.py` additionally cross-checks a subset of Sections 1-2
