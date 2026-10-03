@@ -145,8 +145,14 @@ def pat : S5Individual := ⟨.former, "pat"⟩
 
 /-- `pat` is not, under this lexicon, a university student — the
 concrete instance of the missing-edge fact above, the same payoff
-`CN.lean`'s own `decide`-checked examples give for its toy model. -/
-example : ¬ section5Lexicon.embed .univStudent pat := by decide
+`CN.lean`'s own `decide`-checked examples give for its toy model.
+Stated over `pat.kind ≤ .univStudent` directly rather than through
+`section5Lexicon.embed`: `decide` needs a `Decidable` instance found by
+typeclass search, and a structure field like `embed` doesn't unfold for
+that search the way a plain `def` does, even though the two are
+definitionally equal (as `fracas_198_bridge`'s own proof below relies
+on, via defeq-checking a supplied term rather than synthesizing one). -/
+example : ¬ (pat.kind ≤ S5Tag.univStudent) := by decide
 
 /-- The missing edge, generalized from one pair of tags to *every* tag
 this fragment has: no tag is ever both `.former`-typed and
