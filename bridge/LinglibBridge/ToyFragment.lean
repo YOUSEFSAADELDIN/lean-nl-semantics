@@ -94,11 +94,15 @@ example : CN' toyFragmentLexicon .person :=
 
 /-- The same fact stated as a bare implication over linglib's own
 predicates, matching `Section5Pilot.lean`'s own style of corollary: not
-a new proof, `CN'.widen` specialised to this one edge. -/
+a new proof, `Lexicon.embed_mono` itself (what `CN'.widen` is built
+from) specialised to this one edge and this one entity. `a`/`b` are
+pinned explicitly rather than left for unification to find through the
+`.property` projection on a `CN'.widen` result, which leaves `b` an
+unresolved metavariable at the point `by decide` needs a concrete goal. -/
 example :
     Semantics.Montague.ToyLexicon.student_sem Semantics.Montague.ToyEntity.john →
       Semantics.Montague.ToyLexicon.person_sem Semantics.Montague.ToyEntity.john :=
-  fun h => (CN'.widen toyFragmentLexicon (by decide)
-    (⟨Semantics.Montague.ToyEntity.john, h⟩ : CN' toyFragmentLexicon .student)).2
+  toyFragmentLexicon.embed_mono (a := .student) (b := .person) (by decide)
+    Semantics.Montague.ToyEntity.john
 
 end MTT.LinglibBridge
