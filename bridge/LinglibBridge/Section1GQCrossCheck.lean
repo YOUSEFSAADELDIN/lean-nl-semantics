@@ -106,45 +106,31 @@ under `open Classical in` so it can supply `count`'s `[DecidablePred
 ...]` argument itself via `Classical.propDecidable`, rather than taking
 one as a parameter from the caller the way `Exactly`/`card`/`count` all
 do. So the two sides use *different* `Decidable` instances for the same
-predicate, and those aren't defeq to each other in general — only
-provably equal, via `Prop`'s own definitional proof irrelevance (any
-two `Decidable p` witnesses for one true-or-false `p` must already
-agree). -/
-
-/-- Two `Decidable p` witnesses for the *same* proposition are equal —
-proved directly from first principles rather than reached for a named
-mathlib lemma of this shape, since getting a recalled lemma name wrong
-is exactly the kind of mistake that has already cost real CI
-round-trips elsewhere in this bridge. The matching-constructor cases
-are `rfl` outright, since `Prop` has definitional proof irrelevance
-(any two proofs of `p`, or of `¬p`, are already defeq); the
-mismatched cases are vacuous, since `h : p` and `h' : ¬p` can't both
-hold, and `absurd` turns that contradiction into a proof of anything,
-this equality included. -/
-theorem decidable_subsingleton {p : Prop} (d₁ d₂ : Decidable p) : d₁ = d₂ := by
-  cases d₁ <;> cases d₂ <;> first | rfl | exact absurd ‹p› ‹¬p›
-
-/-- The same fact, pointwise over a predicate: two `DecidablePred p`
-witnesses are equal as functions, since they agree (by
-`decidable_subsingleton`) at every point. -/
-theorem decidablePred_subsingleton {A : Type*} {p : A → Prop}
-    (inst₁ inst₂ : DecidablePred p) : inst₁ = inst₂ :=
-  funext fun x => decidable_subsingleton (inst₁ x) (inst₂ x)
+predicate — not defeq to each other in general, only provably equal,
+via `Finset.mem_filter`, which characterizes a `Finset.filter` term's
+membership the same way regardless of which instance it happens to
+carry. -/
 
 /-- `Exactly` and `exactly` agree, despite using different `Decidable`
 instances internally (`exactly` is `noncomputable`, supplying `count`'s
 instance itself via `Classical.propDecidable` rather than taking one
 from the caller the way `Exactly`/`card`/`count` all do): both unfold to
-`(Finset.univ.filter (fun x => P x ∧ Q x) _).card = n`, and
-`decidablePred_subsingleton` erases the only difference between the two
-sides, since `Finset.filter` applied to equal instances gives equal
-results (`congr!`'s own subsingleton-closing step, backed by the lemma
-above rather than left to guesswork about what it already knows). -/
+`(Finset.univ.filter (fun x => P x ∧ Q x) _).card = n`. The first
+`congr! 1` matches the shared `· = n` shape, reducing the goal to the
+two `Nat`s' equality (confirmed against a real CI failure: it stops
+there, one layer short, rather than also peeling `.card` itself); a
+plain `congr 1` takes that second layer, landing on the two `Finset`s;
+`Finset.ext` plus `Finset.mem_filter` — which characterizes membership
+the same way regardless of which `Decidable` instance a given `Finset.
+filter` term happens to carry — closes the rest without needing to name
+either instance directly. -/
 theorem exactly_eq_gq_exactly {A : Type} [Fintype A] (n : Nat) (P Q : A → Prop)
     [DecidablePred fun x => P x ∧ Q x] :
     FraCaS.Section2.Exactly n P Q ↔ Quantifier.GQ.exactly n P Q := by
   simp only [FraCaS.Section2.Exactly, FraCaS.Section1.card, Quantifier.GQ.exactly,
     Quantifier.GQ.count, Quantifier.GQ.countOn]
-  congr! 1 <;> exact decidablePred_subsingleton _ _
+  congr! 1
+  congr 1
+  exact Finset.ext fun x => by simp [Finset.mem_filter]
 
 end MTT.LinglibBridge
