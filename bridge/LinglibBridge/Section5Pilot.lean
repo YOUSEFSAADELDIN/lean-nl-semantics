@@ -13,7 +13,7 @@ six of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
 bottom of this file, the complete set of Section 5 problems this
 mechanism has anything to add to.
 
-Seven things are demonstrated:
+Eight things are demonstrated:
 
 1. **`fracas_202` re-derived through the bridge's `CN'`.** The
    predicate-style proof in `Batch1.lean` takes `∀ x, mammal x →
@@ -96,6 +96,23 @@ Seven things are demonstrated:
    deliberately *not* the reverse, which would force the two tags equal
    by antisymmetry, a strictly stronger (and here unneeded, unjustified)
    claim than the one-directional subtyping the proof actually uses.
+
+8. **Both results generalize, confirmed by reproduction, not assertion.**
+   `fracas_202_bridge`/`fracas_214_bridge` are exactly
+   `LinglibBridge.lean`'s own `CN'.intersective_widen` — true for any
+   lexicon, any edge, any intersective predicate — applied here; a
+   corollary right after each confirms it by literally invoking the
+   general lemma at this fragment's own types. `fracas_198_bridge` is
+   exactly `LinglibBridge.lean`'s own `KindedLexicon.disjoint_of_tags_disjoint`,
+   applied to `section5Lexicon` (confirmed, by `rfl`, to literally be the
+   `Lexicon` `KindedLexicon.toLexicon` produces from `S5Individual.kind`)
+   and `former_univStudent_tags_disjoint` — the one piece that could not
+   be generalized further, since it depends on `S5Tag`'s own concrete
+   shape, not on anything a `Lexicon`/`KindedLexicon` interface provides.
+   That asymmetry — one result is free for any lexicon, the other needs
+   a genuinely fragment-specific fact no matter how it's packaged — is
+   itself part of what this pilot now shows, not just that both
+   re-derivations work.
 
 ## What's left in Section 5, and why this mechanism stops here
 
@@ -246,6 +263,15 @@ def fracas_202_bridge (fourLegged : S5Individual → Prop) :
       MTT.Intersective (CN' section5Lexicon .animal) (fun z => fourLegged z.1) :=
   fun ⟨x, hx⟩ => ⟨CN'.widen section5Lexicon (by decide) x, hx⟩
 
+/-- `fracas_202_bridge` is exactly `LinglibBridge.lean`'s own
+`CN'.intersective_widen`, applied here — confirming that lifting it to
+an arbitrary lexicon and subtyping edge really does reproduce this
+fragment's own concrete instance, not just something similarly shaped. -/
+example (fourLegged : S5Individual → Prop) :
+    MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1) →
+      MTT.Intersective (CN' section5Lexicon .animal) (fun z => fourLegged z.1) :=
+  CN'.intersective_widen section5Lexicon (by decide) fourLegged
+
 /-- The quantified reading of the same fact, obtained by invoking
 `Adjectives.lean`'s `intersective_every_iff` unchanged at
 `A := CN' section5Lexicon .mammal` — no new proof, just instantiation. -/
@@ -297,6 +323,14 @@ def fracas_214_bridge (fat : S5Individual → Prop) :
     MTT.Intersective (CN' section5Lexicon .legalAuth) (fun z => fat z.1) →
       MTT.Intersective (CN' section5Lexicon .lawLect) (fun z => fat z.1) :=
   fun ⟨x, hx⟩ => ⟨CN'.widen section5Lexicon (by decide) x, hx⟩
+
+/-- `fracas_214_bridge` too is `CN'.intersective_widen`, at a different
+edge of the same lexicon — the same confirmation `fracas_202_bridge`'s
+own corollary above gives, now for the second intersective instance. -/
+example (fat : S5Individual → Prop) :
+    MTT.Intersective (CN' section5Lexicon .legalAuth) (fun z => fat z.1) →
+      MTT.Intersective (CN' section5Lexicon .lawLect) (fun z => fat z.1) :=
+  CN'.intersective_widen section5Lexicon (by decide) fat
 
 /-! ## Coherence survives the generalization -/
 
@@ -354,6 +388,25 @@ stipulated to have. -/
 theorem fracas_198_bridge (x : S5Individual) :
     section5Lexicon.embed .former x → ¬ section5Lexicon.embed .univStudent x :=
   fun h1 h2 => former_univStudent_tags_disjoint x.kind ⟨h1, h2⟩
+
+/-- `section5Lexicon` is exactly `LinglibBridge.lean`'s own
+`KindedLexicon.toLexicon` applied to `S5Individual.kind` — confirmed by
+`rfl`, the same check that file runs for `toyLexicon`. This is what
+makes the corollary just below a genuine reproduction of
+`fracas_198_bridge`, not merely a similarly-shaped restatement. -/
+example :
+    section5Lexicon = (KindedLexicon.mk (T := S5Tag) (E := S5Individual) S5Individual.kind).toLexicon :=
+  rfl
+
+/-- `fracas_198_bridge` is exactly `LinglibBridge.lean`'s own
+`KindedLexicon.disjoint_of_tags_disjoint`, applied to the one fact that
+genuinely can't be generalized further —
+`former_univStudent_tags_disjoint`'s own `decide`-over-this-lattice
+check. -/
+example (x : S5Individual) :
+    section5Lexicon.embed .former x → ¬ section5Lexicon.embed .univStudent x :=
+  (KindedLexicon.mk (T := S5Tag) (E := S5Individual) S5Individual.kind).disjoint_of_tags_disjoint
+    former_univStudent_tags_disjoint x
 
 /-! ## `fracas_210`, split into its free and assumed parts -/
 

@@ -1,5 +1,6 @@
 import Linglib.Semantics.Composition.Ty
 import LeanNLSemantics.MTT.CN
+import LeanNLSemantics.MTT.Adjectives
 
 /-!
 # Bridge to linglib (Phase 2b — a separate Lake package, on purpose)
@@ -79,6 +80,18 @@ def CN'.widen {T E : Type} [LE T] (L : Lexicon T E) {a b : T} (h : a ≤ b) :
     CN' L a → CN' L b :=
   fun x => ⟨x.1, L.embed_mono h x.1 x.2⟩
 
+/-- An intersective adjective passes through any subtyping edge, for any
+lexicon at all — not just `LinglibBridge/Section5Pilot.lean`'s own
+`fracas_202`/`fracas_214`, which are exactly this theorem applied at
+`L := section5Lexicon`. The only content is `CN'.widen` itself: keep the
+`P`-witness, widen the rest. Generalizing it here (rather than leaving
+it duplicated once per fragment) is what turns "one worked fragment"
+into a small reusable piece of the bridge itself. -/
+def CN'.intersective_widen {T E : Type} [LE T] (L : Lexicon T E) {a b : T} (h : a ≤ b)
+    (P : E → Prop) :
+    MTT.Intersective (CN' L a) (fun z => P z.1) → MTT.Intersective (CN' L b) (fun z => P z.1) :=
+  fun ⟨x, hx⟩ => ⟨CN'.widen L h x, hx⟩
+
 /-- The predicate reading is recovered for free — this *is* the bridge:
 an MTT quantifier over `CN' L t` and a Montagovian generalized quantifier
 over `L.embed t : Ty.Domain E W .et` are talking about the same set. -/
@@ -92,6 +105,36 @@ chooses — the kernel checks this, `rfl` needs no unfolding lemma. -/
 example {T E W : Type} [LE T] (L : Lexicon T E) (t : T) :
     CN'.toPredicate L t = (L.embed t : Ty.Domain E W .et) :=
   rfl
+
+/-- A lexicon that assigns each individual a single most-specific tag and
+derives its own membership from that tag alone (`embed t x := kind x ≤
+t`) — the pattern `toyLexicon` below and `Section5Pilot.lean`'s own
+`section5Lexicon` already use by hand, named once so `embed_mono` comes
+free from `le_trans` instead of being reproved per fragment. Needs the
+stronger `[Preorder T]` (not just `Lexicon`'s own `[LE T]`) because
+`le_trans` is exactly what discharges `embed_mono` here. -/
+structure KindedLexicon (T E : Type) [Preorder T] where
+  kind : E → T
+
+/-- The `Lexicon` a `KindedLexicon` induces. -/
+def KindedLexicon.toLexicon {T E : Type} [Preorder T] (K : KindedLexicon T E) : Lexicon T E where
+  embed t x := K.kind x ≤ t
+  embed_mono h _ hx := le_trans hx h
+
+/-- Generalizes `Section5Pilot.lean`'s own `fracas_198_bridge`: for any
+`KindedLexicon`, if no tag is ever comparable to *both* `a` and `b`
+(`hdisjoint`), no individual's membership can witness both at once. This
+is `fracas_198_bridge`'s own proof split into its two halves: the
+generic half is this theorem; the fragment-specific half —
+`hdisjoint` itself, e.g. `Section5Pilot.lean`'s own
+`former_univStudent_tags_disjoint`, `decide`-checked by cases over one
+concrete finite tag type — cannot be generalized further, since it
+depends on that tag type's own shape, not on anything `KindedLexicon`
+provides. -/
+theorem KindedLexicon.disjoint_of_tags_disjoint {T E : Type} [Preorder T] (K : KindedLexicon T E)
+    {a b : T} (hdisjoint : ∀ t, ¬ (t ≤ a ∧ t ≤ b)) (x : E) :
+    K.toLexicon.embed a x → ¬ K.toLexicon.embed b x :=
+  fun h1 h2 => hdisjoint (K.kind x) ⟨h1, h2⟩
 
 /-- A concrete instantiation, reusing `CN.lean`'s own toy `Individual`
 domain and its defining predicate (`x.kind ≤ t`) as the lexicon: not a
@@ -107,6 +150,13 @@ the *same type* at every tag, not merely isomorphic — checked by `rfl`,
 the same definitional-equality payoff `CN.lean`'s own coherence example
 (two coercion routes agreeing) relies on. -/
 example (t : MTT.CNTag) : CN' toyLexicon t = MTT.CN t := rfl
+
+/-- `toyLexicon` itself is exactly `KindedLexicon.toLexicon` applied to
+`Individual.kind` — confirmed by `rfl`, not merely "the same shape";
+`Section5Pilot.lean` checks the identical thing for `section5Lexicon`. -/
+example :
+    toyLexicon = (KindedLexicon.mk (T := MTT.CNTag) (E := MTT.Individual) MTT.Individual.kind).toLexicon :=
+  rfl
 
 end MTT.LinglibBridge
 
@@ -125,13 +175,41 @@ mind. `toyLexicon` above is a proof that the bridge type-checks and
 composes correctly, not a real fragment's lexicon.
 
 `LinglibBridge/Section5Pilot.lean` takes the next step: a real tag
-lattice and lexicon over actual FraCaS Section 5 predicates
-(`mammal`/`animal`, `univStudent`/`former`), re-deriving `fracas_202`
+lattice and lexicon over six actual FraCaS Section 5 problems
+(`mammal`/`animal`/`mouse`/`elephant`, `univStudent`/`former`,
+`legalAuth`/`lawLect`), re-deriving `fracas_202`/`210`/`211`/`212`/`214`
 through the bridge's `CN'` and `Adjectives.lean`'s existing generic
-machinery, and encoding `fracas_198`'s privativity ("former university
-student") as a `decide`-checked missing edge in the tag lattice itself —
-a third treatment alongside this project's existing two (`fracas_198`'s
-own assumed premise, and `Adjectives.lean`'s `Gun`/`realGun`/`fakeGun`
-sum-type construction), and the only one of the three with no proof
-obligation to discharge at all.
+machinery, and strengthening `fracas_198`'s privativity ("former
+university student") from a `decide`-checked missing edge into a proved
+theorem — a third treatment alongside this project's existing two
+(`fracas_198`'s own assumed premise, and `Adjectives.lean`'s
+`Gun`/`realGun`/`fakeGun` sum-type construction), and the only one of
+the three with no proof obligation to discharge at all.
+
+## Generalizing past one fragment
+
+`CN'.intersective_widen` and `KindedLexicon.disjoint_of_tags_disjoint`
+above are the two fragment-specific results generalized up from
+`Section5Pilot.lean` once that pilot showed what was actually doing the
+work: `fracas_202`/`fracas_214`'s own re-derivations turned out to need
+nothing beyond `CN'.widen`'s functoriality, true for *any* lexicon, not
+just `section5Lexicon` — so `CN'.intersective_widen` states it once, and
+`Section5Pilot.lean`'s own instances become one-line corollaries.
+`fracas_198_bridge`'s own privativity result does **not** generalize the
+same way: it relies specifically on `section5Lexicon`'s "one
+most-specific kind per individual" construction, which `Lexicon`'s own
+interface doesn't require (`embed` is just `T → E → Prop`, satisfying
+monotonicity — nothing says it has to come from a single `kind`
+function). `KindedLexicon` names that stronger pattern explicitly, and
+`disjoint_of_tags_disjoint` proves the individual-level half generically
+for it; the fragment-specific half (that `.former` and `.univStudent`
+are never both reachable from any one tag, `Section5Pilot.lean`'s own
+`former_univStudent_tags_disjoint`) still has to be `decide`-checked per
+concrete tag lattice, and cannot be generalized further — it is a fact
+about that one lattice's own shape, not about lexicons in general. That
+asymmetry is itself informative: one of this file's two real results
+(intersectivity passing through subtyping) is genuinely about the
+`CN'`/`Lexicon` bridge machinery itself; the other (privativity as a
+missing edge) is about a *particular, common way* of building a lexicon,
+not a free consequence of the bridge's own interface.
 -/
