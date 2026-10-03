@@ -118,22 +118,36 @@ a lexicon built from someone else's model instead of this project's own.
 
 The intersective predicate has to be independent of the `student`/
 `person`/`thing` tag hierarchy itself, or this would secretly just be
-`embed_mono` again. `ToyLexicon.laughs_sem` is: linglib's own fact about
-who laughs, unrelated to anyone's student/person/thing status, read off
-`toyStructure`'s `laugh` relation the same way `student_sem` is — not
-`ToyFacts.laugh` directly, which (unlike the `_sem` denotations) carries
-no `Decidable` instance of its own; CI caught this the first time this
-section was pushed, rather than it being foreseen. -/
+`embed_mono` again. `ToyFacts.laugh` is: linglib's own fact about who
+laughs, unrelated to anyone's student/person/thing status.
+
+Checked directly against `Toy.lean`'s own source (not assumed from the
+`student`/`person`/`thing` case, which turned out not to generalize):
+linglib declares `instance : DecidablePred student_sem` (and `person_sem`,
+`thing_sem`) by hand, right next to the `_sem` definitions themselves —
+exactly the three predicates its own file ever needs decided, nothing
+more. Neither `laughs_sem` nor `ToyFacts.laugh` carries one; CI caught
+both the first *and* second push of this section failing on exactly
+that gap, as logged below. The fix is the same move linglib itself
+made: supply the missing instance by hand (one line, since `laugh` is a
+plain match over a four-constructor `Fintype`), the same
+"fragment-specific lexical content, not provable in general"
+`Lexicon.embed_mono`'s own docstring already names. -/
+
+instance : DecidablePred Semantics.Montague.ToyFacts.laugh := fun x =>
+  match x with
+  | .john | .mary => .isTrue trivial
+  | .pizza | .book => .isFalse id
 
 /-- John, as a laughing student: `CN' toyFragmentLexicon .student`
-paired with `ToyLexicon.laughs_sem`, both real — `johnAsStudent` is
-reused, and `laughs_sem john` is `decide`-checked against linglib's own
-fact, exactly as `johnAsStudent`'s own witness was. -/
+paired with `ToyFacts.laugh`, both real — `johnAsStudent` is reused, and
+`ToyFacts.laugh john` is `decide`-checked (against the instance just
+declared above) exactly as `johnAsStudent`'s own witness was. -/
 def johnLaughingStudent :
     MTT.Intersective (CN' toyFragmentLexicon .student)
-      (fun z => Semantics.Montague.ToyLexicon.laughs_sem z.1) :=
+      (fun z => Semantics.Montague.ToyFacts.laugh z.1) :=
   ⟨johnAsStudent,
-    (by decide : Semantics.Montague.ToyLexicon.laughs_sem Semantics.Montague.ToyEntity.john)⟩
+    (by decide : Semantics.Montague.ToyFacts.laugh Semantics.Montague.ToyEntity.john)⟩
 
 /-- "A laughing student" widens to "a laughing person" along the same
 `.student ≤ .person` edge `embed_mono` already checked holds for every
@@ -143,8 +157,8 @@ content, confirming it is not only ever exercised against
 `section5Lexicon`. -/
 theorem johnLaughingPerson :
     MTT.Intersective (CN' toyFragmentLexicon .person)
-      (fun z => Semantics.Montague.ToyLexicon.laughs_sem z.1) :=
+      (fun z => Semantics.Montague.ToyFacts.laugh z.1) :=
   CN'.intersective_widen toyFragmentLexicon (by decide)
-    Semantics.Montague.ToyLexicon.laughs_sem johnLaughingStudent
+    Semantics.Montague.ToyFacts.laugh johnLaughingStudent
 
 end MTT.LinglibBridge
