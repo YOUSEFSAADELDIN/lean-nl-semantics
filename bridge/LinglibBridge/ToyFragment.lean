@@ -105,4 +105,43 @@ example :
   toyFragmentLexicon.embed_mono (a := .student) (b := .person) (by decide)
     Semantics.Montague.ToyEntity.john
 
+/-! ## The general theorem, over real external content
+
+Everything above exercises `Lexicon`/`CN'`/`embed_mono` directly, but
+never the one genuinely general result this bridge has proven,
+`LinglibBridge.lean`'s own `CN'.intersective_widen`. Applying it here —
+rather than only ever at `L := section5Lexicon`, as
+`Section5Pilot.lean`'s `fracas_202_bridge`/`fracas_214_bridge` do — is
+what tells apart "a theorem about `section5Lexicon`" from "a theorem
+about `Lexicon`": the same one line of proof, unchanged, specializes to
+a lexicon built from someone else's model instead of this project's own.
+
+The intersective predicate has to be independent of the `student`/
+`person`/`thing` tag hierarchy itself, or this would secretly just be
+`embed_mono` again. `ToyFacts.laugh` is: linglib's own fact about who
+laughs, unrelated to anyone's student/person/thing status, read straight
+off `toyStructure`'s `laugh` relation, not stipulated here. -/
+
+/-- John, as a laughing student: `CN' toyFragmentLexicon .student`
+paired with `ToyFacts.laugh`, both real — `johnAsStudent` is reused, and
+`ToyFacts.laugh john` is `decide`-checked against linglib's own fact,
+exactly as `johnAsStudent`'s own witness was. -/
+def johnLaughingStudent :
+    MTT.Intersective (CN' toyFragmentLexicon .student)
+      (fun z => Semantics.Montague.ToyFacts.laugh z.1) :=
+  ⟨johnAsStudent,
+    (by decide : Semantics.Montague.ToyFacts.laugh Semantics.Montague.ToyEntity.john)⟩
+
+/-- "A laughing student" widens to "a laughing person" along the same
+`.student ≤ .person` edge `embed_mono` already checked holds for every
+entity — via `CN'.intersective_widen` itself, not a hand-rolled
+`CN'.widen` call: the general bridge theorem applied to real linglib
+content, confirming it is not only ever exercised against
+`section5Lexicon`. -/
+theorem johnLaughingPerson :
+    MTT.Intersective (CN' toyFragmentLexicon .person)
+      (fun z => Semantics.Montague.ToyFacts.laugh z.1) :=
+  CN'.intersective_widen toyFragmentLexicon (by decide)
+    Semantics.Montague.ToyFacts.laugh johnLaughingStudent
+
 end MTT.LinglibBridge
