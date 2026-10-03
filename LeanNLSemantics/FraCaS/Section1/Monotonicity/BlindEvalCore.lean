@@ -200,7 +200,7 @@ def attemptClose (ty : Expr) : TermElabM Bool := do
           safe apply FraCaS.Section2.exactly_atMost, safe apply FraCaS.Section2.every_most)))
   then return true
   if ← runTacticBool ty (← `(tactic| grind)) then return true
-  if ← runTacticBool ty (← `(tactic| intros; omega)) then return true
+  if ← runTacticBool ty (← `(tactic| (intros; omega))) then return true
   return false
 
 end FraCaS.Section1.Monotonicity.BlindEval
