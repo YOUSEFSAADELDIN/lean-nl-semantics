@@ -154,8 +154,11 @@ def johnLaughingStudent :
 entity — via `CN'.intersective_widen` itself, not a hand-rolled
 `CN'.widen` call: the general bridge theorem applied to real linglib
 content, confirming it is not only ever exercised against
-`section5Lexicon`. -/
-theorem johnLaughingPerson :
+`section5Lexicon`. `Intersective` itself returns `Type`, not `Prop`
+(it's a subtype, data, not a proposition) — `def`, matching
+`fracas_202_bridge`/`fracas_214_bridge`'s own declarations in
+`Section5Pilot.lean`, not `theorem`. -/
+def johnLaughingPerson :
     MTT.Intersective (CN' toyFragmentLexicon .person)
       (fun z => Semantics.Montague.ToyFacts.laugh z.1) :=
   CN'.intersective_widen toyFragmentLexicon (by decide)
