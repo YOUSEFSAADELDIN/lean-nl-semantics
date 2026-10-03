@@ -233,12 +233,18 @@ consistency check, not a blind-prediction accuracy score.
   genuine independence claim is not a theorem in either direction — and
   the scan expects the tactics to fail on *both* directions, the correct
   automated outcome for genuine independence. See that scan's own header
-  for the current CI-confirmed count. Extending further still (into
-  Sections 3–9, which would need building comparable automated-tactic
-  fragments for plurals/comparatives/temporal reference/attitude
-  reports) is the remaining step toward a blind accuracy figure actually
-  comparable to prior published ones (e.g. FraCoq's 83%/81%), per the
-  note under "The FraCaS suite" above.
+  for the current CI-confirmed count. **`BLIND_EVAL.md`** is the full
+  writeup of this methodology, the exact current coverage and result
+  (93/93 automated verdicts matching gold, across every bare Section 1/2
+  theorem plus every one of the 46 `.unknown`/`.undef` countermodel
+  pairs), precisely what's still excluded and why, and why that number
+  is still not directly comparable to prior published figures (e.g.
+  FraCoq's 83%/81%) despite being a genuine blind-prediction score —
+  narrower in coverage (Sections 1–2 only) and missing the automated-
+  translation step FraCoq's own pipeline includes. Extending further
+  still (into Sections 3–9, which would need building comparable
+  automated-tactic fragments for plurals/comparatives/temporal reference/
+  attitude reports) is the remaining step toward closing that gap.
 - **General natural-language inference** — a substantially larger,
   separate undertaking (open-vocabulary parsing, world/taxonomic
   knowledge, automated entailment over arbitrary sentences, more
