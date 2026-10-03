@@ -13,7 +13,7 @@ and check whether a conclusion is licensed by a Lean-verified rule, all
 live in the browser. Also live: the [full corpus
 reference](https://yousefsaadeldin.github.io/lean-nl-semantics/index.html),
 the [reasoner trace explorer](https://yousefsaadeldin.github.io/lean-nl-semantics/trace.html),
-and a [recruiter-facing walkthrough](https://yousefsaadeldin.github.io/lean-nl-semantics/entailment.html).
+and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/lean-nl-semantics/entailment.html).
 
 ## Status
 
@@ -28,10 +28,20 @@ and a [recruiter-facing walkthrough](https://yousefsaadeldin.github.io/lean-nl-s
   skipped) are formalized as Lean theorems, one per problem, each
   proved against its recorded gold answer. See "The FraCaS suite"
   below for details.
-- **linglib bridge** (`bridge/`): a small bridge connecting this
-  project's CN-as-type semantics to `linglib`'s CN-as-predicate
-  semantics over a shared entity domain, built as its own separate Lake
-  package so it can't affect the main library's build.
+- **linglib bridge** (`bridge/`): a bridge connecting this project's
+  CN-as-type semantics to `linglib`'s CN-as-predicate semantics over a
+  shared entity domain, built as its own separate Lake package so it
+  can't affect the main library's build. Beyond the shared-domain
+  connection itself: two general theorems (`CN'.intersective_widen`,
+  `KindedLexicon`) generalizing fragment-specific Section 5 results into
+  reusable bridge-level lemmas; a real linglib fragment wired in
+  (`Linglib.Fragments.English.Toy`'s own four-entity model, not an
+  invented domain) as a genuine instance of the general theorems rather
+  than only this project's own constructions; and a cross-validation of
+  Section 1/2's independently-built GQ layer (`Every`/`Some`/`No`/`card`/
+  `Exactly`) against linglib's own `Quantifier.GQ` theory, confirming the
+  two agree and that this project's hand-proved monotonicity lemmas are
+  literal instances of linglib's general, already-proven ones.
 - **GF integration** (`gf/`, scope intentionally bounded — see below): a
   Grammatical Framework grammar and a Python translator producing Lean
   terms from a hand-built (not freely parsed) English sentence tree,
@@ -149,8 +159,14 @@ consistency check, not a blind-prediction accuracy score.
   formalization.
 - **FraCaS suite** — done. All 342 formalizable problems, all nine
   sections.
-- **linglib bridge** — done. A separate Lake package connecting this
-  project's CN-as-type semantics to linglib's CN-as-predicate semantics.
+- **linglib bridge** — done, and still exploratory by design (Phase 2b,
+  its own pinned dependency, isolated so it can't affect the main
+  library). A separate Lake package connecting this project's CN-as-type
+  semantics to linglib's CN-as-predicate semantics, now including a real
+  linglib fragment (not just this project's own invented domains), two
+  general bridge-level theorems, and a confirmed correspondence between
+  Sections 1/2's own GQ layer and linglib's independent one — see
+  "Status" above.
 - **GF integration** (`gf/`) — done, for the scope it set out to cover.
   A Grammatical Framework grammar producing real, `linearize`-confirmed
   English for every FraCaS sentence this grammar can build (633 checks
@@ -174,20 +190,37 @@ consistency check, not a blind-prediction accuracy score.
   abstract syntax and translator are language-agnostic already, but
   further languages aren't a near-term goal.
 - **Certified monotonicity/natural-logic reasoner** (`LeanNLSemantics/
-  FraCaS/Section1/Monotonicity/`) — in progress, not yet compiled. A
-  Lean tactic (`mono_nl`) that closes a small, explicitly scoped fragment
-  of FraCaS Section 1 goals automatically, by computing which argument
-  position of `Every`/`Some`/`AtLeast`/`AtMost` a substitution needs and
-  applying the one already-proved `GQ.lean` lemma that direction
-  licenses — replacing bespoke per-problem proof terms with one general,
-  sound (by construction, not by a separate reflected interpreter yet)
-  search procedure over eight rules, rather than adding more one-off
-  proofs by hand. Deliberately not an LLM-based path — every rule is
-  grounded in an already-proved lemma, the same "prove it, don't assume
-  it" standard the rest of this project holds to, not a probabilistic
-  fallback. See `Tactic.lean`'s own header for the exact fragment and
-  its current validation status (this sandbox's Lean toolchain fetch is
-  policy-denied this session, so nothing here is CI-confirmed yet).
+  FraCaS/Section1/Monotonicity/`) — done, through Phase 5, CI-confirmed.
+  A Lean tactic (`mono_nl`) that closes a scoped fragment of FraCaS
+  Section 1/2 goals automatically, by computing which argument position
+  of `Every`/`Some`/`AtLeast`/`AtMost` a substitution needs and applying
+  the one already-proved `GQ.lean` lemma that direction licenses —
+  replacing bespoke per-problem proof terms with one general, sound (by
+  construction, not by a separate reflected interpreter) search
+  procedure, widened over five phases (substitution, existential
+  transfer, composition, and conditioned narrowing — see `Tactic.lean`,
+  `Existential.lean`, `Compose.lean` for each phase's own grounding) to
+  close every eligible problem, not just the ones it started with.
+  Deliberately not an LLM-based path — every rule is grounded in an
+  already-proved lemma, the same "prove it, don't assume it" standard
+  the rest of this project holds to, not a probabilistic fallback.
+  `Coverage.lean`'s own header tracks the one current, authoritative
+  corpus-wide count (not duplicated here, so it can't go stale in two
+  places): as of the last CI run, **zero** eligible-but-failed problems
+  remain across 472 scanned theorems. A separate blind evaluation
+  (`BlindEval.lean`) addresses the obvious follow-up question — whether
+  that count reflects real automated entailment-checking or just a
+  human confirming a proof they already knew existed — by taking each
+  bare Section 1/2 theorem's *type* only (never its hand-written proof)
+  and letting the tactics alone decide yes/no/unknown: **47/47 (100%)**
+  automated verdicts matched FraCaS's own gold answer, CI-confirmed.
+  That scope is still Sections 1–2 only, and even there it skips the
+  countermodel-pair (`.unknown`/`.undef`) problems a binary yes/no/
+  unknown procedure has no single entailment-shaped question to ask
+  about — extending past that (more of Sections 1–2's own skipped
+  problems, or into Sections 3–9) is the most direct next step toward a
+  blind accuracy figure actually comparable to prior published ones
+  (e.g. FraCoq's 83%/81%), per the note under "The FraCaS suite" above.
 - **General natural-language inference** — a substantially larger,
   separate undertaking (open-vocabulary parsing, world/taxonomic
   knowledge, automated entailment over arbitrary sentences, more
