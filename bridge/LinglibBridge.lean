@@ -212,4 +212,25 @@ asymmetry is itself informative: one of this file's two real results
 `CN'`/`Lexicon` bridge machinery itself; the other (privativity as a
 missing edge) is about a *particular, common way* of building a lexicon,
 not a free consequence of the bridge's own interface.
+
+## A real fragment, not an invented one
+
+`Section5Pilot.lean`'s `S5Individual`/`S5Tag` are this project's own
+construction, shaped to match FraCaS's own vocabulary — closer to a real
+fragment than `toyLexicon`, but still not something linglib itself
+ships. `LinglibBridge/ToyFragment.lean` takes that last step: it builds
+a `Lexicon` over `Linglib.Fragments.English.Toy`'s own
+`Semantics.Montague.ToyEntity` (a real, four-entity model-theoretic
+fragment linglib ships for its own compositional-semantics studies),
+with `embed` reading membership directly off linglib's own `student`/
+`person`/`thing` denotations. It is also the first instance that is
+*not* a `KindedLexicon`: `student`, `person` and `thing` are three
+independent predicates linglib's own model happens to nest
+extensionally, with no shared `kind` function tying them together, so
+`embed_mono` is discharged by `decide`-checking that extensional fact
+directly against linglib's own `DecidablePred` instances — the fully
+general case `Lexicon.embed_mono`'s own docstring describes
+("fragment-specific lexical content, not provable in general") and
+every prior instance in this bridge had sidestepped via the
+`KindedLexicon` shortcut.
 -/

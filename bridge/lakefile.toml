@@ -35,4 +35,4 @@ roots = ["LeanNLSemantics.MTT.CN", "LeanNLSemantics.MTT.Quantifiers", "LeanNLSem
 
 [[lean_lib]]
 name = "LinglibBridge"
-roots = ["LinglibBridge", "LinglibBridge.Section5Pilot"]
+roots = ["LinglibBridge", "LinglibBridge.Section5Pilot", "LinglibBridge.ToyFragment"]
