@@ -6,11 +6,12 @@ import LeanNLSemantics.MTT.Adjectives
 
 `LinglibBridge.lean`'s own closing note flagged `toyLexicon` as "not a
 real fragment's lexicon" — this file is the first real one, built over
-three of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
-(`fracas_198`, `fracas_202` from `Batch1.lean`; `fracas_210` from
-`Batch2.lean`) rather than `CN.lean`'s standalone toy model.
+four of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
+(`fracas_198`, `fracas_202` from `Batch1.lean`; `fracas_210`,
+`fracas_211` from `Batch2.lean`) rather than `CN.lean`'s standalone toy
+model.
 
-Four things are demonstrated:
+Five things are demonstrated:
 
 1. **`fracas_202` re-derived through the bridge's `CN'`.** The
    predicate-style proof in `Batch1.lean` takes `∀ x, mammal x →
@@ -65,21 +66,34 @@ Four things are demonstrated:
    exactly as assumed as it is in `Batch2.lean`. This is the clearest
    statement in this file of what the tag lattice actually buys:
    subtyping, not lexical content.
+
+5. **The boundary generalizes, not just repeats.** `fracas_211` has the
+   exact same shape as `fracas_210` (a different `.animal` branch,
+   `large`/`small` swapped) — rather than writing a near-duplicate
+   theorem, `animal_branch_contrary_bridge` states the schema once, for
+   an arbitrary branch tag, and both `fracas_210_bridge` (confirmed
+   reproducible from it) and the new `fracas_211_bridge` are instances.
+   `fracas_211` also exercises a real two-step widen for the first
+   time: `dumbo` is tagged `.elephant`, nested under `.mammal`, so
+   `.elephant ≤ .animal` goes through an intermediate tag rather than
+   being a direct edge, and is still free.
 -/
 
 namespace MTT.LinglibBridge
 
 /-! ## The tag lattice -/
 
-/-- Six tags: a shared root, two independent branches under `.animal`
+/-- Seven tags: a shared root, two independent branches under `.animal`
 (`.mammal` for `fracas_202`, `.mouse` for `fracas_210`'s own "all mice
-are small animals"), and the `univStudent`/`former` pair `fracas_198`
-needs — kept deliberately disconnected from each other (see
-`S5Tag.ancestors`). -/
+are small animals"), `.elephant` nested a level deeper under `.mammal`
+(`fracas_211`'s own subject, and a real three-level chain to widen
+along), and the `univStudent`/`former` pair `fracas_198` needs — kept
+deliberately disconnected from each other (see `S5Tag.ancestors`). -/
 inductive S5Tag where
   | thing
   | animal
   | mammal
+  | elephant
   | mouse
   | univStudent
   | former
@@ -90,18 +104,20 @@ own `CNTag` instance and for the same reason: a derived completeness
 proof is the fragile part on this toolchain, not the case analysis
 itself. -/
 instance : Fintype S5Tag where
-  elems := {.thing, .animal, .mammal, .mouse, .univStudent, .former}
+  elems := {.thing, .animal, .mammal, .elephant, .mouse, .univStudent, .former}
   complete x := by cases x <;> decide
 
 /-- Each tag's ancestors, itself first — same shape as `CN.lean`'s
 `CNTag.ancestors`. `.mammal` and `.mouse` are independent siblings under
 `.animal` (two branches of the same root, not nested in each other);
-`.former` and `.univStudent` are siblings under `.thing` only: no edge
-between them, on purpose. -/
+`.elephant` is nested a level deeper, under `.mammal`; `.former` and
+`.univStudent` are siblings under `.thing` only: no edge between them,
+on purpose. -/
 def S5Tag.ancestors : S5Tag → List S5Tag
   | .thing => [.thing]
   | .animal => [.animal, .thing]
   | .mammal => [.mammal, .animal, .thing]
+  | .elephant => [.elephant, .mammal, .animal, .thing]
   | .mouse => [.mouse, .animal, .thing]
   | .univStudent => [.univStudent, .thing]
   | .former => [.former, .thing]
@@ -134,9 +150,13 @@ structure S5Individual where
   name : String
   deriving DecidableEq, Repr
 
-/-- FraCaS's own "Dumbo" (`fracas_203`'s subject), reused here rather
-than invented fresh. -/
-def dumbo : S5Individual := ⟨.mammal, "dumbo"⟩
+/-- FraCaS's own "Dumbo" (`fracas_203`'s and `fracas_211`'s subject),
+tagged `.elephant` rather than the bare `.mammal` an earlier version of
+this file used — elephants are mammals, so `.elephant`'s own ancestors
+already give `dumbo : CN' section5Lexicon .mammal` for free via
+`CN'.widen`, one level further than `mickey`'s own `.mouse → .animal`
+step. -/
+def dumbo : S5Individual := ⟨.elephant, "dumbo"⟩
 
 /-- The real lexicon: `embed_mono` is exactly `CN.lean`'s own
 `le_trans` argument, discharged here against `S5Tag` instead of
@@ -284,5 +304,51 @@ theorem fracas_210_bridge
     (hMouseSmall : ∀ x : CN' section5Lexicon .mouse, smallAnimal x.1) :
     ¬ largeAnimal mickey :=
   hcontrary mickey (hMouseSmall ⟨mickey, (by decide : mickey.kind ≤ S5Tag.mouse)⟩)
+
+/-! ## Generalizing the lattice boundary: 210 and 211 as one schema -/
+
+/-- `fracas_210`'s own boundary insight, generalized from one hardcoded
+branch (`.mouse`) to any tag `t` under `.animal`: whatever `t` is, if
+every `t`-individual satisfies a predicate `P` contrary to `Q`, then any
+individual actually of kind `t` (or narrower) fails `Q`. The subtyping
+fact is taken here as a raw `≤` hypothesis on `x.kind` directly, not
+routed through constructing a `CN'` element at the call site the way
+`fracas_210_bridge` above does — avoiding that construction's own
+embed-shaped proof-obligation entirely, rather than working around it
+each time. -/
+theorem animal_branch_contrary_bridge
+    (t : S5Tag) (P Q : S5Individual → Prop)
+    (hcontrary : ∀ x, P x → ¬ Q x)
+    (hAllP : ∀ x : CN' section5Lexicon t, P x.1)
+    (x : S5Individual) (hx : x.kind ≤ t) :
+    ¬ Q x :=
+  hcontrary x (hAllP ⟨x, hx⟩)
+
+/-- The general lemma reproduces `fracas_210_bridge` exactly, at
+`t := .mouse` — confirming the generalization is faithful, not just
+similarly-shaped. -/
+example (smallAnimal largeAnimal : S5Individual → Prop)
+    (hcontrary : ∀ x, smallAnimal x → ¬ largeAnimal x)
+    (hMouseSmall : ∀ x : CN' section5Lexicon .mouse, smallAnimal x.1) :
+    ¬ largeAnimal mickey :=
+  animal_branch_contrary_bridge .mouse smallAnimal largeAnimal hcontrary hMouseSmall mickey
+    (by decide)
+
+/-- `fracas_211`, the *second* instance of the same schema —
+`.elephant`/`largeAnimal`/`smallAnimal` playing the roles
+`.mouse`/`smallAnimal`/`largeAnimal` played for `fracas_210`, `P`/`Q`
+swapped to match ("elephants are large animals" / large-contrary-to-
+small, rather than "mice are small animals" / small-contrary-to-large).
+One proof (`animal_branch_contrary_bridge`) now covers two FraCaS
+problems, each keeping its own genuinely-needed lexical hypothesis while
+its own subtyping step stays free — `.elephant ≤ .animal` here is a real
+two-step widen (through `.mammal`), still free regardless of depth. -/
+theorem fracas_211_bridge
+    (largeAnimal smallAnimal : S5Individual → Prop)
+    (hcontrary : ∀ x, largeAnimal x → ¬ smallAnimal x)
+    (hAllElephantLarge : ∀ x : CN' section5Lexicon .elephant, largeAnimal x.1) :
+    ¬ smallAnimal dumbo :=
+  animal_branch_contrary_bridge .elephant largeAnimal smallAnimal hcontrary hAllElephantLarge
+    dumbo (by decide)
 
 end MTT.LinglibBridge
