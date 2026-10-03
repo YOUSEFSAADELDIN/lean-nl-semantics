@@ -27,11 +27,27 @@ reasoning - or `Section1.Every`/`Some` reused unchanged, wherever a
 problem's standard is itself quantified (`Comparatives.lean`'s header) -
 to get from premises to hypothesis. So this scan drops the shape
 restriction entirely and attempts every bare `fracas_NNN` theorem in
-Sections 3-9, regardless of its conclusion's head, via the exact same
-`attemptClose`/`negateConclusion` pipeline `BlindEvalCore.lean` already
-provides (now including `omega` in its fallback chain - see that file's
-own header for why that one addition was needed specifically for this
-scan's cardinal-comparative problems).
+Sections 3-9, regardless of its conclusion's head, via `BlindEvalCore
+.lean`'s own `attemptClose` (now including `omega` in its fallback chain
+- see that file's own header for why that one addition was needed
+specifically for this scan's cardinal-comparative problems), paired with
+this file's own `flipConclusion` rather than `BlindEvalCore.lean`'s
+`negateConclusion` - see the next paragraph for why.
+
+Unlike Section 1/2's bare+entailment-shaped subset - which, as it turns
+out, is made up entirely of *positively*-stated conclusions (gold `.no`
+theorems whose own written conclusion is already `¬ hypothesis`, like
+Section 1's own `fracas_006`, get filtered out by that section's shape
+check instead, since `¬ hypothesis`'s head is `Not`, not one of
+`blindEvalHeads`) - Sections 3-9 bare theorems freely state a `.no` gold
+answer either way: some as a positive conclusion whose negation this
+scan must derive, others (`fracas_147`, `fracas_210`, ...) by writing
+`¬ hypothesis` directly as the theorem's own literal conclusion. This
+scan's `flipConclusion` (below) and the `isNeg` check in
+`runBlindEvalGeneric` exist specifically to stay correct across both
+conventions - see `flipConclusion`'s own header for why naively reusing
+`BlindEvalCore.lean`'s `negateConclusion` here would mislabel every
+already-negated theorem.
 
 This still skips every suffixed name (`_dir1`/`_dir2`/`_from_gf`/...) the
 same way `BlindEval.lean` does, for the same reason: a countermodel pair
@@ -51,7 +67,8 @@ already are.
 -/
 open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Lean.Elab.Command
 open FraCaS (Answer)
-open FraCaS.Section1.Monotonicity.BlindEval (attemptClose negateConclusion)
+open FraCaS.Section1.Monotonicity (goalHeadConst)
+open FraCaS.Section1.Monotonicity.BlindEval (attemptClose)
 
 namespace FraCaS.BlindEvalSections3to9
 
@@ -61,7 +78,7 @@ for anything with a trailing suffix. Identical in spirit to `BlindEval
 copy lives inside `BlindEval.lean` itself, which (like this file) has no
 persistent `.olean` for anything else to import against - see this file's
 own header and `BlindEvalCore.lean`'s for the same reasoning applied to
-`attemptClose`/`negateConclusion`. -/
+`attemptClose`. -/
 def bareProblemId (n : Lean.Name) : Option Nat :=
   let s := (toString n).splitOn "." |>.getLast!
   if "fracas_".isPrefixOf s then
@@ -86,6 +103,32 @@ def answerToString : Answer → String
   | .no => "no"
   | .unknown => "unknown"
   | .undef => "undef"
+
+/-- Like `BlindEvalCore.lean`'s own `negateConclusion`, but polarity-
+aware: strips a leading `Not` from the conclusion instead of wrapping a
+second one around it, when the conclusion is already negated. Needed
+because, unlike Section 1/2's own entailment-shaped bare theorems
+(always literally headed by a positive GQ application - `Every`/`Some`/
+`Most`/...), many Sections 3-9 bare theorems state a `.no` gold answer
+by writing the conclusion as `¬ hypothesis` directly (e.g. `fracas_210`'s
+own `¬ largeAnimal mickey`, or `fracas_147`'s trivial `¬X → ¬X`), not as
+a positive `hypothesis` whose negation this scan would need to derive
+separately. Wrapping a second `Not` around an already-negated conclusion
+asks for `¬¬hypothesis` - a strictly stronger, usually-false claim, not
+"does the raw hypothesis hold" - so blindly reusing `negateConclusion`
+here mislabels every one of these as a false "mismatch" even though the
+tactic chain's own underlying inference was correct (CI-confirmed: see
+this file's own commit history for the real run that first surfaced
+this, 100% of whose `(no, yes)`-shaped mismatches were exactly this). -/
+partial def flipConclusion (ty : Expr) : MetaM Expr := do
+  if ty.isForall then
+    forallBoundedTelescope ty (some 1) fun fvars body => do
+      let body' ← flipConclusion body
+      mkForallFVars fvars body'
+  else
+    match ty.getAppFn.constName? with
+    | some ``Not => return ty.getAppArgs[0]!
+    | _ => mkAppM ``Not #[ty]
 
 /-- The shared scan every `#blind_eval_section{3..9}` command runs,
 parameterized only by which namespace's bare `fracas_NNN` theorems to
@@ -120,21 +163,30 @@ def runBlindEvalGeneric (namePrefix : Lean.Name) (label : String) : TermElabM Un
     -- `continue`/`break` and `catch` with no local compiler to check it.
     let result ←
       try
-        let posOk ← attemptClose ty
-        let tyNeg ← negateConclusion ty
-        let negOk ← attemptClose tyNeg
-        pure (.ok (posOk, negOk) : Except String (Bool × Bool))
+        let isNeg := (← goalHeadConst ty) == some ``Not
+        let closesAsWritten ← attemptClose ty
+        let tyFlipped ← flipConclusion ty
+        let closesFlipped ← attemptClose tyFlipped
+        -- `hypClose`/`notHypClose` are which of the two queries actually
+        -- closes the raw hypothesis vs. its negation - not just "the
+        -- written type" vs. "its `Not`-wrap", since which of those two
+        -- IS the raw hypothesis depends on whether this theorem's own
+        -- conclusion already is the negation (see `flipConclusion`'s
+        -- header).
+        let hypClose := if isNeg then closesFlipped else closesAsWritten
+        let notHypClose := if isNeg then closesAsWritten else closesFlipped
+        pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool))
       catch e =>
         let msg ← try e.toMessageData.toString catch _ => pure "<error message could not be rendered>"
         pure (.error msg)
 
     match result with
     | .error msg => errored := errored.push (problemNum, msg)
-    | .ok (posOk, negOk) =>
+    | .ok (hypClose, notHypClose) =>
       let decision :=
-        if posOk && !negOk then "yes"
-        else if negOk && !posOk then "no"
-        else if !posOk && !negOk then "unknown"
+        if hypClose && !notHypClose then "yes"
+        else if notHypClose && !hypClose then "no"
+        else if !hypClose && !notHypClose then "unknown"
         else "contradiction"
 
       if decision == "contradiction" then
