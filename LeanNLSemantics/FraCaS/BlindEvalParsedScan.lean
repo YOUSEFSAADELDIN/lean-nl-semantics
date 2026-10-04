@@ -38,9 +38,9 @@ elab "#blind_eval_parsed" : command => liftTermElabM do
     logInfo m!"blind_eval_parsed: attempting fracas_{idn}"
     let result ← withFreshBudget
       (do
-        let isNeg := isNegHead (← goalHeadConst ty)
+        let isNeg := isNegHead (← withCurrHeartbeats (goalHeadConst ty))
         let closesAsWritten ← attemptClose ty
-        let closesFlipped ← attemptClose (← flipConclusion ty)
+        let closesFlipped ← attemptClose (← withCurrHeartbeats (flipConclusion ty))
         let hypClose := if isNeg then closesFlipped else closesAsWritten
         let notHypClose := if isNeg then closesAsWritten else closesFlipped
         pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool)))

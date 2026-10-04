@@ -249,6 +249,15 @@ the *whole* scanning command's cumulative count: CI run 37169187753, the
 first run with a working `aesop`, crossed 200000 heartbeats that way at
 `fracas_011` and the uncaught runtime exception aborted the rest of
 Section 1's scan. -/
+--
+-- That alone is not enough, though: `withCurrHeartbeats` only moves the
+-- *starting point* a check compares against, while every heartbeat spent
+-- inside a nested attempt still accrues globally - so one problem's twenty
+-- searches can push its own window past the limit too (CI run
+-- 37169763210: `fracas_022`/`fracas_030`'s countermodel claims, in
+-- `negateConclusion`). The scans therefore also run each bookkeeping call
+-- in its own `withCurrHeartbeats`, leaving nothing at the problem level
+-- that checks the budget at all; `withFreshBudget` remains the backstop.
 def withFreshBudget {α : Type} (x : TermElabM α) (h : Exception → TermElabM α) : TermElabM α :=
   withCurrHeartbeats <| tryCatchRuntimeEx x h
 
@@ -380,9 +389,9 @@ def runBlindEvalGeneric (namePrefix : Lean.Name) (label : String) : TermElabM Un
     logInfo m!"{label}: attempting fracas_{problemNum}"
     let result ← withFreshBudget
       (do
-        let isNeg := isNegHead (← goalHeadConst ty)
+        let isNeg := isNegHead (← withCurrHeartbeats (goalHeadConst ty))
         let closesAsWritten ← attemptClose ty
-        let tyFlipped ← flipConclusion ty
+        let tyFlipped ← withCurrHeartbeats (flipConclusion ty)
         let closesFlipped ← attemptClose tyFlipped
         -- which query closes the raw hypothesis vs. its negation depends
         -- on whether the theorem's own conclusion already is the negation

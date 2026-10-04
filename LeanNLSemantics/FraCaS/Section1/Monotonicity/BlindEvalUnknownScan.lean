@@ -59,7 +59,7 @@ elab "#blind_eval_unknown" : command => liftTermElabM do
     let attempt ← withFreshBudget
       (do
         let posOk ← attemptClose ty
-        let negOk ← attemptClose (← negateConclusion ty)
+        let negOk ← attemptClose (← withCurrHeartbeats (negateConclusion ty))
         pure (some (posOk, negOk)))
       (fun _ => pure none)
     let some (posOk, negOk) := attempt
