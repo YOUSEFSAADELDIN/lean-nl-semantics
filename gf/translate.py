@@ -175,8 +175,23 @@ def _is_leaf_lexical(name: str) -> bool:
     return any(name.endswith(suf) for suf in _LEXICAL_SUFFIXES)
 
 
-def _leaf_words(t) -> list[str]:
+def _leaf_words(t, keep_det: bool = False) -> list[str]:
+    # Inside a VP name (keep_det), a definite plural object ("read out THE
+    # ITEMS on the agenda") is read universally - the same convention this
+    # translator already applies to a definite plural SUBJECT ("the
+    # residents ..." -> `Every`, see _QUANTIFIER_BY_QUANT) - so it names
+    # the same predicate as "read out EVERY ITEM on the agenda" (FraCaS 90).
+    if (
+        keep_det
+        and t.head == "DetQuant"
+        and len(t.args) == 2
+        and t.args[0].head == "DefArt"
+        and t.args[1].head == "NumPl"
+    ):
+        return ["every"]
     if not t.args:
+        if keep_det and t.head.endswith("_Det"):
+            return [t.head[: -len("_Det")]]
         if _is_leaf_lexical(t.head):
             for suf in _LEXICAL_SUFFIXES:
                 if t.head.endswith(suf):
@@ -189,7 +204,7 @@ def _leaf_words(t) -> list[str]:
         return []
     words = []
     for a in t.args:
-        words.extend(_leaf_words(a))
+        words.extend(_leaf_words(a, keep_det))
     return words
 
 
@@ -427,6 +442,17 @@ def _resolve_subject(subject):
         return _resolve_quantifier(det), cn
     if subject.head == "PredetNP" and len(subject.args) == 2:
         predet, np = subject.args
+        # "only/just one accountant": a bare counted numeral already reads
+        # as `Exactly n` (see _resolve_quantifier), which is exactly what
+        # "only"/"just" add - so these defer to the wrapped determiner, and
+        # only when it IS a counted numeral ("only accountants ..." is a
+        # different, focus-sensitive construction, not handled).
+        if predet.head in ("only_Predet", "just_Predet"):
+            det, cn = _det_and_restrictor(np)
+            quant = _resolve_quantifier(det)
+            if quant.startswith("Exactly "):
+                return quant, cn
+            raise NotImplementedError(f"{predet.head} without a counted numeral is not handled")
         if predet.head not in _QUANTIFIER_BY_PREDET:
             raise NotImplementedError(
                 f"predeterminer {predet.head!r} has no known Lean mapping yet "
@@ -457,8 +483,43 @@ def _scope_name(vp) -> str:
         and len(vp.args[0].args) == 1
         and vp.args[0].args[0].head == "come_V"
     ):
-        return camel_name(_leaf_words(vp.args[1]))
-    return camel_name(_leaf_words(vp))
+        return camel_name(_leaf_words(vp.args[1], keep_det=True))
+    # Determiners inside the VP (on its object) stay in the name: "spend
+    # a lot of time at home" and "spend time at home" (FraCaS 30-32, 47,
+    # 48) are different predicates, and dropping `aLotOf_Det` made them
+    # one - which let the end-to-end evaluation "prove" FraCaS 30/32/47
+    # trivially, against gold. Subject determiners never reach this
+    # function (the subject's own determiner becomes the quantifier), and
+    # the grammatical articles (`DefArt`/`IndefArt`, inside `DetQuant`) are
+    # not `_Det` leaves, so "read out the item" still names `readOutItem`.
+    return camel_name(_leaf_words(vp, keep_det=True))
+
+
+# Relative pronouns `_restrictor_expr` treats alike: `IdRP` (realized
+# "that") and `who_RP` (FraCaSLogic.gf's own, realized "who" - FraCaS's
+# own wording). Same relative clause, same translation.
+_RELATIVE_PRONOUNS = ("IdRP", "who_RP")
+
+
+def _normalize_cn(cn):
+    """`AdjCN ap (RelCN base rel)` ("leading [tenors that are excellent]")
+    and `RelCN (AdjCN ap base) rel` ("[leading tenors] that are
+    excellent") are two attachments of the same words that a real parse
+    (gf/parse_eval.py) returns side by side. With an intersective
+    adjective both denote the same set, so the first is normalized into
+    the second - otherwise the same English would translate differently
+    (a fused name vs a conjunction, or - via translate_cl's bare-plural
+    RelCN override - `Some` vs `Every`) purely as an artifact of which
+    tree the parser ranked first."""
+    if (
+        cn.head == "AdjCN"
+        and len(cn.args) == 2
+        and cn.args[1].head == "RelCN"
+        and len(cn.args[1].args) == 2
+    ):
+        inner = cn.args[1]
+        return App("RelCN", [App("AdjCN", [cn.args[0], inner.args[0]]), inner.args[1]])
+    return cn
 
 
 def _restrictor_expr(cn):
@@ -472,23 +533,7 @@ def _restrictor_expr(cn):
     (`fun x => person x ∧ right x`), not one fused name - matching that
     shape exactly is what "faithfully as possible" means here, the same
     principle behind `_try_translate_partitive_identity`'s inversion."""
-    # `AdjCN ap (RelCN base rel)` ("leading [tenors that are
-    # excellent]") and `RelCN (AdjCN ap base) rel` ("[leading tenors]
-    # that are excellent") are two attachments of the same words that a
-    # real parse (gf/parse_eval.py) returns side by side. With an
-    # intersective adjective both denote the same set, so the first is
-    # normalized into the second here - otherwise the same English would
-    # translate to a fused single name on one attachment and a
-    # conjunction on the other, purely as an artifact of which tree the
-    # parser happened to rank first.
-    if (
-        cn.head == "AdjCN"
-        and len(cn.args) == 2
-        and cn.args[1].head == "RelCN"
-        and len(cn.args[1].args) == 2
-    ):
-        inner = cn.args[1]
-        cn = App("RelCN", [App("AdjCN", [cn.args[0], inner.args[0]]), inner.args[1]])
+    cn = _normalize_cn(cn)
     if (
         cn.head == "RelCN"
         and len(cn.args) == 2
@@ -496,7 +541,7 @@ def _restrictor_expr(cn):
         and len(cn.args[1].args) == 3
         and cn.args[1].args[2].head == "RelVP"
         and len(cn.args[1].args[2].args) == 2
-        and cn.args[1].args[2].args[0].head == "IdRP"
+        and cn.args[1].args[2].args[0].head in _RELATIVE_PRONOUNS
     ):
         base_cn = cn.args[0]
         inner_vp = cn.args[1].args[2].args[1]
@@ -614,6 +659,90 @@ def _try_translate_partitive_identity(subject, vp):
     )
 
 
+def _try_translate_comparative(subject_name: str, vp):
+    """"X is ADJ-er than Y" (`ComparA`) and "X is as ADJ as Y" (`CAdvAP
+    as_CAdv`) as BINARY relations `adjThan x y` / `adjAs x y` - the
+    naming scripts/gen_gf_cross_check.py's own comparative builders
+    already use. Previously these fell through to `_scope_name`, which
+    fused the whole VP into one unary predicate of the subject
+    (`fastItelXZ pc6082`), so "as fast as" and "faster than" became the
+    same predicate (FraCaS 228 then "followed" trivially, against gold),
+    and the standard of comparison was lost entirely.
+
+    The standard may be a named individual, `every`/indefinite-quantified
+    ("faster than every ITEL computer" - `Every itelComputer (fastThan
+    pc6082)`), or a two-way and/or coordination of named individuals.
+    Anything else (a measure phrase like "five hundred MIPS", FraCaS 242)
+    returns None and is left to the existing paths."""
+    if not (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompAP"
+        and len(vp.args[0].args) == 1
+    ):
+        return None
+    ap = vp.args[0].args[0]
+    if ap.head == "ComparA" and len(ap.args) == 2:
+        adj, standard = ap.args
+        relation = camel_name(_leaf_words(adj)) + "Than"
+    elif (
+        ap.head == "CAdvAP"
+        and len(ap.args) == 3
+        and ap.args[0].head == "as_CAdv"
+        and ap.args[1].head == "PositA"
+    ):
+        adj, standard = ap.args[1], ap.args[2]
+        relation = camel_name(_leaf_words(adj)) + "As"
+    else:
+        return None
+
+    def named(np):
+        if np.head == "UsePN" and len(np.args) == 1:
+            return camel_name(_leaf_words(np))
+        return None
+
+    other = named(standard)
+    if other is not None:
+        return Translation(
+            lean_prop=f"{relation} {subject_name} {other}",
+            free_predicates=[relation],
+            free_individuals=[subject_name, other],
+            binary_predicates=[relation],
+        )
+    if (
+        standard.head == "ConjNP"
+        and len(standard.args) == 2
+        and standard.args[0].head in ("and_Conj", "or_Conj")
+        and standard.args[1].head == "BaseNP"
+        and len(standard.args[1].args) == 2
+    ):
+        names = [named(np) for np in standard.args[1].args]
+        if all(names):
+            op = "∧" if standard.args[0].head == "and_Conj" else "∨"
+            return Translation(
+                lean_prop=f"({relation} {subject_name} {names[0]} {op} {relation} {subject_name} {names[1]})",
+                free_predicates=[relation],
+                free_individuals=[subject_name, *names],
+                binary_predicates=[relation],
+            )
+        return None
+    if standard.head == "DetCN" and len(standard.args) == 2:
+        try:
+            quant = _resolve_quantifier(standard.args[0])
+        except NotImplementedError:
+            return None
+        if quant not in ("Every", "Some"):
+            return None
+        restrictor_expr, restrictor_preds = _restrictor_expr(standard.args[1])
+        return Translation(
+            lean_prop=f"{quant} {restrictor_expr} ({relation} {subject_name})",
+            free_predicates=[*restrictor_preds, relation],
+            free_individuals=[subject_name],
+            binary_predicates=[relation],
+        )
+    return None
+
+
 def _try_translate_named_individual_fact(subject, vp):
     """Handles a bare 'ProperNoun is/was a CN' or 'ProperNoun VERB-PHRASE'
     fact about a single named individual - e.g. fracas_099's "Smith was
@@ -639,6 +768,9 @@ def _try_translate_named_individual_fact(subject, vp):
     if subject.head != "UsePN" or len(subject.args) != 1:
         return None
     individual_name = camel_name(_leaf_words(subject))
+    comparative = _try_translate_comparative(individual_name, vp)
+    if comparative is not None:
+        return comparative
     if (
         vp.head == "UseComp"
         and len(vp.args) == 1
@@ -940,8 +1072,45 @@ def _try_translate_bound_possessive_presupposition(subject, vp):
     )
 
 
+def _translate_existential(np) -> Translation:
+    """`ExistNP np` - "there is/are/was NP", FraCaS Section 1's usual
+    hypothesis shape ("There are Italian men who want to be a great
+    tenor"). Only an indefinite NP is handled (the existential's own
+    definiteness restriction makes that the normal case). A relative
+    clause on it supplies the scope - "there are [Italian men] [who want
+    to be a great tenor]" is `Some italianMan wantToBeGreatTenor`, the same
+    shape this project's own Lean statement of those problems uses - and
+    a bare one is plain existence."""
+    quant, cn = _resolve_subject(np)
+    if quant != "Some":
+        raise NotImplementedError(f"existential with a non-indefinite NP ({quant}) is not handled")
+    cn = _normalize_cn(cn)
+    if (
+        cn.head == "RelCN"
+        and len(cn.args) == 2
+        and cn.args[1].head == "UseRCl"
+        and len(cn.args[1].args) == 3
+        and cn.args[1].args[2].head == "RelVP"
+        and len(cn.args[1].args[2].args) == 2
+        and cn.args[1].args[2].args[0].head in _RELATIVE_PRONOUNS
+    ):
+        restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
+        scope_name = _scope_name(cn.args[1].args[2].args[1])
+        return Translation(
+            lean_prop=f"Some {restrictor_expr} {scope_name}",
+            free_predicates=[*restrictor_preds, scope_name],
+        )
+    restrictor_expr, restrictor_preds = _restrictor_expr(cn)
+    return Translation(
+        lean_prop=f"∃ x, {restrictor_expr} x",
+        free_predicates=restrictor_preds,
+    )
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
+    if t.head == "ExistNP" and len(t.args) == 1:
+        return _translate_existential(t.args[0])
     if t.head != "PredVP" or len(t.args) != 2:
         raise NotImplementedError(
             f"only 'PredVP (DetCN det cn) vp' is handled so far, got head={t.head!r}"
@@ -979,6 +1148,7 @@ def translate_cl(t) -> Translation:
         return conj_subject
 
     quant, cn = _resolve_subject(subject)
+    cn = _normalize_cn(cn)
 
     # Bare-plural + relative-clause subjects ("leading tenors that are
     # excellent are indispensable", problem 13) are a genuine ambiguity

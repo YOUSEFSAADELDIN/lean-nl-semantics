@@ -323,8 +323,8 @@ open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Sect
 -- computing which concrete decidability argument each one needs.
 attribute [local instance] Classical.propDecidable
 
-theorem fracas_001_from_gf {A : Type*} (italian becomeGreatestTenor : A → Prop) :
-    Some italian becomeGreatestTenor → Some italian becomeGreatestTenor :=
+theorem fracas_001_from_gf {A : Type*} (italian becomeWorldsGreatestTenor : A → Prop) :
+    Some italian becomeWorldsGreatestTenor → Some italian becomeWorldsGreatestTenor :=
   fun h1 => fracas_001 _ _ h1
 
 theorem fracas_002_from_gf {A : Type*} (italianMan wantGreatTenor greatTenor : A → Prop) :
@@ -403,8 +403,8 @@ theorem fracas_024_from_gf {A : Type*} (delegate obtainInterestingResultFromSurv
     Some delegate obtainInterestingResultFromSurvey → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → Some delegate obtainResultFromSurvey :=
   fun h1 h2 => fracas_024 _ _ _ h1 h2
 
-theorem fracas_025_from_gf {A : Type*} (delegate getResultPublishInMajorNationalNewspaper getResultPublish : A → Prop) :
-    Some delegate getResultPublishInMajorNationalNewspaper → (∀ x, getResultPublishInMajorNationalNewspaper x → getResultPublish x) → Some delegate getResultPublish :=
+theorem fracas_025_from_gf {A : Type*} (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) :
+    Some delegate getEveryResultPublishInMajorNationalNewspaper → (∀ x, getEveryResultPublishInMajorNationalNewspaper x → getEveryResultPublish x) → Some delegate getEveryResultPublish :=
   fun h1 h2 => fracas_025 _ _ _ h1 h2
 
 theorem fracas_026_from_gf {A : Type*} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) :
@@ -431,8 +431,8 @@ theorem fracas_055_from_gf {A : Type*} (irishDelegate finishSurveyOnTime delegat
     Some irishDelegate finishSurveyOnTime → Every irishDelegate delegate → Some delegate finishSurveyOnTime :=
   fun h1 h2 => fracas_055 _ _ _ h1 h2
 
-theorem fracas_057_from_gf {A : Type*} (portugueseDelegate getResultPublishInMajorNationalNewspaper delegate : A → Prop) :
-    Some portugueseDelegate getResultPublishInMajorNationalNewspaper → Every portugueseDelegate delegate → Some delegate getResultPublishInMajorNationalNewspaper :=
+theorem fracas_057_from_gf {A : Type*} (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) :
+    Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper → Every portugueseDelegate delegate → Some delegate getEveryResultPublishInMajorNationalNewspaper :=
   fun h1 h2 => fracas_057 _ _ _ h1 h2
 
 theorem fracas_059_from_gf {A : Type*} (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) :
@@ -459,8 +459,8 @@ theorem fracas_089_from_gf {A : Type*} (representativeMasc client atMeeting : A 
     Every (fun x => representativeMasc x ∨ client x) atMeeting → Every representativeMasc atMeeting ∧ Every client atMeeting :=
   fun h1 => fracas_089 _ _ _ h1
 
-theorem fracas_090_from_gf {A : Type*} (chairman read_outItemOnAgenda : A → Prop) :
-    Every chairman read_outItemOnAgenda → Every chairman read_outItemOnAgenda :=
+theorem fracas_090_from_gf {A : Type*} (chairman read_outEveryItemOnAgenda : A → Prop) :
+    Every chairman read_outEveryItemOnAgenda → Every chairman read_outEveryItemOnAgenda :=
   fun h1 => fracas_090 _ _ h1
 
 theorem fracas_096_from_gf {A : Type*} (ancientGreek notedPhilosopher : A → Prop) :
@@ -478,6 +478,10 @@ theorem fracas_099_from_gf {A : Type*} (clientAtDemonstration impressBySystemPer
 theorem fracas_103_from_gf {A : Type*} (apcomManager haveCompanyCar : A → Prop) (jones : A) :
     Every apcomManager haveCompanyCar → apcomManager jones → haveCompanyCar jones :=
   fun h1 h2 => fracas_103 _ _ _ h1 h2
+
+theorem fracas_105_from_gf {A : Type*} [Fintype A] (accountant attendMeeting : A → Prop) :
+    Exactly 1 accountant attendMeeting → ¬ (No accountant attendMeeting) :=
+  fun h1 => fracas_105 _ _ h1
 
 theorem fracas_114_from_gf {A : Type*} (female : A → Prop) (has use : A → A → Prop) (mary : A) (maryWorkstation : A) :
     (female mary ∧ has mary maryWorkstation ∧ use mary maryWorkstation) → use mary maryWorkstation :=

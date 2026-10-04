@@ -3799,6 +3799,52 @@ _FRACAS_084_HYPOTHESIS_CHECK = [
     ),
 ]
 
+# FraCaS's OWN wording, for the constructions the end-to-end parser
+# (parse_rank.py / scripts/gen_blind_eval_parsed.py) needs but which the
+# hand-built trees above never used, because they were written for the
+# project's rewordings ("leading tenors THAT are excellent", "SOME Italian
+# men want ..."): the `who` relative pronoun, the "there are/was NP"
+# existential (FraCaS Section 1's usual hypothesis shape), the frozen
+# "used to", and "just one". One confirmed tree per construction is
+# enough - the restricted parse grammar (gen_parse_grammar.py) inherits
+# every function a confirmed tree uses, and the parser then has to find
+# trees for all other sentences on its own. Labelled `english_...`, not
+# `fracas_...`, so scripts/gen_gf_cross_check.py (which reads `fracas_`
+# labels as premise/hypothesis roles of its own cross-check theorems)
+# never mistakes one for an extra role.
+_FRACAS_ENGLISH_CHECKS = [
+    (
+        'english_001_hypothesis',
+        'linearize UttS (UseCl (TTAnt TPast ASimul) PPos (ExistNP (DetCN (DetQuant IndefArt NumSg) (RelCN (UseN italian_N) (UseRCl (TTAnt TPast ASimul) PPos (RelVP who_RP (ComplSlash (SlashV2a become_V2) (DetCN worlds_Det (AdjCN (PositA greatest_A) (UseN tenor_N))))))))))',
+        "there was an Italian who became the world's greatest tenor",
+    ),
+    (
+        'english_002_hypothesis',
+        'linearize ExistNP (DetCN (DetQuant IndefArt NumPl) (RelCN (AdjCN (PositA italian_A) (UseN man_N)) (UseRCl (TTAnt TPres ASimul) PPos (RelVP who_RP (ComplVV want_VV (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA great_A) (UseN tenor_N))))))))))',
+        'there are Italian men who want to be a great tenor',
+    ),
+    (
+        'english_015_hypothesis',
+        'linearize ExistNP (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN tenor_N) (UseRCl (TTAnt TFut ASimul) PPos (RelVP who_RP (ComplSlash (SlashV2a take_V2) (AdvNP (MassNP (UseN part_N)) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))))))',
+        'there are tenors who will take part in the concert',
+    ),
+    (
+        'english_013_premise2',
+        'linearize PredVP (DetCN (DetQuant IndefArt NumPl) (RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) (UseRCl (TTAnt TPres ASimul) PPos (RelVP who_RP (UseComp (CompAP (PositA excellent_A))))))) (UseComp (CompAP (PositA indispensable_A)))',
+        'leading tenors who are excellent are indispensable',
+    ),
+    (
+        'english_029_premise1',
+        'linearize PredVP (DetCN both_Det (UseN commissioner_N)) (ComplVV usedTo_VV (UseComp (CompCN (AdjCN (PositA leading_A) (UseN businessman_N)))))',
+        'both commissioners used to be leading businessmen',
+    ),
+    (
+        'english_105_premise1',
+        'linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP just_Predet (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))',
+        'just one accountant attended the meeting',
+    ),
+]
+
 CHECKS = (
     BASE_CHECKS
     + TENSE_RECONFIRMATIONS
@@ -3812,6 +3858,7 @@ CHECKS = (
     + _SECTION7_TENSED_CHECKS
     + _SECTION8_TENSED_CHECKS
     + _SECTION9_TENSED_CHECKS
+    + _FRACAS_ENGLISH_CHECKS
 )
 
 

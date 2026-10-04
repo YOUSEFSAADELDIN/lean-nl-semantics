@@ -119,6 +119,19 @@ concrete FraCaSLogicEng of FraCaSLogic =
     mtalk_PN = mkPN "MTALK" ;
     in1990_Adv = mkAdv "in 1990" ;
     from1988to1992_Adv = mkAdv "from 1988 to 1992" ;
+    -- See FraCaSLogic.gf for why each of these three exists.
+    who_RP = {
+      s = table {
+        RC _ (NCase Gen) | RC _ NPNomPoss => "whose" ;
+        RC _ _ => "who" ;
+        RPrep _ => "whom"
+        } ;
+      a = RNoAg
+      } ;
+    ExistNP np =
+      mkClause "there" (agrP3 (fromAgr np.a).n)
+        (insertObj (\\_ => np.s ! NPAcc) (predAux auxBe)) ;
+    usedTo_VV = mkVV (mkV "used" "used" "used" "used" "using") ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

@@ -15,81 +15,39 @@ for the exact pipeline and what it deliberately does not supply (any
 background-knowledge premise). Evaluated by
 `BlindEvalParsedScan.lean`.
 
-111 of 342 problems carried all the way through;
+159 of 342 problems carried all the way through;
 the rest, by first failing stage:
-- a sentence does not parse: 188
-- a sentence parses but translate.py does not cover its reading: 30
+- a sentence does not parse: 130
+- a sentence parses but translate.py does not cover its reading: 40
 - a translation needs non-generic assembly: 13
 
 Per-problem skip reasons (first failing sentence/stage):
 
-- 1: hypothesis does not parse: "There was an Italian who became the world's greatest tenor."
-- 2: hypothesis does not parse: 'There are Italian men who want to be a great tenor.'
-- 3: hypothesis does not parse: 'There are Italian men who want to be a great tenor.'
-- 4: hypothesis does not parse: 'There are Italian tenors who want to be great.'
-- 5: hypothesis does not parse: 'There are really ambitious tenors who are Italian.'
-- 6: hypothesis does not parse: 'There are really great tenors who are modest.'
-- 7: hypothesis does not parse: 'There are great tenors who are Swedish.'
-- 8: hypothesis does not parse: 'There are great tenors who are German.'
-- 9: hypothesis does not parse: 'There are great tenors who are British.'
-- 10: hypothesis does not parse: 'There are great tenors who are Italian.'
-- 11: hypothesis does not parse: 'There are great tenors who sing popular music.'
 - 12: premise 1 parses (1 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
-- 13: premise 2 does not parse: 'Leading tenors who are excellent are indispensable.'
-- 14: hypothesis does not parse: 'Pavarotti is a leading tenor who comes cheap.'
-- 15: hypothesis does not parse: 'There are tenors who will take part in the concert.'
-- 16: hypothesis does not parse: 'There are tenors who will contribute their fees to charity.'
-- 18: premise 3 does not parse: 'Every person who has the right to live in Europe can travel freely within Europe.'
-- 19: premise 3 does not parse: 'Every person who has the right to live in Europe can travel freely within Europe.'
-- 20: premise 3 does not parse: 'Every person who has the right to live in Europe can travel freely within Europe.'
-- 21: premise 3 does not parse: 'Every individual who has the right to live in Europe can travel freely within Europe.'
-- 26: premise 3 does not parse: 'All people who are resident in Europe can travel freely within Europe.'
-- 27: premise 3 does not parse: 'All people who are from Sweden are from Scandinavia.'
+- 27: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
 - 28: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
-- 29: premise 1 does not parse: 'Both commissioners used to be leading businessmen.'
-- 34: premise 3 does not parse: 'Every person who has the right to live in Europe can travel freely within Europe.'
-- 35: premise 3 does not parse: 'Every person who has the right to live in Europe can travel freely within Europe.'
-- 36: premise 3 does not parse: 'Every person who has the right to live in Europe can travel freely within Europe.'
-- 37: premise 3 does not parse: 'Every individual who has the right to live anywhere in Europe can travel freely within Europe.'
-- 42: premise 3 does not parse: 'All people who are resident in Europe can travel freely within Europe.'
-- 43: premise 3 does not parse: 'All people who are from Sweden are from Scandinavia.'
+- 43: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
 - 44: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
-- 45: premise 1 does not parse: 'Both commissioners used to be businessmen.'
 - 46: hypothesis parses (108 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 53: premise 1 does not parse: 'The residents of major western countries can travel freely within Europe.'
-- 58: premise 1 does not parse: 'Most Europeans who are resident in Europe can travel freely within Europe.'
 - 59: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
 - 60: premise 1 parses (22 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
-- 61: premise 1 does not parse: 'Both female commissioners used to be in business.'
 - 62: hypothesis parses (108 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 69: premise 1 does not parse: 'The residents of western countries can travel freely within Europe.'
-- 74: hypothesis does not parse: 'Most Europeans who are resident outside Europe can travel freely within Europe.'
 - 75: hypothesis parses (22 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
 - 76: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
-- 77: premise 1 does not parse: 'Both commissioners used to be in business.'
 - 78: hypothesis parses (108 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 81: premise 1 does not parse: 'Smith, Jones and Anderson signed the contract.'
-- 82: premise 1 does not parse: 'Smith, Jones and several lawyers signed the contract.'
-- 83: premise 1 does not parse: 'Either Smith, Jones or Anderson signed the contract.'
-- 84: premise 1 does not parse: 'Either Smith, Jones or Anderson signed the contract.'
+- 81: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
+- 82: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
+- 83: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
+- 84: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 85: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 86: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 89: hypothesis does not parse: 'Every representative and every client was at the meeting.'
-- 91: premise 1 does not parse: 'The people who were at the meeting voted for a new chairman.'
-- 92: premise 1 does not parse: 'All the people who were at the meeting voted for a new chairman.'
+- 91: hypothesis parses (2 readings) but does not translate: AdvNP's own wrapped NP is only handled as a bare DetCN so far, got head='everyone_NP'
+- 92: hypothesis parses (2 readings) but does not translate: AdvNP's own wrapped NP is only handled as a bare DetCN so far, got head='everyone_NP'
 - 93: premise 1 does not parse: 'The people who were at the meeting all voted for a new chairman.'
-- 95: premise 1 does not parse: 'The Ancient Greeks were noted philosophers.'
-- 96: premise 1 does not parse: 'The Ancient Greeks were all noted philosophers.'
 - 97: hypothesis does not parse: 'The system failure was blamed on one or more software faults.'
-- 101: premise 1 does not parse: 'University graduates make poor stock-market traders.'
-- 102: premise 1 does not parse: 'University graduates make poor stock-market traders.'
+- 101: hypothesis does not parse: 'Smith is likely to make a poor stock market trader.'
 - 104: hypothesis does not parse: 'Jones has more than one company car.'
-- 105: premise 1 does not parse: 'Just one accountant attended the meeting.'
-- 106: premise 1 does not parse: 'Just one accountant attended the meeting.'
-- 107: premise 1 does not parse: 'Just one accountant attended the meeting.'
-- 108: premise 1 does not parse: 'Just one accountant attended the meeting.'
-- 109: premise 1 does not parse: 'Just one accountant attended the meeting.'
-- 110: premise 1 does not parse: 'Just one accountant attended the meeting.'
 - 111: hypothesis needs non-generic assembly (conjuncts/Skolem/bundle)
 - 112: hypothesis needs non-generic assembly (conjuncts/Skolem/bundle)
 - 113: hypothesis needs non-generic assembly (conjuncts/Skolem/bundle)
@@ -111,8 +69,6 @@ Per-problem skip reasons (first failing sentence/stage):
 - 129: premise 1 parses (3 readings) but does not translate: quantifier 'PossPron' has no known Lean mapping yet (see _QUANTIFIER_BY_QUANT)
 - 130: premise 1 parses (3 readings) but does not translate: quantifier 'PossPron' has no known Lean mapping yet (see _QUANTIFIER_BY_QUANT)
 - 131: premise 2 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 134: premise 1 does not parse: 'Every customer who owns a computer has a service contract for it.'
-- 135: premise 1 does not parse: 'Every customer who owns a computer has a service contract for it.'
 - 136: premise 1 does not parse: 'Every executive who had a laptop computer brought it to take notes at the meeting.'
 - 137: premise 1 does not parse: 'There are 100 companies.'
 - 139: premise 1 does not parse: 'A company director awarded himself a large payrise.'
@@ -126,9 +82,6 @@ Per-problem skip reasons (first failing sentence/stage):
 - 147: premise 2 does not parse: "Bill didn't."
 - 148: premise 1 does not parse: 'Has John spoken to Mary?'
 - 149: premise 2 does not parse: 'The students have too.'
-- 150: premise 1 does not parse: 'John went to Paris by car, and Bill by train.'
-- 151: premise 1 does not parse: 'John went to Paris by car, and Bill by train to Berlin.'
-- 152: premise 1 does not parse: 'John went to Paris by car, and Bill to Berlin.'
 - 153: premise 1 does not parse: 'John is going to Paris by car, and the students by train.'
 - 154: premise 2 does not parse: 'Bill by train.'
 - 155: premise 2 does not parse: 'Bill owns one too.'
@@ -143,7 +96,7 @@ Per-problem skip reasons (first failing sentence/stage):
 - 164: premise 2 does not parse: 'And to Sue.'
 - 165: premise 2 does not parse: 'On Friday.'
 - 166: premise 2 does not parse: 'And on Friday.'
-- 167: premise 1 does not parse: 'Twenty men work in the Sales Department.'
+- 167: premise 1 parses (4 readings) but does not translate: unrecognized Sub100 numeral shape: 'pot1'
 - 168: premise 2 does not parse: 'And forty five women.'
 - 169: premise 1 does not parse: 'John found Mary before Bill.'
 - 170: premise 1 does not parse: 'John found Mary before Bill.'
@@ -224,7 +177,6 @@ Per-problem skip reasons (first failing sentence/stage):
 - 301: premise 1 does not parse: 'Smith ran his own business for two years.'
 - 302: premise 1 does not parse: 'Smith ran his own business for two years.'
 - 307: premise 1 parses (4 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
-- 308: hypothesis does not parse: 'There is a representative that Smith wrote to every week.'
 - 311: premise 1 does not parse: 'Smith had left the house at a quarter past five.'
 - 312: premise 1 does not parse: 'ITEL always delivers reports late.'
 - 313: premise 1 does not parse: 'ITEL never delivers reports late.'
@@ -244,7 +196,7 @@ Per-problem skip reasons (first failing sentence/stage):
 - 329: premise 1 does not parse: 'ITEL was winning the contract from APCOM in 1993.'
 - 331: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 332: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
-- 333: premise 1 does not parse: 'Smith, Anderson and Jones met.'
+- 333: premise 1 parses (1 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 338: premise 1 parses (20 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 339: premise 1 parses (20 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 340: premise 1 does not parse: 'Smith saw Jones sign the contract.'
@@ -260,337 +212,1117 @@ namespace FraCaS
 namespace BlindEvalParsedClaims
 open FraCaS.Section1 FraCaS.Section2
 
+def fracas_001_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (Some italian becomeWorldsGreatestTenor)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_001_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (Some italian becomeWorldsGreatestTenor)
+
+def fracas_002_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_002_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+def fracas_003_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_003_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+def fracas_004_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (Some italianTenor wantGreat)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_004_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (Some italianTenor wantGreat)
+
+def fracas_005_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_005_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
+
+def fracas_006_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (Some reallyGreatTenor modest)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_006_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (Some reallyGreatTenor modest)
+
+def fracas_007_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (Some greatTenor swedish)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_007_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (Some greatTenor swedish)
+
+def fracas_008_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german], (Some greatTenor german) → (Some greatTenor german)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_008_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german], (Some greatTenor german) → (Some greatTenor german)
+
+def fracas_009_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (Some greatTenor british)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_009_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (Some greatTenor british)
+
+def fracas_010_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (Some greatTenor italian)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_010_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (Some greatTenor italian)
+
+def fracas_011_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_011_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+
+def fracas_013_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Every leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (Every leadingTenor indispensable)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_013_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Every leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (Every leadingTenor indispensable)
+
+def fracas_014_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (No leadingTenor cheap) → (leadingTenor pavarotti) → ((fun x => leadingTenor x ∧ cheap x) pavarotti)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_014_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (No leadingTenor cheap) → (leadingTenor pavarotti) → ((fun x => leadingTenor x ∧ cheap x) pavarotti)
+
+def fracas_015_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (Some tenor takePartInConcert)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_015_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (Some tenor takePartInConcert)
+
+def fracas_016_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (Some tenor contributeFeeToCharity)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_016_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (Some tenor contributeFeeToCharity)
+
 def fracas_017_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (Some irishman winNobelPrizeForLiterature) → (Some irishman winNobelPrize)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_017_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrizeForLiterature) → (Some irishman winNobelPrize)
+
+def fracas_018_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_018_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
+
+def fracas_019_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_019_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
+
+def fracas_020_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_020_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
+
+def fracas_021_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_021_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState canTravelFreeWithinEurope)
 
 def fracas_022_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (No delegate finishReportOnTime) → (No delegate finishReport)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_022_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReportOnTime) → (No delegate finishReport)
+
 def fracas_023_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (Some delegate finishSurveyOnTime) → (Some delegate finishSurvey)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_023_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurveyOnTime) → (Some delegate finishSurvey)
 
 def fracas_024_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey], (Some delegate obtainInterestingResultFromSurvey) → (Some delegate obtainResultFromSurvey)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_024_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey], (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainInterestingResultFromSurvey) → (Some delegate obtainResultFromSurvey)
+
 def fracas_025_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getResultPublishInMajorNationalNewspaper getResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getResultPublishInMajorNationalNewspaper] [DecidablePred getResultPublish], (Some delegate getResultPublishInMajorNationalNewspaper) → (Some delegate getResultPublish)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublish)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_025_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublish)
+
+def fracas_026_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_026_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
+
+def fracas_029_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Every commissioner usedToLeadingBusinessman) → (Every commissioner usedToBusinessman)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_029_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Every commissioner usedToLeadingBusinessman) → (Every commissioner usedToBusinessman)
 
 def fracas_030_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (No commissioner spendTimeAtHome) → (No commissioner spendTimeAtHome)
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (No commissioner spendALotOfTimeAtHome) → (No commissioner spendTimeAtHome)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_030_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (No commissioner spendALotOfTimeAtHome) → (No commissioner spendTimeAtHome)
 
 def fracas_031_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_031_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
 def fracas_032_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_032_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
 def fracas_033_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (Some irishman winNobelPrize) → (Some irishman winNobelPrizeForLiterature)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_033_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrize) → (Some irishman winNobelPrizeForLiterature)
+
+def fracas_034_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_034_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
+
+def fracas_035_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_035_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
+
+def fracas_036_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_036_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
+
+def fracas_037_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState haveRightLiveAnywhereInEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_037_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState haveRightLiveAnywhereInEurope)
+
 def fracas_038_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (No delegate finishReport) → (Some delegate finishReportOnTime)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_038_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReport) → (Some delegate finishReportOnTime)
 
 def fracas_039_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (Some delegate finishSurvey) → (Some delegate finishSurveyOnTime)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_039_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurvey) → (Some delegate finishSurveyOnTime)
+
 def fracas_040_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey], (Some delegate obtainResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_040_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey], (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
+
 def fracas_041_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getResultPublish getResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getResultPublish] [DecidablePred getResultPublishInMajorNationalNewspaper], (Some delegate getResultPublish) → (Some delegate getResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_041_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+
+def fracas_042_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european residentInEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_042_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european residentInEurope)
+
+def fracas_045_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Every commissioner usedToBusinessman) → (Every commissioner usedToLeadingBusinessman)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_045_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Every commissioner usedToBusinessman) → (Every commissioner usedToLeadingBusinessman)
 
 def fracas_047_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendALotOfTimeAtHome)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_047_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendALotOfTimeAtHome)
 
 def fracas_048_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendALotOfTimeAtHome)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_048_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendALotOfTimeAtHome)
 
 def fracas_049_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (Some scandinavian winNobelPrize)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_049_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (Some scandinavian winNobelPrize)
 
 def fracas_050_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_050_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
+
 def fracas_051_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_051_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
 def fracas_052_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_052_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
+
+def fracas_053_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfWesternCountry haveRightLiveInEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_053_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfWesternCountry haveRightLiveInEurope)
+
 def fracas_054_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (No scandinavianDelegate finishReportOnTime) → (Some delegate finishReportOnTime)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_054_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (∀ x, scandinavianDelegate x → delegate x) → (No scandinavianDelegate finishReportOnTime) → (Some delegate finishReportOnTime)
 
 def fracas_055_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (Some irishDelegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_055_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (Some irishDelegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime)
+
 def fracas_056_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate], (Some britishDelegate obtainInterestingResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_056_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate], (∀ x, britishDelegate x → delegate x) → (Some britishDelegate obtainInterestingResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
+
 def fracas_057_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (portugueseDelegate getResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (Some portugueseDelegate getResultPublishInMajorNationalNewspaper) → (Some delegate getResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_057_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (∀ x, portugueseDelegate x → delegate x) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+
+def fracas_058_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_058_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
+
+def fracas_061_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (Every femaleCommissioner usedToInBusiness) → (Every commissioner usedToInBusiness)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_061_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Every femaleCommissioner usedToInBusiness) → (Every commissioner usedToInBusiness)
 
 def fracas_063_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtLeast 3 femaleCommissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_063_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtLeast 3 femaleCommissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
+
 def fracas_064_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtMost 10 femaleCommissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_064_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 femaleCommissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
+
 def fracas_065_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (Some swedeMasc winNobelPrize)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_065_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (Some swedeMasc winNobelPrize)
 
 def fracas_066_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_066_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
+
 def fracas_067_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_067_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
 def fracas_068_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_068_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
+
+def fracas_069_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfMajorWesternCountry haveRightLiveInEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_069_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfMajorWesternCountry haveRightLiveInEurope)
+
 def fracas_070_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (No delegate finishReportOnTime) → (Some scandinavianDelegate finishReportOnTime)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_070_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (∀ x, scandinavianDelegate x → delegate x) → (No delegate finishReportOnTime) → (Some scandinavianDelegate finishReportOnTime)
 
 def fracas_071_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (Some delegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_071_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (Some delegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime)
+
 def fracas_072_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate], (Some delegate obtainInterestingResultFromSurvey) → (Some britishDelegate obtainInterestingResultFromSurvey)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_072_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate], (∀ x, britishDelegate x → delegate x) → (Some delegate obtainInterestingResultFromSurvey) → (Some britishDelegate obtainInterestingResultFromSurvey)
+
 def fracas_073_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (Some delegate getResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_073_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (∀ x, portugueseDelegate x → delegate x) → (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
+
+def fracas_074_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_074_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope)
+
+def fracas_077_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (Every commissioner usedToInBusiness) → (Every femaleCommissioner usedToInBusiness)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_077_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Every commissioner usedToInBusiness) → (Every femaleCommissioner usedToInBusiness)
 
 def fracas_079_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 maleCommissioner spendTimeAtHome)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_079_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (∀ x, maleCommissioner x → commissioner x) → (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 maleCommissioner spendTimeAtHome)
+
 def fracas_080_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 femaleCommissioner spendTimeAtHome)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_080_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 femaleCommissioner spendTimeAtHome)
+
 def fracas_087_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_087_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
 def fracas_088_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_088_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
+
 def fracas_090_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (chairman read_outItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outItemOnAgenda], (Every chairman read_outItemOnAgenda) → (Every chairman read_outItemOnAgenda)
+  ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (Every chairman read_outEveryItemOnAgenda)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_090_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (Every chairman read_outEveryItemOnAgenda)
 
 def fracas_094_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_094_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
+
+def fracas_095_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_095_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+
+def fracas_096_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_096_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+
 def fracas_098_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (blameForSystemFailure bug32985)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_098_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (∀ x, knownSoftwareFault x → softwareFault x) → (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (blameForSystemFailure bug32985)
+
 def fracas_099_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_099_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
 
 def fracas_100_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (Most clientAtDemonstration impressBySystemPerformance)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_100_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (Most clientAtDemonstration impressBySystemPerformance)
+
+def fracas_102_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (makePoorStockMarketTrader smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_102_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (makePoorStockMarketTrader smith)
+
 def fracas_103_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (haveCompanyCar jones)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_103_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (haveCompanyCar jones)
+
+def fracas_105_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_105_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
+
+def fracas_106_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_106_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
+
+def fracas_107_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_107_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+def fracas_108_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_108_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+def fracas_109_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_109_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+def fracas_110_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_110_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
 def fracas_132_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (Every salesDepartment rentLineFromBt)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_132_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (Every salesDepartment rentLineFromBt)
+
 def fracas_133_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (ownComputer maintain maintainComputerGfiOwn : A → Prop) [DecidablePred ownComputer] [DecidablePred maintain] [DecidablePred maintainComputerGfiOwn] (gfi itel : A), (ownComputer gfi) → (maintain itel) → (maintainComputerGfiOwn itel)
+  ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_133_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
+
+def fracas_134_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (haveServiceContractForComputer mfi)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_134_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (haveServiceContractForComputer mfi)
+
+def fracas_135_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (haveServiceContractForComputer mfi)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_135_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (haveServiceContractForComputer mfi)
 
 def fracas_138_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (signCoverPageOfR95103 smith)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_138_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (signCoverPageOfR95103 smith)
+
+def fracas_150_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (goToParisByTrain bill)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_150_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (goToParisByTrain bill)
+
+def fracas_151_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (goToBerlinByTrain bill)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_151_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (goToBerlinByTrain bill)
+
+def fracas_152_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (goToBerlinByCar bill)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_152_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (goToBerlinByCar bill)
+
 def fracas_197_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (haveGenuineDiamond john) → (haveDiamond john)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_197_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (∀ x, haveGenuineDiamond x → haveDiamond x) → (haveGenuineDiamond john) → (haveDiamond john)
+
 def fracas_198_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (universityStudent john)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_198_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (universityStudent john)
 
 def fracas_199_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (successful john)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_199_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (successful john)
+
 def fracas_200_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (successful john)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_200_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (successful john)
 
 def fracas_201_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (universityStudent john)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_201_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (universityStudent john)
+
 def fracas_202_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (Every mammal animal) → (Every fourLeggedMammal fourLeggedAnimal)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_202_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (∀ x, fourLeggedMammal x → mammal x) → (∀ x, fourLeggedAnimal x → animal x) → (Every mammal animal) → (Every fourLeggedMammal fourLeggedAnimal)
+
 def fracas_203_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (fourLegged dumbo)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_203_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (fourLegged dumbo)
 
 def fracas_204_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (smallAnimal mickey) → (largeAnimal mickey)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_204_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (smallAnimal mickey) → (largeAnimal mickey)
+
 def fracas_205_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (largeAnimal dumbo) → (smallAnimal dumbo)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_205_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (largeAnimal dumbo) → (smallAnimal dumbo)
+
 def fracas_208_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal smallDumbo : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] [DecidablePred smallDumbo] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (smallDumbo mickey)
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_208_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
 
 def fracas_209_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal largeDumbo : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] [DecidablePred largeDumbo] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (largeDumbo mickey)
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_209_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
 
 def fracas_210_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (largeAnimal mickey)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_210_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (∀ x, largeMouse x → mouse x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every mouse smallAnimal) → (largeMouse mickey) → (largeAnimal mickey)
+
 def fracas_211_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (Every elephant largeAnimal) → (smallElephant dumbo) → (smallAnimal dumbo)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_211_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every elephant largeAnimal) → (smallElephant dumbo) → (smallAnimal dumbo)
+
 def fracas_212_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant largeMickey : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] [DecidablePred largeMickey] (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeMickey dumbo)
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
+
+/-- With 4 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_212_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
 
 def fracas_213_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (small mickey)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_213_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (∀ x, largeMouse x → mouse x) → (Every mouse smallAnimal) → (largeMouse mickey) → (small mickey)
+
 def fracas_214_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every fatLegalAuthority fatLawLecturer)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_214_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (∀ x, fatLegalAuthority x → legalAuthority x) → (∀ x, fatLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every fatLegalAuthority fatLawLecturer)
 
 def fracas_215_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every competentLegalAuthority competentLawLecturer)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_215_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (∀ x, competentLegalAuthority x → legalAuthority x) → (∀ x, competentLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every competentLegalAuthority competentLawLecturer)
+
 def fracas_218_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (clever kim)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_218_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (clever kim)
 
 def fracas_219_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (clever kim)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_219_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (clever kim)
+
 def fracas_220_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred fast] (pc6082 itelXZ : A), (fastItelXZ pc6082) → (fast itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_220_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
 def fracas_221_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred fast] (pc6082 : A), (fastItelXZ pc6082) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_221_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082)
 
 def fracas_222_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred fast] (pc6082 itelXZ : A), (fastItelXZ pc6082) → (fast pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_222_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
 def fracas_223_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ slow fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred slow] [DecidablePred fast] (pc6082 itelXZ : A), (fastItelXZ pc6082) → (slow pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
+
+/-- With 3 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_223_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
 def fracas_224_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred fast] (pc6082 itelXZ : A), (fastItelXZ pc6082) → (fast itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_224_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
 def fracas_225_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred fast] (pc6082 : A), (fastItelXZ pc6082) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_225_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082)
 
 def fracas_226_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred fast] (pc6082 itelXZ : A), (fastItelXZ pc6082) → (fast pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_226_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
 def fracas_227_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ slow fast : A → Prop) [DecidablePred fastItelXZ] [DecidablePred slow] [DecidablePred fast] (pc6082 itelXZ : A), (fastItelXZ pc6082) → (slow pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_227_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
 def fracas_228_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ : A → Prop) [DecidablePred fastItelXZ] (pc6082 : A), (fastItelXZ pc6082) → (fastItelXZ pc6082)
+  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_228_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
 
 def fracas_229_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelXZ slowItelXZ : A → Prop) [DecidablePred fastItelXZ] [DecidablePred slowItelXZ] (pc6082 : A), (fastItelXZ pc6082) → (slowItelXZ pc6082)
+  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_229_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
 
 def fracas_246_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelComputer itelComputer fastItelZX : A → Prop) [DecidablePred fastItelComputer] [DecidablePred itelComputer] [DecidablePred fastItelZX] (pc6082 itelZX : A), (fastItelComputer pc6082) → (itelComputer itelZX) → (fastItelZX pc6082)
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_246_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
 def fracas_247_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelComputer itelComputer fastItelZX : A → Prop) [DecidablePred fastItelComputer] [DecidablePred itelComputer] [DecidablePred fastItelZX] (pc6082 itelZX : A), (fastItelComputer pc6082) → (itelComputer itelZX) → (fastItelZX pc6082)
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_247_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
 def fracas_249_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelZXItelZY fastItelZX : A → Prop) [DecidablePred fastItelZXItelZY] [DecidablePred fastItelZX] (pc6082 : A), (fastItelZXItelZY pc6082) → (fastItelZX pc6082)
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_249_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
 def fracas_250_parsed : Prop :=
-  ∀ {A : Type} [Fintype A] (fastItelZXItelZY fastItelZX : A → Prop) [DecidablePred fastItelZXItelZY] [DecidablePred fastItelZX] (pc6082 : A), (fastItelZXItelZY pc6082) → (fastItelZX pc6082)
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_250_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
 def fracas_261_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_261_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
 def fracas_262_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_262_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
+
 def fracas_263_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (presentAndersonPresent smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_263_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (presentAndersonPresent smith)
 
 def fracas_264_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_264_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
+
 def fracas_265_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
+
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_265_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
 def fracas_266_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveSmithLeave jones) → (leaveJonesLeave smith)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_266_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (∀ x, leaveSmithLeave x → leave x) → (∀ x, leaveJonesLeave x → leave x) → (leave smith) → (leave jones) → (leaveSmithLeave jones) → (leaveJonesLeave smith)
+
 def fracas_269_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (swim smith) → (swim jones) → (swimJonesSwim smith) → (swimSmithSwim jones)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_269_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (∀ x, swimJonesSwim x → swim x) → (∀ x, swimSmithSwim x → swim x) → (swim smith) → (swim jones) → (swimJonesSwim smith) → (swimSmithSwim jones)
+
 def fracas_270_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (swimToShoreSmithSwimToShore jones)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_270_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (swimToShoreSmithSwimToShore jones)
 
 def fracas_271_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_271_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
+
 def fracas_272_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
+/-- With 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_272_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
+
 def fracas_275_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (loseTemper smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_275_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (loseTemper smith)
 
 def fracas_277_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (liveInBirminghamIn1992 smith)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_277_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (liveInBirminghamIn1992 smith)
+
 def fracas_278_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (writeFirstNovelIn1992 smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_278_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (writeFirstNovelIn1992 smith)
 
 def fracas_279_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (writeIn1992 smith)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_279_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (writeIn1992 smith)
+
 def fracas_280_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (writeNovelIn1992 smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_280_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (writeNovelIn1992 smith)
 
 def fracas_282_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverIn1992 smith)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_282_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverIn1992 smith)
+
 def fracas_283_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverNewSpeciesIn1992 smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_283_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverNewSpeciesIn1992 smith)
 
 def fracas_287_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (writeReportInOneHour smith)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_287_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (writeReportInOneHour smith)
+
 def fracas_288_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (writeReportInTwoHours smith) → (writeReport smith)
+
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_288_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (∀ x, writeReportInTwoHours x → writeReport x) → (writeReportInTwoHours smith) → (writeReport smith)
 
 def fracas_290_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesInTwoHours smith) → (discoverNewSpecies smith)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_290_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (∀ x, discoverNewSpeciesInTwoHours x → discoverNewSpecies x) → (discoverNewSpeciesInTwoHours smith) → (discoverNewSpecies smith)
+
 def fracas_298_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirminghamForAYear smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_298_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirminghamForAYear smith)
 
 def fracas_300_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirmingham smith)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_300_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirmingham smith)
+
 def fracas_303_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (writeReportForAnHour smith)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_303_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (writeReportForAnHour smith)
 
 def fracas_304_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (writeReport smith)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_304_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (∀ x, writeReportForTwoHours x → writeReport x) → (writeReportForTwoHours smith) → (writeReport smith)
+
 def fracas_306_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
 
+/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_306_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (∀ x, discoverNewSpeciesForTwoYears x → discoverNewSpecies x) → (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
+
+def fracas_308_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (∃ x, representativeMascSmithWriteToEveryWeek x)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_308_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (∃ x, representativeMascSmithWriteToEveryWeek x)
+
 def fracas_326_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (finishMtalkIn1993 itel)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_326_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (finishMtalkIn1993 itel)
 
 def fracas_328_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (winContractIn1993 itel)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_328_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (winContractIn1993 itel)
+
 def fracas_330_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (ownApcomIn1990 itel)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_330_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (ownApcomIn1990 itel)
 
 def fracas_334_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_334_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
+
 def fracas_335_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_335_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
 def fracas_336_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (winContractIn1992 itel)
 
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_336_parsed_bk : Prop :=
+  ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (winContractIn1992 itel)
+
 def fracas_337_parsed : Prop :=
+  ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (winContractIn1992 itel)
+
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_337_parsed_bk : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (winContractIn1992 itel)
 
 end BlindEvalParsedClaims
@@ -598,52 +1330,99 @@ end BlindEvalParsedClaims
 /-- `(problem id, gold answer, claim constant)` for every problem the
 pipeline carried through - read by `BlindEvalParsedScan.lean`. -/
 def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name) := [
+  (1, .yes, ``BlindEvalParsedClaims.fracas_001_parsed),
+  (2, .yes, ``BlindEvalParsedClaims.fracas_002_parsed),
+  (3, .yes, ``BlindEvalParsedClaims.fracas_003_parsed),
+  (4, .yes, ``BlindEvalParsedClaims.fracas_004_parsed),
+  (5, .yes, ``BlindEvalParsedClaims.fracas_005_parsed),
+  (6, .no, ``BlindEvalParsedClaims.fracas_006_parsed),
+  (7, .yes, ``BlindEvalParsedClaims.fracas_007_parsed),
+  (8, .yes, ``BlindEvalParsedClaims.fracas_008_parsed),
+  (9, .yes, ``BlindEvalParsedClaims.fracas_009_parsed),
+  (10, .yes, ``BlindEvalParsedClaims.fracas_010_parsed),
+  (11, .yes, ``BlindEvalParsedClaims.fracas_011_parsed),
+  (13, .yes, ``BlindEvalParsedClaims.fracas_013_parsed),
+  (14, .no, ``BlindEvalParsedClaims.fracas_014_parsed),
+  (15, .yes, ``BlindEvalParsedClaims.fracas_015_parsed),
+  (16, .undef, ``BlindEvalParsedClaims.fracas_016_parsed),
   (17, .yes, ``BlindEvalParsedClaims.fracas_017_parsed),
+  (18, .yes, ``BlindEvalParsedClaims.fracas_018_parsed),
+  (19, .yes, ``BlindEvalParsedClaims.fracas_019_parsed),
+  (20, .yes, ``BlindEvalParsedClaims.fracas_020_parsed),
+  (21, .yes, ``BlindEvalParsedClaims.fracas_021_parsed),
   (22, .unknown, ``BlindEvalParsedClaims.fracas_022_parsed),
   (23, .yes, ``BlindEvalParsedClaims.fracas_023_parsed),
   (24, .yes, ``BlindEvalParsedClaims.fracas_024_parsed),
   (25, .yes, ``BlindEvalParsedClaims.fracas_025_parsed),
+  (26, .yes, ``BlindEvalParsedClaims.fracas_026_parsed),
+  (29, .yes, ``BlindEvalParsedClaims.fracas_029_parsed),
   (30, .unknown, ``BlindEvalParsedClaims.fracas_030_parsed),
   (31, .yes, ``BlindEvalParsedClaims.fracas_031_parsed),
   (32, .unknown, ``BlindEvalParsedClaims.fracas_032_parsed),
   (33, .unknown, ``BlindEvalParsedClaims.fracas_033_parsed),
+  (34, .unknown, ``BlindEvalParsedClaims.fracas_034_parsed),
+  (35, .unknown, ``BlindEvalParsedClaims.fracas_035_parsed),
+  (36, .unknown, ``BlindEvalParsedClaims.fracas_036_parsed),
+  (37, .unknown, ``BlindEvalParsedClaims.fracas_037_parsed),
   (38, .no, ``BlindEvalParsedClaims.fracas_038_parsed),
   (39, .unknown, ``BlindEvalParsedClaims.fracas_039_parsed),
   (40, .unknown, ``BlindEvalParsedClaims.fracas_040_parsed),
   (41, .unknown, ``BlindEvalParsedClaims.fracas_041_parsed),
+  (42, .unknown, ``BlindEvalParsedClaims.fracas_042_parsed),
+  (45, .unknown, ``BlindEvalParsedClaims.fracas_045_parsed),
   (47, .unknown, ``BlindEvalParsedClaims.fracas_047_parsed),
   (48, .yes, ``BlindEvalParsedClaims.fracas_048_parsed),
   (49, .yes, ``BlindEvalParsedClaims.fracas_049_parsed),
   (50, .unknown, ``BlindEvalParsedClaims.fracas_050_parsed),
   (51, .unknown, ``BlindEvalParsedClaims.fracas_051_parsed),
   (52, .unknown, ``BlindEvalParsedClaims.fracas_052_parsed),
+  (53, .unknown, ``BlindEvalParsedClaims.fracas_053_parsed),
   (54, .unknown, ``BlindEvalParsedClaims.fracas_054_parsed),
   (55, .yes, ``BlindEvalParsedClaims.fracas_055_parsed),
   (56, .unknown, ``BlindEvalParsedClaims.fracas_056_parsed),
   (57, .yes, ``BlindEvalParsedClaims.fracas_057_parsed),
+  (58, .unknown, ``BlindEvalParsedClaims.fracas_058_parsed),
+  (61, .undef, ``BlindEvalParsedClaims.fracas_061_parsed),
   (63, .yes, ``BlindEvalParsedClaims.fracas_063_parsed),
   (64, .unknown, ``BlindEvalParsedClaims.fracas_064_parsed),
   (65, .unknown, ``BlindEvalParsedClaims.fracas_065_parsed),
   (66, .yes, ``BlindEvalParsedClaims.fracas_066_parsed),
   (67, .yes, ``BlindEvalParsedClaims.fracas_067_parsed),
   (68, .yes, ``BlindEvalParsedClaims.fracas_068_parsed),
+  (69, .yes, ``BlindEvalParsedClaims.fracas_069_parsed),
   (70, .no, ``BlindEvalParsedClaims.fracas_070_parsed),
   (71, .unknown, ``BlindEvalParsedClaims.fracas_071_parsed),
   (72, .unknown, ``BlindEvalParsedClaims.fracas_072_parsed),
   (73, .unknown, ``BlindEvalParsedClaims.fracas_073_parsed),
+  (74, .unknown, ``BlindEvalParsedClaims.fracas_074_parsed),
+  (77, .undef, ``BlindEvalParsedClaims.fracas_077_parsed),
   (79, .unknown, ``BlindEvalParsedClaims.fracas_079_parsed),
   (80, .yes, ``BlindEvalParsedClaims.fracas_080_parsed),
   (87, .yes, ``BlindEvalParsedClaims.fracas_087_parsed),
   (88, .unknown, ``BlindEvalParsedClaims.fracas_088_parsed),
   (90, .yes, ``BlindEvalParsedClaims.fracas_090_parsed),
   (94, .unknown, ``BlindEvalParsedClaims.fracas_094_parsed),
+  (95, .unknown, ``BlindEvalParsedClaims.fracas_095_parsed),
+  (96, .yes, ``BlindEvalParsedClaims.fracas_096_parsed),
   (98, .unknown, ``BlindEvalParsedClaims.fracas_098_parsed),
   (99, .yes, ``BlindEvalParsedClaims.fracas_099_parsed),
   (100, .yes, ``BlindEvalParsedClaims.fracas_100_parsed),
+  (102, .unknown, ``BlindEvalParsedClaims.fracas_102_parsed),
   (103, .yes, ``BlindEvalParsedClaims.fracas_103_parsed),
+  (105, .no, ``BlindEvalParsedClaims.fracas_105_parsed),
+  (106, .no, ``BlindEvalParsedClaims.fracas_106_parsed),
+  (107, .yes, ``BlindEvalParsedClaims.fracas_107_parsed),
+  (108, .yes, ``BlindEvalParsedClaims.fracas_108_parsed),
+  (109, .no, ``BlindEvalParsedClaims.fracas_109_parsed),
+  (110, .yes, ``BlindEvalParsedClaims.fracas_110_parsed),
   (132, .yes, ``BlindEvalParsedClaims.fracas_132_parsed),
   (133, .yes, ``BlindEvalParsedClaims.fracas_133_parsed),
+  (134, .yes, ``BlindEvalParsedClaims.fracas_134_parsed),
+  (135, .yes, ``BlindEvalParsedClaims.fracas_135_parsed),
   (138, .yes, ``BlindEvalParsedClaims.fracas_138_parsed),
+  (150, .yes, ``BlindEvalParsedClaims.fracas_150_parsed),
+  (151, .yes, ``BlindEvalParsedClaims.fracas_151_parsed),
+  (152, .yes, ``BlindEvalParsedClaims.fracas_152_parsed),
   (197, .yes, ``BlindEvalParsedClaims.fracas_197_parsed),
   (198, .no, ``BlindEvalParsedClaims.fracas_198_parsed),
   (199, .yes, ``BlindEvalParsedClaims.fracas_199_parsed),
@@ -702,6 +1481,7 @@ def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name) := [
   (303, .yes, ``BlindEvalParsedClaims.fracas_303_parsed),
   (304, .unknown, ``BlindEvalParsedClaims.fracas_304_parsed),
   (306, .yes, ``BlindEvalParsedClaims.fracas_306_parsed),
+  (308, .undef, ``BlindEvalParsedClaims.fracas_308_parsed),
   (326, .yes, ``BlindEvalParsedClaims.fracas_326_parsed),
   (328, .yes, ``BlindEvalParsedClaims.fracas_328_parsed),
   (330, .yes, ``BlindEvalParsedClaims.fracas_330_parsed),
@@ -709,6 +1489,170 @@ def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name) := [
   (335, .unknown, ``BlindEvalParsedClaims.fracas_335_parsed),
   (336, .yes, ``BlindEvalParsedClaims.fracas_336_parsed),
   (337, .unknown, ``BlindEvalParsedClaims.fracas_337_parsed)
+]
+
+/-- The same problems, each claim with `gf/background.py`'s
+problem-independent background knowledge added as premises. -/
+def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name) := [
+  (1, .yes, ``BlindEvalParsedClaims.fracas_001_parsed_bk),
+  (2, .yes, ``BlindEvalParsedClaims.fracas_002_parsed_bk),
+  (3, .yes, ``BlindEvalParsedClaims.fracas_003_parsed_bk),
+  (4, .yes, ``BlindEvalParsedClaims.fracas_004_parsed_bk),
+  (5, .yes, ``BlindEvalParsedClaims.fracas_005_parsed_bk),
+  (6, .no, ``BlindEvalParsedClaims.fracas_006_parsed_bk),
+  (7, .yes, ``BlindEvalParsedClaims.fracas_007_parsed_bk),
+  (8, .yes, ``BlindEvalParsedClaims.fracas_008_parsed_bk),
+  (9, .yes, ``BlindEvalParsedClaims.fracas_009_parsed_bk),
+  (10, .yes, ``BlindEvalParsedClaims.fracas_010_parsed_bk),
+  (11, .yes, ``BlindEvalParsedClaims.fracas_011_parsed_bk),
+  (13, .yes, ``BlindEvalParsedClaims.fracas_013_parsed_bk),
+  (14, .no, ``BlindEvalParsedClaims.fracas_014_parsed_bk),
+  (15, .yes, ``BlindEvalParsedClaims.fracas_015_parsed_bk),
+  (16, .undef, ``BlindEvalParsedClaims.fracas_016_parsed_bk),
+  (17, .yes, ``BlindEvalParsedClaims.fracas_017_parsed_bk),
+  (18, .yes, ``BlindEvalParsedClaims.fracas_018_parsed_bk),
+  (19, .yes, ``BlindEvalParsedClaims.fracas_019_parsed_bk),
+  (20, .yes, ``BlindEvalParsedClaims.fracas_020_parsed_bk),
+  (21, .yes, ``BlindEvalParsedClaims.fracas_021_parsed_bk),
+  (22, .unknown, ``BlindEvalParsedClaims.fracas_022_parsed_bk),
+  (23, .yes, ``BlindEvalParsedClaims.fracas_023_parsed_bk),
+  (24, .yes, ``BlindEvalParsedClaims.fracas_024_parsed_bk),
+  (25, .yes, ``BlindEvalParsedClaims.fracas_025_parsed_bk),
+  (26, .yes, ``BlindEvalParsedClaims.fracas_026_parsed_bk),
+  (29, .yes, ``BlindEvalParsedClaims.fracas_029_parsed_bk),
+  (30, .unknown, ``BlindEvalParsedClaims.fracas_030_parsed_bk),
+  (31, .yes, ``BlindEvalParsedClaims.fracas_031_parsed_bk),
+  (32, .unknown, ``BlindEvalParsedClaims.fracas_032_parsed_bk),
+  (33, .unknown, ``BlindEvalParsedClaims.fracas_033_parsed_bk),
+  (34, .unknown, ``BlindEvalParsedClaims.fracas_034_parsed_bk),
+  (35, .unknown, ``BlindEvalParsedClaims.fracas_035_parsed_bk),
+  (36, .unknown, ``BlindEvalParsedClaims.fracas_036_parsed_bk),
+  (37, .unknown, ``BlindEvalParsedClaims.fracas_037_parsed_bk),
+  (38, .no, ``BlindEvalParsedClaims.fracas_038_parsed_bk),
+  (39, .unknown, ``BlindEvalParsedClaims.fracas_039_parsed_bk),
+  (40, .unknown, ``BlindEvalParsedClaims.fracas_040_parsed_bk),
+  (41, .unknown, ``BlindEvalParsedClaims.fracas_041_parsed_bk),
+  (42, .unknown, ``BlindEvalParsedClaims.fracas_042_parsed_bk),
+  (45, .unknown, ``BlindEvalParsedClaims.fracas_045_parsed_bk),
+  (47, .unknown, ``BlindEvalParsedClaims.fracas_047_parsed_bk),
+  (48, .yes, ``BlindEvalParsedClaims.fracas_048_parsed_bk),
+  (49, .yes, ``BlindEvalParsedClaims.fracas_049_parsed_bk),
+  (50, .unknown, ``BlindEvalParsedClaims.fracas_050_parsed_bk),
+  (51, .unknown, ``BlindEvalParsedClaims.fracas_051_parsed_bk),
+  (52, .unknown, ``BlindEvalParsedClaims.fracas_052_parsed_bk),
+  (53, .unknown, ``BlindEvalParsedClaims.fracas_053_parsed_bk),
+  (54, .unknown, ``BlindEvalParsedClaims.fracas_054_parsed_bk),
+  (55, .yes, ``BlindEvalParsedClaims.fracas_055_parsed_bk),
+  (56, .unknown, ``BlindEvalParsedClaims.fracas_056_parsed_bk),
+  (57, .yes, ``BlindEvalParsedClaims.fracas_057_parsed_bk),
+  (58, .unknown, ``BlindEvalParsedClaims.fracas_058_parsed_bk),
+  (61, .undef, ``BlindEvalParsedClaims.fracas_061_parsed_bk),
+  (63, .yes, ``BlindEvalParsedClaims.fracas_063_parsed_bk),
+  (64, .unknown, ``BlindEvalParsedClaims.fracas_064_parsed_bk),
+  (65, .unknown, ``BlindEvalParsedClaims.fracas_065_parsed_bk),
+  (66, .yes, ``BlindEvalParsedClaims.fracas_066_parsed_bk),
+  (67, .yes, ``BlindEvalParsedClaims.fracas_067_parsed_bk),
+  (68, .yes, ``BlindEvalParsedClaims.fracas_068_parsed_bk),
+  (69, .yes, ``BlindEvalParsedClaims.fracas_069_parsed_bk),
+  (70, .no, ``BlindEvalParsedClaims.fracas_070_parsed_bk),
+  (71, .unknown, ``BlindEvalParsedClaims.fracas_071_parsed_bk),
+  (72, .unknown, ``BlindEvalParsedClaims.fracas_072_parsed_bk),
+  (73, .unknown, ``BlindEvalParsedClaims.fracas_073_parsed_bk),
+  (74, .unknown, ``BlindEvalParsedClaims.fracas_074_parsed_bk),
+  (77, .undef, ``BlindEvalParsedClaims.fracas_077_parsed_bk),
+  (79, .unknown, ``BlindEvalParsedClaims.fracas_079_parsed_bk),
+  (80, .yes, ``BlindEvalParsedClaims.fracas_080_parsed_bk),
+  (87, .yes, ``BlindEvalParsedClaims.fracas_087_parsed_bk),
+  (88, .unknown, ``BlindEvalParsedClaims.fracas_088_parsed_bk),
+  (90, .yes, ``BlindEvalParsedClaims.fracas_090_parsed_bk),
+  (94, .unknown, ``BlindEvalParsedClaims.fracas_094_parsed_bk),
+  (95, .unknown, ``BlindEvalParsedClaims.fracas_095_parsed_bk),
+  (96, .yes, ``BlindEvalParsedClaims.fracas_096_parsed_bk),
+  (98, .unknown, ``BlindEvalParsedClaims.fracas_098_parsed_bk),
+  (99, .yes, ``BlindEvalParsedClaims.fracas_099_parsed_bk),
+  (100, .yes, ``BlindEvalParsedClaims.fracas_100_parsed_bk),
+  (102, .unknown, ``BlindEvalParsedClaims.fracas_102_parsed_bk),
+  (103, .yes, ``BlindEvalParsedClaims.fracas_103_parsed_bk),
+  (105, .no, ``BlindEvalParsedClaims.fracas_105_parsed_bk),
+  (106, .no, ``BlindEvalParsedClaims.fracas_106_parsed_bk),
+  (107, .yes, ``BlindEvalParsedClaims.fracas_107_parsed_bk),
+  (108, .yes, ``BlindEvalParsedClaims.fracas_108_parsed_bk),
+  (109, .no, ``BlindEvalParsedClaims.fracas_109_parsed_bk),
+  (110, .yes, ``BlindEvalParsedClaims.fracas_110_parsed_bk),
+  (132, .yes, ``BlindEvalParsedClaims.fracas_132_parsed_bk),
+  (133, .yes, ``BlindEvalParsedClaims.fracas_133_parsed_bk),
+  (134, .yes, ``BlindEvalParsedClaims.fracas_134_parsed_bk),
+  (135, .yes, ``BlindEvalParsedClaims.fracas_135_parsed_bk),
+  (138, .yes, ``BlindEvalParsedClaims.fracas_138_parsed_bk),
+  (150, .yes, ``BlindEvalParsedClaims.fracas_150_parsed_bk),
+  (151, .yes, ``BlindEvalParsedClaims.fracas_151_parsed_bk),
+  (152, .yes, ``BlindEvalParsedClaims.fracas_152_parsed_bk),
+  (197, .yes, ``BlindEvalParsedClaims.fracas_197_parsed_bk),
+  (198, .no, ``BlindEvalParsedClaims.fracas_198_parsed_bk),
+  (199, .yes, ``BlindEvalParsedClaims.fracas_199_parsed_bk),
+  (200, .unknown, ``BlindEvalParsedClaims.fracas_200_parsed_bk),
+  (201, .unknown, ``BlindEvalParsedClaims.fracas_201_parsed_bk),
+  (202, .yes, ``BlindEvalParsedClaims.fracas_202_parsed_bk),
+  (203, .yes, ``BlindEvalParsedClaims.fracas_203_parsed_bk),
+  (204, .no, ``BlindEvalParsedClaims.fracas_204_parsed_bk),
+  (205, .no, ``BlindEvalParsedClaims.fracas_205_parsed_bk),
+  (208, .yes, ``BlindEvalParsedClaims.fracas_208_parsed_bk),
+  (209, .no, ``BlindEvalParsedClaims.fracas_209_parsed_bk),
+  (210, .no, ``BlindEvalParsedClaims.fracas_210_parsed_bk),
+  (211, .no, ``BlindEvalParsedClaims.fracas_211_parsed_bk),
+  (212, .yes, ``BlindEvalParsedClaims.fracas_212_parsed_bk),
+  (213, .undef, ``BlindEvalParsedClaims.fracas_213_parsed_bk),
+  (214, .yes, ``BlindEvalParsedClaims.fracas_214_parsed_bk),
+  (215, .unknown, ``BlindEvalParsedClaims.fracas_215_parsed_bk),
+  (218, .yes, ``BlindEvalParsedClaims.fracas_218_parsed_bk),
+  (219, .unknown, ``BlindEvalParsedClaims.fracas_219_parsed_bk),
+  (220, .yes, ``BlindEvalParsedClaims.fracas_220_parsed_bk),
+  (221, .unknown, ``BlindEvalParsedClaims.fracas_221_parsed_bk),
+  (222, .unknown, ``BlindEvalParsedClaims.fracas_222_parsed_bk),
+  (223, .no, ``BlindEvalParsedClaims.fracas_223_parsed_bk),
+  (224, .yes, ``BlindEvalParsedClaims.fracas_224_parsed_bk),
+  (225, .unknown, ``BlindEvalParsedClaims.fracas_225_parsed_bk),
+  (226, .unknown, ``BlindEvalParsedClaims.fracas_226_parsed_bk),
+  (227, .no, ``BlindEvalParsedClaims.fracas_227_parsed_bk),
+  (228, .unknown, ``BlindEvalParsedClaims.fracas_228_parsed_bk),
+  (229, .no, ``BlindEvalParsedClaims.fracas_229_parsed_bk),
+  (246, .yes, ``BlindEvalParsedClaims.fracas_246_parsed_bk),
+  (247, .unknown, ``BlindEvalParsedClaims.fracas_247_parsed_bk),
+  (249, .yes, ``BlindEvalParsedClaims.fracas_249_parsed_bk),
+  (250, .yes, ``BlindEvalParsedClaims.fracas_250_parsed_bk),
+  (261, .yes, ``BlindEvalParsedClaims.fracas_261_parsed_bk),
+  (262, .yes, ``BlindEvalParsedClaims.fracas_262_parsed_bk),
+  (263, .unknown, ``BlindEvalParsedClaims.fracas_263_parsed_bk),
+  (264, .yes, ``BlindEvalParsedClaims.fracas_264_parsed_bk),
+  (265, .yes, ``BlindEvalParsedClaims.fracas_265_parsed_bk),
+  (266, .yes, ``BlindEvalParsedClaims.fracas_266_parsed_bk),
+  (269, .unknown, ``BlindEvalParsedClaims.fracas_269_parsed_bk),
+  (270, .yes, ``BlindEvalParsedClaims.fracas_270_parsed_bk),
+  (271, .unknown, ``BlindEvalParsedClaims.fracas_271_parsed_bk),
+  (272, .unknown, ``BlindEvalParsedClaims.fracas_272_parsed_bk),
+  (275, .unknown, ``BlindEvalParsedClaims.fracas_275_parsed_bk),
+  (277, .unknown, ``BlindEvalParsedClaims.fracas_277_parsed_bk),
+  (278, .no, ``BlindEvalParsedClaims.fracas_278_parsed_bk),
+  (279, .no, ``BlindEvalParsedClaims.fracas_279_parsed_bk),
+  (280, .unknown, ``BlindEvalParsedClaims.fracas_280_parsed_bk),
+  (282, .no, ``BlindEvalParsedClaims.fracas_282_parsed_bk),
+  (283, .unknown, ``BlindEvalParsedClaims.fracas_283_parsed_bk),
+  (287, .unknown, ``BlindEvalParsedClaims.fracas_287_parsed_bk),
+  (288, .yes, ``BlindEvalParsedClaims.fracas_288_parsed_bk),
+  (290, .yes, ``BlindEvalParsedClaims.fracas_290_parsed_bk),
+  (298, .yes, ``BlindEvalParsedClaims.fracas_298_parsed_bk),
+  (300, .yes, ``BlindEvalParsedClaims.fracas_300_parsed_bk),
+  (303, .yes, ``BlindEvalParsedClaims.fracas_303_parsed_bk),
+  (304, .unknown, ``BlindEvalParsedClaims.fracas_304_parsed_bk),
+  (306, .yes, ``BlindEvalParsedClaims.fracas_306_parsed_bk),
+  (308, .undef, ``BlindEvalParsedClaims.fracas_308_parsed_bk),
+  (326, .yes, ``BlindEvalParsedClaims.fracas_326_parsed_bk),
+  (328, .yes, ``BlindEvalParsedClaims.fracas_328_parsed_bk),
+  (330, .yes, ``BlindEvalParsedClaims.fracas_330_parsed_bk),
+  (334, .yes, ``BlindEvalParsedClaims.fracas_334_parsed_bk),
+  (335, .unknown, ``BlindEvalParsedClaims.fracas_335_parsed_bk),
+  (336, .yes, ``BlindEvalParsedClaims.fracas_336_parsed_bk),
+  (337, .unknown, ``BlindEvalParsedClaims.fracas_337_parsed_bk)
 ]
 
 end FraCaS

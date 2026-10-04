@@ -15,14 +15,17 @@ deliberately never supplies - not only from the inference step.
 
 Deliberately not imported by anything - run directly, as its own CI step.
 -/
-open Lean Lean.Meta Lean.Elab Lean.Elab.Command
+open Lean Lean.Meta Lean.Elab Lean.Elab.Term Lean.Elab.Command
 open FraCaS.Section1.Monotonicity (goalHeadConst)
 open FraCaS.Section1.Monotonicity.BlindEval
   (attemptClose flipConclusion isNegHead answerMatches answerToString withFreshBudget)
 
 namespace FraCaS.BlindEvalParsedScan
 
-elab "#blind_eval_parsed" : command => liftTermElabM do
+/-- One pass over a registry of end-to-end claims; `label` prefixes the
+log lines so the two variants' results are reported separately. -/
+def runParsed (registry : List (Nat × FraCaS.Answer × Lean.Name)) (label : String) :
+    TermElabM Unit := do
   let env ← getEnv
   let mut matched : Array (Nat × String) := #[]
   let mut mismatches : Array (Nat × String × String) := #[]
@@ -30,12 +33,12 @@ elab "#blind_eval_parsed" : command => liftTermElabM do
   let mut missing : Array Nat := #[]
   let mut errored : Array (Nat × String) := #[]
 
-  for (idn, gold, claimName) in FraCaS.blindEvalParsedRegistry do
+  for (idn, gold, claimName) in registry do
     let some ty := (env.find? claimName).bind (·.value?)
       | do
         missing := missing.push idn
         continue
-    logInfo m!"blind_eval_parsed: attempting fracas_{idn}"
+    logInfo m!"{label}: attempting fracas_{idn}"
     let result ← withFreshBudget
       (do
         let isNeg := isNegHead (← withCurrHeartbeats (goalHeadConst ty))
@@ -63,7 +66,7 @@ elab "#blind_eval_parsed" : command => liftTermElabM do
         mismatches := mismatches.push (idn, answerToString gold, decision)
 
   let total := matched.size + mismatches.size + contradictions.size + missing.size + errored.size
-  logInfo m!"blind_eval_parsed: {matched.size}/{total} automated verdicts match gold \
+  logInfo m!"{label}: {matched.size}/{total} automated verdicts match gold \
     ({contradictions.size} contradictions, {missing.size} missing claim constants, \
     {errored.size} errored during attempt)"
   logInfo m!"matched [{matched.size}]: {matched.toList}"
@@ -73,6 +76,17 @@ elab "#blind_eval_parsed" : command => liftTermElabM do
   logInfo m!"missing claim constants [{missing.size}]: {missing.toList}"
   logInfo m!"errored during attempt [{errored.size}]: {errored.toList}"
 
+-- Without background knowledge: exactly what the parsed English says.
+elab "#blind_eval_parsed" : command => liftTermElabM do
+  runParsed FraCaS.blindEvalParsedRegistry "blind_eval_parsed"
+
+-- The same claims with `gf/background.py`'s problem-independent
+-- background knowledge added as premises (tree-structural entailments and
+-- a small degree-semantics lexicon - see that file for the full list).
+elab "#blind_eval_parsed_bk" : command => liftTermElabM do
+  runParsed FraCaS.blindEvalParsedBkRegistry "blind_eval_parsed_bk"
+
 end FraCaS.BlindEvalParsedScan
 
 #blind_eval_parsed
+#blind_eval_parsed_bk

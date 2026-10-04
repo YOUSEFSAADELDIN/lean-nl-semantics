@@ -8,10 +8,11 @@ Every other blind-evaluation scan in this project scores inference over a
 step too, for every problem the pipeline can carry all the way through:
 
 1. **English**: each premise and the hypothesis exactly as FraCaS states
-   them (`FraCaS/Data/Problems.lean`), normalized only mechanically - the
-   final period dropped, and the first letter lowercased if the sentence
-   doesn't parse as written. Never the project's own confirmed rewordings
-   in `gf/run_gf_tests.py`.
+   them (`FraCaS/Data/Problems.lean`), passed through one generic lexer
+   step (`gf/parse_rank.py`'s `tokenize`: final punctuation dropped,
+   commas split off, each token looked up in the grammar's vocabulary
+   case-insensitively). Never the project's own confirmed rewordings in
+   `gf/run_gf_tests.py`.
 2. **Parse**: `gf/parse_rank.py`'s `parse_readings` against the restricted
    FraCaSParse grammar (see `gf/gen_parse_grammar.py` for what that
    restriction is and isn't), then its generic ranking picks one reading.
@@ -24,7 +25,11 @@ step too, for every problem the pipeline can carry all the way through:
    theorems, **no background-knowledge premise** a human would add ("an
    Irishman winning the Nobel prize for literature wins a Nobel prize") is
    ever supplied - a problem needing one should come out "unknown", and
-   that is reported as the real end-to-end result, not repaired.
+   that is reported as the real end-to-end result, not repaired. A
+   second claim per problem (`fracas_NNN_parsed_bk`) adds the problem-
+   independent background knowledge `gf/background.py` derives (tree-
+   structural entailments and a small degree-semantics lexicon), and the
+   two are scored separately.
 
 A problem is skipped, with its reason reported, if any sentence fails to
 parse, any top-ranked reading fails to translate, or a translation needs
@@ -48,8 +53,9 @@ OUT_PATH = ROOT / "LeanNLSemantics" / "FraCaS" / "BlindEvalParsed.lean"
 PROBLEMS = ROOT / "LeanNLSemantics" / "FraCaS" / "Data" / "Problems.lean"
 
 sys.path.insert(0, str(GF_DIR))
-from parse_rank import parse_readings, ranked  # noqa: E402
+from parse_rank import parse_readings, ranked, tokenize  # noqa: E402
 from translate import parse_tree, translate_cl  # noqa: E402
+from background import postulates  # noqa: E402
 
 # Identifiers a generated predicate/individual name must not collide with.
 LEAN_RESERVED = {
@@ -71,13 +77,6 @@ def load_problems():
     return out
 
 
-def variants(sentence: str):
-    s = sentence.strip().rstrip(".?!").strip()
-    yield s
-    if s[:1].isupper():
-        yield s[:1].lower() + s[1:]
-
-
 def to_clause(t):
     if t.head == "UttS" and len(t.args) == 1:
         t = t.args[0]
@@ -90,24 +89,27 @@ _parse_cache: dict = {}
 
 
 def best_reading(sentence: str):
-    for v in variants(sentence):
-        if v not in _parse_cache:
-            _parse_cache[v] = parse_readings(v)
-        _cat, trees = _parse_cache[v]
-        if trees:
-            return ranked(trees)[0], len(trees)
+    tokens = tokenize(sentence)
+    if tokens not in _parse_cache:
+        _parse_cache[tokens] = parse_readings(tokens)
+    _cat, trees = _parse_cache[tokens]
+    if trees:
+        return ranked(trees)[0], len(trees)
     return None, 0
 
 
 def assemble(idn, sentences):
-    """(claim_text, None) or (None, reason)."""
+    """((claim, claim_with_background_knowledge), None) or (None, reason)."""
     translations = []
+    trees = []
     for role, s in sentences:
         tree, n = best_reading(s)
         if tree is None:
             return None, f"{role} does not parse: {s!r}"
         try:
-            tr = translate_cl(to_clause(parse_tree(tree)))
+            clause = to_clause(parse_tree(tree))
+            trees.append(clause)
+            tr = translate_cl(clause)
         except Exception as e:  # translate.py signals unsupported shapes this way
             return None, f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}"
         if tr.conjuncts or tr.free_functions or tr.template:
@@ -144,7 +146,10 @@ def assemble(idn, sentences):
     if inds:
         binders.append(f"({' '.join(inds)} : A)")
     chain = " → ".join(f"({tr.lean_prop})" for tr in translations)
-    return f"∀ {' '.join(binders)}, {chain}", None
+    knowledge = postulates(trees, set(unary), set(binary))
+    claim = f"∀ {' '.join(binders)}, {chain}"
+    claim_bk = f"∀ {' '.join(binders)}, {' → '.join([*knowledge, chain])}"
+    return (claim, claim_bk, len(knowledge)), None
 
 
 def main() -> None:
@@ -154,11 +159,11 @@ def main() -> None:
     for idn, premises, hypothesis, answer in problems:
         sentences = [(f"premise {i + 1}", p) for i, p in enumerate(premises)]
         sentences.append(("hypothesis", hypothesis))
-        claim, reason = assemble(idn, sentences)
-        if claim is None:
+        claims, reason = assemble(idn, sentences)
+        if claims is None:
             skipped[idn] = reason
         else:
-            emitted.append((idn, answer, claim))
+            emitted.append((idn, answer, claims))
 
     def stage(reason: str) -> str:
         for key, label in (
@@ -212,9 +217,13 @@ def main() -> None:
         "open FraCaS.Section1 FraCaS.Section2",
         "",
     ]
-    for idn, _answer, claim in emitted:
+    for idn, _answer, (claim, claim_bk, n_facts) in emitted:
         lines.append(f"def fracas_{idn:03d}_parsed : Prop :=")
         lines.append(f"  {claim}")
+        lines.append("")
+        lines.append(f"/-- With {n_facts} background-knowledge premise(s) from `gf/background.py`. -/")
+        lines.append(f"def fracas_{idn:03d}_parsed_bk : Prop :=")
+        lines.append(f"  {claim_bk}")
         lines.append("")
     lines += [
         "end BlindEvalParsedClaims",
@@ -225,6 +234,18 @@ def main() -> None:
     ]
     rows = [
         f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed)"
+        for idn, answer, _ in emitted
+    ]
+    lines.append(",\n".join(rows))
+    lines += [
+        "]",
+        "",
+        "/-- The same problems, each claim with `gf/background.py`'s",
+        "problem-independent background knowledge added as premises. -/",
+        "def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name) := [",
+    ]
+    rows = [
+        f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_bk)"
         for idn, answer, _ in emitted
     ]
     lines.append(",\n".join(rows))

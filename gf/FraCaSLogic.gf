@@ -480,4 +480,19 @@ abstract FraCaSLogic =
     -- reasoning as Section 7's temporal adverbials).
     mtalk_PN : PN ;
     in1990_Adv, from1988to1992_Adv : Adv ;
+    -- Added for parsing FraCaS's own English (scripts/gen_blind_eval_
+    -- parsed.py), where the hand-built trees above used rewordings:
+    -- who_RP: FraCaS writes "tenors who are excellent"; IdRP realizes
+    --   "that" by design (see FraCaSLogicEng.gf's problem 13 note).
+    -- ExistNP: "there are/was NP" - FraCaS Section 1's own hypothesis
+    --   shape. Self-declared rather than extending Idiom, which fails at
+    --   PMCFG-generation time at this gf-rgl tag (see missing_A above);
+    --   the lin is IdiomEng's own, verbatim.
+    -- (just_Predet, "just one accountant" in 105-109, already comes
+    --   from DictEng.)
+    -- usedTo_VV: the frozen past-habitual "used to" (problems 29, 45,
+    --   61, 77) - DictEng's use_VV is the freely-conjugated verb "use".
+    who_RP : RP ;
+    ExistNP : NP -> Cl ;
+    usedTo_VV : VV ;
 }

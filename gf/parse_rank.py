@@ -35,6 +35,51 @@ PARSE_CATS = ("Cl", "S")
 _TREE_HEADS = re.compile(r"^[A-Z][A-Za-z0-9_]*( |$)")
 
 
+_VOCAB_CACHE: dict = {}
+
+
+def vocabulary(pgf: Path = DEFAULT_PGF) -> frozenset:
+    """Every token the grammar's concrete syntax can produce (`pg -words`)."""
+    key = str(pgf)
+    if key not in _VOCAB_CACHE:
+        out = subprocess.run(
+            ["gf", "--run", str(pgf)], input="pg -words\n",
+            capture_output=True, text=True, timeout=120,
+        ).stdout
+        _VOCAB_CACHE[key] = frozenset(out.split())
+    return _VOCAB_CACHE[key]
+
+
+def tokenize(sentence: str, pgf: Path = DEFAULT_PGF) -> str:
+    """A generic lexer step, the same for every sentence: drop sentence-
+    final punctuation, split off commas/semicolons/colons as their own
+    tokens (the grammar's `ConjNP` linearizes "Smith , Jones"), and look
+    each token up in the grammar's vocabulary case-insensitively -
+    FraCaS writes "Every"/"The" sentence-initially and "western" where the
+    lexicon has "Western". A hyphenated token the grammar doesn't know
+    whole ("stock-market") is split if every part is known. Tokens with no
+    match are left as they are (the parse then fails honestly)."""
+    vocab = vocabulary(pgf)
+    s = sentence.strip().rstrip(".?!").strip()
+    s = re.sub(r"([,;:])", r" \1 ", s)
+
+    def lookup(tok: str):
+        for v in (tok, tok.lower(), tok[:1].upper() + tok[1:], tok.capitalize()):
+            if v in vocab:
+                return [v]
+        return None
+
+    out: list[str] = []
+    for tok in s.split():
+        found = lookup(tok)
+        if found is None and "-" in tok:
+            parts = [lookup(p) for p in tok.split("-")]
+            if all(parts):
+                found = [w for p in parts for w in p]
+        out.extend(found if found is not None else [tok])
+    return " ".join(out)
+
+
 def parse_readings(sentence: str, pgf: Path = DEFAULT_PGF, timeout: int = 120):
     """(category, [tree, ...]) for the first category in PARSE_CATS with at
     least one complete parse, or (None, []) if none parses."""

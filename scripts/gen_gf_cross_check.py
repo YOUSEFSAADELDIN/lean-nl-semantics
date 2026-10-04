@@ -3151,6 +3151,10 @@ def main() -> None:
         # roles use).
         if label.endswith("_tense_reconfirm"):
             continue
+        # `english_...` checks (run_gf_tests.py's _FRACAS_ENGLISH_CHECKS)
+        # exist for the end-to-end parser, not as cross-check roles.
+        if not label.startswith("fracas_"):
+            continue
         m = re.match(r"fracas_(\d+)(.*)", label)
         idn = int(m.group(1))
         role = m.group(2)
