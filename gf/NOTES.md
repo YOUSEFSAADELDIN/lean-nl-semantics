@@ -31,12 +31,17 @@ runners have normal, unrestricted internet access, so
 toolchain from source (independently of whatever's cached in this
 sandbox) and runs `gf/run_gf_tests.py`'s automated `linearize` checks
 on every push. All 342 FraCaS problems' worth of sentence shapes across
-all nine FraCaS sections (633 `linearize` checks in total) have been
-built and fully validated against the local toolchain described above
-before being pushed - but, as of this note, none of that has yet been
-proven green through an actual GitHub Actions run; `build-gf`'s own
-`continue-on-error` stays on until a real CI run confirms the two
-environments agree. See `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for
+all nine FraCaS sections (803 `linearize` checks in total, as the suite
+has grown since this note was first written) are built and validated
+against the local toolchain described above before ever being pushed.
+This has been proven green on real GitHub Actions across multiple runs
+(PR #13 first confirmed it, continue-on-error removed from `build-gf`
+since), confirming the local and CI environments agree — the "prove
+it, don't assume it" bar the rest of this project holds to. If this
+count or that status claim drifts again, re-run `gf/run_gf_tests.py`
+and update this paragraph by hand, the same discipline the top-level
+README's own Roadmap section now holds to after being caught stale.
+See `gf/FraCaSLogic.gf`/`gf/FraCaSLogicEng.gf` for
 the grammar itself and each file's own per-section comments for what
 each FraCaS section needed and what it deliberately skipped.
 
@@ -305,8 +310,150 @@ is, not a bug to route around. **For controlled/known input, don't
 parse — hand-build the tree directly** (as above) and use `linearize`
 to confirm it round-trips to the exact right English string. Free
 parsing only becomes viable with either a much more restricted grammar
-or serious ambiguity-ranking/pruning, neither of which this project has
-built.
+or serious ambiguity-ranking/pruning.
+
+**Update — both now exist, and parsing works.** Measured first against
+this project's own FraCaSLogic grammar (smaller than `AllEng`, but still
+all of the RGL's Noun/Verb/Sentence/... modules plus DictEng): 69,115
+readings for "every Italian man wants to be a great tenor" before a
+5-minute timeout, none free of `ProDrop`/`ApposCN`/`GenNP` junk.
+`gen_parse_grammar.py` builds `FraCaSParse.gf`/`FraCaSParseEng.gf` by GF
+*restricted inheritance* (`FraCaSLogic [f, g, ...]`), keeping only the
+functions and words the CI-confirmed trees in `run_gf_tests.py` use (plus
+the non-`Cat` categories - `ListCN`/`ListNP`/numeral sub-categories -
+that linking otherwise reports missing). The same sentence then has 4
+readings in well under a second. `parse_rank.py` ranks readings
+generically (fewest nodes, ties broken by right association), and
+`parse_eval.py` (run by the `build-gf` CI job) measures it over all 437
+distinct confirmed sentences: all parse, the hand tree is among the
+readings for every one, and the top reading translates like the hand tree
+for 371/373 of those `translate.py` covers. This restricted grammar is
+fit to FraCaS's own vocabulary and constructions - a controlled-language
+grammar, not open-domain parsing - and `EndToEnd/gen_claims.py`
+uses it to translate FraCaS's original English end to end; see
+`BLIND_EVAL.md` for what that achieves (and doesn't).
+
+Building that pipeline exposed three `translate.py` bugs, now fixed:
+prepositions were dropped from predicate names (FraCaS 74's "resident
+**in** Europe" and "resident **outside** Europe" both became
+`residentEurope`), GF word-sense tags leaked into names (`by8agent` vs
+`by8means` for the same "by"), and a relative clause translated to a
+conjunction under `CompNP (DetCN ...)` but to one fused name under the
+equivalent `CompCN` derivation. One known collision remains: object
+determiners are still dropped ("spend **a lot of** time at home" and
+"spend time at home" share a name). Keeping all determiners was tried
+and reverted - it leaks subject determiners into the cross-check
+generator's restrictor names (`everyCommittee`) and breaks the
+`fracas_090` cross-check - so it needs a targeted fix, not a blanket one.
+
+**Later round - FraCaS's own wording, and the fixes it needed.** Parsing
+FraCaS's original English (not the confirmed rewordings) surfaced four
+constructions no hand-built tree used, each now added to FraCaSLogic with
+one confirmed linearize check (`run_gf_tests.py`'s
+`_FRACAS_ENGLISH_CHECKS`, labelled `english_*` so `gen_gf_cross_check.py`
+ignores them): `who_RP` (`IdRP` realizes "that" by design), a
+self-declared `ExistNP` ("there are/was NP" - IdiomEng's own lin, since
+extending `Idiom` fails at this gf-rgl tag), a frozen `usedTo_VV` (DictEng's
+`use_VV` is the freely conjugated verb), and DictEng's own `just_Predet`.
+`parse_rank.tokenize` is a single generic lexer step (final punctuation
+dropped, commas split off, tokens looked up case-insensitively in the
+grammar's own `pg -words` vocabulary). The targeted determiner fix this
+note asked for is in: `_scope_name` now keeps lexical `_Det` words inside
+a VP ("spend a lot of time" vs "spend time") and reads a definite plural
+object universally - the convention already used for subjects - so
+`fracas_090`'s "the items"/"every item" still name one predicate.
+Comparatives and equatives now translate as binary relations
+(`fastThan`/`fastAs`, the naming the cross-check builders already used).
+
+**Ellipsis, one-anaphora, negation.** A census of every FraCaS sentence
+the parser still rejected showed half contain no unknown word at all -
+they are construction gaps, dominated by Section 4's VP ellipsis ("So
+did Bill", "Bill didn't", "the students have too") and one-anaphora
+("Bill owns a blue one"). FraCaSLogic now has an `EllAux` category with
+`ElliptS`/`SoS`/`TooS` for the elliptical clauses, `anaphOne_N`/
+`anaphOne_NP` for anaphoric "one", and `UncNeg` for uncontracted "is not"
+(this grammar's `PNeg` realizes "isn't"), each with a confirmed check.
+The grammar deliberately does not represent the elided material:
+`EndToEnd/gen_claims.py` resolves it by copying the antecedent
+clause's VP or noun (the standard copy treatment). `EllAux` had to be
+added to `gen_parse_grammar.py`'s `EXTRA_CATS` for the same reason as the
+list categories.
+
+One trap worth recording: the single-node `anaphOne_NP`/`anaphOne_N`
+immediately outranked the multi-node numeral "one" under the
+fewest-nodes rule ("Smith signed [one] contract" as a compound noun, "just
+[one] accountant", "[one] of the leading tenors"), dropping top-reading
+agreement from 380/381 to 374/382. `parse_rank.ranked` now discards
+readings where anaphoric one is anything but the head of a noun phrase or
+a bare argument - a well-formedness condition, not a ranking tweak - and
+agreement is back to 381/382.
+
+**Quantity comparatives.** "ITEL won more orders than APCOM did" (and
+"... than APCOM", "... than APCOM lost", FraCaS 230-241) gets three
+FraCaSLogic functions, `MoreThanAux`/`MoreThanNP`/`MoreThanV2 : CN -> NP
+-> ... -> NP`. Each realizes the whole object NP "more CN than NP [did |
+V-ed]", with a confirmed check apiece. As with ellipsis, the "than" part
+is not a full clause in the grammar: an elided verb is resolved to the
+main clause's own verb by `translate.py`, which translates the sentence
+as `More order (win itel) (win apcom)`. `More` is the three-place
+quantifier `card (P ∧ Q) > card (P ∧ R)` in `GQ.lean`. This needed
+object quantifiers, which `translate.py` did not have: it fused the
+whole VP into one predicate name. It now keeps the verb as a binary
+predicate and the determiner as a quantifier over it, but only for a
+proper-name subject (no scope interaction) whose object counts
+(numerals, "some/several/a few/many Xs", "more Xs than ..."), and only
+in the end-to-end readings. Other objects keep the fused name, so a
+problem mixing the two shapes can lose an inference, never gain a wrong
+one.
+
+The same work found a soundness bug in the fused names: numerals were
+dropped, so "won ten orders" and "won eleven orders" were one predicate.
+Fused names now keep the numeral (`win10Order`). A bare numeral is also a
+fifth ambiguity kind in the end-to-end readings: "at least n" (weak) or
+"exactly n" (strong). "Just/only n" is always exact, and "at least/at
+most/exactly n" say which outright.
+
+Free-choice "any" (DictEng's `anySg_Det`, FraCaS 248: "faster than any
+ITEL computer") is read universally, but only as a comparative's
+standard; everywhere else "any" still does not translate.
+
+**"Few", "a few", "at least a few".** No grammar change: these
+already parsed, and `translate.py` had no rule for `few_Det`/
+`atLeastAFew_Det`. "Few" is a sixth ambiguity kind, read as cardinal
+(`AtMost fewCount`, unknown threshold) or proportional (an opaque `Few`,
+bound by the generator with one meaning postulate). "A few"/"at least a
+few" are `AtLeast aFewCount` with `aFewCount ≥ 1`. A counting existential
+("there are few committee members from southern Europe") takes the NP's
+PP or relative clause as its scope. The parse puts the PP inside the
+compound ("committee [members from ...]"), so the translator re-brackets
+it first. FraCaS 27 then needed the `(AtLeast, scope)` counterpart of
+`mono_nl`'s Phase-5 conditioned narrowing (`atLeast_mono_scope_
+conditioned`); aesop did not find the equivalent `atLeast_trans`.
+
+**Which files belong to which part of the project.** `gf/` serves two
+parts. The FraCaS corpus's GF cross-check uses `FraCaSLogic*.gf`,
+`run_gf_tests.py`, and `translate.py`'s default mode (via
+`scripts/gen_gf_cross_check.py`). The end-to-end pipeline (`EndToEnd/`)
+uses the same grammar plus `FraCaSParse*.gf`/`gen_parse_grammar.py`,
+`parse_rank.py`, `parse_eval.py`, `background.py`, and `translate.py`'s
+reading modes. The reading modes sit behind one gate (`_READING !=
+"default"`). `snapshot_default_translations.py` writes every default-mode
+translation of a confirmed tree to `default_translations.tsv`, and CI
+fails if it changes; the cross-check theorems are regenerated and diffed
+too. When the snapshot was introduced it showed that two end-to-end
+changes had already leaked into the default mode: numerals kept in fused
+predicate names (FraCaS 111, 112, 127, 134, 136, 232, 241, 242: "signed
+one contract" and "signed two contracts" had been one predicate), and
+free-choice "any" read universally in a comparative's standard (248).
+Both are corrections and were kept deliberately; none changes a
+cross-check theorem.
+
+**Measured and rejected: a corpus-vocabulary lexicon.** Giving the parse
+grammar DictEng's entries for every word FraCaS uses (404 lexical
+functions for 94 missing words) let only 25 more of the 230 failing
+sentences parse - nearly all ellipsis or aspect sentences translate.py
+cannot translate anyway - while one of them reached 34,902 readings. Not
+adopted: the remaining failures are constructions, not vocabulary.
 
 ## SOLVED: `UseCl`/tense support - the missing piece was `TenseX`, not a real RGL bug
 

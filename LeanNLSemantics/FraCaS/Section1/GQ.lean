@@ -387,6 +387,27 @@ theorem atMost_mono_scope_conditioned {A : Type*} [Fintype A] (n : Nat) (P Q R :
   have hle : card (fun x => P x ∧ R x) ≤ card (fun x => P x ∧ Q x) := Finset.card_le_card hsub
   omega
 
+/-- The same schema's `AtLeast`-scope instance, in the widening direction
+that cell licenses: a lower bound on `P ∩ Q` transfers to `P ∩ R` when `R`
+holds of every `P` that is `Q` - FraCaS 27's "a few committee members are
+from Sweden, all committee members are people, all people from Sweden
+are from Scandinavia ⊢ at least a few committee members are from
+Scandinavia". Used only through `mono_nl`'s opt-in `upwardConditioned`
+search, which only the end-to-end prover (`EndToEnd/Prover.lean`) turns
+on. -/
+theorem atLeast_mono_scope_conditioned {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x] :
+    AtLeast n P Q → Every (fun x => P x ∧ Q x) R → AtLeast n P R := by
+  intro h hcond
+  have hsub : (Finset.univ.filter fun x => P x ∧ Q x) ⊆ Finset.univ.filter fun x => P x ∧ R x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, hcond x hx⟩
+  have hle : card (fun x => P x ∧ Q x) ≤ card (fun x => P x ∧ R x) := Finset.card_le_card hsub
+  have h' : card (fun x => P x ∧ Q x) ≥ n := h
+  show card (fun x => P x ∧ R x) ≥ n
+  omega
+
 /-- `Some P Q` plus `Every P R` gives `Some R Q`: the witness for `P` is
 also `R`, so it witnesses `Some R Q` too — problem 49's "a Swede won a
 Nobel prize; every Swede is a Scandinavian ⊢ a Scandinavian won a Nobel

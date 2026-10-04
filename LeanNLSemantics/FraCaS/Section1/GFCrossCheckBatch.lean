@@ -491,8 +491,8 @@ open FraCaS.Section1 FraCaS.Section2 FraCaS.Section3 FraCaS.Section4 FraCaS.Sect
 -- computing which concrete decidability argument each one needs.
 attribute [local instance] Classical.propDecidable
 
-theorem fracas_001_from_gf {A : Type*} (italian becomeGreatestTenor : A → Prop) :
-    Some italian becomeGreatestTenor → Some italian becomeGreatestTenor :=
+theorem fracas_001_from_gf {A : Type*} (italian becomeWorldsGreatestTenor : A → Prop) :
+    Some italian becomeWorldsGreatestTenor → Some italian becomeWorldsGreatestTenor :=
   fun h1 => fracas_001 _ _ h1
 
 theorem fracas_002_from_gf {A : Type*} (italianMan wantGreatTenor greatTenor : A → Prop) :
@@ -539,80 +539,80 @@ theorem fracas_014_from_gf {A : Type*} (leadingTenor cheap : A → Prop) (pavaro
     No leadingTenor cheap → leadingTenor pavarotti → ¬ ((fun x => leadingTenor x ∧ cheap x) pavarotti) :=
   fun h1 h2 => fracas_014 _ _ _ h1 h2
 
-theorem fracas_015_from_gf {A : Type*} [Fintype A] (tenor takePartConcert : A → Prop) :
-    AtLeast 3 tenor takePartConcert → Some tenor takePartConcert :=
+theorem fracas_015_from_gf {A : Type*} [Fintype A] (tenor takePartInConcert : A → Prop) :
+    AtLeast 3 tenor takePartInConcert → Some tenor takePartInConcert :=
   fun h1 => fracas_015 _ _ h1
 
-theorem fracas_017_from_gf {A : Type*} (irishman winNobelPrizeLiterature winNobelPrize : A → Prop) :
-    Some irishman winNobelPrizeLiterature → (∀ x, winNobelPrizeLiterature x → winNobelPrize x) → Some irishman winNobelPrize :=
+theorem fracas_017_from_gf {A : Type*} (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) :
+    Some irishman winNobelPrizeForLiterature → (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → Some irishman winNobelPrize :=
   fun h1 h2 => fracas_017 _ _ _ h1 h2
 
-theorem fracas_018_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
-    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope :=
+theorem fracas_018_from_gf {A : Type*} (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) :
+    Every european haveRightLiveInEurope → Every european person → Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope → Every european canTravelFreeWithinEurope :=
   fun h1 h2 h3 => fracas_018 _ _ _ _ h1 h2 h3
 
-theorem fracas_019_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
-    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope :=
+theorem fracas_019_from_gf {A : Type*} (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) :
+    Every european haveRightLiveInEurope → Every european person → Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope → Every european canTravelFreeWithinEurope :=
   fun h1 h2 h3 => fracas_019 _ _ _ _ h1 h2 h3
 
-theorem fracas_020_from_gf {A : Type*} (european haveRightLiveEurope person canTravelFreeEurope : A → Prop) :
-    Every european haveRightLiveEurope → Every european person → Every (fun x => person x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every european canTravelFreeEurope :=
+theorem fracas_020_from_gf {A : Type*} (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) :
+    Every european haveRightLiveInEurope → Every european person → Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope → Every european canTravelFreeWithinEurope :=
   fun h1 h2 h3 => fracas_020 _ _ _ _ h1 h2 h3
 
-theorem fracas_021_from_gf {A : Type*} (residentMemberState haveRightLiveEurope individual canTravelFreeEurope : A → Prop) :
-    Every residentMemberState haveRightLiveEurope → Every residentMemberState individual → Every (fun x => individual x ∧ haveRightLiveEurope x) canTravelFreeEurope → Every residentMemberState canTravelFreeEurope :=
+theorem fracas_021_from_gf {A : Type*} (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) :
+    Every residentOfMemberState haveRightLiveInEurope → Every residentOfMemberState individual → Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope → Every residentOfMemberState canTravelFreeWithinEurope :=
   fun h1 h2 h3 => fracas_021 _ _ _ _ h1 h2 h3
 
-theorem fracas_023_from_gf {A : Type*} (delegate finishSurveyTime finishSurvey : A → Prop) :
-    Some delegate finishSurveyTime → (∀ x, finishSurveyTime x → finishSurvey x) → Some delegate finishSurvey :=
+theorem fracas_023_from_gf {A : Type*} (delegate finishSurveyOnTime finishSurvey : A → Prop) :
+    Some delegate finishSurveyOnTime → (∀ x, finishSurveyOnTime x → finishSurvey x) → Some delegate finishSurvey :=
   fun h1 h2 => fracas_023 _ _ _ h1 h2
 
-theorem fracas_024_from_gf {A : Type*} (delegate obtainInterestingResultSurvey obtainResultSurvey : A → Prop) :
-    Some delegate obtainInterestingResultSurvey → (∀ x, obtainInterestingResultSurvey x → obtainResultSurvey x) → Some delegate obtainResultSurvey :=
+theorem fracas_024_from_gf {A : Type*} (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) :
+    Some delegate obtainInterestingResultFromSurvey → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → Some delegate obtainResultFromSurvey :=
   fun h1 h2 => fracas_024 _ _ _ h1 h2
 
-theorem fracas_025_from_gf {A : Type*} (delegate getResultPublishMajorNationalNewspaper getResultPublish : A → Prop) :
-    Some delegate getResultPublishMajorNationalNewspaper → (∀ x, getResultPublishMajorNationalNewspaper x → getResultPublish x) → Some delegate getResultPublish :=
+theorem fracas_025_from_gf {A : Type*} (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) :
+    Some delegate getEveryResultPublishInMajorNationalNewspaper → (∀ x, getEveryResultPublishInMajorNationalNewspaper x → getEveryResultPublish x) → Some delegate getEveryResultPublish :=
   fun h1 h2 => fracas_025 _ _ _ h1 h2
 
-theorem fracas_026_from_gf {A : Type*} [Fintype A] (european residentEurope person canTravelFreeEurope : A → Prop) :
-    Most european residentEurope → Every european person → Every (fun x => person x ∧ residentEurope x) canTravelFreeEurope → Most european canTravelFreeEurope :=
+theorem fracas_026_from_gf {A : Type*} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) :
+    Most european residentInEurope → Every european person → Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope → Most european canTravelFreeWithinEurope :=
   fun h1 h2 h3 => fracas_026 _ _ _ _ h1 h2 h3
 
-theorem fracas_027_from_gf {A : Type*} (committeeMember sweden person scandinavia : A → Prop) :
-    Some committeeMember sweden → Every committeeMember person → Every (fun x => person x ∧ sweden x) scandinavia → Some committeeMember scandinavia :=
+theorem fracas_027_from_gf {A : Type*} (committeeMember fromSweden person fromScandinavia : A → Prop) :
+    Some committeeMember fromSweden → Every committeeMember person → Every (fun x => person x ∧ fromSweden x) fromScandinavia → Some committeeMember fromScandinavia :=
   fun h1 h2 h3 => fracas_027 _ _ _ _ h1 h2 h3
 
 theorem fracas_029_from_gf {A : Type*} (commissioner leadingBusinessman businessman : A → Prop) :
     Every commissioner leadingBusinessman → (∀ x, leadingBusinessman x → businessman x) → Every commissioner businessman :=
   fun h1 h2 => fracas_029 _ _ _ h1 h2
 
-theorem fracas_038_from_gf {A : Type*} (delegate finishReport finishReportTime : A → Prop) :
-    No delegate finishReport → (∀ x, finishReportTime x → finishReport x) → ¬ (Some delegate finishReportTime) :=
+theorem fracas_038_from_gf {A : Type*} (delegate finishReport finishReportOnTime : A → Prop) :
+    No delegate finishReport → (∀ x, finishReportOnTime x → finishReport x) → ¬ (Some delegate finishReportOnTime) :=
   fun h1 h2 => fracas_038 _ _ _ h1 h2
 
 theorem fracas_049_from_gf {A : Type*} (swedeMasc winNobelPrize scandinavian : A → Prop) :
     Some swedeMasc winNobelPrize → Every swedeMasc scandinavian → Some scandinavian winNobelPrize :=
   fun h1 h2 => fracas_049 _ _ _ h1 h2
 
-theorem fracas_055_from_gf {A : Type*} (irishDelegate finishSurveyTime delegate : A → Prop) :
-    Some irishDelegate finishSurveyTime → Every irishDelegate delegate → Some delegate finishSurveyTime :=
+theorem fracas_055_from_gf {A : Type*} (irishDelegate finishSurveyOnTime delegate : A → Prop) :
+    Some irishDelegate finishSurveyOnTime → Every irishDelegate delegate → Some delegate finishSurveyOnTime :=
   fun h1 h2 => fracas_055 _ _ _ h1 h2
 
-theorem fracas_057_from_gf {A : Type*} (portugueseDelegate getResultPublishMajorNationalNewspaper delegate : A → Prop) :
-    Some portugueseDelegate getResultPublishMajorNationalNewspaper → Every portugueseDelegate delegate → Some delegate getResultPublishMajorNationalNewspaper :=
+theorem fracas_057_from_gf {A : Type*} (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) :
+    Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper → Every portugueseDelegate delegate → Some delegate getEveryResultPublishInMajorNationalNewspaper :=
   fun h1 h2 => fracas_057 _ _ _ h1 h2
 
-theorem fracas_059_from_gf {A : Type*} (femaleCommitteeMember scandinavia committeeMember : A → Prop) :
-    Some femaleCommitteeMember scandinavia → Every femaleCommitteeMember committeeMember → Some committeeMember scandinavia :=
+theorem fracas_059_from_gf {A : Type*} (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) :
+    Some femaleCommitteeMember fromScandinavia → Every femaleCommitteeMember committeeMember → Some committeeMember fromScandinavia :=
   fun h1 h2 => fracas_059 _ _ _ h1 h2
 
-theorem fracas_063_from_gf {A : Type*} [Fintype A] (femaleCommissioner spendTimeHome commissioner : A → Prop) :
-    AtLeast 3 femaleCommissioner spendTimeHome → Every femaleCommissioner commissioner → AtLeast 3 commissioner spendTimeHome :=
+theorem fracas_063_from_gf {A : Type*} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) :
+    AtLeast 3 femaleCommissioner spendTimeAtHome → Every femaleCommissioner commissioner → AtLeast 3 commissioner spendTimeAtHome :=
   fun h1 h2 => fracas_063 _ _ _ h1 h2
 
-theorem fracas_070_from_gf {A : Type*} (delegate finishReportTime scandinavianDelegate : A → Prop) :
-    No delegate finishReportTime → Every scandinavianDelegate delegate → ¬ (Some scandinavianDelegate finishReportTime) :=
+theorem fracas_070_from_gf {A : Type*} (delegate finishReportOnTime scandinavianDelegate : A → Prop) :
+    No delegate finishReportOnTime → Every scandinavianDelegate delegate → ¬ (Some scandinavianDelegate finishReportOnTime) :=
   fun h1 h2 => fracas_070 _ _ _ h1 h2
 
 theorem fracas_085_from_gf {A : Type*} [Fintype A] (lawyer signContract accountant : A → Prop) :
@@ -623,29 +623,33 @@ theorem fracas_086_from_gf {A : Type*} [Fintype A] (lawyer signContract accounta
     (Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract) → ¬ (Exactly 6 accountant signContract) :=
   fun h1 => fracas_086 _ _ h1.2
 
-theorem fracas_089_from_gf {A : Type*} (representativeMasc client meeting : A → Prop) :
-    Every (fun x => representativeMasc x ∨ client x) meeting → Every representativeMasc meeting ∧ Every client meeting :=
+theorem fracas_089_from_gf {A : Type*} (representativeMasc client atMeeting : A → Prop) :
+    Every (fun x => representativeMasc x ∨ client x) atMeeting → Every representativeMasc atMeeting ∧ Every client atMeeting :=
   fun h1 => fracas_089 _ _ _ h1
 
-theorem fracas_090_from_gf {A : Type*} (chairman read_outItemAgenda : A → Prop) :
-    Every chairman read_outItemAgenda → Every chairman read_outItemAgenda :=
+theorem fracas_090_from_gf {A : Type*} (chairman read_outEveryItemOnAgenda : A → Prop) :
+    Every chairman read_outEveryItemOnAgenda → Every chairman read_outEveryItemOnAgenda :=
   fun h1 => fracas_090 _ _ h1
 
 theorem fracas_096_from_gf {A : Type*} (ancientGreek notedPhilosopher : A → Prop) :
     Every ancientGreek notedPhilosopher → Every ancientGreek notedPhilosopher :=
   fun h1 => fracas_096 _ _ h1
 
-theorem fracas_097_from_gf {A : Type*} (softwareFault blameSystemFailure : A → Prop) :
-    Some softwareFault blameSystemFailure → Some softwareFault blameSystemFailure :=
+theorem fracas_097_from_gf {A : Type*} (softwareFault blameForSystemFailure : A → Prop) :
+    Some softwareFault blameForSystemFailure → Some softwareFault blameForSystemFailure :=
   fun h1 => fracas_097 _ _ h1
 
-theorem fracas_099_from_gf {A : Type*} (clientDemonstration impressSystemPerformance : A → Prop) (smith : A) :
-    Every clientDemonstration impressSystemPerformance → clientDemonstration smith → impressSystemPerformance smith :=
+theorem fracas_099_from_gf {A : Type*} (clientAtDemonstration impressBySystemPerformance : A → Prop) (smith : A) :
+    Every clientAtDemonstration impressBySystemPerformance → clientAtDemonstration smith → impressBySystemPerformance smith :=
   fun h1 h2 => fracas_099 _ _ _ h1 h2
 
 theorem fracas_103_from_gf {A : Type*} (apcomManager haveCompanyCar : A → Prop) (jones : A) :
     Every apcomManager haveCompanyCar → apcomManager jones → haveCompanyCar jones :=
   fun h1 h2 => fracas_103 _ _ _ h1 h2
+
+theorem fracas_105_from_gf {A : Type*} [Fintype A] (accountant attendMeeting : A → Prop) :
+    Exactly 1 accountant attendMeeting → ¬ (No accountant attendMeeting) :=
+  fun h1 => fracas_105 _ _ h1
 
 theorem fracas_114_from_gf {A : Type*} (female : A → Prop) (has use : A → A → Prop) (mary : A) (maryWorkstation : A) :
     (female mary ∧ has mary maryWorkstation ∧ use mary maryWorkstation) → use mary maryWorkstation :=
@@ -679,12 +683,12 @@ theorem fracas_121_from_gf {A : Type*} (smith itel report invoice projectProposa
     (deliver smith itel report ∧ deliver smith itel invoice ∧ deliver smith itel projectProposal) → (deliver smith itel report ∧ deliver smith itel invoice ∧ deliver smith itel projectProposal) :=
   fun h => fracas_121 _ _ _ _ _ _ h
 
-theorem fracas_122_from_gf {A : Type*} (committee : A → Prop) (chairman appointMember : A → A → Prop) :
-    (∀ c, committee c → ∃ ch, chairman ch c ∧ appointMember ch c) → (∀ c, committee c → ∃ ch, chairman ch c ∧ appointMember ch c) :=
+theorem fracas_122_from_gf {A : Type*} (committee : A → Prop) (chairman appointByMember : A → A → Prop) :
+    (∀ c, committee c → ∃ ch, chairman ch c ∧ appointByMember ch c) → (∀ c, committee c → ∃ ch, chairman ch c ∧ appointByMember ch c) :=
   fun h => fracas_122 _ _ _ h
 
-theorem fracas_123_from_gf {A : Type*} [Fintype A] (reportSmithNeed sendItel smithDesk : A → Prop) :
-    Most reportSmithNeed sendItel → (∀ x, sendItel x → smithDesk x) → Some reportSmithNeed smithDesk :=
+theorem fracas_123_from_gf {A : Type*} [Fintype A] (reportSmithNeed sendByItel onSmithDesk : A → Prop) :
+    Most reportSmithNeed sendByItel → (∀ x, sendByItel x → onSmithDesk x) → Some sendByItel onSmithDesk :=
   fun h1 h2 => fracas_123 _ _ _ h1 h2
 
 theorem fracas_124_from_gf {A : Type*} [Fintype A] (missing remove : A → Prop) :
@@ -699,24 +703,24 @@ theorem fracas_129_from_gf {A : Type*} (john : A) (colleague hateMeeting : A →
     (Every (fun x => x = john ∨ colleague x) hateMeeting) → hateMeeting john :=
   fun h => fracas_129 _ _ _ h
 
-theorem fracas_131_from_gf {A : Type*} (department : A → Prop) (dedicatedLineOf : A → A) (has rentBt : A → A → Prop) :
-    (∀ d, department d → has d (dedicatedLineOf d)) → (∀ d, department d → rentBt d (dedicatedLineOf d)) → (∀ d, department d → ∃ l, rentBt d l) :=
+theorem fracas_131_from_gf {A : Type*} (department : A → Prop) (dedicatedLineOf : A → A) (has rentFromBt : A → A → Prop) :
+    (∀ d, department d → has d (dedicatedLineOf d)) → (∀ d, department d → rentFromBt d (dedicatedLineOf d)) → (∀ d, department d → ∃ l, rentFromBt d l) :=
   fun h1 h2 => fracas_131 _ _ _ _ h1 h2
 
-theorem fracas_132_from_gf {A : Type*} (department : A → Prop) (dedicatedLineOf : A → A) (salesDepartment : A) (has rentBt : A → A → Prop) :
-    (∀ d, department d → has d (dedicatedLineOf d)) → rentBt salesDepartment (dedicatedLineOf salesDepartment) → ∃ l, rentBt salesDepartment l :=
+theorem fracas_132_from_gf {A : Type*} (department : A → Prop) (dedicatedLineOf : A → A) (salesDepartment : A) (has rentFromBt : A → A → Prop) :
+    (∀ d, department d → has d (dedicatedLineOf d)) → rentFromBt salesDepartment (dedicatedLineOf salesDepartment) → ∃ l, rentFromBt salesDepartment l :=
   fun h1 h2 => fracas_132 _ _ _ _ _ h1 h2
 
 theorem fracas_133_from_gf {A : Type*} (ownComputer maintain : A → Prop) :
     (∃ x, ownComputer x) → (∀ x, ownComputer x → maintain x) → (∀ x, ownComputer x → maintain x) :=
   fun h1 h2 => fracas_133 _ _ h1 h2
 
-theorem fracas_134_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContract : A → B → Prop) (mfi : A) :
-    (∀ x, customer x → ∀ c, own x c → haveServiceContract x c) → customer mfi → (∀ c, own mfi c → haveServiceContract mfi c) :=
+theorem fracas_134_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContractFor : A → B → Prop) (mfi : A) :
+    (∀ x, customer x → ∀ c, own x c → haveServiceContractFor x c) → customer mfi → (∀ c, own mfi c → haveServiceContractFor mfi c) :=
   fun h hmfi => fracas_134 _ _ _ _ h hmfi
 
-theorem fracas_135_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContract : A → B → Prop) (mfi : A) :
-    (∀ x, customer x → ∀ c, own x c → haveServiceContract x c) → customer mfi → (∀ c, own mfi c → haveServiceContract mfi c) :=
+theorem fracas_135_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContractFor : A → B → Prop) (mfi : A) :
+    (∀ x, customer x → ∀ c, own x c → haveServiceContractFor x c) → customer mfi → (∀ c, own mfi c → haveServiceContractFor mfi c) :=
   fun h hmfi => fracas_135 _ _ _ _ h hmfi
 
 theorem fracas_138_from_gf {A : Type*} (report : A → Prop) (coverPageOf : A → A) (smith r95103 : A) (sign : A → A → Prop) :
@@ -731,28 +735,28 @@ theorem fracas_140_from_gf {A : Type*} (john bill : A) (said : A → Prop → Pr
     said john (hurt bill bill) → said john (hurt bill bill) :=
   fun h => fracas_140 _ _ _ _ h
 
-theorem fracas_142_from_gf (johnSpeakMary billSpeakMary : Prop) :
-    johnSpeakMary ∧ billSpeakMary → billSpeakMary :=
+theorem fracas_142_from_gf (johnSpeakToMary billSpeakToMary : Prop) :
+    johnSpeakToMary ∧ billSpeakToMary → billSpeakToMary :=
   fun h => fracas_142 _ _ h
 
-theorem fracas_145_from_gf (billSpeakMaryAtFiveOClock : Prop) :
-    billSpeakMaryAtFiveOClock → billSpeakMaryAtFiveOClock :=
+theorem fracas_145_from_gf (billSpeakToMaryAtFiveOClock : Prop) :
+    billSpeakToMaryAtFiveOClock → billSpeakToMaryAtFiveOClock :=
   fun h => fracas_145 _ h
 
-theorem fracas_146_from_gf (billSpeakMary : Prop) :
-    billSpeakMary → billSpeakMary :=
+theorem fracas_146_from_gf (billSpeakToMary : Prop) :
+    billSpeakToMary → billSpeakToMary :=
   fun h => fracas_146 _ h
 
-theorem fracas_147_from_gf (billSpeakMaryOnMonday : Prop) :
-    ¬ billSpeakMaryOnMonday → ¬ billSpeakMaryOnMonday :=
+theorem fracas_147_from_gf (billSpeakToMaryOnMonday : Prop) :
+    ¬ billSpeakToMaryOnMonday → ¬ billSpeakToMaryOnMonday :=
   fun h => fracas_147 _ h
 
-theorem fracas_148_from_gf (billSpeakMary : Prop) :
-    billSpeakMary → billSpeakMary :=
+theorem fracas_148_from_gf (billSpeakToMary : Prop) :
+    billSpeakToMary → billSpeakToMary :=
   fun h => fracas_148 _ h
 
-theorem fracas_149_from_gf {A : Type*} (student speakMary : A → Prop) :
-    Every student speakMary → Every student speakMary :=
+theorem fracas_149_from_gf {A : Type*} (student speakToMary : A → Prop) :
+    Every student speakToMary → Every student speakToMary :=
   fun h => fracas_149 _ _ h
 
 theorem fracas_150_from_gf {A B C : Type*} (go : A → B → C → Prop) (john bill : A) (paris : B) (car train : C) :
@@ -791,20 +795,20 @@ theorem fracas_162_from_gf {A : Type*} (car fast red slow : A → Prop) (own : A
     (∃ c, car c ∧ fast c ∧ red c ∧ own john c) ∧ (∃ c, car c ∧ slow c ∧ red c ∧ own bill c) → ∃ c, car c ∧ slow c ∧ red c ∧ own bill c :=
   fun h => fracas_162 _ _ _ _ _ _ _ h
 
-theorem fracas_164_from_gf (johnSpeakMary johnSpeakSue : Prop) :
-    johnSpeakMary ∧ johnSpeakSue → johnSpeakSue :=
+theorem fracas_164_from_gf (johnSpeakToMary johnSpeakToSue : Prop) :
+    johnSpeakToMary ∧ johnSpeakToSue → johnSpeakToSue :=
   fun h => fracas_164 _ _ h
 
-theorem fracas_165_from_gf (johnSpeakMary johnSpeakMaryOnFriday : Prop) :
-    johnSpeakMary ∧ johnSpeakMaryOnFriday → johnSpeakMaryOnFriday :=
+theorem fracas_165_from_gf (johnSpeakToMary johnSpeakToMaryOnFriday : Prop) :
+    johnSpeakToMary ∧ johnSpeakToMaryOnFriday → johnSpeakToMaryOnFriday :=
   fun h => fracas_165 _ _ h
 
-theorem fracas_166_from_gf (johnSpeakMaryOnThursday johnSpeakMaryOnFriday : Prop) :
-    johnSpeakMaryOnThursday ∧ johnSpeakMaryOnFriday → johnSpeakMaryOnFriday :=
+theorem fracas_166_from_gf (johnSpeakToMaryOnThursday johnSpeakToMaryOnFriday : Prop) :
+    johnSpeakToMaryOnThursday ∧ johnSpeakToMaryOnFriday → johnSpeakToMaryOnFriday :=
   fun h => fracas_166 _ _ h
 
-theorem fracas_167_from_gf {A : Type*} [Fintype A] (womanWorkSalesDepartment : A → Prop) :
-    Exactly 1 (fun _ : A => True) womanWorkSalesDepartment → ¬ Exactly 2 (fun _ : A => True) womanWorkSalesDepartment :=
+theorem fracas_167_from_gf {A : Type*} [Fintype A] (womanWorkInSalesDepartment : A → Prop) :
+    Exactly 1 (fun _ : A => True) womanWorkInSalesDepartment → ¬ Exactly 2 (fun _ : A => True) womanWorkInSalesDepartment :=
   fun h => fracas_167 _ h
 
 theorem fracas_169_from_gf (billFindMaryJohnFindMary : Prop) :
@@ -963,12 +967,12 @@ theorem fracas_250_from_gf {A : Type*} (fastThan : A → A → Prop) (pc6082 ite
     fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY → fastThan pc6082 itelZX :=
   fun h => fracas_250 _ _ _ _ h
 
-theorem fracas_251_from_gf (itelHaveFactoryBirmingham : Prop) :
-    itelHaveFactoryBirmingham → itelHaveFactoryBirmingham :=
+theorem fracas_251_from_gf (itelHaveFactoryInBirmingham : Prop) :
+    itelHaveFactoryInBirmingham → itelHaveFactoryInBirmingham :=
   fun h => fracas_251 _ h
 
-theorem fracas_252_from_gf (itelBirmingham : Nat → Prop) :
-    (∀ y, 1992 ≤ y → y ≤ 1996 → itelBirmingham y) → itelBirmingham 1993 :=
+theorem fracas_252_from_gf (itelInBirmingham : Nat → Prop) :
+    (∀ y, 1992 ≤ y → y ≤ 1996 → itelInBirmingham y) → itelInBirmingham 1993 :=
   fun h => fracas_252 _ h
 
 theorem fracas_255_from_gf (itelMakeLoss : Nat → Prop) :
@@ -1035,9 +1039,9 @@ theorem fracas_286_from_gf (spentHours : Nat) :
     spentHours ≤ 2 → ¬ spentHours > 2 :=
   fun h => fracas_286 _ h
 
-theorem fracas_288_from_gf (smithWriteReportIn : Nat → Prop) (smithWriteReport : Prop) :
-    (∃ h, smithWriteReportIn h) → smithWriteReport → smithWriteReport :=
-  fun hex h => fracas_288 _ _ hex h
+theorem fracas_288_from_gf (smithWriteReport : Prop) :
+    smithWriteReport → smithWriteReport :=
+  fun h => fracas_288 _ h
 
 theorem fracas_289_from_gf (discoveryDuration : Nat) :
     discoveryDuration = 0 → discoveryDuration ≠ 2 :=
@@ -1051,8 +1055,8 @@ theorem fracas_294_from_gf (smithRunBusiness : Prop) :
     smithRunBusiness → smithRunBusiness :=
   fun h => fracas_294 _ h
 
-theorem fracas_297_from_gf (smithOwnChainBusiness : Prop) :
-    smithOwnChainBusiness → smithOwnChainBusiness :=
+theorem fracas_297_from_gf (smithOwnChainOfBusiness : Prop) :
+    smithOwnChainOfBusiness → smithOwnChainOfBusiness :=
   fun h => fracas_297 _ h
 
 theorem fracas_298_from_gf (years : Nat) :
@@ -1063,8 +1067,8 @@ theorem fracas_299_from_gf (years : Nat) :
     years = 2 → ¬ years = 1 :=
   fun h => fracas_299 _ h
 
-theorem fracas_300_from_gf (smithLiveBirmingham : Prop) :
-    smithLiveBirmingham → smithLiveBirmingham :=
+theorem fracas_300_from_gf (smithLiveInBirmingham : Prop) :
+    smithLiveInBirmingham → smithLiveInBirmingham :=
   fun h => fracas_300 _ h
 
 theorem fracas_301_from_gf (years : Nat) :
@@ -1099,8 +1103,8 @@ theorem fracas_326_from_gf (itelBuildMtalk itelFinishMtalk : Nat → Prop) :
     (∀ y, itelBuildMtalk y → itelFinishMtalk y) → itelBuildMtalk 1993 → itelFinishMtalk 1993 :=
   fun hfact hp => fracas_326 _ _ hfact hp
 
-theorem fracas_328_from_gf (itelWinContractApcom itelWinContract : Nat → Prop) :
-    (∀ y, itelWinContractApcom y → itelWinContract y) → itelWinContractApcom 1993 → itelWinContract 1993 :=
+theorem fracas_328_from_gf (itelWinContractFromApcom itelWinContract : Nat → Prop) :
+    (∀ y, itelWinContractFromApcom y → itelWinContract y) → itelWinContractFromApcom 1993 → itelWinContract 1993 :=
   fun hfact hp => fracas_328 _ _ hfact hp
 
 theorem fracas_330_from_gf (itelOwnApcom : Nat → Prop) :
@@ -1139,12 +1143,12 @@ theorem fracas_342_from_gf (smithSignContractJones jonesSignContract : Prop) :
     (smithSignContractJones → jonesSignContract) → smithSignContractJones → jonesSignContract :=
   fun hfact hp => fracas_342 _ _ hfact hp
 
-theorem fracas_343_from_gf {Person : Type*} (smithSignContract : Person → Prop) (jones chairmanItel : Person) :
-    smithSignContract jones → jones = chairmanItel → smithSignContract chairmanItel :=
+theorem fracas_343_from_gf {Person : Type*} (smithSignContract : Person → Prop) (jones chairmanOfItel : Person) :
+    smithSignContract jones → jones = chairmanOfItel → smithSignContract chairmanOfItel :=
   fun h heq => fracas_343 _ _ _ h heq
 
-theorem fracas_344_from_gf {Person : Type*} (helenAnswerPhone : Person → Prop) (chairmanDepartment : Person) :
-    helenAnswerPhone chairmanDepartment → ∃ x, helenAnswerPhone x :=
+theorem fracas_344_from_gf {Person : Type*} (helenAnswerPhone : Person → Prop) (chairmanOfDepartment : Person) :
+    helenAnswerPhone chairmanOfDepartment → ∃ x, helenAnswerPhone x :=
   fun h => fracas_344 _ _ h
 
 theorem fracas_345_from_gf (smithSignContractJones smithMakeCopySecretary : Prop) :

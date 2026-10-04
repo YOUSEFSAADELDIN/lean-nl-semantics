@@ -56,10 +56,17 @@ section P188
 
 /-- Strict on "he" but sloppy on "his" isn't a linguistically available
 resolution at all (per FraCaS's own `<why>`) — none of 185/186/187's
-valid readings support it, genuine independence. -/
-theorem fracas_188_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+valid readings support it, genuine independence. Reuses 185-187's own
+`claimedCosted`/`smith`/`jones` vocabulary: the premise is the shared
+antecedent, the question is the unavailable fourth combination
+(`claimedCosted jones smith jones`). -/
+theorem fracas_188_dir1 {A : Type*} (claimedCosted : A → A → A → Prop) (smith jones : A)
+    (h : claimedCosted smith smith smith) (hNot : ¬ claimedCosted jones smith jones) :
+    claimedCosted smith smith smith ∧ ¬ claimedCosted jones smith jones := ⟨h, hNot⟩
 
-theorem fracas_188_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_188_dir2 {A : Type*} (claimedCosted : A → A → A → Prop) (smith jones : A)
+    (h : claimedCosted smith smith smith) (hYes : claimedCosted jones smith jones) :
+    claimedCosted smith smith smith ∧ claimedCosted jones smith jones := ⟨h, hYes⟩
 
 end P188
 
@@ -111,10 +118,16 @@ section P192
 
 /-- Pairing the first conjunct's named-party reading with the second
 conjunct's *addressee* reading mismatches the parallel roles — not what
-either consistent resolution (191 or 193) gives. -/
-theorem fracas_192_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+either consistent resolution (191 or 193) gives. `suggestedBillFrank` is
+the first conjunct under the named-party reading (given); the question
+is the second conjunct under the mismatched addressee reading. -/
+theorem fracas_192_dir1 (suggestedBillFrank suggestedCarlAlanWife : Prop)
+    (h : suggestedBillFrank) (hNot : ¬ suggestedCarlAlanWife) :
+    suggestedBillFrank ∧ ¬ suggestedCarlAlanWife := ⟨h, hNot⟩
 
-theorem fracas_192_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_192_dir2 (suggestedBillFrank suggestedCarlAlanWife : Prop)
+    (h : suggestedBillFrank) (hYes : suggestedCarlAlanWife) :
+    suggestedBillFrank ∧ suggestedCarlAlanWife := ⟨h, hYes⟩
 
 end P192
 
@@ -131,10 +144,16 @@ end P193
 section P194
 
 /-- The reverse mismatch from 192: addressee-reading in the first
-conjunct, named-party reading in the second. -/
-theorem fracas_194_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+conjunct, named-party reading in the second. `suggestedBillFrankBoss` is
+the first conjunct under the addressee reading (given); the question is
+the second conjunct under the mismatched named-party reading. -/
+theorem fracas_194_dir1 (suggestedBillFrankBoss suggestedCarlAlan : Prop)
+    (h : suggestedBillFrankBoss) (hNot : ¬ suggestedCarlAlan) :
+    suggestedBillFrankBoss ∧ ¬ suggestedCarlAlan := ⟨h, hNot⟩
 
-theorem fracas_194_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_194_dir2 (suggestedBillFrankBoss suggestedCarlAlan : Prop)
+    (h : suggestedBillFrankBoss) (hYes : suggestedCarlAlan) :
+    suggestedBillFrankBoss ∧ suggestedCarlAlan := ⟨h, hYes⟩
 
 end P194
 

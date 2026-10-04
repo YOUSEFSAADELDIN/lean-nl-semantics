@@ -37,13 +37,28 @@ namespace MTT
 /-- The universe of common nouns for this fragment, as a finite tag type.
 Extend per grammar fragment; keep `ancestors` a genuine DAG walk (each tag
 lists itself first, then everything it subtypes, ending at a shared root)
-so the `PartialOrder` laws below hold. -/
+so the `PartialOrder` laws below hold.
+
+`businessman`/`leadingBusinessman` and `southernEurope`/`portugal` are
+this docstring's own "extend per grammar fragment" exercised for real:
+`FraCaS/Section1/Monotonicity/Signature.lean`'s header names "an adapter
+lemma from the MTT `CN`/`CNTag` subtyping lattice" as a possible future
+source for an `Every`-shaped fact, alongside an explicit premise or a
+hand-asserted one, and leaves it undone; `Section1/Monotonicity/
+CNAdapter.lean` is that adapter, for `fracas_029`'s and `fracas_044`'s
+own hand-asserted inclusion premises specifically. Both branches sit
+under `.human`, independent of `.man`/`.woman`'s own branch, so nothing
+about the original five tags or their examples below changes. -/
 inductive CNTag where
   | thing
   | animal
   | human
   | man
   | woman
+  | businessman
+  | leadingBusinessman
+  | southernEurope
+  | portugal
   deriving DecidableEq, Repr
 
 /-- Written by hand rather than `deriving Fintype`: on this toolchain
@@ -52,7 +67,8 @@ with a `Finset`/`SetLike` coercion mismatch inside `Fintype`'s own
 machinery (caught by CI, not visible from reading the code) — a case
 analysis by hand sidesteps whatever's fragile in the generated tactic. -/
 instance : Fintype CNTag where
-  elems := {.thing, .animal, .human, .man, .woman}
+  elems := {.thing, .animal, .human, .man, .woman,
+    .businessman, .leadingBusinessman, .southernEurope, .portugal}
   complete x := by cases x <;> decide
 
 /-- Each tag's ancestors, itself first. Mirrors
@@ -63,6 +79,10 @@ def CNTag.ancestors : CNTag → List CNTag
   | .human => [.human, .animal, .thing]
   | .man => [.man, .human, .animal, .thing]
   | .woman => [.woman, .human, .animal, .thing]
+  | .businessman => [.businessman, .human, .animal, .thing]
+  | .leadingBusinessman => [.leadingBusinessman, .businessman, .human, .animal, .thing]
+  | .southernEurope => [.southernEurope, .human, .animal, .thing]
+  | .portugal => [.portugal, .southernEurope, .human, .animal, .thing]
 
 /-- Subtyping: `a ≤ b` when `b` is an ancestor of `a` (`a` is-a `b`). -/
 instance : PartialOrder CNTag where

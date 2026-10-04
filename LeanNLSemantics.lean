@@ -8,9 +8,7 @@ import LeanNLSemantics.MTT.DotTypes
 import LeanNLSemantics.MTT.Individuation
 import LeanNLSemantics.MTT.NLIExamples
 import LeanNLSemantics.MTT.AssumptionAudit
-import LeanNLSemantics.MTT.Tense
 import LeanNLSemantics.MTT.AxiomModel
-import LeanNLSemantics.Tactic.NLI
 import LeanNLSemantics.FraCaS.Types
 import LeanNLSemantics.FraCaS.Data.Problems
 import LeanNLSemantics.FraCaS.Section1.GQ
@@ -22,14 +20,18 @@ import LeanNLSemantics.FraCaS.Section1.Batch4
 import LeanNLSemantics.FraCaS.Section1.Batch5
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Polarity
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Signature
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.CNAdapter
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Trace
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.Scan
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Existential
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Compose
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.CrossCheck
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.BlindEvalCore
 import LeanNLSemantics.FraCaS.Section2.Plurals
 import LeanNLSemantics.FraCaS.Section2.Batch1
 import LeanNLSemantics.FraCaS.Section2.Batch2
+import LeanNLSemantics.FraCaS.Section1.Monotonicity.BlindEvalUnknown
 import LeanNLSemantics.FraCaS.Section1.GFCrossCheckBatch
 import LeanNLSemantics.FraCaS.Section3.Anaphora
 import LeanNLSemantics.FraCaS.Section3.Batch1
@@ -56,3 +58,4 @@ import LeanNLSemantics.FraCaS.Section8.Verbs
 import LeanNLSemantics.FraCaS.Section8.Batch1
 import LeanNLSemantics.FraCaS.Section9.Attitudes
 import LeanNLSemantics.FraCaS.Section9.Batch1
+import LeanNLSemantics.FraCaS.BlindEvalUnknown3to9

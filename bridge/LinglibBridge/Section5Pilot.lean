@@ -1,0 +1,513 @@
+import LinglibBridge
+import LeanNLSemantics.MTT.Adjectives
+
+/-!
+# A real fragment: Section 5's mammal/animal/four-legged/former-student pilot
+
+`LinglibBridge.lean`'s own closing note flagged `toyLexicon` as "not a
+real fragment's lexicon" — this file is the first real one, built over
+six of `LeanNLSemantics/FraCaS/Section5`'s own actual problems
+(`fracas_198`, `fracas_202`, `fracas_214` from `Batch1.lean`;
+`fracas_210`, `fracas_211`, `fracas_212` from `Batch2.lean`) rather than
+`CN.lean`'s standalone toy model — and, per the closing note at the
+bottom of this file, the complete set of Section 5 problems this
+mechanism has anything to add to.
+
+Eight things are demonstrated:
+
+1. **`fracas_202` re-derived through the bridge's `CN'`.** The
+   predicate-style proof in `Batch1.lean` takes `∀ x, mammal x →
+   animal x` as an explicit premise. Here, `.mammal ≤ .animal` is a
+   `decide`-checked fact about this fragment's own tag lattice instead
+   — no premise needed — and the conclusion follows via `CN'.widen`
+   plus `Adjectives.lean`'s *already-proved* `Intersective`/
+   `intersective_every_iff`/`inter_noun_drop`/`inter_adj_drop`, reused
+   completely unchanged at `A := CN' section5Lexicon .mammal`. Zero new
+   proof content for the "adjective passes through a subtyping step"
+   part of the inference — four of `Adjectives.lean`'s own theorems
+   transfer, not just one.
+
+2. **Coherence survives the generalization.** `CN.lean`'s own closing
+   example checks that widening `john` from `Man` to `Thing` agrees
+   whether taken directly or via `Human` — the payoff of basing
+   subtyping on a `Prop`-valued (hence proof-irrelevant) `≤`.
+   Generalizing `Lexicon`/`CN'` away from `CN.lean`'s own hardcoded tag
+   type (earlier in this file's history) could have silently lost that;
+   a `rfl`-checked example re-runs the identical check — widening
+   `mammal → thing` directly vs. via `animal` — over `section5Lexicon`'s
+   real `S5Tag` lattice, confirming it didn't.
+
+3. **`fracas_198`'s privativity, encoded a third way.** This project
+   already has two treatments of "a former university student is not a
+   university student": `Batch1.lean`'s own `fracas_198`, which takes it
+   as an assumed premise (`∀ x, formerUnivStudent x → ¬ univStudent x`),
+   and `Adjectives.lean`'s general `Gun`/`realGun`/`fakeGun` sum-type
+   construction, which *proves* disjointness from a sum type's own
+   `noConfusion` — still predicate-style underneath (a theorem about
+   predicates on a sum type), not something the CN lattice itself rules
+   out structurally. The tag lattice below adds a third option:
+   `.former` has no ancestor edge to `.univStudent` at all, so the
+   *only* obligation `CN'.widen` ever asks a fragment author to
+   discharge — the `≤` proof — is false by `decide`, with nothing to
+   prove and nothing assumed. `fracas_198_bridge` strengthens this from
+   one missing coercion to the full entailment `fracas_198` itself
+   needs (`∀ x, formerUnivStudent x → ¬ univStudent x`), proved rather
+   than assumed, for every individual the fragment could ever have.
+
+4. **`fracas_210`'s lattice boundary, made explicit.** `Batch2.lean`'s
+   own premise 1 ("all mice are small animals") bundles a subtyping
+   fact (`mouse x → animal x`) together with a separate lexical fact
+   (`mouse x → smallAnimal x`, which isn't tag subtyping at all —
+   `smallAnimal` is the comparison-class-relative judgment
+   `Section5/Adjectives.lean`'s own header explains this section
+   deliberately keeps out of the subtype machinery). `Batch2.lean`'s own
+   proof computes the subtyping half and then discards it, never using
+   it. Through the bridge, with a second `.mouse` tag added alongside
+   `.mammal` under `.animal`, that half simply isn't a premise any more
+   — it's `CN'.widen`, free — while the genuinely lexical half stays
+   exactly as assumed as it is in `Batch2.lean`. This is the clearest
+   statement in this file of what the tag lattice actually buys:
+   subtyping, not lexical content.
+
+5. **The boundary generalizes, not just repeats.** `fracas_211` has the
+   exact same shape as `fracas_210` (a different `.animal` branch,
+   `large`/`small` swapped) — rather than writing a near-duplicate
+   theorem, `animal_branch_contrary_bridge` states the schema once, for
+   an arbitrary branch tag, and both `fracas_210_bridge` (confirmed
+   reproducible from it) and the new `fracas_211_bridge` are instances.
+   `fracas_211` also exercises a real two-step widen for the first
+   time: `dumbo` is tagged `.elephant`, nested under `.mammal`, so
+   `.elephant ≤ .animal` goes through an intermediate tag rather than
+   being a direct edge, and is still free.
+
+6. **`fracas_212` combines both branches at once.** `Batch2.lean`'s own
+   proof reuses `fracas_210`/`fracas_211`'s exact setups together,
+   discarding both subtyping halves, to reach an assumed comparative
+   conclusion (`largerThan dumbo mickey`). `fracas_212_bridge` keeps
+   only the three things that proof actually uses — the two lexical
+   facts and the comparative assumption — with *both* `mouse ≤ animal`
+   and `elephant ≤ animal` gone from the premise list rather than
+   merely satisfied.
+
+7. **`fracas_214`: a whole unused premise, not just half of one.**
+   `Batch2.lean`'s own proof takes both directions of
+   `legalAuth`/`lawLect` coextension as premises but only uses one.
+   `fracas_214_bridge` encodes only that one direction as a tag edge —
+   deliberately *not* the reverse, which would force the two tags equal
+   by antisymmetry, a strictly stronger (and here unneeded, unjustified)
+   claim than the one-directional subtyping the proof actually uses.
+
+8. **Both results generalize, confirmed by reproduction, not assertion.**
+   `fracas_202_bridge`/`fracas_214_bridge` are exactly
+   `LinglibBridge.lean`'s own `CN'.intersective_widen` — true for any
+   lexicon, any edge, any intersective predicate — applied here; a
+   corollary right after each confirms it by literally invoking the
+   general lemma at this fragment's own types. `fracas_198_bridge` is
+   exactly `LinglibBridge.lean`'s own `KindedLexicon.disjoint_of_tags_disjoint`,
+   applied to `section5Lexicon` (confirmed, by `rfl`, to literally be the
+   `Lexicon` `KindedLexicon.toLexicon` produces from `S5Individual.kind`)
+   and `former_univStudent_tags_disjoint` — the one piece that could not
+   be generalized further, since it depends on `S5Tag`'s own concrete
+   shape, not on anything a `Lexicon`/`KindedLexicon` interface provides.
+   That asymmetry — one result is free for any lexicon, the other needs
+   a genuinely fragment-specific fact no matter how it's packaged — is
+   itself part of what this pilot now shows, not just that both
+   re-derivations work.
+
+## What's left in Section 5, and why this mechanism stops here
+
+Every other Section 5 problem (197, 199–201, 203–209, 213, 215–219 — 17
+of the section's 23) was checked against this bridge and genuinely has
+nothing for it to add, for one of two concrete reasons rather than a
+general impression:
+
+- **No CN subtyping is involved at all.** 199–201/213/215–219 are
+  already fully resolved in `Batch1.lean`/`Batch2.lean` into trivial
+  facts (`id`, or a `True ∧ ¬False`/`True ∧ True` independence pair) —
+  there is no subtyping step, free or assumed, for `CN'`/`Lexicon` to
+  touch. 204/205/208/209 assume a contrary or comparative relation
+  directly between adjectival predicates (`small`/`large`,
+  `smallerThan`) over an already-fixed individual, with no CN tag
+  anywhere in the premise — the same "stays a free predicate, not a
+  tag" boundary `fracas_210`'s own entry above already established, but
+  here there is no subtyping half at all to isolate, so re-deriving
+  these through the bridge would just restate `Batch2.lean`'s own proof
+  term verbatim with zero bridge-specific content.
+- **197/203 are trivial projections** (`fracas_203`:
+  `fourLegged dumbo ∧ animal dumbo → fourLegged dumbo := fun h => h.1`;
+  `fracas_197`: the same shape, one conjunct of three) with no
+  inference content to re-derive through anything.
+
+That leaves `{198, 202, 210, 211, 212, 214}` as the complete, now fully
+covered set of Section 5 ids this mechanism has real content for.
+
+The same check was run across every other FraCaS section this project
+covers (1, 2, 6, 7, 8, 9 — read directly from each section's own
+`*.lean` approach file, not from memory): none involve a common-noun
+*type* hierarchy at all. Section 1 is quantifier monotonicity over a
+single shared domain (`Every`/`Some`/`No`), Section 2 is cardinality
+and plural phenomena, Section 6/8/9 lean on assumed comparative/
+implicative/factive relations the same way 204/208 do, and Section 7 is
+temporal/Aktionsart reasoning closed by `omega` over `Nat` timestamps —
+genuinely different semantic machinery in each case, none of it CN
+subtyping. Section 5 (Adjectives) is the one section built around
+exactly the phenomenon (`Intersective`/`SubsCN`/privative adjectives
+modifying CN-typed objects) this bridge's `Lexicon`/`CN'` exists to
+capture, which is why it is the only section this file touches.
+-/
+
+namespace MTT.LinglibBridge
+
+/-! ## The tag lattice -/
+
+/-- Nine tags: a shared root, two independent branches under `.animal`
+(`.mammal` for `fracas_202`, `.mouse` for `fracas_210`'s own "all mice
+are small animals"), `.elephant` nested a level deeper under `.mammal`
+(`fracas_211`'s own subject, and a real three-level chain to widen
+along), the `univStudent`/`former` pair `fracas_198` needs, and a second
+one-directional edge (`.legalAuth ≤ .lawLect`) `fracas_214` needs —
+kept deliberately disconnected from each other and from `.animal` (see
+`S5Tag.ancestors`). -/
+inductive S5Tag where
+  | thing
+  | animal
+  | mammal
+  | elephant
+  | mouse
+  | univStudent
+  | former
+  | legalAuth
+  | lawLect
+  deriving DecidableEq, Repr
+
+/-- Written by hand rather than `deriving Fintype`, matching `CN.lean`'s
+own `CNTag` instance and for the same reason: a derived completeness
+proof is the fragile part on this toolchain, not the case analysis
+itself. -/
+instance : Fintype S5Tag where
+  elems := {.thing, .animal, .mammal, .elephant, .mouse, .univStudent, .former,
+    .legalAuth, .lawLect}
+  complete x := by cases x <;> decide
+
+/-- Each tag's ancestors, itself first — same shape as `CN.lean`'s
+`CNTag.ancestors`. `.mammal` and `.mouse` are independent siblings under
+`.animal` (two branches of the same root, not nested in each other);
+`.elephant` is nested a level deeper, under `.mammal`; `.former` and
+`.univStudent` are siblings under `.thing` only: no edge between them,
+on purpose; `.legalAuth ≤ .lawLect` is a one-directional edge, the
+*reverse* of which (`.lawLect ≤ .legalAuth`) is deliberately absent —
+see `fracas_214_bridge`'s own comment for why. -/
+def S5Tag.ancestors : S5Tag → List S5Tag
+  | .thing => [.thing]
+  | .animal => [.animal, .thing]
+  | .mammal => [.mammal, .animal, .thing]
+  | .elephant => [.elephant, .mammal, .animal, .thing]
+  | .mouse => [.mouse, .animal, .thing]
+  | .univStudent => [.univStudent, .thing]
+  | .former => [.former, .thing]
+  | .legalAuth => [.legalAuth, .lawLect, .thing]
+  | .lawLect => [.lawLect, .thing]
+
+instance : PartialOrder S5Tag where
+  le a b := b ∈ a.ancestors
+  le_refl := by decide
+  le_trans := by decide
+  le_antisymm := by decide
+
+instance : DecidableRel (α := S5Tag) (· ≤ ·) :=
+  fun a b => inferInstanceAs (Decidable (b ∈ a.ancestors))
+
+/-- The edge `fracas_202` needs, checked rather than assumed. -/
+example : S5Tag.mammal ≤ .animal := by decide
+
+/-- The missing edge `fracas_198`'s privativity turns into, once stated
+in the tag lattice instead of as a predicate premise: `CN'.widen`'s only
+proof obligation for a `.former → .univStudent` coercion is false,
+checked over this finite order rather than assumed or derived from a
+sum type's disjointness. -/
+example : ¬ (S5Tag.former ≤ .univStudent) := by decide
+
+/-! ## A minimal entity domain -/
+
+/-- Same shape as `CN.lean`'s own `Individual`: every individual carries
+its most specific tag. -/
+structure S5Individual where
+  kind : S5Tag
+  name : String
+  deriving DecidableEq, Repr
+
+/-- FraCaS's own "Dumbo" (`fracas_203`'s and `fracas_211`'s subject),
+tagged `.elephant` rather than the bare `.mammal` an earlier version of
+this file used — elephants are mammals, so `.elephant`'s own ancestors
+already give `dumbo : CN' section5Lexicon .mammal` for free via
+`CN'.widen`, one level further than `mickey`'s own `.mouse → .animal`
+step. -/
+def dumbo : S5Individual := ⟨.elephant, "dumbo"⟩
+
+/-- The real lexicon: `embed_mono` is exactly `CN.lean`'s own
+`le_trans` argument, discharged here against `S5Tag` instead of
+`MTT.CNTag`. -/
+def section5Lexicon : Lexicon S5Tag S5Individual where
+  embed t x := x.kind ≤ t
+  embed_mono h _ hx := le_trans hx h
+
+/-! ## `fracas_202`, re-derived -/
+
+/-- The bridge's own `fracas_202`. Compare `Batch1.lean`'s proof term
+`fun h x ⟨hm, hf⟩ => ⟨h x hm, hf⟩`, which takes the mammal-animal
+entailment `h` as a hypothesis: here the identical move (keep the
+`fourLegged` witness, widen the rest) needs no `h` argument at all,
+because `CN'.widen`'s own proof obligation is discharged by `decide`
+against `section5Lexicon`'s tag lattice instead. -/
+def fracas_202_bridge (fourLegged : S5Individual → Prop) :
+    MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1) →
+      MTT.Intersective (CN' section5Lexicon .animal) (fun z => fourLegged z.1) :=
+  fun ⟨x, hx⟩ => ⟨CN'.widen section5Lexicon (by decide) x, hx⟩
+
+/-- `fracas_202_bridge` is exactly `LinglibBridge.lean`'s own
+`CN'.intersective_widen`, applied here — confirming that lifting it to
+an arbitrary lexicon and subtyping edge really does reproduce this
+fragment's own concrete instance, not just something similarly shaped. -/
+example (fourLegged : S5Individual → Prop) :
+    MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1) →
+      MTT.Intersective (CN' section5Lexicon .animal) (fun z => fourLegged z.1) :=
+  CN'.intersective_widen section5Lexicon (by decide) fourLegged
+
+/-- The quantified reading of the same fact, obtained by invoking
+`Adjectives.lean`'s `intersective_every_iff` unchanged at
+`A := CN' section5Lexicon .mammal` — no new proof, just instantiation. -/
+example (fourLegged isAnimal : S5Individual → Prop) :
+    MTT.Every
+        (MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1))
+        (fun z => isAnimal z.forget.1) ↔
+      MTT.Every (CN' section5Lexicon .mammal)
+        (fun x => fourLegged x.1 → isAnimal x.1) :=
+  MTT.intersective_every_iff (A := CN' section5Lexicon .mammal)
+    (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+/-- Two more of `Adjectives.lean`'s intersective theorems, reused the
+same way: "some four-legged mammal is Q" entails both "some mammal is
+Q" (`inter_noun_drop`, the existential form of `fracas_202`'s own move)
+and "some mammal is four-legged" (`inter_adj_drop`, recovering the
+adjective itself). Neither needs a new proof — both are `Adjectives.lean`
+applied at `A := CN' section5Lexicon .mammal`, exactly like
+`intersective_every_iff` above. -/
+example (fourLegged isAnimal : S5Individual → Prop) :
+    MTT.Some' (MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1))
+        (fun z => isAnimal z.forget.1) →
+      MTT.Some' (CN' section5Lexicon .mammal) (fun x => isAnimal x.1) :=
+  MTT.inter_noun_drop (A := CN' section5Lexicon .mammal)
+    (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+example (fourLegged isAnimal : S5Individual → Prop) :
+    MTT.Some' (MTT.Intersective (CN' section5Lexicon .mammal) (fun z => fourLegged z.1))
+        (fun z => isAnimal z.forget.1) →
+      MTT.Some' (CN' section5Lexicon .mammal) (fun x => fourLegged x.1) :=
+  MTT.inter_adj_drop (A := CN' section5Lexicon .mammal)
+    (fun z => fourLegged z.1) (fun x => isAnimal x.1)
+
+/-! ## `fracas_214`, the same move for a whole premise -/
+
+/-- `Batch2.lean`'s own `fracas_214` takes BOTH `∀ x, legalAuth x →
+lawLect x` (`h1`) and `∀ x, lawLect x → legalAuth x` (`h2`) as premises
+but its proof (`fun h1 _ x ⟨hla, hf⟩ => ⟨h1 x hla, hf⟩`) only ever uses
+`h1` — `h2` is dead weight, the same "half the premise is unused"
+pattern `fracas_210`/`211`/`212` already found for `animal`, now for a
+*whole* premise rather than half of a conjunction. The tag lattice only
+gets `.legalAuth ≤ .lawLect`: encoding `h2` as the reverse edge would
+force `.legalAuth = .lawLect` by antisymmetry (a strictly stronger claim
+— these two classes being not just coextensive in this one scenario but
+definitionally the same type), which the proof never needs and this
+project has no grounds to assert in general, so it's left out entirely
+rather than encoded either way. -/
+def fracas_214_bridge (fat : S5Individual → Prop) :
+    MTT.Intersective (CN' section5Lexicon .legalAuth) (fun z => fat z.1) →
+      MTT.Intersective (CN' section5Lexicon .lawLect) (fun z => fat z.1) :=
+  fun ⟨x, hx⟩ => ⟨CN'.widen section5Lexicon (by decide) x, hx⟩
+
+/-- `fracas_214_bridge` too is `CN'.intersective_widen`, at a different
+edge of the same lexicon — the same confirmation `fracas_202_bridge`'s
+own corollary above gives, now for the second intersective instance. -/
+example (fat : S5Individual → Prop) :
+    MTT.Intersective (CN' section5Lexicon .legalAuth) (fun z => fat z.1) →
+      MTT.Intersective (CN' section5Lexicon .lawLect) (fun z => fat z.1) :=
+  CN'.intersective_widen section5Lexicon (by decide) fat
+
+/-! ## Coherence survives the generalization -/
+
+/-- `CN.lean`'s own closing example checks that widening `john` from
+`Man` to `Thing` agrees whether taken directly or via `Human` — the
+payoff of basing subtyping on a `Prop`-valued (hence proof-irrelevant)
+`≤`. Generalizing `Lexicon`/`CN'` to an arbitrary tag type earlier in
+this file could have silently lost that: this is the same check, over
+`section5Lexicon`'s real `S5Tag` lattice instead of `CN.lean`'s own
+`CNTag` toy model, confirming it didn't. -/
+example (x : CN' section5Lexicon .mammal) :
+    CN'.widen section5Lexicon (a := .animal) (b := .thing) (by decide)
+        (CN'.widen section5Lexicon (a := .mammal) (b := .animal) (by decide) x)
+      = CN'.widen section5Lexicon (a := .mammal) (b := .thing) (by decide) x :=
+  rfl
+
+/-! ## `fracas_198`, strengthened -/
+
+/-- A concrete former-university-student individual, the `.former`-side
+counterpart to `dumbo` above. -/
+def pat : S5Individual := ⟨.former, "pat"⟩
+
+/-- `pat` is not, under this lexicon, a university student — the
+concrete instance of the missing-edge fact above, the same payoff
+`CN.lean`'s own `decide`-checked examples give for its toy model.
+Stated over `pat.kind ≤ .univStudent` directly rather than through
+`section5Lexicon.embed`: `decide` needs a `Decidable` instance found by
+typeclass search, and a structure field like `embed` doesn't unfold for
+that search the way a plain `def` does, even though the two are
+definitionally equal (as `fracas_198_bridge`'s own proof below relies
+on, via defeq-checking a supplied term rather than synthesizing one). -/
+example : ¬ (pat.kind ≤ S5Tag.univStudent) := by decide
+
+/-- The missing edge, generalized from one pair of tags to *every* tag
+this fragment has: no tag is ever both `.former`-typed and
+`.univStudent`-typed. Proved by cases over the whole (finite) tag set
+at once, the same move `S5Tag`'s own `Fintype`/`PartialOrder` instances
+above already use — not assumed per-pair, derived once for the lattice
+as a whole. -/
+theorem former_univStudent_tags_disjoint :
+    ∀ t : S5Tag, ¬ (t ≤ S5Tag.former ∧ t ≤ .univStudent) := by
+  intro t
+  cases t <;> decide
+
+/-- The real, fully spelled-out form of `fracas_198`'s own premise
+(`∀ x, formerUnivStudent x → ¬ univStudent x`) — except here it is a
+**proved theorem**, holding for every individual this fragment could
+ever have (not just the one FraCaS names), derived from
+`former_univStudent_tags_disjoint` rather than assumed as a hypothesis
+or derived from a sum type's `noConfusion`. This is the bridge's actual
+payoff over the single missing-edge fact above: that fact only rules
+out one *coercion*; this theorem rules out the entailment itself, for
+every individual, the same strength `fracas_198`'s own premise is
+stipulated to have. -/
+theorem fracas_198_bridge (x : S5Individual) :
+    section5Lexicon.embed .former x → ¬ section5Lexicon.embed .univStudent x :=
+  fun h1 h2 => former_univStudent_tags_disjoint x.kind ⟨h1, h2⟩
+
+/-- `section5Lexicon` is exactly `LinglibBridge.lean`'s own
+`KindedLexicon.toLexicon` applied to `S5Individual.kind` — confirmed by
+`rfl`, the same check that file runs for `toyLexicon`. This is what
+makes the corollary just below a genuine reproduction of
+`fracas_198_bridge`, not merely a similarly-shaped restatement. -/
+example :
+    section5Lexicon = (KindedLexicon.mk (T := S5Tag) (E := S5Individual) S5Individual.kind).toLexicon :=
+  rfl
+
+/-- `fracas_198_bridge` is exactly `LinglibBridge.lean`'s own
+`KindedLexicon.disjoint_of_tags_disjoint`, applied to the one fact that
+genuinely can't be generalized further —
+`former_univStudent_tags_disjoint`'s own `decide`-over-this-lattice
+check. -/
+example (x : S5Individual) :
+    section5Lexicon.embed .former x → ¬ section5Lexicon.embed .univStudent x :=
+  (KindedLexicon.mk (T := S5Tag) (E := S5Individual) S5Individual.kind).disjoint_of_tags_disjoint
+    former_univStudent_tags_disjoint x
+
+/-! ## `fracas_210`, split into its free and assumed parts -/
+
+/-- FraCaS's own "Mickey" (`fracas_210`'s subject), a mouse. -/
+def mickey : S5Individual := ⟨.mouse, "mickey"⟩
+
+/-- `Batch2.lean`'s own `fracas_210` premise 1 ("all mice are small
+animals") bundles two separate things into one conjunction: `mouse x →
+animal x` (a subtyping fact) and `mouse x → smallAnimal x` (a lexical
+fact about mice specifically — `smallAnimal` is not a CN tag at all,
+it's the comparison-class-relative adjectival judgment
+`Section5/Adjectives.lean`'s own header explains this section
+deliberately does NOT route through subtype machinery). `Batch2.lean`'s
+own proof computes the `animal` half and then discards it
+(`(h1 mickey hmouse).2`, never using `.1`) — a sign that half of the
+premise was never doing any work for *this* conclusion. Through the
+bridge, that half isn't a premise to discard: it's free, via
+`CN'.widen`, with nothing to assume or throw away. -/
+example : CN' section5Lexicon .animal :=
+  CN'.widen section5Lexicon (by decide)
+    (⟨mickey, (by decide : mickey.kind ≤ S5Tag.mouse)⟩ : CN' section5Lexicon .mouse)
+
+/-- The real `fracas_210` entailment, through the bridge: the exact same
+two genuinely-needed hypotheses `Batch2.lean`'s own proof uses
+(contrariety, and "mice are small animals" restricted to its only
+non-discardable half) — the subtyping half is gone from the premise
+list entirely, not merely satisfied automatically, because it was never
+needed to state the theorem in the first place. This is the tag
+lattice's real boundary: it makes subtyping free, it does not make
+`smallAnimal`/`largeAnimal`'s own contrariety or "mice are small"
+disappear — those stay exactly as assumed as they are in `Batch2.lean`. -/
+theorem fracas_210_bridge
+    (smallAnimal largeAnimal : S5Individual → Prop)
+    (hcontrary : ∀ x, smallAnimal x → ¬ largeAnimal x)
+    (hMouseSmall : ∀ x : CN' section5Lexicon .mouse, smallAnimal x.1) :
+    ¬ largeAnimal mickey :=
+  hcontrary mickey (hMouseSmall ⟨mickey, (by decide : mickey.kind ≤ S5Tag.mouse)⟩)
+
+/-! ## Generalizing the lattice boundary: 210 and 211 as one schema -/
+
+/-- `fracas_210`'s own boundary insight, generalized from one hardcoded
+branch (`.mouse`) to any tag `t` under `.animal`: whatever `t` is, if
+every `t`-individual satisfies a predicate `P` contrary to `Q`, then any
+individual actually of kind `t` (or narrower) fails `Q`. The subtyping
+fact is taken here as a raw `≤` hypothesis on `x.kind` directly, not
+routed through constructing a `CN'` element at the call site the way
+`fracas_210_bridge` above does — avoiding that construction's own
+embed-shaped proof-obligation entirely, rather than working around it
+each time. -/
+theorem animal_branch_contrary_bridge
+    (t : S5Tag) (P Q : S5Individual → Prop)
+    (hcontrary : ∀ x, P x → ¬ Q x)
+    (hAllP : ∀ x : CN' section5Lexicon t, P x.1)
+    (x : S5Individual) (hx : x.kind ≤ t) :
+    ¬ Q x :=
+  hcontrary x (hAllP ⟨x, hx⟩)
+
+/-- The general lemma reproduces `fracas_210_bridge` exactly, at
+`t := .mouse` — confirming the generalization is faithful, not just
+similarly-shaped. -/
+example (smallAnimal largeAnimal : S5Individual → Prop)
+    (hcontrary : ∀ x, smallAnimal x → ¬ largeAnimal x)
+    (hMouseSmall : ∀ x : CN' section5Lexicon .mouse, smallAnimal x.1) :
+    ¬ largeAnimal mickey :=
+  animal_branch_contrary_bridge .mouse smallAnimal largeAnimal hcontrary hMouseSmall mickey
+    (by decide)
+
+/-- `fracas_211`, the *second* instance of the same schema —
+`.elephant`/`largeAnimal`/`smallAnimal` playing the roles
+`.mouse`/`smallAnimal`/`largeAnimal` played for `fracas_210`, `P`/`Q`
+swapped to match ("elephants are large animals" / large-contrary-to-
+small, rather than "mice are small animals" / small-contrary-to-large).
+One proof (`animal_branch_contrary_bridge`) now covers two FraCaS
+problems, each keeping its own genuinely-needed lexical hypothesis while
+its own subtyping step stays free — `.elephant ≤ .animal` here is a real
+two-step widen (through `.mammal`), still free regardless of depth. -/
+theorem fracas_211_bridge
+    (largeAnimal smallAnimal : S5Individual → Prop)
+    (hcontrary : ∀ x, largeAnimal x → ¬ smallAnimal x)
+    (hAllElephantLarge : ∀ x : CN' section5Lexicon .elephant, largeAnimal x.1) :
+    ¬ smallAnimal dumbo :=
+  animal_branch_contrary_bridge .elephant largeAnimal smallAnimal hcontrary hAllElephantLarge
+    dumbo (by decide)
+
+/-- `fracas_212` combines `fracas_210`'s and `fracas_211`'s own setups
+(`Batch2.lean`'s own proof literally reuses both `h1`/`h2`'s `.2`
+projections, discarding both `.1`s) with an assumed comparative relation
+between `smallAnimal`/`largeAnimal`. Through the bridge, BOTH subtyping
+halves (`mouse ≤ animal`, `elephant ≤ animal`) are gone from the premise
+list, not merely discarded after being supplied — only the two lexical
+facts and the comparative assumption, the three things `Batch2.lean`'s
+own proof actually uses, remain. -/
+theorem fracas_212_bridge
+    (smallAnimal largeAnimal : S5Individual → Prop) (largerThan : S5Individual → S5Individual → Prop)
+    (hMouseSmall : ∀ x : CN' section5Lexicon .mouse, smallAnimal x.1)
+    (hElephantLarge : ∀ x : CN' section5Lexicon .elephant, largeAnimal x.1)
+    (hcomp : ∀ x y, smallAnimal x → largeAnimal y → largerThan y x) :
+    largerThan dumbo mickey :=
+  hcomp mickey dumbo
+    (hMouseSmall ⟨mickey, (by decide : mickey.kind ≤ S5Tag.mouse)⟩)
+    (hElephantLarge ⟨dumbo, (by decide : dumbo.kind ≤ S5Tag.elephant)⟩)
+
+end MTT.LinglibBridge

@@ -55,10 +55,23 @@ end P157
 section P158
 
 /-- "A blue one" says nothing about whether Bill's car is *also* red —
-genuine independence, same shape as Section 3's unrelated-claims cases. -/
-theorem fracas_158_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+genuine independence, same shape as Section 3's unrelated-claims cases.
+Reuses 157's own `car`/`red`/`blue`/`owns`/`john`/`bill` vocabulary: the
+premise is exactly 157's, the question is a separate existential about
+red, parallel in shape but with no connection to the blue one. -/
+theorem fracas_158_dir1 {A : Type*} (car red blue : A → Prop) (owns : A → A → Prop)
+    (john bill : A)
+    (h : (∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ blue c ∧ owns bill c))
+    (hNot : ¬ ∃ c, car c ∧ red c ∧ owns bill c) :
+    ((∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ blue c ∧ owns bill c)) ∧
+      ¬ ∃ c, car c ∧ red c ∧ owns bill c := ⟨h, hNot⟩
 
-theorem fracas_158_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_158_dir2 {A : Type*} (car red blue : A → Prop) (owns : A → A → Prop)
+    (john bill : A)
+    (h : (∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ blue c ∧ owns bill c))
+    (hYes : ∃ c, car c ∧ red c ∧ owns bill c) :
+    ((∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ blue c ∧ owns bill c)) ∧
+      ∃ c, car c ∧ red c ∧ owns bill c := ⟨h, hYes⟩
 
 end P158
 
@@ -92,10 +105,22 @@ section P161
 /-- The other reading: "one" resolves only via "car" (not "red car"),
 so "a fast one" says nothing about color — genuine independence, the
 same countermodel style as 158. FraCaS's own note: "formally identical
-with preceding" (160), differing only in which resolution is chosen. -/
-theorem fracas_161_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+with preceding" (160), differing only in which resolution is chosen.
+The question ("does Bill own a fast red car?") is the same conjunction
+160 proves under *its* reading - here it's independent instead. -/
+theorem fracas_161_dir1 {A : Type*} (car red fast : A → Prop) (owns : A → A → Prop)
+    (john bill : A)
+    (h : (∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ fast c ∧ owns bill c))
+    (hNot : ¬ ∃ c, car c ∧ fast c ∧ red c ∧ owns bill c) :
+    ((∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ fast c ∧ owns bill c)) ∧
+      ¬ ∃ c, car c ∧ fast c ∧ red c ∧ owns bill c := ⟨h, hNot⟩
 
-theorem fracas_161_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_161_dir2 {A : Type*} (car red fast : A → Prop) (owns : A → A → Prop)
+    (john bill : A)
+    (h : (∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ fast c ∧ owns bill c))
+    (hYes : ∃ c, car c ∧ fast c ∧ red c ∧ owns bill c) :
+    ((∃ c, car c ∧ red c ∧ owns john c) ∧ (∃ c, car c ∧ fast c ∧ owns bill c)) ∧
+      ∃ c, car c ∧ fast c ∧ red c ∧ owns bill c := ⟨h, hYes⟩
 
 end P161
 

@@ -128,14 +128,20 @@ variable {A : Type*} [Fintype A] (reportsNeeded sentByItel onDesk : A → Prop)
 variable [DecidablePred reportsNeeded] [DecidablePred fun x => reportsNeeded x ∧ sentByItel x]
 
 /-- "ITEL has sent most of the reports Smith needs. They [the sent ones]
-are on her desk." Composes two Section 1 lemmas: `most_some` gets a
-witness among the sent reports, `some_mono_scope` moves that witness's
-property from "sent" to "on desk" via the (anaphorically continued)
-premise 2. -/
+are on her desk." `most_some` gets a witness among the sent reports
+(`reportsNeeded x ∧ sentByItel x`); since that witness already satisfies
+`sentByItel`, premise 2 places it on the desk too, giving a report that
+is both sent by ITEL *and* on the desk — `Some sentByItel onDesk`, not
+`Some reportsNeeded onDesk`: the hypothesis is about reports *from
+ITEL*, and dropping that conjunct would prove a different (weaker,
+ITEL-silent) sentence than the one FraCaS actually asks about, even
+though the same witness happens to validate both. -/
 theorem fracas_123 :
     Most reportsNeeded sentByItel → (∀ x, sentByItel x → onDesk x) →
-      Some reportsNeeded onDesk :=
-  fun hmost honDesk => some_mono_scope reportsNeeded sentByItel onDesk (most_some reportsNeeded sentByItel hmost) honDesk
+      Some sentByItel onDesk :=
+  fun hmost honDesk =>
+    let ⟨x, _, hsent⟩ := most_some reportsNeeded sentByItel hmost
+    ⟨x, hsent, honDesk x hsent⟩
 
 end P123
 
@@ -183,16 +189,24 @@ section P126
 variable {A : Type*} [Fintype A] (missing hereYesterday : A → Prop)
 variable [DecidablePred fun x : A => True ∧ missing x] [DecidablePred fun x : A => True ∧ hereYesterday x]
 
-/-- "They [the two missing] were all here yesterday" plus the unstated
-but clearly intended background fact that the other eight (still
-present) machines were here yesterday too (`h2`) together cover the
-whole domain, giving "ten machines were here yesterday" as an exact
-count via `Anaphora.lean`'s `card_true_eq_card_type`. -/
+/-- "Two out of ten machines are missing. They were *all* here
+yesterday." Unlike problem 124's "they have been removed" (whose
+antecedent is naturally the two missing machines specifically), the
+"all" here only makes sense quantifying over the full ten: describing
+two machines as "them... all" is a strange way to talk about a pair,
+and FraCaS's own `.yes` gold answer ("ten machines were here
+yesterday") only follows under the reading where "they" picks out the
+whole group under discussion, not an invented extra premise about the
+other eight bolted onto a reading tied to just the missing two (that
+was this theorem's previous, wrong shape — `h1`/`h2` case-split on
+`missing`, with `h2` asserting the non-missing machines' presence as an
+unstated fact nothing in the English actually supplies). `missing`/
+`hmissing` are still threaded through as the genuine stated first
+premise, even though this particular hypothesis doesn't need it. -/
 theorem fracas_126 (hcard : Fintype.card A = 10)
     (_hmissing : Exactly 2 (fun _ : A => True) missing)
-    (h1 : ∀ x, missing x → hereYesterday x) (h2 : ∀ x, ¬ missing x → hereYesterday x) :
+    (hall : ∀ x, hereYesterday x) :
     Exactly 10 (fun _ : A => True) hereYesterday := by
-  have hall : ∀ x : A, hereYesterday x := fun x => (Classical.em (missing x)).elim (h1 x) (h2 x)
   have heq : (Finset.univ.filter fun x => True ∧ hereYesterday x) = Finset.univ :=
     Finset.ext (fun x => by simp [hall x])
   have hc : card (fun x : A => True ∧ hereYesterday x) = Fintype.card A := by

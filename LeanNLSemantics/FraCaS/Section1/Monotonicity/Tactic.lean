@@ -145,6 +145,7 @@ def MonoRule.lemmaName : MonoRule → Lean.Name
   | .atMostMonoScope  => ``FraCaS.Section1.atMost_mono_scope
   | .atMostRestrict   => ``FraCaS.Section1.atMost_restrict
   | .atMostMonoScopeConditioned => ``FraCaS.Section1.atMost_mono_scope_conditioned
+  | .atLeastMonoScopeConditioned => ``FraCaS.Section1.atLeast_mono_scope_conditioned
 
 /-- Repeatedly `intro`s the goal's leading Π-binders (every problem in
 this fragment is stated as a chain of implications ending in the
@@ -244,7 +245,7 @@ passes `fun _ => pure #[]` (Phase 1/2, unchanged behaviour). Returns `true`
 (and assigns `goal`) iff it closed the goal; `false`, never a thrown
 error, otherwise - callers decide whether/how to report failure. -/
 def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.Name)))
-    (goal : MVarId) : MetaM Bool := do
+    (goal : MVarId) (upwardConditioned : Bool := false) : MetaM Bool := do
   let (_introduced, goal) ← introAll goal
   goal.withContext do
     -- Raw type, not `whnf` - see `introAll`'s comment: whnf unfolds
@@ -346,6 +347,7 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
             | .atMostMonoScope  => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
             | .atMostRestrict   => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
             | .atMostMonoScopeConditioned => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
+            | .atLeastMonoScopeConditioned => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
           let proof ← mkAppM effRule.lemmaName lemmaArgs
           unless ← isDefEq (← inferType proof) (← goal.getType) do return false
           let step : MonoStep :=
@@ -422,8 +424,16 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
       -- exactly `(AtMost, scope)` - everywhere else `condRule?` is `none`
       -- and this block does nothing, so it can only ever widen what
       -- already-passing goals close, never change how they do.
+      -- `(AtLeast, scope)`'s counterpart is opt-in (`upwardConditioned`):
+      -- only the end-to-end pipeline's prover (`EndToEnd/Prover.lean`)
+      -- turns it on, so `mono_nl` itself - and every evaluation of the
+      -- hand-written corpus that uses it - behaves exactly as before that
+      -- rule existed.
       let condRule? : Option MonoRule :=
-        if rule == .atMostMonoScope then some .atMostMonoScopeConditioned else none
+        if rule == .atMostMonoScope then some .atMostMonoScopeConditioned
+        else if upwardConditioned && rule == .atLeastMonoScope then
+          some .atLeastMonoScopeConditioned
+        else none
       if let some condRule := condRule? then
         -- The conditioned fact `entails_narrow` would produce is `Every
         -- (fun x => auxRestrictor x ∧ needFrom x) needTo` for some

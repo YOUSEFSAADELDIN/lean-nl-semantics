@@ -40,9 +40,13 @@ section P253
 happened at least once in the interval, not that it holds at every
 intervening year (which "developed a new editor" — an accomplishment —
 couldn't repeat every year of anyway). -/
-theorem fracas_253_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_253_dir1 (developedEditor : Nat → Prop)
+    (h : ∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ developedEditor y) (hNot : ¬ developedEditor 1993) :
+    (∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ developedEditor y) ∧ ¬ developedEditor 1993 := ⟨h, hNot⟩
 
-theorem fracas_253_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_253_dir2 (developedEditor : Nat → Prop)
+    (h : ∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ developedEditor y) (hYes : developedEditor 1993) :
+    (∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ developedEditor y) ∧ developedEditor 1993 := ⟨h, hYes⟩
 
 end P253
 
@@ -50,9 +54,13 @@ section P254
 
 /-- Same shape as 253: "expanded" is not a state that holds
 continuously across the interval. -/
-theorem fracas_254_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_254_dir1 (expanded : Nat → Prop)
+    (h : ∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ expanded y) (hNot : ¬ expanded 1993) :
+    (∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ expanded y) ∧ ¬ expanded 1993 := ⟨h, hNot⟩
 
-theorem fracas_254_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_254_dir2 (expanded : Nat → Prop)
+    (h : ∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ expanded y) (hYes : expanded 1993) :
+    (∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ expanded y) ∧ expanded 1993 := ⟨h, hYes⟩
 
 end P254
 
@@ -79,10 +87,14 @@ picking one silently. -/
 section P256
 
 /-- The "at least once since 1992" reading: doesn't pin down 1993
-specifically. -/
-theorem fracas_256_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+specifically. Reuses 255/257's own `madeALoss` name. -/
+theorem fracas_256_dir1 (madeALoss : Nat → Prop)
+    (h : ∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ madeALoss y) (hNot : ¬ madeALoss 1993) :
+    (∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ madeALoss y) ∧ ¬ madeALoss 1993 := ⟨h, hNot⟩
 
-theorem fracas_256_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_256_dir2 (madeALoss : Nat → Prop)
+    (h : ∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ madeALoss y) (hYes : madeALoss 1993) :
+    (∃ y, 1992 ≤ y ∧ y ≤ 1996 ∧ madeALoss y) ∧ madeALoss 1993 := ⟨h, hYes⟩
 
 end P256
 

@@ -15,17 +15,39 @@ name = "linglib"
 git = "https://github.com/hawkrobe/linglib.git"
 rev = "8cd728cf2c0386b11ad7057ecac4946dff58a668"
 
-# Reuses `../LeanNLSemantics/MTT/CN.lean` directly as a source file (via
+# Reuses `../LeanNLSemantics/MTT/*.lean` files directly as source (via
 # `srcDir`, not a Lake package dependency), so the bridge always tracks
-# the same `CN`/`CNTag`/`Individual` the main package's core library
-# uses, without a second copy to drift out of sync, and without pulling
-# in the main package's own Mathlib requirement or its 342-theorem
-# FraCaS suite (neither of which the bridge needs) as a Lake-level
-# dependency.
+# the same `CN`/`CNTag`/`Individual`/`Intersective`/etc. the main
+# package's core library uses, without a second copy to drift out of
+# sync, and without pulling in the main package's own Mathlib
+# requirement or its 342-theorem FraCaS suite as a Lake-level
+# dependency. `srcDir` points at the repo root itself, not at
+# `../LeanNLSemantics`, specifically so module names here match
+# `LeanNLSemantics.MTT.*` exactly — the same names those files' own
+# internal `import` lines use (`Adjectives.lean` imports
+# `LeanNLSemantics.MTT.Quantifiers`, not `MTT.Quantifiers`) — so a
+# reused file's own cross-imports resolve unchanged no matter how many
+# more of them get pulled in later. `FraCaS.Section1.GQ`/`Section2.Plurals`
+# are the two files from the suite reused here (for
+# `Section1GQCrossCheck.lean`): `GQ.lean` only `import Mathlib`, and
+# `Plurals.lean` only imports `GQ.lean` back, so together they're still
+# two specific files, not a path to the whole suite.
 [[lean_lib]]
 name = "MTTCore"
-srcDir = "../LeanNLSemantics"
-roots = ["MTT.CN"]
+srcDir = ".."
+roots = [
+  "LeanNLSemantics.MTT.CN",
+  "LeanNLSemantics.MTT.Quantifiers",
+  "LeanNLSemantics.MTT.Adjectives",
+  "LeanNLSemantics.FraCaS.Section1.GQ",
+  "LeanNLSemantics.FraCaS.Section2.Plurals",
+]
 
 [[lean_lib]]
 name = "LinglibBridge"
+roots = [
+  "LinglibBridge",
+  "LinglibBridge.Section5Pilot",
+  "LinglibBridge.ToyFragment",
+  "LinglibBridge.Section1GQCrossCheck",
+]

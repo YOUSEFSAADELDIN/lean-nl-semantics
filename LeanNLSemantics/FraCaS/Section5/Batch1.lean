@@ -62,9 +62,13 @@ section P200
 *embedded under* "former" (part of what John used to be), so it says
 nothing about present-tense John — genuine independence, the same
 unrelated-claims shape used throughout Sections 1–4. -/
-theorem fracas_200_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_200_dir1 (wasFormerSuccessfulUnivStudent currentlySuccessful : Prop)
+    (h : wasFormerSuccessfulUnivStudent) (hNot : ¬ currentlySuccessful) :
+    wasFormerSuccessfulUnivStudent ∧ ¬ currentlySuccessful := ⟨h, hNot⟩
 
-theorem fracas_200_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_200_dir2 (wasFormerSuccessfulUnivStudent currentlySuccessful : Prop)
+    (h : wasFormerSuccessfulUnivStudent) (hYes : currentlySuccessful) :
+    wasFormerSuccessfulUnivStudent ∧ currentlySuccessful := ⟨h, hYes⟩
 
 end P200
 
@@ -75,9 +79,13 @@ whole "successful university student" description, so it blocks
 noun-drop entirely — John need not currently be a university student at
 all (he may have stopped being a successful one without ever having
 stopped being a student, or vice versa; per FraCaS's own `<why>`). -/
-theorem fracas_201_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_201_dir1 (wasFormerSuccessfulUnivStudent currentlyUnivStudent : Prop)
+    (h : wasFormerSuccessfulUnivStudent) (hNot : ¬ currentlyUnivStudent) :
+    wasFormerSuccessfulUnivStudent ∧ ¬ currentlyUnivStudent := ⟨h, hNot⟩
 
-theorem fracas_201_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_201_dir2 (wasFormerSuccessfulUnivStudent currentlyUnivStudent : Prop)
+    (h : wasFormerSuccessfulUnivStudent) (hYes : currentlyUnivStudent) :
+    wasFormerSuccessfulUnivStudent ∧ currentlyUnivStudent := ⟨h, hYes⟩
 
 end P201
 
@@ -125,19 +133,29 @@ end P205
 section P206
 
 /-- "Not small" doesn't give "large" — contrary predicates leave a
-middle ground (e.g. medium-sized). -/
-theorem fracas_206_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+middle ground (e.g. medium-sized). Reuses 204/205's `small`/`large`
+vocabulary and `mickey`. -/
+theorem fracas_206_dir1 {A : Type*} (small large : A → Prop) (mickey : A)
+    (h : ¬ small mickey) (hNot : ¬ large mickey) :
+    ¬ small mickey ∧ ¬ large mickey := ⟨h, hNot⟩
 
-theorem fracas_206_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_206_dir2 {A : Type*} (small large : A → Prop) (mickey : A)
+    (h : ¬ small mickey) (hYes : large mickey) :
+    ¬ small mickey ∧ large mickey := ⟨h, hYes⟩
 
 end P206
 
 section P207
 
-/-- "Not large" doesn't give "small", symmetric to 206. -/
-theorem fracas_207_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- "Not large" doesn't give "small", symmetric to 206. Reuses 204/205's
+`small`/`large` vocabulary and `dumbo`. -/
+theorem fracas_207_dir1 {A : Type*} (small large : A → Prop) (dumbo : A)
+    (h : ¬ large dumbo) (hNot : ¬ small dumbo) :
+    ¬ large dumbo ∧ ¬ small dumbo := ⟨h, hNot⟩
 
-theorem fracas_207_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_207_dir2 {A : Type*} (small large : A → Prop) (dumbo : A)
+    (h : ¬ large dumbo) (hYes : small dumbo) :
+    ¬ large dumbo ∧ small dumbo := ⟨h, hYes⟩
 
 end P207
 

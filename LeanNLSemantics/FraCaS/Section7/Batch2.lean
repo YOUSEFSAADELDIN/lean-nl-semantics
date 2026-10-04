@@ -41,10 +41,26 @@ section P263
 two premises doesn't compose the same way a pure achievement chain
 does: "Smith present after Jones left" and "Jones left after Anderson
 present" don't pin down a single timestamp for each event the way
-261/262 do. -/
-theorem fracas_263_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+261/262 do. Using real `Nat` timestamps here would be unsound (`<`'s own
+transitivity would make the conclusion trivially provable, contradicting
+the genuine independence FraCaS reports) - opaque facts, not arithmetic,
+are the faithful encoding of a state/achievement composition that
+doesn't go through. -/
+theorem fracas_263_dir1
+    (smithPresentAfterJonesLeft jonesLeftAfterAndersonPresent
+      smithPresentAfterAndersonPresent : Prop)
+    (h : smithPresentAfterJonesLeft ∧ jonesLeftAfterAndersonPresent)
+    (hNot : ¬ smithPresentAfterAndersonPresent) :
+    (smithPresentAfterJonesLeft ∧ jonesLeftAfterAndersonPresent) ∧
+      ¬ smithPresentAfterAndersonPresent := ⟨h, hNot⟩
 
-theorem fracas_263_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_263_dir2
+    (smithPresentAfterJonesLeft jonesLeftAfterAndersonPresent
+      smithPresentAfterAndersonPresent : Prop)
+    (h : smithPresentAfterJonesLeft ∧ jonesLeftAfterAndersonPresent)
+    (hYes : smithPresentAfterAndersonPresent) :
+    (smithPresentAfterJonesLeft ∧ jonesLeftAfterAndersonPresent) ∧
+      smithPresentAfterAndersonPresent := ⟨h, hYes⟩
 
 end P263
 
@@ -91,10 +107,23 @@ section P269
 
 /-- "Smith swam" (bare activity) mentioned twice need not denote the
 same swimming occasion each time, unlike 270's telic "swam to the
-shore" — so the converse of before/after can't be assumed to transfer. -/
-theorem fracas_269_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+shore" — so the converse of before/after can't be assumed to transfer.
+Opaque facts (not real timestamps) for the same reason as 263: real
+`Nat` `<`/`>` would make the converse trivially provable, which is
+exactly what this problem's `.unknown` gold answer says doesn't hold. -/
+theorem fracas_269_dir1 (smithSwam jonesSwam smithSwamBeforeJonesSwam
+      jonesSwamAfterSmithSwam : Prop)
+    (h : smithSwam ∧ jonesSwam ∧ smithSwamBeforeJonesSwam)
+    (hNot : ¬ jonesSwamAfterSmithSwam) :
+    (smithSwam ∧ jonesSwam ∧ smithSwamBeforeJonesSwam) ∧ ¬ jonesSwamAfterSmithSwam :=
+  ⟨h, hNot⟩
 
-theorem fracas_269_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_269_dir2 (smithSwam jonesSwam smithSwamBeforeJonesSwam
+      jonesSwamAfterSmithSwam : Prop)
+    (h : smithSwam ∧ jonesSwam ∧ smithSwamBeforeJonesSwam)
+    (hYes : jonesSwamAfterSmithSwam) :
+    (smithSwam ∧ jonesSwam ∧ smithSwamBeforeJonesSwam) ∧ jonesSwamAfterSmithSwam :=
+  ⟨h, hYes⟩
 
 end P269
 
@@ -111,33 +140,83 @@ end P270
 
 section P271
 
-theorem fracas_271_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- "Smith was present. Jones was present. Smith was present after Jones
+was present. Was Jones present before Smith was present?" — a bare
+repeated-state chain, same independence shape as 263/269 and the same
+reason real timestamps would be unsound here (state "after"/"before"
+don't compose like achievement timestamps do). -/
+theorem fracas_271_dir1 (smithPresent jonesPresent smithPresentAfterJonesPresent
+      jonesPresentBeforeSmithPresent : Prop)
+    (h : smithPresent ∧ jonesPresent ∧ smithPresentAfterJonesPresent)
+    (hNot : ¬ jonesPresentBeforeSmithPresent) :
+    (smithPresent ∧ jonesPresent ∧ smithPresentAfterJonesPresent) ∧
+      ¬ jonesPresentBeforeSmithPresent := ⟨h, hNot⟩
 
-theorem fracas_271_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_271_dir2 (smithPresent jonesPresent smithPresentAfterJonesPresent
+      jonesPresentBeforeSmithPresent : Prop)
+    (h : smithPresent ∧ jonesPresent ∧ smithPresentAfterJonesPresent)
+    (hYes : jonesPresentBeforeSmithPresent) :
+    (smithPresent ∧ jonesPresent ∧ smithPresentAfterJonesPresent) ∧
+      jonesPresentBeforeSmithPresent := ⟨h, hYes⟩
 
 end P271
 
 section P272
 
-theorem fracas_272_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- The reverse pairing from 271: "Smith was present before Jones was
+present. Was Jones present after Smith was present?" -/
+theorem fracas_272_dir1 (smithPresent jonesPresent smithPresentBeforeJonesPresent
+      jonesPresentAfterSmithPresent : Prop)
+    (h : smithPresent ∧ jonesPresent ∧ smithPresentBeforeJonesPresent)
+    (hNot : ¬ jonesPresentAfterSmithPresent) :
+    (smithPresent ∧ jonesPresent ∧ smithPresentBeforeJonesPresent) ∧
+      ¬ jonesPresentAfterSmithPresent := ⟨h, hNot⟩
 
-theorem fracas_272_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_272_dir2 (smithPresent jonesPresent smithPresentBeforeJonesPresent
+      jonesPresentAfterSmithPresent : Prop)
+    (h : smithPresent ∧ jonesPresent ∧ smithPresentBeforeJonesPresent)
+    (hYes : jonesPresentAfterSmithPresent) :
+    (smithPresent ∧ jonesPresent ∧ smithPresentBeforeJonesPresent) ∧
+      jonesPresentAfterSmithPresent := ⟨h, hYes⟩
 
 end P272
 
 section P273
 
-theorem fracas_273_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- Same shape as 271, over "writing a report" (another unbounded
+activity) instead of "present". -/
+theorem fracas_273_dir1 (smithWritingReport jonesWritingReport
+      smithWritingBeforeJonesWriting jonesWritingAfterSmithWriting : Prop)
+    (h : smithWritingReport ∧ jonesWritingReport ∧ smithWritingBeforeJonesWriting)
+    (hNot : ¬ jonesWritingAfterSmithWriting) :
+    (smithWritingReport ∧ jonesWritingReport ∧ smithWritingBeforeJonesWriting) ∧
+      ¬ jonesWritingAfterSmithWriting := ⟨h, hNot⟩
 
-theorem fracas_273_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_273_dir2 (smithWritingReport jonesWritingReport
+      smithWritingBeforeJonesWriting jonesWritingAfterSmithWriting : Prop)
+    (h : smithWritingReport ∧ jonesWritingReport ∧ smithWritingBeforeJonesWriting)
+    (hYes : jonesWritingAfterSmithWriting) :
+    (smithWritingReport ∧ jonesWritingReport ∧ smithWritingBeforeJonesWriting) ∧
+      jonesWritingAfterSmithWriting := ⟨h, hYes⟩
 
 end P273
 
 section P274
 
-theorem fracas_274_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+/-- The reverse pairing from 273. -/
+theorem fracas_274_dir1 (smithWritingReport jonesWritingReport
+      smithWritingAfterJonesWriting jonesWritingBeforeSmithWriting : Prop)
+    (h : smithWritingReport ∧ jonesWritingReport ∧ smithWritingAfterJonesWriting)
+    (hNot : ¬ jonesWritingBeforeSmithWriting) :
+    (smithWritingReport ∧ jonesWritingReport ∧ smithWritingAfterJonesWriting) ∧
+      ¬ jonesWritingBeforeSmithWriting := ⟨h, hNot⟩
 
-theorem fracas_274_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_274_dir2 (smithWritingReport jonesWritingReport
+      smithWritingAfterJonesWriting jonesWritingBeforeSmithWriting : Prop)
+    (h : smithWritingReport ∧ jonesWritingReport ∧ smithWritingAfterJonesWriting)
+    (hYes : jonesWritingBeforeSmithWriting) :
+    (smithWritingReport ∧ jonesWritingReport ∧ smithWritingAfterJonesWriting) ∧
+      jonesWritingBeforeSmithWriting := ⟨h, hYes⟩
 
 end P274
 
@@ -149,9 +228,13 @@ section P275
 that he ever *did* lose his temper — "before" locates a (possibly
 counterfactual) reference point without committing to it, unlike
 "after". -/
-theorem fracas_275_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+theorem fracas_275_dir1 (smithLeftBeforeLostTemper smithLostTemper : Prop)
+    (h : smithLeftBeforeLostTemper) (hNot : ¬ smithLostTemper) :
+    smithLeftBeforeLostTemper ∧ ¬ smithLostTemper := ⟨h, hNot⟩
 
-theorem fracas_275_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_275_dir2 (smithLeftBeforeLostTemper smithLostTemper : Prop)
+    (h : smithLeftBeforeLostTemper) (hYes : smithLostTemper) :
+    smithLeftBeforeLostTemper ∧ smithLostTemper := ⟨h, hYes⟩
 
 end P275
 

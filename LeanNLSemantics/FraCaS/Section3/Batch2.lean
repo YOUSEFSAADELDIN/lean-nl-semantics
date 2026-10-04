@@ -264,10 +264,19 @@ section P141
 
 /-- "John said Bill had hurt himself" is entirely about Bill (himself
 resolves to Bill, never John) — it says nothing at all about anyone
-saying John was hurt, so the two claims are simply unconnected. -/
-theorem fracas_141_dir1 : True ∧ ¬ False := ⟨trivial, fun h => h⟩
+saying John was hurt, so the two claims are simply unconnected. Reuses
+139/140's own `said`/`hurt`/`john`/`bill` vocabulary: the premise is
+exactly 140's content (`said john (hurt bill bill)`), and the question
+("did anyone say John had been hurt?") is `∃p, said p (hurt john john)`. -/
+theorem fracas_141_dir1 {A : Type*} (john bill : A) (said : A → Prop → Prop)
+    (hurt : A → A → Prop) (h : said john (hurt bill bill))
+    (hNot : ¬ ∃ p, said p (hurt john john)) :
+    said john (hurt bill bill) ∧ ¬ ∃ p, said p (hurt john john) := ⟨h, hNot⟩
 
-theorem fracas_141_dir2 : True ∧ True := ⟨trivial, trivial⟩
+theorem fracas_141_dir2 {A : Type*} (john bill : A) (said : A → Prop → Prop)
+    (hurt : A → A → Prop) (h : said john (hurt bill bill))
+    (hYes : ∃ p, said p (hurt john john)) :
+    said john (hurt bill bill) ∧ ∃ p, said p (hurt john john) := ⟨h, hYes⟩
 
 end P141
 
