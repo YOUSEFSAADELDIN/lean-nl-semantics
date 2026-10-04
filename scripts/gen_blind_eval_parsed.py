@@ -277,13 +277,18 @@ def assemble(idn, sentences):
         binders.append(f"({' '.join(binary)} : A → A → Prop)")
     if inds:
         binders.append(f"({' '.join(inds)} : A)")
-    # The proportional reading of "many" is an opaque relation; its one
-    # property - every reading of "many" entails "some" - is part of what
-    # the word means, so it is stated in every claim that mentions it.
+    # The proportional reading of "many" is an opaque relation, stated
+    # with the two properties every reading of "many" (cardinal or
+    # proportional) has, as part of what the word means: it entails
+    # "some", and it is upward monotone in its scope ("many delegates got
+    # interesting results" => "many delegates got results"). It is NOT
+    # monotone in its restrictor - "many British delegates" says nothing
+    # about "many delegates" on the proportional reading (FraCaS 56).
     meaning = []
     if any(re.search(r"\bMany\b", p) for _a, trs in translated for _tr, p in trs):
         binders.append("(Many : (A → Prop) → (A → Prop) → Prop)")
         meaning.append("(∀ P Q : A → Prop, Many P Q → Some P Q)")
+        meaning.append("(∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R)")
     knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary))
     head = f"∀ {' '.join(binders)}, "
 

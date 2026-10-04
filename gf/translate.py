@@ -370,13 +370,14 @@ def _decode_card(card):
 # "strong" one (entailing every reading - the hypothesis in the "yes"
 # test), so no yes/no it reports depends on picking one reading:
 #   - definite plural subject ("the inhabitants voted ..."): distributive
-#     `Every` vs collective/generic - weak `Some`, strong `Every`;
+#     `Every` vs collective/generic - weak `Some`, strong `Every` plus the
+#     definite's existence presupposition (see _quantified);
 #   - bare plural + relative clause ("leading tenors who are excellent
 #     are ..."): generic vs existential - weak `Some`, strong `Every`;
 #   - "many": cardinal vs proportional - weak `Some`; strong is an opaque
 #     `Many` relation with no properties (no GQ here entails both);
 #   - plural "some Xs": number-neutral vs at-least-two - weak `Some`,
-#     strong `AtLeast 2`;
+#     strong `AtLeast 2` (with its "some" consequence spelled out);
 #   - "both"/"neither": not ambiguous, just previously simplified to
 #     `Every`/`No` (see the CAUTION below) - both modes use GQ.lean's own
 #     `Both`/`Neither`, which keep the exactly-two presupposition.
@@ -413,7 +414,7 @@ def _resolve_quantifier(det) -> str:
             if det.head == "many_Det":
                 return "Many" if _mode("many") == "strong" else "Some"
             if det.head == "somePl_Det" and _mode("somepl") == "strong":
-                return "AtLeast 2"
+                return "AtLeast 2+"
             if det.head == "both_Det":
                 return "Both"
             if det.head == "neither_Det":
@@ -437,12 +438,8 @@ def _resolve_quantifier(det) -> str:
             # hypotheses "Six lawyers/accountants signed the contract"),
             # not guessed from the English alone.
             return f"Exactly {count}"
-        if (
-            _mode("defpl") == "weak"
-            and quant.head == "DefArt"
-            and num.head == "NumPl"
-        ):
-            return "Some"
+        if _READING != "default" and quant.head == "DefArt" and num.head == "NumPl":
+            return "Some" if _mode("defpl") == "weak" else "Every+"
         if quant.head in _QUANTIFIER_BY_QUANT:
             return _QUANTIFIER_BY_QUANT[quant.head]
         raise NotImplementedError(
@@ -1248,9 +1245,23 @@ def translate_cl(t) -> Translation:
     scope_name = _scope_name(vp)
 
     return Translation(
-        lean_prop=f"{quant} {restrictor_expr} {scope_name}",
+        lean_prop=_quantified(quant, restrictor_expr, scope_name),
         free_predicates=[*restrictor_preds, scope_name],
     )
+
+
+def _quantified(quant: str, restrictor: str, scope: str) -> str:
+    """Render `quant restrictor scope`. Two strong readings carry an
+    explicit existence conjunct: a definite plural presupposes that its
+    referents exist ("Every+": `Every` alone is vacuously true of no
+    tenors at all), and "at least two" entails "some" ("AtLeast 2+": the
+    conjunct only states that consequence outright, so the prover need not
+    rediscover it - the two forms are equivalent)."""
+    if quant == "Every+":
+        return f"(Every {restrictor} {scope} ∧ Some {restrictor} {scope})"
+    if quant == "AtLeast 2+":
+        return f"(AtLeast 2 {restrictor} {scope} ∧ Some {restrictor} {scope})"
+    return f"{quant} {restrictor} {scope}"
 
 
 def render_lean(translation: Translation, *, domain: str = "A") -> str:
