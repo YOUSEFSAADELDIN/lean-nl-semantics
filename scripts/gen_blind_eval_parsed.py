@@ -192,19 +192,6 @@ def ranked_readings(sentence: str) -> list[str]:
     return ranked(trees)
 
 
-def _anaphora_well_formed(t) -> bool:
-    """Anaphoric "one" (anaphOne_N / anaphOne_NP) can only HEAD a noun
-    phrase - "a blue one", "owns one". A reading using it as a compound-
-    noun modifier ("[one] accountant") or a possessor ("[one]'s accountant")
-    is not a reading of English at all; this filter discards it, so the
-    numeral reading of "just one accountant" is the one used."""
-    if t.head == "CompoundCN" and t.args and _mentions(t.args[0], "anaphOne_N"):
-        return False
-    if t.head == "GenNP" and t.args and _mentions(t.args[0], "anaphOne_NP"):
-        return False
-    return all(_anaphora_well_formed(a) for a in t.args)
-
-
 def assemble(idn, sentences):
     """(claims, None) or (None, reason), where claims is a dict of the four
     Lean propositions for this problem - see the header's "yes/no claims"
@@ -223,14 +210,13 @@ def assemble(idn, sentences):
         # against falls through to the next-ranked one.
         clause = err = None
         for tree in candidates:
-            t = parse_tree(tree)
-            if not _anaphora_well_formed(t):
-                continue
-            clause, negated, err = resolve(t, antecedent_vp, antecedent_cn)
+            # (ill-formed anaphora readings are already filtered out by
+            # parse_rank.ranked)
+            clause, negated, err = resolve(parse_tree(tree), antecedent_vp, antecedent_cn)
             if clause is not None:
                 break
         if clause is None:
-            return None, f"{role} parses ({n} readings) but does not translate: {err or 'no well-formed reading'}"
+            return None, f"{role} parses ({n} readings) but does not translate: {err or 'no reading resolves'}"
         try:
             trees.append(clause)
             readings = ("weak", "strong") if is_hyp else ("weak",)

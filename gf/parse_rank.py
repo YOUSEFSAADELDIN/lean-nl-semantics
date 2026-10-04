@@ -122,8 +122,37 @@ def rank_key(tree: str):
     return (size(tree), -adverbial_depth(tree), tree)
 
 
+# Where anaphoric "one" (FraCaSLogic.gf's anaphOne_NP) may appear: as a
+# bare argument of a verb, preposition or copula - "owns one", "Bill owns
+# one too". Never modified ("ONE OF the leading tenors" is the partitive
+# numeral, "JUST ONE accountant" the counted numeral) and never a possessor.
+_ANAPH_NP_PARENTS = {"ComplSlash", "PrepNP", "PredVP", "CompNP"}
+
+
+def _anaphora_well_formed(t, parent: str = "") -> bool:
+    """Anaphoric "one" can only HEAD a noun phrase ("a blue one", "owns
+    one"). Readings that use anaphOne_N as a compound-noun modifier ("[one]
+    contract") or anaphOne_NP anywhere but a bare argument slot are not
+    readings of English, so they are discarded before ranking - otherwise
+    the single-node anaphor outranks the multi-node numeral "one" by size
+    alone and steals sentences like "Smith signed one contract"."""
+    if t.head == "CompoundCN" and t.args and _contains(t.args[0], "anaphOne_N"):
+        return False
+    if t.head == "anaphOne_NP" and parent not in _ANAPH_NP_PARENTS:
+        return False
+    return all(_anaphora_well_formed(a, t.head) for a in t.args)
+
+
+def _contains(t, head: str) -> bool:
+    return t.head == head or any(_contains(a, head) for a in t.args)
+
+
 def ranked(trees: list[str]) -> list[str]:
-    return sorted(trees, key=rank_key)
+    """Readings in preference order, ill-formed anaphora readings removed."""
+    from translate import parse_tree  # local import: translate.py does not import this module
+
+    kept = [t for t in trees if _anaphora_well_formed(parse_tree(t))]
+    return sorted(kept, key=rank_key)
 
 
 def normalize(tree: str) -> str:

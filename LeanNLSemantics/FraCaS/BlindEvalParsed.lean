@@ -15,10 +15,10 @@ for the exact pipeline and what it deliberately does not supply (any
 background-knowledge premise). Evaluated by
 `BlindEvalParsedScan.lean`.
 
-179 of 342 problems carried all the way through;
+176 of 342 problems carried all the way through;
 the rest, by first failing stage:
 - a sentence does not parse: 113
-- a sentence parses but translate.py does not cover its reading: 37
+- a sentence parses but translate.py does not cover its reading: 40
 - a translation needs non-generic assembly: 13
 
 Per-problem skip reasons (first failing sentence/stage):
@@ -28,10 +28,13 @@ Per-problem skip reasons (first failing sentence/stage):
 - 28: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
 - 43: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
 - 44: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
+- 46: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 59: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
 - 60: premise 1 parses (22 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
+- 62: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 75: hypothesis parses (22 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
 - 76: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
+- 78: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 81: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 82: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 83: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
@@ -833,22 +836,6 @@ def fracas_045_parsed_bk_no : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (¬ (Both commissioner usedToLeadingBusinessman))
 
 /-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_046_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome timeAtHomeOfCommissioner spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred timeAtHomeOfCommissioner] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome)
-
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_046_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome timeAtHomeOfCommissioner spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred timeAtHomeOfCommissioner] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome))
-
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_046_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome timeAtHomeOfCommissioner spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred timeAtHomeOfCommissioner] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome)
-
-/-- As `_no`, with the same background knowledge. -/
-def fracas_046_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome timeAtHomeOfCommissioner spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred timeAtHomeOfCommissioner] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome))
-
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
 def fracas_047_parsed_yes : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendALotOfTimeAtHome)
 
@@ -1057,22 +1044,6 @@ def fracas_061_parsed_bk_no : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both femaleCommissioner usedToInBusiness) → (¬ (Both commissioner usedToInBusiness))
 
 /-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_062_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome timeAtHomeOfCommissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfCommissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome)
-
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_062_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome timeAtHomeOfCommissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfCommissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (¬ (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome))
-
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_062_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome timeAtHomeOfCommissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfCommissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome)
-
-/-- As `_no`, with the same background knowledge. -/
-def fracas_062_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome timeAtHomeOfCommissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfCommissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (¬ (Some timeAtHomeOfCommissioner spendALotOfTimeAtHome))
-
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
 def fracas_063_parsed_yes : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtLeast 3 femaleCommissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
@@ -1279,22 +1250,6 @@ def fracas_077_parsed_bk_yes : Prop :=
 /-- As `_no`, with the same background knowledge. -/
 def fracas_077_parsed_bk_no : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both commissioner usedToInBusiness) → (¬ (Both femaleCommissioner usedToInBusiness))
-
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_078_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome timeAtHomeOfFemaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfFemaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (Some timeAtHomeOfFemaleCommissioner spendALotOfTimeAtHome)
-
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_078_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome timeAtHomeOfFemaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfFemaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (¬ (Some timeAtHomeOfFemaleCommissioner spendALotOfTimeAtHome))
-
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_078_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome timeAtHomeOfFemaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfFemaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (Some timeAtHomeOfFemaleCommissioner spendALotOfTimeAtHome)
-
-/-- As `_no`, with the same background knowledge. -/
-def fracas_078_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome timeAtHomeOfFemaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred timeAtHomeOfFemaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (¬ (Some timeAtHomeOfFemaleCommissioner spendALotOfTimeAtHome))
 
 /-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
 def fracas_079_parsed_yes : Prop :=
@@ -3101,7 +3056,6 @@ def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := 
   (41, .unknown, ``BlindEvalParsedClaims.fracas_041_parsed_yes, ``BlindEvalParsedClaims.fracas_041_parsed_no),
   (42, .unknown, ``BlindEvalParsedClaims.fracas_042_parsed_yes, ``BlindEvalParsedClaims.fracas_042_parsed_no),
   (45, .unknown, ``BlindEvalParsedClaims.fracas_045_parsed_yes, ``BlindEvalParsedClaims.fracas_045_parsed_no),
-  (46, .no, ``BlindEvalParsedClaims.fracas_046_parsed_yes, ``BlindEvalParsedClaims.fracas_046_parsed_no),
   (47, .unknown, ``BlindEvalParsedClaims.fracas_047_parsed_yes, ``BlindEvalParsedClaims.fracas_047_parsed_no),
   (48, .yes, ``BlindEvalParsedClaims.fracas_048_parsed_yes, ``BlindEvalParsedClaims.fracas_048_parsed_no),
   (49, .yes, ``BlindEvalParsedClaims.fracas_049_parsed_yes, ``BlindEvalParsedClaims.fracas_049_parsed_no),
@@ -3115,7 +3069,6 @@ def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := 
   (57, .yes, ``BlindEvalParsedClaims.fracas_057_parsed_yes, ``BlindEvalParsedClaims.fracas_057_parsed_no),
   (58, .unknown, ``BlindEvalParsedClaims.fracas_058_parsed_yes, ``BlindEvalParsedClaims.fracas_058_parsed_no),
   (61, .undef, ``BlindEvalParsedClaims.fracas_061_parsed_yes, ``BlindEvalParsedClaims.fracas_061_parsed_no),
-  (62, .undef, ``BlindEvalParsedClaims.fracas_062_parsed_yes, ``BlindEvalParsedClaims.fracas_062_parsed_no),
   (63, .yes, ``BlindEvalParsedClaims.fracas_063_parsed_yes, ``BlindEvalParsedClaims.fracas_063_parsed_no),
   (64, .unknown, ``BlindEvalParsedClaims.fracas_064_parsed_yes, ``BlindEvalParsedClaims.fracas_064_parsed_no),
   (65, .unknown, ``BlindEvalParsedClaims.fracas_065_parsed_yes, ``BlindEvalParsedClaims.fracas_065_parsed_no),
@@ -3129,7 +3082,6 @@ def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := 
   (73, .unknown, ``BlindEvalParsedClaims.fracas_073_parsed_yes, ``BlindEvalParsedClaims.fracas_073_parsed_no),
   (74, .unknown, ``BlindEvalParsedClaims.fracas_074_parsed_yes, ``BlindEvalParsedClaims.fracas_074_parsed_no),
   (77, .undef, ``BlindEvalParsedClaims.fracas_077_parsed_yes, ``BlindEvalParsedClaims.fracas_077_parsed_no),
-  (78, .undef, ``BlindEvalParsedClaims.fracas_078_parsed_yes, ``BlindEvalParsedClaims.fracas_078_parsed_no),
   (79, .unknown, ``BlindEvalParsedClaims.fracas_079_parsed_yes, ``BlindEvalParsedClaims.fracas_079_parsed_no),
   (80, .yes, ``BlindEvalParsedClaims.fracas_080_parsed_yes, ``BlindEvalParsedClaims.fracas_080_parsed_no),
   (87, .yes, ``BlindEvalParsedClaims.fracas_087_parsed_yes, ``BlindEvalParsedClaims.fracas_087_parsed_no),
@@ -3285,7 +3237,6 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name × Lean.Name) :
   (41, .unknown, ``BlindEvalParsedClaims.fracas_041_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_041_parsed_bk_no),
   (42, .unknown, ``BlindEvalParsedClaims.fracas_042_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_042_parsed_bk_no),
   (45, .unknown, ``BlindEvalParsedClaims.fracas_045_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_045_parsed_bk_no),
-  (46, .no, ``BlindEvalParsedClaims.fracas_046_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_046_parsed_bk_no),
   (47, .unknown, ``BlindEvalParsedClaims.fracas_047_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_047_parsed_bk_no),
   (48, .yes, ``BlindEvalParsedClaims.fracas_048_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_048_parsed_bk_no),
   (49, .yes, ``BlindEvalParsedClaims.fracas_049_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_049_parsed_bk_no),
@@ -3299,7 +3250,6 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name × Lean.Name) :
   (57, .yes, ``BlindEvalParsedClaims.fracas_057_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_057_parsed_bk_no),
   (58, .unknown, ``BlindEvalParsedClaims.fracas_058_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_058_parsed_bk_no),
   (61, .undef, ``BlindEvalParsedClaims.fracas_061_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_061_parsed_bk_no),
-  (62, .undef, ``BlindEvalParsedClaims.fracas_062_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_062_parsed_bk_no),
   (63, .yes, ``BlindEvalParsedClaims.fracas_063_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_063_parsed_bk_no),
   (64, .unknown, ``BlindEvalParsedClaims.fracas_064_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_064_parsed_bk_no),
   (65, .unknown, ``BlindEvalParsedClaims.fracas_065_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_065_parsed_bk_no),
@@ -3313,7 +3263,6 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name × Lean.Name) :
   (73, .unknown, ``BlindEvalParsedClaims.fracas_073_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_073_parsed_bk_no),
   (74, .unknown, ``BlindEvalParsedClaims.fracas_074_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_074_parsed_bk_no),
   (77, .undef, ``BlindEvalParsedClaims.fracas_077_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_077_parsed_bk_no),
-  (78, .undef, ``BlindEvalParsedClaims.fracas_078_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_078_parsed_bk_no),
   (79, .unknown, ``BlindEvalParsedClaims.fracas_079_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_079_parsed_bk_no),
   (80, .yes, ``BlindEvalParsedClaims.fracas_080_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_080_parsed_bk_no),
   (87, .yes, ``BlindEvalParsedClaims.fracas_087_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_087_parsed_bk_no),
