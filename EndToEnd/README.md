@@ -12,14 +12,21 @@ scores the result with a fixed prover.
 | `Quantifiers.lean` | `More` and the lemmas only these claims use |
 | `Prover.lean` | the tactic chain that scores the claims (`attemptCloseEndToEnd`) |
 | `Scan.lean` | the evaluation itself, run by its own CI job |
+| `readings.py` | how ambiguous English is read (weak/strong readings, counted objects, …) |
+| `parse_rank.py` | parsing and generic ranking |
+| `gen_parse_grammar.py`, `FraCaSParse*.gf` | the restricted parse grammar (generated) |
+| `parse_eval.py` | parser quality on the confirmed sentences |
+| `background.py` | problem-independent background knowledge |
 
-The Python side lives in `gf/`: `parse_rank.py` (parsing and ranking),
-`gen_parse_grammar.py` (the restricted parse grammar), `parse_eval.py`
-(parser quality), `background.py` (background knowledge), and
-`translate.py`'s reading modes. `translate.py`'s default mode belongs to
-the hand-written corpus's GF cross-check instead. CI snapshots every
-default-mode translation (`gf/default_translations.tsv`) and fails if
-it changes, so work here cannot silently change the cross-check.
+**What it shares with the rest of the project.** Two things in `gf/`:
+the FraCaSLogic grammar, which the parse grammar restricts, and
+`translate.py`, the tree-to-`Prop` translator. `translate.py` reads each
+construction one way, the way the hand-written corpus's GF cross-check
+needs; `readings.py` plugs into its one extension point (the `Readings`
+class) and holds every reading the pipeline adds. CI snapshots every
+default translation (`gf/default_translations.tsv`) and regenerates the
+cross-check theorems, failing if either changes, so work here cannot
+silently change the cross-check.
 
 **These are development-set figures, not blind ones.** The grammar
 constructions, translator rules, ambiguity readings and prover steps were
@@ -38,11 +45,11 @@ from the translation step as well, for every problem the automated
 pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
 
 1. **English**: each premise and hypothesis exactly as FraCaS states it,
-   through one generic lexer step (`gf/parse_rank.py`'s `tokenize`: final
+   through one generic lexer step (`EndToEnd/parse_rank.py`'s `tokenize`: final
    punctuation dropped, commas split off, each token looked up in the
    grammar's own vocabulary case-insensitively) — never the project's own
    confirmed rewordings in `gf/run_gf_tests.py`.
-2. **Parse** with a restricted GF grammar (`gf/gen_parse_grammar.py`).
+2. **Parse** with a restricted GF grammar (`EndToEnd/gen_parse_grammar.py`).
    Parsing with the full FraCaSLogic grammar is unusable — 69,115
    readings in five minutes for one Section 1 sentence, none free of junk
    constructions — so the parse grammar inherits only the functions and
@@ -59,7 +66,7 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    one-anaphora ("a blue one", "owns one too") and uncontracted negation
    ("is not") the same way; readings that use anaphoric "one" as anything
    but the head of a noun phrase are discarded as ill-formed.
-3. **Rank** the readings generically (`gf/parse_rank.py`): fewest nodes,
+3. **Rank** the readings generically (`EndToEnd/parse_rank.py`): fewest nodes,
    ties broken by right association (attach adverbials as low as
    possible).
 4. **Resolve** ellipsis and one-anaphora by copying the antecedent
@@ -100,7 +107,7 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    its sentences — and the scan answers "yes"/"no" only if the
    corresponding claim is proved under **every** assignment.
 6. Each problem is scored twice: as translated, and with **background
-   knowledge** from `gf/background.py` added as premises. That knowledge
+   knowledge** from `EndToEnd/background.py` added as premises. That knowledge
    is problem-independent: entailments derived from the parse trees
    themselves (deleting an intersective modifier in an upward-monotone
    position — "win the Nobel prize *for literature*" ⊑ "win a Nobel
@@ -117,11 +124,12 @@ The `build-gf` CI job regenerates the claims file from the English and
 fails if it differs from the committed copy, so the scored claims are
 reproducible.
 
-**Parser quality, on the 449 distinct CI-confirmed sentences**
-(`gf/parse_eval.py`): all 449 parse; the hand-built tree is among the
-readings for all 449; median 4 readings (max 3,600); and the top-ranked
-reading translates to the same `Prop` as the hand tree for 381 of the 382
-sentences `translate.py` covers. The one exception (136) is a garden-path
+**Parser quality, on the 456 distinct CI-confirmed sentences**
+(`EndToEnd/parse_eval.py`; 449 before `main`'s anaphora and degree-
+adjective work was merged in): all 456 parse; the hand-built tree is
+among the readings for all 456; median 4 readings (max 3,600); and the
+top-ranked reading translates to the same `Prop` as the hand tree for 388
+of the 389 sentences `translate.py` covers. The one exception (136) is a garden-path
 compound ("[executive that had a laptop] computer") tied in size with the
 correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
@@ -187,7 +195,7 @@ problem cases. Its cost is that a genuinely ambiguous problem now gets
   ambiguous sentence; the pipeline says "unknown".
 
 How the remaining "unknown"s split: most need knowledge neither the
-translation nor `gf/background.py` supplies (comparisons across noun
+translation nor `EndToEnd/background.py` supplies (comparisons across noun
 classes, 208; former-student inferences, 198-199), counting arguments the
 generic prover doesn't find (105, 106), or temporal reasoning that the
 fused predicate names cannot express (Section 7, 261-306).

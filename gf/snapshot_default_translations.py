@@ -2,13 +2,13 @@
 """Write gf/default_translations.tsv: `translate.py`'s DEFAULT-mode
 translation of every confirmed hand-built tree in `run_gf_tests.py`.
 
-`translate.py` serves two parts of this project: its default mode feeds
+`translate.py` serves two parts of this project: as it stands it feeds
 the GF cross-check of the hand-written FraCaS corpus
-(`scripts/gen_gf_cross_check.py`), and its reading modes feed the
-end-to-end pipeline (`EndToEnd/gen_claims.py`). The reading modes live
-behind one gate (`_READING != "default"`), but nothing structural stops a
-change made for the end-to-end pipeline from also changing the default
-mode. This snapshot makes any such change visible: CI regenerates it and
+(`scripts/gen_gf_cross_check.py`), and with `EndToEnd/readings.py`'s
+readings plugged into its `Readings` extension point it feeds the
+end-to-end pipeline (`EndToEnd/gen_claims.py`). Those readings live in
+their own module, but a change to `translate.py` itself made for the
+end-to-end pipeline would still reach the default. This snapshot makes any such change visible: CI regenerates it and
 fails if it differs from the committed copy, so a default-mode change is
 always a deliberate, reviewed edit to this file, never a side effect.
 

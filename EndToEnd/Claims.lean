@@ -184,7 +184,7 @@ def fracas_001_yes_0 : Prop :=
 def fracas_001_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (¬ (Some italian becomeWorldsGreatestTenor))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_001_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (Some italian becomeWorldsGreatestTenor)
 
@@ -200,7 +200,7 @@ def fracas_002_yes_0 : Prop :=
 def fracas_002_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_002_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
@@ -216,7 +216,7 @@ def fracas_002_yes_1 : Prop :=
 def fracas_002_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_002_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
@@ -232,7 +232,7 @@ def fracas_003_yes_0 : Prop :=
 def fracas_003_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_003_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
@@ -248,7 +248,7 @@ def fracas_003_yes_1 : Prop :=
 def fracas_003_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_003_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
@@ -264,7 +264,7 @@ def fracas_004_yes_0 : Prop :=
 def fracas_004_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (¬ (Some italianTenor wantGreat))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_004_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (Some italianTenor wantGreat)
 
@@ -280,7 +280,7 @@ def fracas_004_yes_1 : Prop :=
 def fracas_004_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor great) → (¬ (Some italianTenor wantGreat))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_004_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor great) → (Some italianTenor wantGreat)
 
@@ -296,7 +296,7 @@ def fracas_005_yes_0 : Prop :=
 def fracas_005_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Some reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_005_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Some reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
 
@@ -312,7 +312,7 @@ def fracas_005_yes_1 : Prop :=
 def fracas_005_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_005_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
 
@@ -328,7 +328,7 @@ def fracas_006_yes_0 : Prop :=
 def fracas_006_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (¬ (Some reallyGreatTenor modest))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_006_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (Some reallyGreatTenor modest)
 
@@ -344,7 +344,7 @@ def fracas_007_yes_0 : Prop :=
 def fracas_007_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (¬ (Some greatTenor swedish))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_007_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (Some greatTenor swedish)
 
@@ -360,7 +360,7 @@ def fracas_007_yes_1 : Prop :=
 def fracas_007_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish) → (¬ (Some greatTenor swedish))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_007_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish) → (Some greatTenor swedish)
 
@@ -376,7 +376,7 @@ def fracas_008_yes_0 : Prop :=
 def fracas_008_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Some greatTenor german) → (¬ (Some greatTenor german))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_008_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Some greatTenor german) → (Some greatTenor german)
 
@@ -392,7 +392,7 @@ def fracas_008_yes_1 : Prop :=
 def fracas_008_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Many greatTenor german) → (¬ (Some greatTenor german))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_008_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Many greatTenor german) → (Some greatTenor german)
 
@@ -408,7 +408,7 @@ def fracas_009_yes_0 : Prop :=
 def fracas_009_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (¬ (Some greatTenor british))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_009_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (Some greatTenor british)
 
@@ -424,7 +424,7 @@ def fracas_010_yes_0 : Prop :=
 def fracas_010_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (¬ (Some greatTenor italian))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_010_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (Some greatTenor italian)
 
@@ -440,7 +440,7 @@ def fracas_011_yes_0 : Prop :=
 def fracas_011_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_011_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
@@ -456,7 +456,7 @@ def fracas_011_yes_1 : Prop :=
 def fracas_011_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_011_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
@@ -472,7 +472,7 @@ def fracas_012_yes_0 : Prop :=
 def fracas_012_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount greatTenor poor) → (¬ (Some greatTenor poor))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_012_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount greatTenor poor) → (Some greatTenor poor)
 
@@ -488,7 +488,7 @@ def fracas_012_yes_1 : Prop :=
 def fracas_012_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few greatTenor poor) → (¬ (Some greatTenor poor))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_012_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few greatTenor poor) → (Some greatTenor poor)
 
@@ -504,7 +504,7 @@ def fracas_013_yes_0 : Prop :=
 def fracas_013_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Some (fun x => leadingTenor x ∧ excellent x) indispensable) → (¬ (Both leadingTenor indispensable))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_013_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Some (fun x => leadingTenor x ∧ excellent x) indispensable) → (Both leadingTenor indispensable)
 
@@ -520,7 +520,7 @@ def fracas_013_yes_1 : Prop :=
 def fracas_013_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (¬ (Both leadingTenor indispensable))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_013_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (Both leadingTenor indispensable)
 
@@ -536,7 +536,7 @@ def fracas_014_yes_0 : Prop :=
 def fracas_014_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (Neither leadingTenor cheap) → (leadingTenor pavarotti) → (¬ ((fun x => leadingTenor x ∧ cheap x) pavarotti))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_014_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (Neither leadingTenor cheap) → (leadingTenor pavarotti) → ((fun x => leadingTenor x ∧ cheap x) pavarotti)
 
@@ -552,7 +552,7 @@ def fracas_015_yes_0 : Prop :=
 def fracas_015_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (¬ (Some tenor takePartInConcert))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_015_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (Some tenor takePartInConcert)
 
@@ -568,7 +568,7 @@ def fracas_016_yes_0 : Prop :=
 def fracas_016_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (¬ (Some tenor contributeFeeToCharity))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_016_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (Some tenor contributeFeeToCharity)
 
@@ -584,7 +584,7 @@ def fracas_017_yes_0 : Prop :=
 def fracas_017_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (Some irishman winNobelPrizeForLiterature) → (¬ (Some irishman winNobelPrize))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_017_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrizeForLiterature) → (Some irishman winNobelPrize)
 
@@ -600,7 +600,7 @@ def fracas_018_yes_0 : Prop :=
 def fracas_018_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_018_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
@@ -616,7 +616,7 @@ def fracas_019_yes_0 : Prop :=
 def fracas_019_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_019_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
@@ -632,7 +632,7 @@ def fracas_020_yes_0 : Prop :=
 def fracas_020_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_020_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
@@ -648,7 +648,7 @@ def fracas_021_yes_0 : Prop :=
 def fracas_021_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Some residentOfMemberState canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_021_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope)
 
@@ -664,7 +664,7 @@ def fracas_021_yes_1 : Prop :=
 def fracas_021_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_021_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope))
 
@@ -680,7 +680,7 @@ def fracas_022_yes_0 : Prop :=
 def fracas_022_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (No delegate finishReportOnTime) → (¬ (No delegate finishReport))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_022_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReportOnTime) → (No delegate finishReport)
 
@@ -696,7 +696,7 @@ def fracas_023_yes_0 : Prop :=
 def fracas_023_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (Some delegate finishSurveyOnTime) → (¬ (Some delegate finishSurvey))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_023_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurveyOnTime) → (Some delegate finishSurvey)
 
@@ -712,7 +712,7 @@ def fracas_023_yes_1 : Prop :=
 def fracas_023_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurvey))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_023_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurvey)
 
@@ -728,7 +728,7 @@ def fracas_024_yes_0 : Prop :=
 def fracas_024_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainResultFromSurvey))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_024_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainInterestingResultFromSurvey) → (Some delegate obtainResultFromSurvey)
 
@@ -744,7 +744,7 @@ def fracas_024_yes_1 : Prop :=
 def fracas_024_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Many delegate obtainInterestingResultFromSurvey) → (¬ (Many delegate obtainResultFromSurvey))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_024_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Many delegate obtainInterestingResultFromSurvey) → (Many delegate obtainResultFromSurvey)
 
@@ -760,7 +760,7 @@ def fracas_025_yes_0 : Prop :=
 def fracas_025_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublish))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_025_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublish)
 
@@ -776,7 +776,7 @@ def fracas_026_yes_0 : Prop :=
 def fracas_026_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_026_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
 
@@ -792,7 +792,7 @@ def fracas_027_yes_0 : Prop :=
 def fracas_027_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSweden person fromScandinavia : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSweden] [DecidablePred person] [DecidablePred fromScandinavia] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromSweden) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromScandinavia))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_027_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSweden person fromScandinavia : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSweden] [DecidablePred person] [DecidablePred fromScandinavia] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromSweden) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (AtLeast aFewCount committeeMember fromScandinavia)
 
@@ -808,7 +808,7 @@ def fracas_028_yes_0 : Prop :=
 def fracas_028_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromSouthernEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_028_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (AtMost fewCount committeeMember fromSouthernEurope)
 
@@ -824,7 +824,7 @@ def fracas_028_yes_1 : Prop :=
 def fracas_028_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (Few committeeMember fromSouthernEurope))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_028_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (Few committeeMember fromSouthernEurope)
 
@@ -840,7 +840,7 @@ def fracas_029_yes_0 : Prop :=
 def fracas_029_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Both commissioner usedToLeadingBusinessman) → (¬ (Both commissioner usedToBusinessman))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_029_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Both commissioner usedToLeadingBusinessman) → (Both commissioner usedToBusinessman)
 
@@ -856,7 +856,7 @@ def fracas_030_yes_0 : Prop :=
 def fracas_030_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (Neither commissioner spendALotOfTimeAtHome) → (¬ (Neither commissioner spendTimeAtHome))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_030_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (Neither commissioner spendALotOfTimeAtHome) → (Neither commissioner spendTimeAtHome)
 
@@ -872,7 +872,7 @@ def fracas_031_yes_0 : Prop :=
 def fracas_031_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_031_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
@@ -888,7 +888,7 @@ def fracas_032_yes_0 : Prop :=
 def fracas_032_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_032_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
@@ -904,7 +904,7 @@ def fracas_033_yes_0 : Prop :=
 def fracas_033_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (Some irishman winNobelPrize) → (¬ (Some irishman winNobelPrizeForLiterature))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_033_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrize) → (Some irishman winNobelPrizeForLiterature)
 
@@ -920,7 +920,7 @@ def fracas_034_yes_0 : Prop :=
 def fracas_034_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_034_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
@@ -936,7 +936,7 @@ def fracas_035_yes_0 : Prop :=
 def fracas_035_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_035_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
@@ -952,7 +952,7 @@ def fracas_036_yes_0 : Prop :=
 def fracas_036_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_036_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
@@ -968,7 +968,7 @@ def fracas_037_yes_0 : Prop :=
 def fracas_037_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ (Some residentOfMemberState haveRightLiveAnywhereInEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_037_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Some residentOfMemberState haveRightLiveAnywhereInEurope)
 
@@ -984,7 +984,7 @@ def fracas_037_yes_1 : Prop :=
 def fracas_037_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_037_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope))
 
@@ -1000,7 +1000,7 @@ def fracas_038_yes_0 : Prop :=
 def fracas_038_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (No delegate finishReport) → (¬ (Some delegate finishReportOnTime))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_038_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReport) → (Some delegate finishReportOnTime)
 
@@ -1016,7 +1016,7 @@ def fracas_039_yes_0 : Prop :=
 def fracas_039_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (Some delegate finishSurvey) → (¬ (Some delegate finishSurveyOnTime))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_039_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurvey) → (Some delegate finishSurveyOnTime)
 
@@ -1032,7 +1032,7 @@ def fracas_039_yes_1 : Prop :=
 def fracas_039_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (AtLeast 2 delegate finishSurvey) → (Some delegate finishSurvey) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_039_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurvey) → (Some delegate finishSurvey) → (AtLeast 2 delegate finishSurveyOnTime)
 
@@ -1048,7 +1048,7 @@ def fracas_040_yes_0 : Prop :=
 def fracas_040_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Some delegate obtainResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_040_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
 
@@ -1064,7 +1064,7 @@ def fracas_040_yes_1 : Prop :=
 def fracas_040_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Many delegate obtainResultFromSurvey) → (¬ (Many delegate obtainInterestingResultFromSurvey))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_040_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Many delegate obtainResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
 
@@ -1080,7 +1080,7 @@ def fracas_041_yes_0 : Prop :=
 def fracas_041_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_041_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
 
@@ -1096,7 +1096,7 @@ def fracas_042_yes_0 : Prop :=
 def fracas_042_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european residentInEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_042_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european residentInEurope)
 
@@ -1112,7 +1112,7 @@ def fracas_043_yes_0 : Prop :=
 def fracas_043_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia person fromSweden : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred person] [DecidablePred fromSweden] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromSweden))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_043_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia person fromSweden : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred person] [DecidablePred fromSweden] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (AtLeast aFewCount committeeMember fromSweden)
 
@@ -1128,7 +1128,7 @@ def fracas_044_yes_0 : Prop :=
 def fracas_044_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromPortugal))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_044_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (AtMost fewCount committeeMember fromPortugal)
 
@@ -1144,7 +1144,7 @@ def fracas_044_yes_1 : Prop :=
 def fracas_044_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (Few committeeMember fromPortugal))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_044_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (Few committeeMember fromPortugal)
 
@@ -1160,7 +1160,7 @@ def fracas_045_yes_0 : Prop :=
 def fracas_045_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (¬ (Both commissioner usedToLeadingBusinessman))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_045_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (Both commissioner usedToLeadingBusinessman)
 
@@ -1176,7 +1176,7 @@ def fracas_047_yes_0 : Prop :=
 def fracas_047_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendALotOfTimeAtHome))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_047_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendALotOfTimeAtHome)
 
@@ -1192,7 +1192,7 @@ def fracas_048_yes_0 : Prop :=
 def fracas_048_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendALotOfTimeAtHome))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_048_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendALotOfTimeAtHome)
 
@@ -1208,7 +1208,7 @@ def fracas_049_yes_0 : Prop :=
 def fracas_049_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (¬ (Some scandinavian winNobelPrize))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_049_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (Some scandinavian winNobelPrize)
 
@@ -1224,7 +1224,7 @@ def fracas_050_yes_0 : Prop :=
 def fracas_050_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_050_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
@@ -1240,7 +1240,7 @@ def fracas_051_yes_0 : Prop :=
 def fracas_051_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_051_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
@@ -1256,7 +1256,7 @@ def fracas_052_yes_0 : Prop :=
 def fracas_052_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_052_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
@@ -1272,7 +1272,7 @@ def fracas_053_yes_0 : Prop :=
 def fracas_053_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Some residentOfWesternCountry haveRightLiveInEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_053_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Some residentOfWesternCountry haveRightLiveInEurope)
 
@@ -1288,7 +1288,7 @@ def fracas_053_yes_1 : Prop :=
 def fracas_053_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_053_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope))
 
@@ -1304,7 +1304,7 @@ def fracas_054_yes_0 : Prop :=
 def fracas_054_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (No scandinavianDelegate finishReportOnTime) → (¬ (Some delegate finishReportOnTime))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_054_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (∀ x, scandinavianDelegate x → delegate x) → (No scandinavianDelegate finishReportOnTime) → (Some delegate finishReportOnTime)
 
@@ -1320,7 +1320,7 @@ def fracas_055_yes_0 : Prop :=
 def fracas_055_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (Some irishDelegate finishSurveyOnTime) → (¬ (Some delegate finishSurveyOnTime))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_055_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (Some irishDelegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime)
 
@@ -1336,7 +1336,7 @@ def fracas_055_yes_1 : Prop :=
 def fracas_055_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (AtLeast 2 irishDelegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_055_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 irishDelegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurveyOnTime)
 
@@ -1352,7 +1352,7 @@ def fracas_056_yes_0 : Prop :=
 def fracas_056_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Some britishDelegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_056_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, britishDelegate x → delegate x) → (Some britishDelegate obtainInterestingResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
 
@@ -1368,7 +1368,7 @@ def fracas_056_yes_1 : Prop :=
 def fracas_056_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Many britishDelegate obtainInterestingResultFromSurvey) → (¬ (Many delegate obtainInterestingResultFromSurvey))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_056_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, britishDelegate x → delegate x) → (Many britishDelegate obtainInterestingResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
 
@@ -1384,7 +1384,7 @@ def fracas_057_yes_0 : Prop :=
 def fracas_057_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_057_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (∀ x, portugueseDelegate x → delegate x) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
 
@@ -1400,7 +1400,7 @@ def fracas_058_yes_0 : Prop :=
 def fracas_058_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_058_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
 
@@ -1416,7 +1416,7 @@ def fracas_059_yes_0 : Prop :=
 def fracas_059_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromScandinavia] [DecidablePred committeeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromScandinavia))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_059_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromScandinavia] [DecidablePred committeeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia) → (AtLeast aFewCount committeeMember fromScandinavia)
 
@@ -1432,7 +1432,7 @@ def fracas_060_yes_0 : Prop :=
 def fracas_060_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromSouthernEurope))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_060_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope) → (AtMost fewCount committeeMember fromSouthernEurope)
 
@@ -1448,7 +1448,7 @@ def fracas_060_yes_1 : Prop :=
 def fracas_060_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few femaleCommitteeMember fromSouthernEurope) → (¬ (Few committeeMember fromSouthernEurope))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_060_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (Few femaleCommitteeMember fromSouthernEurope) → (Few committeeMember fromSouthernEurope)
 
@@ -1464,7 +1464,7 @@ def fracas_061_yes_0 : Prop :=
 def fracas_061_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (Both femaleCommissioner usedToInBusiness) → (¬ (Both commissioner usedToInBusiness))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_061_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both femaleCommissioner usedToInBusiness) → (Both commissioner usedToInBusiness)
 
@@ -1480,7 +1480,7 @@ def fracas_063_yes_0 : Prop :=
 def fracas_063_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtLeast 3 femaleCommissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_063_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtLeast 3 femaleCommissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
@@ -1496,7 +1496,7 @@ def fracas_064_yes_0 : Prop :=
 def fracas_064_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtMost 10 femaleCommissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_064_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 femaleCommissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
@@ -1512,7 +1512,7 @@ def fracas_065_yes_0 : Prop :=
 def fracas_065_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (¬ (Some swedeMasc winNobelPrize))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_065_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (Some swedeMasc winNobelPrize)
 
@@ -1528,7 +1528,7 @@ def fracas_066_yes_0 : Prop :=
 def fracas_066_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_066_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
@@ -1544,7 +1544,7 @@ def fracas_067_yes_0 : Prop :=
 def fracas_067_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_067_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
@@ -1560,7 +1560,7 @@ def fracas_068_yes_0 : Prop :=
 def fracas_068_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_068_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
@@ -1576,7 +1576,7 @@ def fracas_069_yes_0 : Prop :=
 def fracas_069_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Some residentOfMajorWesternCountry haveRightLiveInEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_069_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Some residentOfMajorWesternCountry haveRightLiveInEurope)
 
@@ -1592,7 +1592,7 @@ def fracas_069_yes_1 : Prop :=
 def fracas_069_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_069_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope))
 
@@ -1608,7 +1608,7 @@ def fracas_070_yes_0 : Prop :=
 def fracas_070_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (No delegate finishReportOnTime) → (¬ (Some scandinavianDelegate finishReportOnTime))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_070_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (∀ x, scandinavianDelegate x → delegate x) → (No delegate finishReportOnTime) → (Some scandinavianDelegate finishReportOnTime)
 
@@ -1624,7 +1624,7 @@ def fracas_071_yes_0 : Prop :=
 def fracas_071_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (Some delegate finishSurveyOnTime) → (¬ (Some irishDelegate finishSurveyOnTime))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_071_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (Some delegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime)
 
@@ -1640,7 +1640,7 @@ def fracas_071_yes_1 : Prop :=
 def fracas_071_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_071_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (AtLeast 2 irishDelegate finishSurveyOnTime)
 
@@ -1656,7 +1656,7 @@ def fracas_072_yes_0 : Prop :=
 def fracas_072_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some britishDelegate obtainInterestingResultFromSurvey))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_072_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, britishDelegate x → delegate x) → (Some delegate obtainInterestingResultFromSurvey) → (Some britishDelegate obtainInterestingResultFromSurvey)
 
@@ -1672,7 +1672,7 @@ def fracas_072_yes_1 : Prop :=
 def fracas_072_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (Many delegate obtainInterestingResultFromSurvey) → (¬ (Many britishDelegate obtainInterestingResultFromSurvey))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_072_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R) → (∀ x, britishDelegate x → delegate x) → (Many delegate obtainInterestingResultFromSurvey) → (Many britishDelegate obtainInterestingResultFromSurvey)
 
@@ -1688,7 +1688,7 @@ def fracas_073_yes_0 : Prop :=
 def fracas_073_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_073_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (∀ x, portugueseDelegate x → delegate x) → (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
 
@@ -1704,7 +1704,7 @@ def fracas_074_yes_0 : Prop :=
 def fracas_074_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (¬ (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_074_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope)
 
@@ -1720,7 +1720,7 @@ def fracas_075_yes_0 : Prop :=
 def fracas_075_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred femaleCommitteeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (¬ (AtLeast aFewCount femaleCommitteeMember fromScandinavia))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_075_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred femaleCommitteeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtLeast aFewCount committeeMember fromScandinavia) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia)
 
@@ -1736,7 +1736,7 @@ def fracas_076_yes_0 : Prop :=
 def fracas_076_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (¬ (AtMost fewCount femaleCommitteeMember fromSouthernEurope))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_076_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtMost fewCount committeeMember fromSouthernEurope) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope)
 
@@ -1752,7 +1752,7 @@ def fracas_076_yes_1 : Prop :=
 def fracas_076_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (¬ (Few femaleCommitteeMember fromSouthernEurope))
 
-/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_076_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (Few committeeMember fromSouthernEurope) → (Few femaleCommitteeMember fromSouthernEurope)
 
@@ -1768,7 +1768,7 @@ def fracas_077_yes_0 : Prop :=
 def fracas_077_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (Both commissioner usedToInBusiness) → (¬ (Both femaleCommissioner usedToInBusiness))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_077_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both commissioner usedToInBusiness) → (Both femaleCommissioner usedToInBusiness)
 
@@ -1784,7 +1784,7 @@ def fracas_079_yes_0 : Prop :=
 def fracas_079_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 maleCommissioner spendTimeAtHome))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_079_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (∀ x, maleCommissioner x → commissioner x) → (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 maleCommissioner spendTimeAtHome)
 
@@ -1800,7 +1800,7 @@ def fracas_080_yes_0 : Prop :=
 def fracas_080_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 femaleCommissioner spendTimeAtHome))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_080_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 femaleCommissioner spendTimeAtHome)
 
@@ -1816,7 +1816,7 @@ def fracas_087_yes_0 : Prop :=
 def fracas_087_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (¬ (Every representativeMasc atMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_087_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
@@ -1832,7 +1832,7 @@ def fracas_088_yes_0 : Prop :=
 def fracas_088_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (¬ (Every representativeMasc atMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_088_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
@@ -1848,7 +1848,7 @@ def fracas_090_yes_0 : Prop :=
 def fracas_090_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (¬ (Every chairman read_outEveryItemOnAgenda))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_090_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (Every chairman read_outEveryItemOnAgenda)
 
@@ -1864,7 +1864,7 @@ def fracas_094_yes_0 : Prop :=
 def fracas_094_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Some inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_094_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Some inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
 
@@ -1880,7 +1880,7 @@ def fracas_094_yes_1 : Prop :=
 def fracas_094_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Some inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_094_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Some inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
 
@@ -1896,7 +1896,7 @@ def fracas_095_yes_0 : Prop :=
 def fracas_095_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_095_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
@@ -1912,7 +1912,7 @@ def fracas_095_yes_1 : Prop :=
 def fracas_095_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_095_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
@@ -1928,7 +1928,7 @@ def fracas_096_yes_0 : Prop :=
 def fracas_096_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_096_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
@@ -1944,7 +1944,7 @@ def fracas_098_yes_0 : Prop :=
 def fracas_098_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (¬ (blameForSystemFailure bug32985))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_098_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (∀ x, knownSoftwareFault x → softwareFault x) → (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (blameForSystemFailure bug32985)
 
@@ -1960,7 +1960,7 @@ def fracas_099_yes_0 : Prop :=
 def fracas_099_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_099_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
 
@@ -1976,7 +1976,7 @@ def fracas_100_yes_0 : Prop :=
 def fracas_100_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (¬ (Most clientAtDemonstration impressBySystemPerformance))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_100_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (Most clientAtDemonstration impressBySystemPerformance)
 
@@ -1992,7 +1992,7 @@ def fracas_102_yes_0 : Prop :=
 def fracas_102_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (¬ (makePoorStockMarketTrader smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_102_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (makePoorStockMarketTrader smith)
 
@@ -2008,7 +2008,7 @@ def fracas_103_yes_0 : Prop :=
 def fracas_103_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (¬ (haveCompanyCar jones))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_103_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (haveCompanyCar jones)
 
@@ -2024,7 +2024,7 @@ def fracas_105_yes_0 : Prop :=
 def fracas_105_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (No accountant attendMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_105_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
 
@@ -2040,7 +2040,7 @@ def fracas_106_yes_0 : Prop :=
 def fracas_106_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (No accountant attendMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_106_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
 
@@ -2056,7 +2056,7 @@ def fracas_107_yes_0 : Prop :=
 def fracas_107_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_107_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
@@ -2072,7 +2072,7 @@ def fracas_107_yes_1 : Prop :=
 def fracas_107_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_107_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
@@ -2088,7 +2088,7 @@ def fracas_108_yes_0 : Prop :=
 def fracas_108_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_108_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
@@ -2104,7 +2104,7 @@ def fracas_109_yes_0 : Prop :=
 def fracas_109_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_109_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
@@ -2120,7 +2120,7 @@ def fracas_109_yes_1 : Prop :=
 def fracas_109_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_109_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
@@ -2136,7 +2136,7 @@ def fracas_110_yes_0 : Prop :=
 def fracas_110_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_110_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
@@ -2152,7 +2152,7 @@ def fracas_132_yes_0 : Prop :=
 def fracas_132_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (¬ (Every salesDepartment rentLineFromBt))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_132_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (Every salesDepartment rentLineFromBt)
 
@@ -2168,7 +2168,7 @@ def fracas_133_yes_0 : Prop :=
 def fracas_133_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_133_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
 
@@ -2184,7 +2184,7 @@ def fracas_134_yes_0 : Prop :=
 def fracas_134_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_134_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (haveServiceContractForComputer mfi)
 
@@ -2200,7 +2200,7 @@ def fracas_135_yes_0 : Prop :=
 def fracas_135_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_135_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (haveServiceContractForComputer mfi)
 
@@ -2216,7 +2216,7 @@ def fracas_138_yes_0 : Prop :=
 def fracas_138_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (¬ (signCoverPageOfR95103 smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_138_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (signCoverPageOfR95103 smith)
 
@@ -2232,7 +2232,7 @@ def fracas_142_yes_0 : Prop :=
 def fracas_142_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary : A → Prop) [DecidablePred speakToMary] (john bill : A), (speakToMary john) → (speakToMary bill) → (¬ (speakToMary bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_142_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary : A → Prop) [DecidablePred speakToMary] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMary bill)
 
@@ -2248,7 +2248,7 @@ def fracas_143_yes_0 : Prop :=
 def fracas_143_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMary] [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMaryAtFourOClock john) → (¬ (speakToMaryAtFourOClock bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_143_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMary] [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill)
 
@@ -2264,7 +2264,7 @@ def fracas_144_yes_0 : Prop :=
 def fracas_144_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill) → (¬ (speakToMaryAtFourOClock bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_144_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill) → (speakToMaryAtFourOClock bill)
 
@@ -2280,7 +2280,7 @@ def fracas_147_yes_0 : Prop :=
 def fracas_147_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryOnMonday : A → Prop) [DecidablePred speakToMaryOnMonday] (john bill : A), (speakToMaryOnMonday john) → (¬ (speakToMaryOnMonday bill)) → (¬ (speakToMaryOnMonday bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_147_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryOnMonday : A → Prop) [DecidablePred speakToMaryOnMonday] (john bill : A), (speakToMaryOnMonday john) → (¬ (speakToMaryOnMonday bill)) → (speakToMaryOnMonday bill)
 
@@ -2296,7 +2296,7 @@ def fracas_149_yes_0 : Prop :=
 def fracas_149_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (¬ (Some student speakToMary))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_149_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (Some student speakToMary)
 
@@ -2312,7 +2312,7 @@ def fracas_149_yes_1 : Prop :=
 def fracas_149_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Some student speakToMary) → (¬ ((Every student speakToMary ∧ Some student speakToMary)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_149_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Some student speakToMary) → ((Every student speakToMary ∧ Some student speakToMary))
 
@@ -2328,7 +2328,7 @@ def fracas_150_yes_0 : Prop :=
 def fracas_150_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (¬ (goToParisByTrain bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_150_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (goToParisByTrain bill)
 
@@ -2344,7 +2344,7 @@ def fracas_151_yes_0 : Prop :=
 def fracas_151_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (¬ (goToBerlinByTrain bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_151_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (goToBerlinByTrain bill)
 
@@ -2360,7 +2360,7 @@ def fracas_152_yes_0 : Prop :=
 def fracas_152_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (¬ (goToBerlinByCar bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_152_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (goToBerlinByCar bill)
 
@@ -2376,7 +2376,7 @@ def fracas_155_yes_0 : Prop :=
 def fracas_155_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar : A → Prop) [DecidablePred ownCar] (john bill : A), (ownCar john) → (ownCar bill) → (¬ (ownCar bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_155_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar : A → Prop) [DecidablePred ownCar] (john bill : A), (ownCar john) → (ownCar bill) → (ownCar bill)
 
@@ -2392,7 +2392,7 @@ def fracas_156_yes_0 : Prop :=
 def fracas_156_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar carJohnBillOwn : A → Prop) [DecidablePred ownCar] [DecidablePred carJohnBillOwn] (john bill : A), (ownCar john) → (ownCar bill) → (¬ (∃ x, carJohnBillOwn x))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_156_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar carJohnBillOwn : A → Prop) [DecidablePred ownCar] [DecidablePred carJohnBillOwn] (john bill : A), (ownCar john) → (ownCar bill) → (∃ x, carJohnBillOwn x)
 
@@ -2408,7 +2408,7 @@ def fracas_157_yes_0 : Prop :=
 def fracas_157_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (¬ (ownBlueCar bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_157_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (ownBlueCar bill)
 
@@ -2424,7 +2424,7 @@ def fracas_158_yes_0 : Prop :=
 def fracas_158_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (¬ (ownRedCar bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_158_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (ownRedCar bill)
 
@@ -2440,7 +2440,7 @@ def fracas_159_yes_0 : Prop :=
 def fracas_159_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastCar bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_159_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (ownFastCar bill)
 
@@ -2456,7 +2456,7 @@ def fracas_160_yes_0 : Prop :=
 def fracas_160_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastRedCar bill))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_160_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (∀ x, ownFastRedCar x → ownRedCar x) → (∀ x, ownFastRedCar x → ownFastCar x) → (ownRedCar john) → (ownFastCar bill) → (ownFastRedCar bill)
 
@@ -2472,7 +2472,7 @@ def fracas_161_yes_0 : Prop :=
 def fracas_161_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastRedCar bill))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_161_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (∀ x, ownFastRedCar x → ownRedCar x) → (∀ x, ownFastRedCar x → ownFastCar x) → (ownRedCar john) → (ownFastCar bill) → (ownFastRedCar bill)
 
@@ -2488,7 +2488,7 @@ def fracas_162_yes_0 : Prop :=
 def fracas_162_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownFastRedCar ownSlowRedCar : A → Prop) [DecidablePred ownFastRedCar] [DecidablePred ownSlowRedCar] (john bill : A), (ownFastRedCar john) → (ownSlowRedCar bill) → (¬ (ownSlowRedCar bill))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_162_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownFastRedCar ownSlowRedCar : A → Prop) [DecidablePred ownFastRedCar] [DecidablePred ownSlowRedCar] (john bill : A), (ownFastRedCar john) → (ownSlowRedCar bill) → (ownSlowRedCar bill)
 
@@ -2504,7 +2504,7 @@ def fracas_197_yes_0 : Prop :=
 def fracas_197_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (haveGenuineDiamond john) → (¬ (haveDiamond john))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_197_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (∀ x, haveGenuineDiamond x → haveDiamond x) → (haveGenuineDiamond john) → (haveDiamond john)
 
@@ -2520,7 +2520,7 @@ def fracas_198_yes_0 : Prop :=
 def fracas_198_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (¬ (universityStudent john))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_198_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (universityStudent john)
 
@@ -2536,7 +2536,7 @@ def fracas_199_yes_0 : Prop :=
 def fracas_199_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (¬ (successful john))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_199_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (successful john)
 
@@ -2552,7 +2552,7 @@ def fracas_200_yes_0 : Prop :=
 def fracas_200_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (¬ (successful john))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_200_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (successful john)
 
@@ -2568,7 +2568,7 @@ def fracas_201_yes_0 : Prop :=
 def fracas_201_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (¬ (universityStudent john))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_201_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (universityStudent john)
 
@@ -2584,7 +2584,7 @@ def fracas_202_yes_0 : Prop :=
 def fracas_202_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (Every mammal animal) → (¬ (Every fourLeggedMammal fourLeggedAnimal))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_202_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (∀ x, fourLeggedMammal x → mammal x) → (∀ x, fourLeggedAnimal x → animal x) → (Every mammal animal) → (Every fourLeggedMammal fourLeggedAnimal)
 
@@ -2600,7 +2600,7 @@ def fracas_203_yes_0 : Prop :=
 def fracas_203_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (¬ (fourLegged dumbo))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_203_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (fourLegged dumbo)
 
@@ -2616,7 +2616,7 @@ def fracas_204_yes_0 : Prop :=
 def fracas_204_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (smallAnimal mickey) → (¬ (largeAnimal mickey))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_204_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (smallAnimal mickey) → (largeAnimal mickey)
 
@@ -2632,7 +2632,7 @@ def fracas_205_yes_0 : Prop :=
 def fracas_205_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (largeAnimal dumbo) → (¬ (smallAnimal dumbo))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_205_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (largeAnimal dumbo) → (smallAnimal dumbo)
 
@@ -2648,7 +2648,7 @@ def fracas_206_yes_0 : Prop :=
 def fracas_206_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (fido : A), (¬ (smallAnimal fido)) → (¬ (largeAnimal fido))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_206_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (fido : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (¬ (smallAnimal fido)) → (largeAnimal fido)
 
@@ -2664,7 +2664,7 @@ def fracas_207_yes_0 : Prop :=
 def fracas_207_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (fido : A), (¬ (largeAnimal fido)) → (¬ (smallAnimal fido))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_207_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (fido : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (¬ (largeAnimal fido)) → (smallAnimal fido)
 
@@ -2680,7 +2680,7 @@ def fracas_208_yes_0 : Prop :=
 def fracas_208_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) [DecidableRel smallThan] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (smallThan mickey dumbo))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_208_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) [DecidableRel smallThan] (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
 
@@ -2696,7 +2696,7 @@ def fracas_209_yes_0 : Prop :=
 def fracas_209_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (largeThan mickey dumbo))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_209_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
 
@@ -2712,7 +2712,7 @@ def fracas_210_yes_0 : Prop :=
 def fracas_210_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (¬ (largeAnimal mickey))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_210_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (∀ x, largeMouse x → mouse x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every mouse smallAnimal) → (largeMouse mickey) → (largeAnimal mickey)
 
@@ -2728,7 +2728,7 @@ def fracas_211_yes_0 : Prop :=
 def fracas_211_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (Every elephant largeAnimal) → (smallElephant dumbo) → (¬ (smallAnimal dumbo))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_211_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every elephant largeAnimal) → (smallElephant dumbo) → (smallAnimal dumbo)
 
@@ -2744,7 +2744,7 @@ def fracas_212_yes_0 : Prop :=
 def fracas_212_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (¬ (largeThan dumbo mickey))
 
-/-- As `_yes_0`, with 4 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 4 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_212_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
 
@@ -2760,7 +2760,7 @@ def fracas_213_yes_0 : Prop :=
 def fracas_213_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (¬ (small mickey))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_213_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (∀ x, largeMouse x → mouse x) → (Every mouse smallAnimal) → (largeMouse mickey) → (small mickey)
 
@@ -2776,7 +2776,7 @@ def fracas_214_yes_0 : Prop :=
 def fracas_214_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (¬ (Every fatLegalAuthority fatLawLecturer))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_214_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (∀ x, fatLegalAuthority x → legalAuthority x) → (∀ x, fatLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every fatLegalAuthority fatLawLecturer)
 
@@ -2792,7 +2792,7 @@ def fracas_215_yes_0 : Prop :=
 def fracas_215_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (¬ (Every competentLegalAuthority competentLawLecturer))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_215_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (∀ x, competentLegalAuthority x → legalAuthority x) → (∀ x, competentLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every competentLegalAuthority competentLawLecturer)
 
@@ -2808,7 +2808,7 @@ def fracas_218_yes_0 : Prop :=
 def fracas_218_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (¬ (clever kim))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_218_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (clever kim)
 
@@ -2824,7 +2824,7 @@ def fracas_219_yes_0 : Prop :=
 def fracas_219_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (¬ (clever kim))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_219_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (clever kim)
 
@@ -2840,7 +2840,7 @@ def fracas_220_yes_0 : Prop :=
 def fracas_220_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_220_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
@@ -2856,7 +2856,7 @@ def fracas_221_yes_0 : Prop :=
 def fracas_221_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_221_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082)
 
@@ -2872,7 +2872,7 @@ def fracas_222_yes_0 : Prop :=
 def fracas_222_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_222_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
@@ -2888,7 +2888,7 @@ def fracas_223_yes_0 : Prop :=
 def fracas_223_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes_0`, with 3 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 3 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_223_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
@@ -2904,7 +2904,7 @@ def fracas_224_yes_0 : Prop :=
 def fracas_224_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_224_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
@@ -2920,7 +2920,7 @@ def fracas_225_yes_0 : Prop :=
 def fracas_225_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_225_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082)
 
@@ -2936,7 +2936,7 @@ def fracas_226_yes_0 : Prop :=
 def fracas_226_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_226_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
@@ -2952,7 +2952,7 @@ def fracas_227_yes_0 : Prop :=
 def fracas_227_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_227_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
@@ -2968,7 +2968,7 @@ def fracas_228_yes_0 : Prop :=
 def fracas_228_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel fastThan] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fastThan pc6082 itelXZ))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_228_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
 
@@ -2984,7 +2984,7 @@ def fracas_229_yes_0 : Prop :=
 def fracas_229_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel slowThan] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (slowThan pc6082 itelXZ))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_229_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel slowThan] (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
 
@@ -3000,7 +3000,7 @@ def fracas_230_yes_0 : Prop :=
 def fracas_230_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win itel)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_230_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win itel))
 
@@ -3016,7 +3016,7 @@ def fracas_230_yes_1 : Prop :=
 def fracas_230_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win itel)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_230_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win itel))
 
@@ -3032,7 +3032,7 @@ def fracas_231_yes_0 : Prop :=
 def fracas_231_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win apcom)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_231_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win apcom))
 
@@ -3048,7 +3048,7 @@ def fracas_231_yes_1 : Prop :=
 def fracas_231_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win apcom)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_231_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win apcom))
 
@@ -3064,7 +3064,7 @@ def fracas_232_yes_0 : Prop :=
 def fracas_232_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_232_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (AtLeast 11 order (win itel))
 
@@ -3080,7 +3080,7 @@ def fracas_232_yes_1 : Prop :=
 def fracas_232_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_232_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (AtLeast 11 order (win itel))
 
@@ -3096,7 +3096,7 @@ def fracas_233_yes_0 : Prop :=
 def fracas_233_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win itel)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_233_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win itel))
 
@@ -3112,7 +3112,7 @@ def fracas_233_yes_1 : Prop :=
 def fracas_233_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win itel)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_233_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win itel))
 
@@ -3128,7 +3128,7 @@ def fracas_234_yes_0 : Prop :=
 def fracas_234_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win apcom)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_234_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win apcom))
 
@@ -3144,7 +3144,7 @@ def fracas_234_yes_1 : Prop :=
 def fracas_234_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win apcom)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_234_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win apcom))
 
@@ -3160,7 +3160,7 @@ def fracas_235_yes_0 : Prop :=
 def fracas_235_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_235_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (AtLeast 11 order (win itel))
 
@@ -3176,7 +3176,7 @@ def fracas_235_yes_1 : Prop :=
 def fracas_235_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_235_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (AtLeast 11 order (win itel))
 
@@ -3192,7 +3192,7 @@ def fracas_239_yes_0 : Prop :=
 def fracas_239_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (Some order (win itel)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_239_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Some order (win itel))
 
@@ -3208,7 +3208,7 @@ def fracas_239_yes_1 : Prop :=
 def fracas_239_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (AtLeast 2 order (win itel)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_239_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 2 order (win itel))
 
@@ -3224,7 +3224,7 @@ def fracas_240_yes_0 : Prop :=
 def fracas_240_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (Some order (lose apcom)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_240_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Some order (lose apcom))
 
@@ -3240,7 +3240,7 @@ def fracas_240_yes_1 : Prop :=
 def fracas_240_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (AtLeast 2 order (lose apcom)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_240_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 2 order (lose apcom))
 
@@ -3256,7 +3256,7 @@ def fracas_241_yes_0 : Prop :=
 def fracas_241_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 10 order (lose apcom)) → (¬ (AtLeast 11 order (win itel)))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_241_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 10 order (lose apcom)) → (AtLeast 11 order (win itel))
 
@@ -3272,7 +3272,7 @@ def fracas_241_yes_1 : Prop :=
 def fracas_241_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Exactly 10 order (lose apcom)) → (¬ (AtLeast 11 order (win itel)))
 
-/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_241_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Exactly 10 order (lose apcom)) → (AtLeast 11 order (win itel))
 
@@ -3288,7 +3288,7 @@ def fracas_246_yes_0 : Prop :=
 def fracas_246_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_246_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
@@ -3304,7 +3304,7 @@ def fracas_247_yes_0 : Prop :=
 def fracas_247_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_247_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
@@ -3320,7 +3320,7 @@ def fracas_248_yes_0 : Prop :=
 def fracas_248_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_248_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
@@ -3336,7 +3336,7 @@ def fracas_249_yes_0 : Prop :=
 def fracas_249_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_249_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
@@ -3352,7 +3352,7 @@ def fracas_250_yes_0 : Prop :=
 def fracas_250_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_250_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
@@ -3368,7 +3368,7 @@ def fracas_261_yes_0 : Prop :=
 def fracas_261_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_261_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
@@ -3384,7 +3384,7 @@ def fracas_262_yes_0 : Prop :=
 def fracas_262_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_262_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
@@ -3400,7 +3400,7 @@ def fracas_263_yes_0 : Prop :=
 def fracas_263_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (¬ (presentAndersonPresent smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_263_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (presentAndersonPresent smith)
 
@@ -3416,7 +3416,7 @@ def fracas_264_yes_0 : Prop :=
 def fracas_264_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_264_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
@@ -3432,7 +3432,7 @@ def fracas_265_yes_0 : Prop :=
 def fracas_265_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_265_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
@@ -3448,7 +3448,7 @@ def fracas_266_yes_0 : Prop :=
 def fracas_266_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveSmithLeave jones) → (¬ (leaveJonesLeave smith))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_266_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (∀ x, leaveSmithLeave x → leave x) → (∀ x, leaveJonesLeave x → leave x) → (leave smith) → (leave jones) → (leaveSmithLeave jones) → (leaveJonesLeave smith)
 
@@ -3464,7 +3464,7 @@ def fracas_267_yes_0 : Prop :=
 def fracas_267_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_267_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
 
@@ -3480,7 +3480,7 @@ def fracas_268_yes_0 : Prop :=
 def fracas_268_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_268_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
 
@@ -3496,7 +3496,7 @@ def fracas_269_yes_0 : Prop :=
 def fracas_269_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (swim smith) → (swim jones) → (swimJonesSwim smith) → (¬ (swimSmithSwim jones))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_269_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (∀ x, swimJonesSwim x → swim x) → (∀ x, swimSmithSwim x → swim x) → (swim smith) → (swim jones) → (swimJonesSwim smith) → (swimSmithSwim jones)
 
@@ -3512,7 +3512,7 @@ def fracas_270_yes_0 : Prop :=
 def fracas_270_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (¬ (swimToShoreSmithSwimToShore jones))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_270_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (swimToShoreSmithSwimToShore jones)
 
@@ -3528,7 +3528,7 @@ def fracas_271_yes_0 : Prop :=
 def fracas_271_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (¬ (presentSmithPresent jones))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_271_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
@@ -3544,7 +3544,7 @@ def fracas_272_yes_0 : Prop :=
 def fracas_272_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (¬ (presentSmithPresent jones))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_272_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
@@ -3560,7 +3560,7 @@ def fracas_275_yes_0 : Prop :=
 def fracas_275_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (¬ (loseTemper smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_275_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (loseTemper smith)
 
@@ -3576,7 +3576,7 @@ def fracas_277_yes_0 : Prop :=
 def fracas_277_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (¬ (liveInBirminghamIn1992 smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_277_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (liveInBirminghamIn1992 smith)
 
@@ -3592,7 +3592,7 @@ def fracas_278_yes_0 : Prop :=
 def fracas_278_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (¬ (writeFirstNovelIn1992 smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_278_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (writeFirstNovelIn1992 smith)
 
@@ -3608,7 +3608,7 @@ def fracas_279_yes_0 : Prop :=
 def fracas_279_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (¬ (writeIn1992 smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_279_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (writeIn1992 smith)
 
@@ -3624,7 +3624,7 @@ def fracas_280_yes_0 : Prop :=
 def fracas_280_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (¬ (writeNovelIn1992 smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_280_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (writeNovelIn1992 smith)
 
@@ -3640,7 +3640,7 @@ def fracas_282_yes_0 : Prop :=
 def fracas_282_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (¬ (discoverIn1992 smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_282_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverIn1992 smith)
 
@@ -3656,7 +3656,7 @@ def fracas_283_yes_0 : Prop :=
 def fracas_283_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (¬ (discoverNewSpeciesIn1992 smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_283_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverNewSpeciesIn1992 smith)
 
@@ -3672,7 +3672,7 @@ def fracas_287_yes_0 : Prop :=
 def fracas_287_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (¬ (writeReportInOneHour smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_287_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (writeReportInOneHour smith)
 
@@ -3688,7 +3688,7 @@ def fracas_288_yes_0 : Prop :=
 def fracas_288_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (writeReportInTwoHours smith) → (¬ (writeReport smith))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_288_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (∀ x, writeReportInTwoHours x → writeReport x) → (writeReportInTwoHours smith) → (writeReport smith)
 
@@ -3704,7 +3704,7 @@ def fracas_290_yes_0 : Prop :=
 def fracas_290_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesInTwoHours smith) → (¬ (discoverNewSpecies smith))
 
-/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_290_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (∀ x, discoverNewSpeciesInTwoHours x → discoverNewSpecies x) → (discoverNewSpeciesInTwoHours smith) → (discoverNewSpecies smith)
 
@@ -3720,7 +3720,7 @@ def fracas_298_yes_0 : Prop :=
 def fracas_298_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (¬ (liveInBirminghamForAYear smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_298_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirminghamForAYear smith)
 
@@ -3736,7 +3736,7 @@ def fracas_300_yes_0 : Prop :=
 def fracas_300_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (¬ (liveInBirmingham smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_300_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirmingham smith)
 
@@ -3752,7 +3752,7 @@ def fracas_303_yes_0 : Prop :=
 def fracas_303_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (¬ (writeReportForAnHour smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_303_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (writeReportForAnHour smith)
 
@@ -3768,7 +3768,7 @@ def fracas_304_yes_0 : Prop :=
 def fracas_304_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (¬ (writeReport smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_304_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (writeReport smith)
 
@@ -3784,7 +3784,7 @@ def fracas_306_yes_0 : Prop :=
 def fracas_306_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (¬ (discoverNewSpecies smith))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_306_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
 
@@ -3800,7 +3800,7 @@ def fracas_308_yes_0 : Prop :=
 def fracas_308_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (¬ (∃ x, representativeMascSmithWriteToEveryWeek x))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_308_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (∃ x, representativeMascSmithWriteToEveryWeek x)
 
@@ -3816,7 +3816,7 @@ def fracas_326_yes_0 : Prop :=
 def fracas_326_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (¬ (finishMtalkIn1993 itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_326_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (finishMtalkIn1993 itel)
 
@@ -3832,7 +3832,7 @@ def fracas_328_yes_0 : Prop :=
 def fracas_328_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (¬ (winContractIn1993 itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_328_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (winContractIn1993 itel)
 
@@ -3848,7 +3848,7 @@ def fracas_330_yes_0 : Prop :=
 def fracas_330_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (¬ (ownApcomIn1990 itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_330_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (ownApcomIn1990 itel)
 
@@ -3864,7 +3864,7 @@ def fracas_334_yes_0 : Prop :=
 def fracas_334_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_334_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
@@ -3880,7 +3880,7 @@ def fracas_335_yes_0 : Prop :=
 def fracas_335_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_335_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
@@ -3896,7 +3896,7 @@ def fracas_336_yes_0 : Prop :=
 def fracas_336_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_336_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (winContractIn1992 itel)
 
@@ -3912,7 +3912,7 @@ def fracas_337_yes_0 : Prop :=
 def fracas_337_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_337_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (winContractIn1992 itel)
 
@@ -4123,7 +4123,7 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (337, .unknown, [``Claims.fracas_337_yes_0], [``Claims.fracas_337_no_0])
 ]
 
-/-- The same problems, each claim with `gf/background.py`'s
+/-- The same problems, each claim with `EndToEnd/background.py`'s
 problem-independent background knowledge added as premises. -/
 def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (1, .yes, [``Claims.fracas_001_bk_yes_0], [``Claims.fracas_001_bk_no_0]),

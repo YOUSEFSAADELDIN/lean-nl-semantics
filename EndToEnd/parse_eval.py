@@ -20,8 +20,10 @@ import importlib.util
 import sys
 from pathlib import Path
 
-GF_DIR = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent
+GF_DIR = HERE.parent / "gf"
 sys.path.insert(0, str(GF_DIR))
+sys.path.insert(0, str(HERE))
 from parse_rank import normalize, parse_readings, ranked  # noqa: E402
 from translate import App, parse_tree, translate_cl  # noqa: E402
 

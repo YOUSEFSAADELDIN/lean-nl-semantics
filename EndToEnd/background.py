@@ -47,7 +47,7 @@ import itertools
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gf"))
 from translate import App, _leaf_words, _scope_name, camel_name  # noqa: E402
 
 NON_SUBSECTIVE = {"former", "fake", "alleged", "false", "imaginary", "would-be", "fictional", "potential"}

@@ -289,16 +289,16 @@ jobs:
         working-directory: gf
         run: python3 run_gf_tests.py
 
-      # Restricted parse grammar (gf/gen_parse_grammar.py - see its header
-      # for why parsing with the full FraCaSLogic grammar is unusable).
-      # Regenerated from run_gf_tests.py and checked against the committed
-      # copy, then compiled.
+      # Restricted parse grammar (EndToEnd/gen_parse_grammar.py - see its
+      # header for why parsing with the full FraCaSLogic grammar is
+      # unusable). Regenerated from gf/run_gf_tests.py and checked against
+      # the committed copy, then compiled against gf/'s FraCaSLogic.
       - name: Build FraCaSParse grammar
-        working-directory: gf
+        working-directory: EndToEnd
         run: |
           python3 gen_parse_grammar.py
           git diff --exit-code FraCaSParse.gf FraCaSParseEng.gf
-          gf -make -path=".:$HOME/gf-libs/alltenses:$HOME/gf-libs/prelude" FraCaSParseEng.gf
+          gf -make -path=".:../gf:$HOME/gf-libs/alltenses:$HOME/gf-libs/prelude" FraCaSParseEng.gf
 
       # Parses every confirmed sentence's English and reports parse
       # coverage, reading counts, and whether the top-ranked reading
@@ -306,22 +306,23 @@ jobs:
       # regression (a confirmed sentence that no longer parses, or whose
       # hand tree is no longer among its readings).
       - name: Parser evaluation
-        working-directory: gf
+        working-directory: EndToEnd
         run: python3 parse_eval.py
 
-      # The end-to-end claims the Lean job's "Blind evaluation, end-to-end
-      # from English" step scores must be exactly what the pipeline
-      # produces from FraCaS's English - regenerate and compare.
+      # The end-to-end claims the end-to-end job scores must be exactly
+      # what the pipeline produces from FraCaS's English - regenerate and
+      # compare.
       - name: Regenerate end-to-end claims and check they match
         run: |
           python3 EndToEnd/gen_claims.py
           git diff --exit-code EndToEnd/Claims.lean
 
-      # translate.py's default mode serves the hand-written corpus's GF
-      # cross-check; its reading modes serve the end-to-end pipeline. Both
-      # checks below fail if a change meant for one silently changes the
-      # other: every default-mode translation of a confirmed tree is
-      # snapshotted, and the cross-check theorems are regenerated.
+      # gf/translate.py serves the hand-written corpus's GF cross-check
+      # as it stands, and the end-to-end pipeline with EndToEnd/readings.py
+      # plugged in. Both checks below fail if a change meant for the
+      # pipeline silently changes the cross-check: every default
+      # translation of a confirmed tree is snapshotted, and the cross-check
+      # theorems are regenerated.
       - name: Default-mode translations unchanged
         run: |
           python3 gf/snapshot_default_translations.py

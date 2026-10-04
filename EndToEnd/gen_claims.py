@@ -9,15 +9,15 @@ step too, for every problem the pipeline can carry all the way through:
 
 1. **English**: each premise and the hypothesis exactly as FraCaS states
    them (`FraCaS/Data/Problems.lean`), passed through one generic lexer
-   step (`gf/parse_rank.py`'s `tokenize`: final punctuation dropped,
+   step (`EndToEnd/parse_rank.py`'s `tokenize`: final punctuation dropped,
    commas split off, each token looked up in the grammar's vocabulary
    case-insensitively). Never the project's own confirmed rewordings in
    `gf/run_gf_tests.py`.
-2. **Parse**: `gf/parse_rank.py`'s `parse_readings` against the restricted
-   FraCaSParse grammar (see `gf/gen_parse_grammar.py` for what that
+2. **Parse**: `EndToEnd/parse_rank.py`'s `parse_readings` against the restricted
+   FraCaSParse grammar (see `EndToEnd/gen_parse_grammar.py` for what that
    restriction is and isn't), then its generic ranking picks one reading.
-3. **Translate**: `gf/translate.py`'s `translate_cl_reading` (see "Yes/no
-   claims" below).
+3. **Translate**: `gf/translate.py`, under `EndToEnd/readings.py`'s
+   readings (`translate_cl_reading`; see "Yes/no claims" below).
 4. **Assemble**, by one generic rule with no per-problem cases: bind every
    free predicate/individual the sentences mention universally, over one
    domain `A`, and chain `premise₁ → ... → premiseₙ → hypothesis`.
@@ -28,7 +28,7 @@ step too, for every problem the pipeline can carry all the way through:
    ever supplied - a problem needing one should come out "unknown", and
    that is reported as the real end-to-end result, not repaired. A
    second claim per problem (`fracas_NNN_bk_*`) adds the problem-
-   independent background knowledge `gf/background.py` derives (tree-
+   independent background knowledge `EndToEnd/background.py` derives (tree-
    structural entailments and a small degree-semantics lexicon), and the
    two are scored separately.
 
@@ -37,7 +37,7 @@ voted" - distributive or collective; a bare plural with a relative clause
 - generic or existential; "many" - cardinal or proportional; "some
 accountants" - number-neutral or at least two), and committing to one
 reading lets the pipeline give a confident answer FraCaS marks wrong. So
-`gf/translate.py` produces each kind of ambiguity in a "weak" and a
+`EndToEnd/readings.py` produces each kind of ambiguity in a "weak" and a
 "strong" reading (`translate_cl_reading`), and every problem is translated
 under every *consistent* assignment of readings to the kinds of ambiguity
 it actually contains - the same word read the same way in each of its
@@ -55,7 +55,7 @@ parse, any top-ranked reading fails to translate, or a translation needs
 something the generic rule doesn't assemble (Skolem functions, presupposition
 bundles, conjunct projections, a name used at two different kinds).
 
-Needs the `gf` binary and a compiled gf/FraCaSParse.pgf (the `build-gf` CI
+Needs the `gf` binary and a compiled EndToEnd/FraCaSParse.pgf (the `build-gf` CI
 job has both and regenerates this file to check it is reproducible). Do not
 hand-edit the output.
 """
@@ -73,8 +73,10 @@ OUT_PATH = ROOT / "EndToEnd" / "Claims.lean"
 PROBLEMS = ROOT / "LeanNLSemantics" / "FraCaS" / "Data" / "Problems.lean"
 
 sys.path.insert(0, str(GF_DIR))
+sys.path.insert(0, str(ROOT / "EndToEnd"))
 from parse_rank import parse_readings, ranked, tokenize  # noqa: E402
-from translate import AMBIGUITY_KINDS, App, parse_tree, translate_cl_reading  # noqa: E402
+from translate import App, parse_tree  # noqa: E402
+from readings import AMBIGUITY_KINDS, translate_cl_reading  # noqa: E402
 from background import postulates  # noqa: E402
 
 # Identifiers a generated predicate/individual name must not collide with.
@@ -231,28 +233,28 @@ def assemble(idn, sentences):
         for idx, (role, clause, negated, n) in enumerate(clauses):
             position = "hypothesis" if idx == len(clauses) - 1 else "premise"
             try:
-                tr = translate_cl_reading(clause, reading, position)
+                tr, side = translate_cl_reading(clause, reading, position)
             except Exception as e:  # translate.py signals unsupported shapes this way
                 raise ValueError(f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}")
             if tr.conjuncts or tr.free_functions or tr.template:
                 raise ValueError(f"{role} needs non-generic assembly (conjuncts/Skolem/bundle)")
-            out.append((tr, f"¬ ({tr.lean_prop})" if negated else tr.lean_prop))
+            out.append((tr, side, f"¬ ({tr.lean_prop})" if negated else tr.lean_prop))
         return out
 
     def premise_props(trs):
-        # A premise's side premises (see translate.py's _quantified) follow
+        # A premise's side premises (see readings.py's `quantified`) follow
         # it as separate hypotheses.
         props = []
-        for tr, p in trs:
+        for _tr, side, p in trs:
             props.append(f"({p})")
-            props += [f"({sp})" for sp in tr.side_premises]
+            props += [f"({sp})" for sp in side]
         return props
 
     try:
         base = translate_all({})
         present = [
             k for k in AMBIGUITY_KINDS
-            if [p for _, p in translate_all({k: "strong"})] != [p for _, p in base]
+            if [p for *_, p in translate_all({k: "strong"})] != [p for *_, p in base]
         ]
         assignments = [dict(zip(present, combo)) for combo in itertools.product(("weak", "strong"), repeat=len(present))]
         translated = [(a, translate_all(a)) for a in assignments]
@@ -262,7 +264,7 @@ def assemble(idn, sentences):
     kinds: dict[str, str] = {}
     order: list[str] = []
     for _a, trs in translated:
-        for tr, _p in trs:
+        for tr, _side, _p in trs:
             for name in tr.free_predicates:
                 kind = "binary" if name in tr.binary_predicates else "unary"
                 if kinds.setdefault(name, kind) != kind:
@@ -301,7 +303,7 @@ def assemble(idn, sentences):
     # monotone in its restrictor - "many British delegates" says nothing
     # about "many delegates" on the proportional reading (FraCaS 56).
     meaning = []
-    if any(re.search(r"\bMany\b", p) for _a, trs in translated for _tr, p in trs):
+    if any(re.search(r"\bMany\b", p) for _a, trs in translated for *_, p in trs):
         binders.append("(Many : (A → Prop) → (A → Prop) → Prop)")
         meaning.append("(∀ P Q : A → Prop, Many P Q → Some P Q)")
         meaning.append("(∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R)")
@@ -312,12 +314,12 @@ def assemble(idn, sentences):
     # monotone in its restrictor on that reading, and does not entail that
     # any such X exist (12). The cardinal reading, `AtMost fewCount`, and
     # "a few", `AtLeast aFewCount`, count against an unknown threshold.
-    if any(re.search(r"\bFew\b", p) for _a, trs in translated for _tr, p in trs):
+    if any(re.search(r"\bFew\b", p) for _a, trs in translated for *_, p in trs):
         binders.append("(Few : (A → Prop) → (A → Prop) → Prop)")
         meaning.append("(∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R)")
-    if any(re.search(r"\bfewCount\b", p) for _a, trs in translated for _tr, p in trs):
+    if any(re.search(r"\bfewCount\b", p) for _a, trs in translated for *_, p in trs):
         binders.append("(fewCount : Nat)")
-    if any(re.search(r"\baFewCount\b", p) for _a, trs in translated for _tr, p in trs):
+    if any(re.search(r"\baFewCount\b", p) for _a, trs in translated for *_, p in trs):
         binders.append("(aFewCount : Nat)")
         meaning.append("(aFewCount ≥ 1)")
     knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary))
@@ -326,7 +328,7 @@ def assemble(idn, sentences):
     out = []
     for a, trs in translated:
         premises = premise_props(trs[:-1])
-        hyp = trs[-1][1]
+        hyp = trs[-1][2]
 
         def chain(facts, conclusion):
             return head + " → ".join([*meaning, *facts, *premises, f"({conclusion})"])
@@ -418,7 +420,7 @@ def main() -> None:
             lines.append(f"/-- Reading assignment {i} ({asg['desc']}): \"no\" test. -/")
             lines.append(f"def fracas_{idn:03d}_no_{i} : Prop :=\n  {asg['no']}")
             lines.append("")
-            lines.append(f"/-- As `_yes_{i}`, with {c['n_facts']} background-knowledge premise(s) from `gf/background.py`. -/")
+            lines.append(f"/-- As `_yes_{i}`, with {c['n_facts']} background-knowledge premise(s) from `EndToEnd/background.py`. -/")
             lines.append(f"def fracas_{idn:03d}_bk_yes_{i} : Prop :=\n  {asg['bk_yes']}")
             lines.append("")
             lines.append(f"/-- As `_no_{i}`, with the same background knowledge. -/")
@@ -440,7 +442,7 @@ def main() -> None:
     lines += [
         "]",
         "",
-        "/-- The same problems, each claim with `gf/background.py`'s",
+        "/-- The same problems, each claim with `EndToEnd/background.py`'s",
         "problem-independent background knowledge added as premises. -/",
         "def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [",
     ]

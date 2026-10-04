@@ -89,7 +89,8 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
 
 - **End-to-end pipeline** (`EndToEnd/`, part 4): FraCaS's original
   English parsed with a restricted GF grammar, the top reading chosen by
-  a generic ranker and translated by `gf/translate.py`'s reading modes,
+  a generic ranker and translated by `gf/translate.py` under the
+  pipeline's own readings of ambiguous English (`EndToEnd/readings.py`),
   scored by its own prover. It reaches 195 of 342 problems and matches
   gold on 118 of them as translated (139 with problem-independent
   background knowledge), with no wrong answers. These are

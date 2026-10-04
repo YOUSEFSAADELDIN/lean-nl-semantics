@@ -26,8 +26,8 @@ import re
 import subprocess
 from pathlib import Path
 
-GF_DIR = Path(__file__).resolve().parent
-DEFAULT_PGF = GF_DIR / "FraCaSParse.pgf"
+HERE = Path(__file__).resolve().parent
+DEFAULT_PGF = HERE / "FraCaSParse.pgf"
 # Section 1/2 sentences are tenseless clauses (`Cl`, this project's default
 # target - see FraCaSLogic.gf); later sections' trees are tensed (`S`).
 # Tried in this order; the first category with any reading wins.
