@@ -31,30 +31,56 @@ which direction holds, then compare that automated decision against gold.
 
 ## Methodology
 
-### Bare entailment-shaped theorems (`BlindEval.lean`)
+### Bare theorems (`BlindEval.lean`, `BlindEvalSections3to9.lean`)
 
-For every `fracas_NNN` theorem (no suffix — see "Scope" below for what a
-suffix excludes) whose conclusion, after introducing its implication
-chain, is headed by one of `Every`/`Some`/`No`/`Most`/`AtLeast`/`AtMost`/
-`Both`/`Neither`/`Exactly`:
+For every `fracas_NNN` theorem (no suffix — see "What's still excluded"
+below for what a suffix excludes), whatever the shape of its conclusion:
 
 1. Take the theorem's own type only, never its proof term.
-2. Attempt to close that type directly (**pos**: premises → hypothesis?)
-   and, separately, the type with its hypothesis negated (**neg**:
-   premises → ¬hypothesis?), via the identical fixed tactic chain both
-   times: this corpus's certified monotonicity fragment (`mono_nl`,
-   `exist_nl`, `mono_nl_compose` — see `Tactic.lean`/`Existential.lean`/
-   `Compose.lean`), then two small targeted searches for `Most`-headed
-   goals (`most_nl`, `every_most_nl`), then one `aesop` call armed with
-   every general (not problem-specific) `GQ.lean`/`Plurals.lean` lemma,
-   then `grind` as a last resort.
-3. (pos succeeds, neg fails) → **yes**; (neg succeeds, pos fails) →
-   **no**; (neither succeeds) → **unknown**; (both succeed) → a flagged
-   **contradiction**, never silently folded into yes or no.
+2. Attempt to close "premises → hypothesis" and, separately, "premises →
+   ¬hypothesis", via the identical fixed tactic chain both times
+   (`attemptClose` in `BlindEvalCore.lean`): this corpus's certified
+   monotonicity fragment (`mono_nl`, `exist_nl`, `mono_nl_compose` — see
+   `Tactic.lean`/`Existential.lean`/`Compose.lean`), two small targeted
+   searches for `Most`-headed goals (`most_nl`, `every_most_nl`), an
+   `aesop` call that unfolds `Every`/`Some`/`No` and is armed with every
+   general (not problem-specific) `GQ.lean`/`Plurals.lean` lemma
+   (`blind_aesop`) plus an unarmed fallback, `grind` with and without
+   those unfoldings, and `intros; omega` last (Section 6's cardinal
+   comparatives are literal `Nat` inequalities). Which of the two queries
+   is the hypothesis and which its negation is decided polarity-aware
+   (`flipConclusion`/`isNegHead`): many bare theorems state a `.no` answer
+   by writing `¬hypothesis` or `a ≠ b` as the literal conclusion, and
+   naively wrapping a second `¬` around that asks a different question.
+3. (hypothesis closes, negation fails) → **yes**; the reverse → **no**;
+   neither → **unknown**; both → a flagged **contradiction**, never
+   silently folded into yes or no.
 4. Compare against FraCaS's own gold `Answer`, collapsing `.unknown` and
    `.undef` both onto automated `"unknown"` (a binary yes/no/unknown
    procedure has no way to tell "genuinely undecided" apart from "the
    source's answer wasn't a literal yes/no/don't-know").
+
+Both files call the same `runBlindEvalGeneric`. An earlier Sections 1–2
+version only attempted theorems whose conclusion was headed by a
+generalized quantifier (`Every`/`Some`/`Most`/...), skipping 20; that
+restriction turned out not to be load-bearing and has been dropped.
+
+**The `aesop` step silently never ran until this round — stated plainly
+because it changes what earlier published numbers meant.** It was
+written with `unfold FraCaS.Section1.Every` and no phase; Aesop requires
+`norm unfold`, so every invocation failed while building its rule set,
+before searching at all (`phase (safe/unsafe/norm) not specified.`, found
+by a temporary per-tactic diagnostic in CI run 37168342088). Since a
+failed attempt and an erroring one look identical to the scan, this was
+invisible: every blind-evaluation result published before the fix came
+from the chain's other steps alone. `BlindEvalCore.lean` now defines the
+call as a `blind_aesop` macro followed by `example`s it must prove, so a
+broken rule set fails `lake build` instead of quietly failing every goal.
+Turning `aesop` on also surfaced a resource issue: the scans' heartbeat
+budget was shared across a whole section, so a working search eventually
+exhausted it and aborted the rest of the section; each attempt and each
+bookkeeping step now runs in its own budget, and a budget failure is
+reported as "errored", never as a verdict.
 
 ### Countermodel-pair `.unknown`/`.undef` problems (`BlindEvalUnknownScan.lean`, `BlindEvalUnknown3to9Scan.lean`)
 
@@ -112,95 +138,148 @@ what a genuine independence claim should produce, and is compared
 against the gold `.unknown`/`.undef` answer the same way the bare-
 theorem scans' own `answerMatches` already does.
 
-### Bare theorems in Sections 3–9, without Sections 1–2's shape restriction (`BlindEvalSections3to9.lean`)
-
-Sections 3–9 have no shared quantifier vocabulary the way Section 1/2's
-GQ layer does — every section's own "approach" header (`Anaphora.lean`,
-`Comparatives.lean`, `Attitudes.lean`, ...) says outright that no new
-lemmas are needed, since each problem's semantic step (an assumed
-connecting fact, a Skolem function, a literal `Nat` comparison) is
-already folded into its own stated premises. So this scan drops the
-`blindEvalHeads` shape restriction entirely and attempts *every* bare
-theorem in these sections, regardless of its conclusion's head, via the
-same `attemptClose` (now with `omega` added to its fallback chain, for
-Section 6's cardinal-comparative problems) paired with a polarity-aware
-`flipConclusion` rather than plain `negateConclusion` — needed because,
-unlike Section 1/2's bare+entailment-shaped subset (always a positive
-GQ application), many Sections 3–9 bare theorems state a `.no` gold
-answer by writing the conclusion as `¬hypothesis` (or `a ≠ b`) directly,
-and blindly negating an already-negative conclusion asks the chain to
-prove a different, usually-false claim instead of the one actually at
-stake.
-
 ## Current result (CI-confirmed)
+
+CI run 37170606363:
 
 | | problems | attempted | matched |
 |---|---|---|---|
-| Bare yes/no, Sections 1–2 | 113 | 93 | 93/93 |
-| `.unknown`/`.undef` pairs, Sections 1–2 | — | 46 | 46/46 |
-| Bare yes/no, Sections 3–9 | 229 | 169 | 161/169 |
-| `.unknown`/`.undef` pairs, Sections 3–9 | — | 60 | 60/60 |
-| **Total** | **342** | **322** | **314/322 (97.5%)** |
+| Bare yes/no, Sections 1–2 | 67 | 67 | 64/67 |
+| `.unknown`/`.undef` pairs, Sections 1–2 | 46 | 46 | 46/46 |
+| Bare yes/no, Sections 3–9 | 169 | 169 | 166/169 |
+| `.unknown`/`.undef` pairs, Sections 3–9 | 60 | 60 | 60/60 |
+| **Total** | **342** | **342** | **336/342 (98.2%)** |
 
-0 contradictions and 0 missing-claim entries across all five scans.
-Sections 3–9's `.unknown`/`.undef` coverage is total: all 60 problems
-with that gold answer in these sections, none left over. The 8 remaining
-mismatches are all in the Sections 3–9 bare-theorem scan, all shaped
-`(gold yes, automated unknown)` — genuine coverage gaps, not bugs
-(confirmed by hand-checking several: the automated chain's underlying
-inference was never wrong, just incomplete) — fracas_123, 126, 127, 129
-(bespoke existential-witness/conjunction-distribution proofs the generic
-chain doesn't search for) and 173, 246, 248, 307 (all four the identical
-trivial shape `Every P Q → P x → Q x`, proved by hand with `fun h hm =>
-h mary hm` — surprising that `aesop`, armed with `every_mp` for exactly
-this, doesn't close them; not debugged further this round).
+Every problem in the corpus is now attempted. 0 contradictions, 0
+errored attempts, 0 missing claims. For scale, answering "unknown" to
+everything would score 106/342 (31.0%).
 
-(Exact CI output: `blind_eval_section1` through `blind_eval_section9`,
-`blind_eval_unknown`, `blind_eval_unknown_3to9` commands, run on every
-push.)
+The 6 mismatches are all `(gold yes/no, automated unknown)` — the chain
+fails to find a proof; it never finds a wrong one. Each needs something a
+generic search over these lemmas doesn't do, and none has been patched
+with a problem-shaped rule:
+
+- **105, 106** (`Exactly 1 P Q → ¬ No P Q`): cardinality reasoning — a
+  count of 1 implies a witness.
+- **111, 127**: two *distinct* existential witnesses (`∃ c₁ c₂, c₁ ≠ c₂ ∧
+  ...`).
+- **123** (`Most R S → (∀x, S x → D x) → Some S D`): forward reasoning
+  from `Most` to a witness, then chaining.
+- **126**: `Fintype.card` arithmetic.
+
+Repairing `aesop` is what closed the earlier gaps 129, 173, 246, 248 and
+307 (`Every P Q → P x → Q x` and similar instantiations — plain `grind`
+cannot see inside the `Every` definition), and dropping Sections 1–2's
+shape restriction brought in 17 more correct verdicts among the 20
+previously excluded problems.
+
+(Exact CI output: the `blind_eval_section1` … `blind_eval_section9`,
+`blind_eval_unknown` and `blind_eval_unknown_3to9` commands, run on
+every push.)
+
+## End-to-end: translating from FraCaS's English automatically (`BlindEvalParsedScan.lean`)
+
+Every result above scores inference over a `Prop` a human wrote. This
+scan removes the human from the translation step as well, for every
+problem the automated pipeline can carry all the way through
+(`scripts/gen_blind_eval_parsed.py`):
+
+1. **English**: each premise and hypothesis exactly as FraCaS states it,
+   normalized only mechanically (final period dropped; first letter
+   lowercased if the sentence doesn't parse as written) — not the
+   project's own confirmed rewordings in `gf/run_gf_tests.py`.
+2. **Parse** with a restricted GF grammar (`gf/gen_parse_grammar.py`).
+   Parsing with the full FraCaSLogic grammar is unusable — 69,115
+   readings in five minutes for one Section 1 sentence, none free of junk
+   constructions — so the parse grammar inherits only the functions and
+   words the CI-confirmed trees use. That makes it a controlled-language
+   grammar fit to FraCaS's vocabulary (the same kind of artifact FraCoq's
+   FraCaS-specific grammar is); it does not tell the parser which tree
+   goes with which sentence.
+3. **Rank** the readings generically (`gf/parse_rank.py`): fewest nodes,
+   ties broken by right association (attach adverbials as low as
+   possible).
+4. **Translate** the top reading with `gf/translate.py`, and **assemble**
+   by one generic rule — bind every free predicate/individual, chain
+   premises into the hypothesis — with no per-problem cases and no
+   background-knowledge premise ever supplied.
+
+The `build-gf` CI job regenerates the claims file from the English and
+fails if it differs from the committed copy, so the scored claims are
+reproducible.
+
+**Parser quality, on the 437 distinct CI-confirmed sentences**
+(`gf/parse_eval.py`): all 437 parse; the hand-built tree is among the
+readings for all 437; median 4 readings (max 3,600); and the top-ranked
+reading translates to the same `Prop` as the hand tree for 371 of the 373
+sentences `translate.py` covers. The two exceptions are a genuine
+ambiguity (13: bare plural "leading tenors that are excellent" — generic
+or existential) and one remaining relative-clause attachment (136). The
+right-association tie-breaker was added after inspecting misses of the
+size rule alone on these same sentences, so this is not a held-out
+figure.
+
+**Coverage, on FraCaS's original English**: 111 of 342 problems go all
+the way through. 188 stop at a sentence the restricted grammar doesn't
+parse (FraCaS's hypotheses are often "There are X who…" existentials,
+which no confirmed tree uses), 30 at a reading `translate.py` doesn't
+cover, 13 at a translation needing non-generic assembly.
+
+**Result: 48/111 (43.2%) — against an always-"unknown" baseline of
+45/111 (40.5%) on the same problems.** End-to-end, the pipeline is barely
+better than the trivial baseline, and that is the honest headline. 40 of
+the 48 matches are "unknown" verdicts. The 63 mismatches break down as:
+
+- **58 `(gold yes/no, automated unknown)`**, overwhelmingly missing
+  knowledge the hand-written theorems supply as an explicit premise and
+  this pipeline deliberately never does ("winning the Nobel prize for
+  literature" ⇒ "winning a Nobel prize", 17; "small animal" vs "large
+  animal" being contraries, 204/205) or comparatives flattened into
+  unrelated unary predicates (220–229).
+- **5 wrong "yes"** (30, 32, 47, 94, 228), all translation conflations:
+  `translate.py` drops object determiners from predicate names, so
+  "spend **a lot of** time at home" and "spend time at home" become the
+  same predicate (30, 32, 47); it drops comparative morphology, so "**as**
+  fast as" and "fast**er** than" coincide (228); and it reads "the
+  inhabitants … voted" distributively, where FraCaS's "unknown" turns on
+  the collective reading (94).
+
+Some of the 8 "yes" matches are also right partly for the wrong reason
+(31 and 48 involve the same determiner collision, in a direction where it
+happens not to matter). Building this pipeline also found and fixed three
+`translate.py` fidelity bugs that were silently conflating distinct
+meanings: prepositions were dropped from predicate names (FraCaS 74's
+"resident **in** Europe" vs "resident **outside** Europe" both became
+`residentEurope`), GF word-sense tags leaked into names (`by8agent` vs
+`by8means`), and a relative clause was translated differently depending
+on whether a parse attached the article via `CompCN` or `CompNP`.
 
 ## What's still excluded, and why
 
-**20 bare theorems in Sections 1–2 are not entailment-shaped** by that
-scan's own shape check (conclusion not headed by one of the quantifier
-heads `blindEvalHeads` lists) — Section 1: problems 6, 14, 38, 46, 70;
-Section 2: problems 81, 82, 84, 85, 86, 89, 99, 101, 103, 105, 106, 109,
-111, 112, 113. Sections 3–9's own scan already shows this restriction
-isn't load-bearing in general (it drops it entirely and still gets
-161/169 right) — the honest reason these 20 remain excluded is that
-Sections 1–2's scan hasn't been revisited to drop it too, not that doing
-so is expected to fail. Likely future work, not attempted here.
-
-**One further suffixed name** (`fracas_002_from_gf`, a `GFCrossCheck.lean`
-demo re-derivation, not a distinct FraCaS problem) is correctly skipped
-as non-bare and isn't a gap.
+Nothing in the hand-translated evaluation: all 342 problems are attempted.
+Suffixed names (`_dir1`/`_dir2`, `_from_gf`, `_via_mono_nl`, ...) are
+skipped by the bare-theorem scans by design — countermodel pairs are
+evaluated through their generalized claims instead, and the rest are
+re-derivations of problems already counted, not distinct problems.
 
 ## Comparison to FraCoq (83%/81%)
 
-The 314/322 figure above is a genuine blind-prediction accuracy score in
-the narrow sense that matters: the automated decision used only the
-translated `Prop`, never the human's proof direction. It is now close to
-directly comparable to FraCoq's reported 83%/81% on **coverage** — 322
-of 342 problems (94%) across all nine sections, not a narrow slice —
-but still not identical, for one remaining reason:
+The 336/342 figure is a genuine blind-prediction score in one narrow
+sense: the automated decision used only the translated `Prop`, never the
+human's proof direction. It covers the whole corpus. But it is **not
+comparable** to FraCoq's 83%/81%, because FraCoq's pipeline includes
+automated translation from English and its score absorbs that step's
+mistakes, while the 336/342 premises/hypotheses were translated by hand.
+It isolates and scores the inference step only.
 
-**Translation**: FraCoq's pipeline includes automated parsing from
-English into its logical form — its reported accuracy reflects mistakes
-in that step too. This project's premises/hypothesis `Prop`s are still
-hand-translated (the GF integration in `gf/` independently checks a
-translation step's own output against FraCaS's recorded English for a
-subset of Sections 1–2, but that is a translation *consistency* check,
-not inference). This project's blind evaluation therefore isolates and
-scores only the inference step, which is an easier, narrower problem
-than FraCoq's end-to-end score reflects — the one gap left pushing this
-project's number higher than a strictly comparable one would read.
-
-Closing that gap would need an automated translation step's own output
-fed into blind evaluation rather than the hand-translated `Prop`s used
-here (the existing `gf/translate.py` cross-check is the closest piece of
-infrastructure toward it, though it currently covers only a subset of
-Sections 1–2 and was built to check translation fidelity, not to drive
-blind evaluation end-to-end).
+The end-to-end scan above is the comparable kind of measurement, and it
+says the translation step is where nearly all of the difficulty lives:
+48/111 (43.2%) on the problems the pipeline reaches at all, barely above
+a 40.5% always-"unknown" baseline, covering only a third of the corpus.
+Closing that gap is a translation problem — grammar coverage of FraCaS's
+own hypothesis constructions, determiner- and comparative-preserving
+translation, and some account of background knowledge — not an
+inference problem.
 
 ## Other limitations worth stating plainly
 
@@ -211,10 +290,14 @@ blind evaluation end-to-end).
   chain never influenced — there is no such held-out set here, because
   there is only one FraCaS to evaluate against. This is a structural
   limitation of blind-evaluating a fixed, closed benchmark with a hand-
-  built reasoner rather than a learned one; it does not mean the 314/322
+  built reasoner rather than a learned one; it does not mean the 336/342
   result is invalid, only that it should not be read as evidence the
   chain generalizes to sentences outside this corpus's vocabulary and
   structure.
+- The same applies to the end-to-end pipeline: its parse grammar's
+  vocabulary and constructions are read off this corpus's own confirmed
+  trees, and its ranking tie-breaker was chosen after looking at its
+  misses here.
 - `aesop`'s lemma list in `attemptClose` is general (not problem-
   specific) `GQ.lean`/`Plurals.lean` content, but it is still a list
   curated by a human who had already seen the whole corpus — the same
@@ -227,3 +310,8 @@ blind evaluation end-to-end).
   direction is linguistically correct (the hand-proof already is that
   confirmation, via the separate 338/342 manual consistency audit in
   `README.md`).
+- A 98.2% match is partly a statement about how much of each problem's
+  difficulty the hand translation already absorbed (an explicit
+  background-knowledge premise, a pre-resolved ellipsis, a literal `Nat`
+  comparison). The end-to-end scan's 43.2% is the counterweight to read
+  next to it.
