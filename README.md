@@ -236,15 +236,16 @@ consistency check, not a blind-prediction accuracy score.
   measurement: FraCaS's original English parsed with a restricted GF
   grammar (`gf/gen_parse_grammar.py`), the top reading chosen by a
   generic ranker and translated by `gf/translate.py`, with no human
-  anywhere in the translation step. It reaches 159 of 342 problems and
-  scores **88/159 (55.3%)** on them as translated, and **106/159
-  (66.7%)** with problem-independent background knowledge
-  (`gf/background.py`: entailments derived from the parse trees plus a
-  small degree-semantics lexicon), against a 37.7% always-"unknown"
-  baseline on the same problems; counting unreached problems as
-  "unknown", 152/342 (44.4%) corpus-wide. The gap between the two
-  evaluations sits mostly in translation coverage and fidelity, not
-  inference. **`BLIND_EVAL.md`** is the full writeup:
+  anywhere in the translation step, ambiguous English handled by
+  answering only when every consistent reading agrees. It reaches 176 of
+  342 problems and scores **104/176 (59.1%)** on them as translated and
+  **124/176 (70.5%)** with problem-independent background knowledge
+  (`gf/background.py`), with **no wrong answers** — every miss is an
+  "unknown" — against a 37.5% always-"unknown" baseline on the same
+  problems; counting unreached problems as "unknown", 164/342 (48.0%)
+  corpus-wide. The gap between the two evaluations sits mostly in
+  translation coverage, not inference. **`BLIND_EVAL.md`** is the full
+  writeup:
   methodology, exact per-scan results, every remaining miss and why, and
   the limitations of both numbers.
 - **General natural-language inference** — a substantially larger,

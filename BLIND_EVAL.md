@@ -201,14 +201,37 @@ problem the automated pipeline can carry all the way through
    rewordings) never used: the "who" relative pronoun, the "there
    are/was X who…" existential that most Section 1 hypotheses use, the
    frozen "used to", and "just one"; each has one confirmed linearize
-   check (`_FRACAS_ENGLISH_CHECKS`).
+   check (`_FRACAS_ENGLISH_CHECKS`). A later round added Section 4's VP
+   ellipsis ("so did Bill", "Bill didn't", "the students have too"),
+   one-anaphora ("a blue one", "owns one too") and uncontracted negation
+   ("is not") the same way; readings that use anaphoric "one" as anything
+   but the head of a noun phrase are discarded as ill-formed.
 3. **Rank** the readings generically (`gf/parse_rank.py`): fewest nodes,
    ties broken by right association (attach adverbials as low as
    possible).
-4. **Translate** the top reading with `gf/translate.py`, and **assemble**
+4. **Resolve** ellipsis and one-anaphora by copying the antecedent
+   clause's verb phrase or noun (the standard copy treatment; "a blue
+   one" after "a red car" contrasts with the antecedent's outermost
+   adjective), then **translate** with `gf/translate.py` and **assemble**
    by one generic rule — bind every free predicate/individual, chain
-   premises into the hypothesis — with no per-problem cases.
-5. Each problem is scored twice: as translated, and with **background
+   premises into the hypothesis — with no per-problem cases. Sentential
+   negation is translated only with a proper-name subject, where its
+   scope is unambiguous.
+5. **Never commit to one reading of ambiguous English.** Four kinds of
+   ambiguity are translated in a weak and a strong reading: a definite
+   plural subject ("the inhabitants voted" — collective/generic `Some`,
+   or distributive `Every` plus the definite's existence presupposition);
+   a bare plural with a relative clause (existential or generic); "many"
+   (cardinal, read as `Some`, or proportional — an opaque relation stated
+   only with properties every reading shares: it entails "some" and is
+   upward monotone in its scope, but not in its restrictor); and plural
+   "some Xs" (number-neutral, or at least two). "Both"/"neither" use the
+   corpus's own `Both`/`Neither`, which keep the exactly-two
+   presupposition. Each problem is translated under every *consistent*
+   assignment of readings — the same word read the same way in each of
+   its sentences — and the scan answers "yes"/"no" only if the
+   corresponding claim is proved under **every** assignment.
+6. Each problem is scored twice: as translated, and with **background
    knowledge** from `gf/background.py` added as premises. That knowledge
    is problem-independent: entailments derived from the parse trees
    themselves (deleting an intersective modifier in an upward-monotone
@@ -226,51 +249,65 @@ The `build-gf` CI job regenerates the claims file from the English and
 fails if it differs from the committed copy, so the scored claims are
 reproducible.
 
-**Parser quality, on the 443 distinct CI-confirmed sentences**
-(`gf/parse_eval.py`): all 443 parse; the hand-built tree is among the
-readings for all 443; median 4 readings (max 3,600); and the top-ranked
-reading translates to the same `Prop` as the hand tree for 380 of the 381
+**Parser quality, on the 449 distinct CI-confirmed sentences**
+(`gf/parse_eval.py`): all 449 parse; the hand-built tree is among the
+readings for all 449; median 4 readings (max 3,600); and the top-ranked
+reading translates to the same `Prop` as the hand tree for 381 of the 382
 sentences `translate.py` covers. The one exception (136) is a garden-path
 compound ("[executive that had a laptop] computer") tied in size with the
 correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 159 of 342 problems go all
-the way through (46.5%). 130 stop at a sentence the restricted grammar
-doesn't parse, 40 at a reading `translate.py` doesn't cover, 13 at a
-translation needing non-generic assembly.
+**Coverage, on FraCaS's original English**: 176 of 342 problems go all
+the way through (51.5%). 121 stop at a sentence the restricted grammar
+doesn't parse, 32 at a reading `translate.py` doesn't cover, 13 at a
+translation needing non-generic assembly. A census of every failing
+sentence found the remaining parse failures are mostly hard phenomena
+rather than missing glue — quantity comparatives ("ITEL won more orders
+than APCOM did", 10 problems, which need object-quantifier semantics
+`translate.py` doesn't have), more ellipsis forms, aspect and duration,
+perception and attitude reports. Giving the parse grammar the full
+dictionary entries for every word FraCaS uses was tried and rejected: it
+unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
+readings per sentence.
 
-**Result** (CI run 37175702581), on those 159 problems:
+**Result** (CI run 37187332946), on those 176 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 60/159 (37.7%) | — |
-| as translated | **88/159 (55.3%)** | 3 |
-| with background knowledge | **106/159 (66.7%)** | 5 |
+| always "unknown" (baseline) | 66/176 (37.5%) | — |
+| as translated | **104/176 (59.1%)** | **0** |
+| with background knowledge | **124/176 (70.5%)** | **0** |
 
-Counting the 183 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 152/342 (44.4%), against a 31.0% baseline. 0
+Counting the 166 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 164/342 (48.0%), against a 31.0% baseline. 0
 contradictions and 0 errored attempts in either variant.
 
-Every remaining mismatch fails safe ("unknown" where gold says yes/no)
-except these 5 wrong answers — none caused by an unsound background-
-knowledge rule, all by simplifications in translation:
+**Every mismatch is fail-safe**: "unknown" where gold says yes or no,
+never a wrong answer. The previous version of this pipeline gave 5 wrong
+answers (56, 77, 94, 95, 109), all from translation shortcuts that
+committed to one reading — "the inhabitants voted" read distributively,
+"many" read as "some", "both" read as "every", plural "some accountants"
+read as "at least one". Step 5 above removes all five without per-
+problem cases. Its cost is that a genuinely ambiguous problem now gets
+"unknown", and some FraCaS gold answers do pick one reading:
 
-- **94, 95**: "The inhabitants of Cambridge voted for a Labour MP" / "The
-  Ancient Greeks were noted philosophers" read distributively (`Every`),
-  where FraCaS's "unknown" turns on the collective reading.
-- **109**: "Some accountant**s** attended" read as `Some` (at least one),
-  where the plural implies at least two.
-- **56** (with knowledge only): "**many** British delegates" read as `Some`
-  — `GQ.lean`'s own documented stand-in for "many" — which makes the valid
-  fact "British delegate ⊑ delegate" yield "many delegates"; FraCaS treats
-  "many" as proportional, so gold is "unknown".
-- **77** (with knowledge only): "**both** commissioners" read as `Every`,
-  dropping both's exactly-two presupposition — which `translate.py`'s own
-  comment on `both_Det` already flags as unsafe whenever the restrictor
-  changes, exactly as it does here ("both *female* commissioners", gold
-  undefined).
+- **107 and 109 are the same English with opposite gold answers** ("Just
+  one accountant attended the meeting" ⇒ "Some accountants attended the
+  meeting": yes in 107, no in 109) — FraCaS encodes the number-neutral vs
+  at-least-two ambiguity as a pair. No consistent system can get both;
+  "unknown" on both is the principled outcome.
+- **13** ("Leading tenors who are excellent are indispensable" read
+  generically) and **160** ("a fast one" after "a red car" read as "a
+  fast red car") are FraCaS committing to one reading of a genuinely
+  ambiguous sentence; the pipeline says "unknown".
+
+How the remaining "unknown"s split: most need knowledge neither the
+translation nor `gf/background.py` supplies (comparisons across noun
+classes, 208; former-student inferences, 198-199), counting arguments the
+generic prover doesn't find (105, 106), or temporal reasoning that the
+fused predicate names cannot express (Section 7, 261-306).
 
 One background-knowledge rule *was* unsound and has been fixed, a fix
 found from its observed failure: the first version deleted durative
@@ -283,17 +320,18 @@ iterated achievement); telling those apart needs lexical aspect classes,
 which this pipeline does not have, so it takes the conservative side.
 
 How the translator was improved for this, beyond the grammar additions:
-`translate.py` now keeps prepositions and determiners in verb-phrase
+`translate.py` keeps prepositions and determiners in verb-phrase
 predicate names ("resident **in**" vs "resident **outside** Europe",
-FraCaS 74; "spend **a lot of** time" vs "spend time", 30–32/47 — the
-cause of three wrong "yes" answers in the first version of this scan),
-translates comparatives and equatives as binary relations (`fastThan`,
-`fastAs`) instead of fusing the standard into a unary name ("as fast as"
-and "faster than" had coincided, 228), reads "there are X who VP" as
-`Some X VP`, "only/just one" as `Exactly 1`, and translates the two
-attachments of an adjective-plus-relative-clause noun phrase identically
-(their divergence, not ranking, was behind FraCaS 13's former "ranking
-miss").
+FraCaS 74; "spend **a lot of** time" vs "spend time", 30–32/47), reads a
+definite plural object universally (the convention it already used for
+subjects), translates comparatives and equatives as binary relations
+(`fastThan`, `fastAs`) instead of fusing the standard into a unary name
+("as fast as" and "faster than" had coincided, 228), reads "there are X
+who VP" as `Some X VP`, "only/just one" as `Exactly 1`, a floated "all"
+("the Ancient Greeks were all noted philosophers") as universal, and
+translates the two attachments of an adjective-plus-relative-clause noun
+phrase identically. Its default reading — the one the cross-check
+theorems are proved against — is unchanged throughout.
 
 ## What's still excluded, and why
 
@@ -314,12 +352,12 @@ mistakes, while the 336/342 premises/hypotheses were translated by hand.
 It isolates and scores the inference step only.
 
 The end-to-end scan above is the comparable kind of measurement. It
-reaches 46.5% of the corpus and scores 55.3% as translated (66.7% with
-background knowledge) on what it reaches — 44.4% corpus-wide if every
-unreached problem counts as "unknown". Most of the remaining gap is
-translation coverage (130 problems stop at a sentence the grammar can't
-parse) and translation fidelity (collective/distributive readings,
-proportional "many", presuppositions of "both"), not inference.
+reaches 51.5% of the corpus and scores 59.1% as translated (70.5% with
+background knowledge) on what it reaches, with no wrong answers at all —
+48.0% corpus-wide if every unreached problem counts as "unknown". Most
+of the remaining gap is translation coverage (121 problems stop at a
+sentence the grammar can't parse, mostly quantity comparatives, ellipsis,
+aspect and attitude reports) rather than inference.
 
 ## Other limitations worth stating plainly
 
@@ -353,7 +391,7 @@ proportional "many", presuppositions of "both"), not inference.
 - A 98.2% match is partly a statement about how much of each problem's
   difficulty the hand translation already absorbed (an explicit
   background-knowledge premise, a pre-resolved ellipsis, a literal `Nat`
-  comparison). The end-to-end scan's 55.3%/66.7% (on the 46.5% of the corpus it
+  comparison). The end-to-end scan's 59.1%/70.5% (on the 51.5% of the corpus it
   reaches) is the counterweight to read next to it.
 - The end-to-end numbers inherit every caveat above plus three of their
   own: the parse grammar's vocabulary and constructions are read off
