@@ -3563,8 +3563,8 @@ def main() -> None:
             # though premise 1's surface text ("can travel freely within
             # Europe") and the hypothesis's ("have the right to live in
             # Europe") are different VPs that translate_cl correctly gives
-            # different predicate names to (canTravelFreeEurope vs
-            # haveRightLiveEurope). Unlike AUX_HYPOTHESIS's cases, bridging
+            # different predicate names to (canTravelFreeWithinEurope vs
+            # haveRightLiveInEurope). Unlike AUX_HYPOTHESIS's cases, bridging
             # this needs an extra lemma application composed around
             # every_restrict, not just one more hypothesis chained into a
             # single application of the real theorem - out of scope for

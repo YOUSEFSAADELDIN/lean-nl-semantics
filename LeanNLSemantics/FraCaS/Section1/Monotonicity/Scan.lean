@@ -42,24 +42,34 @@ def goalHeadConst (ty : Expr) : MetaM (Option Lean.Name) := do
 discarding any partial assignment on failure - `.ok ()` iff it fully
 closed the goal, `.error msg` with the caught exception's rendered
 message otherwise (or `"tactic left goals open"` if the tactic ran to
-completion without closing every goal it left). -/
+completion without closing every goal it left).
+
+Each attempt gets its own fresh heartbeat budget (`withCurrHeartbeats`),
+and a resource-limit failure (`maxHeartbeats`/`maxRecDepth`) is caught as
+an ordinary failed attempt via `tryCatchRuntimeEx` - plain `try`/`catch`
+deliberately rethrows those "runtime" exceptions in every `CoreM`-based
+monad (`Lean/CoreM.lean`'s `Core.tryCatch`), and the heartbeat counter is
+otherwise shared by the *whole* scanning command, so without both of
+these one slow search (a real `aesop` run, say) could exhaust the budget
+and abort every remaining problem in the scan, not just its own attempt. -/
 def runTacticOn (ty : Expr) (tacticStx : Lean.TSyntax `tactic) :
     TermElabM (Except String Unit) :=
-  try
-    let mvar ← mkFreshExprMVar ty (kind := .synthetic)
-    let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
-      Lean.Elab.Tactic.evalTactic tacticStx
-    if remaining.isEmpty then
-      pure (.ok ())
-    else
-      pure (.error "tactic left goals open")
-  catch e =>
-    let msg ←
-      try
-        e.toMessageData.toString
-      catch _ =>
-        pure "<error message could not be rendered>"
-    pure (.error msg)
+  withCurrHeartbeats <| tryCatchRuntimeEx
+    (do
+      let mvar ← mkFreshExprMVar ty (kind := .synthetic)
+      let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
+        Lean.Elab.Tactic.evalTactic tacticStx
+      if remaining.isEmpty then
+        pure (.ok ())
+      else
+        pure (.error "tactic left goals open"))
+    (fun e => do
+      let msg ←
+        try
+          e.toMessageData.toString
+        catch _ =>
+          pure "<error message could not be rendered>"
+      pure (.error msg))
 
 /-- `runTacticOn`, discarding the failure message for call sites that
 only need success/failure. -/

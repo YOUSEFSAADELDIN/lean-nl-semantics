@@ -64,6 +64,7 @@ redesigning the tree parser or the naming scheme.
 """
 
 from __future__ import annotations
+import re
 
 from dataclasses import dataclass, field
 
@@ -167,7 +168,7 @@ def parse_tree(text: str):
 # unlike every other suffix here - it names a free *individual*, not a
 # free *predicate*; see _try_translate_partitive_identity below for the
 # one place that distinction actually matters.
-_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN", "_Adv")
+_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN", "_Adv", "_Prep")
 
 
 def _is_leaf_lexical(name: str) -> bool:
@@ -179,7 +180,12 @@ def _leaf_words(t) -> list[str]:
         if _is_leaf_lexical(t.head):
             for suf in _LEXICAL_SUFFIXES:
                 if t.head.endswith(suf):
-                    return [t.head[: -len(suf)]]
+                    # Drop the RGL's word-sense tag (`by8agent_Prep`/
+                    # `by8means_Prep` -> "by"): both are the same English
+                    # word, and a real parse can return either one for
+                    # the same sentence - the tag must not leak into a
+                    # predicate's name and split one predicate in two.
+                    return [re.sub(r"8[a-z]+$", "", t.head[: -len(suf)])]
         return []
     words = []
     for a in t.args:
@@ -466,6 +472,23 @@ def _restrictor_expr(cn):
     (`fun x => person x ∧ right x`), not one fused name - matching that
     shape exactly is what "faithfully as possible" means here, the same
     principle behind `_try_translate_partitive_identity`'s inversion."""
+    # `AdjCN ap (RelCN base rel)` ("leading [tenors that are
+    # excellent]") and `RelCN (AdjCN ap base) rel` ("[leading tenors]
+    # that are excellent") are two attachments of the same words that a
+    # real parse (gf/parse_eval.py) returns side by side. With an
+    # intersective adjective both denote the same set, so the first is
+    # normalized into the second here - otherwise the same English would
+    # translate to a fused single name on one attachment and a
+    # conjunction on the other, purely as an artifact of which tree the
+    # parser happened to rank first.
+    if (
+        cn.head == "AdjCN"
+        and len(cn.args) == 2
+        and cn.args[1].head == "RelCN"
+        and len(cn.args[1].args) == 2
+    ):
+        inner = cn.args[1]
+        cn = App("RelCN", [App("AdjCN", [cn.args[0], inner.args[0]]), inner.args[1]])
     if (
         cn.head == "RelCN"
         and len(cn.args) == 2
@@ -626,6 +649,24 @@ def _try_translate_named_individual_fact(subject, vp):
     ):
         cn = vp.args[0].args[0].args[1]
         pred_expr, preds = _restrictor_expr(cn)
+        return Translation(
+            lean_prop=f"{pred_expr} {individual_name}",
+            free_predicates=preds,
+            free_individuals=[individual_name],
+        )
+    # `UseComp (CompCN cn)` - the RGL's other derivation of "is a CN",
+    # with the indefinite article supplied by CompCN's own linearization
+    # rather than a DetCN node. A real parse returns both derivations
+    # for the same English (gf/parse_eval.py), so this must translate
+    # identically to the CompNP/DetCN branch just above, not fall
+    # through to `_scope_name`'s single fused name.
+    if (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompCN"
+        and len(vp.args[0].args) == 1
+    ):
+        pred_expr, preds = _restrictor_expr(vp.args[0].args[0])
         return Translation(
             lean_prop=f"{pred_expr} {individual_name}",
             free_predicates=preds,
