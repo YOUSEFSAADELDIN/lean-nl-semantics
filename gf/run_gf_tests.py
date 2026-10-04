@@ -1502,6 +1502,16 @@ BASE_CHECKS += [
         "MFI is a customer that owns exactly one computer",
     ),
     (
+        # fracas_135's own gold premise 1 is identical to fracas_134's
+        # ("Every customer that owns a computer has a service contract
+        # for it.") - reusing 134's own already-confirmed tree rather
+        # than re-linearizing it, the same precedent fracas_132's own
+        # premise 1 entry set reusing fracas_131's.
+        "fracas_135_premise1",
+        "linearize PredVP (DetCN every_Det (RelCN (UseN customer_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (UseN computer_N))))))) (ComplSlash (SlashV2a have_V2) (AdvNP (DetCN (DetQuant IndefArt NumSg) (CompoundCN (UseN service_N) (UseN contract_N))) (PrepNP for_Prep (UsePron it_Pron))))",
+        "every customer that owns a computer has a service contract for it",
+    ),
+    (
         "fracas_135_premise2",
         "linearize PredVP (UsePN mfi_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (RelCN (UseN customer_N) (UseRCl (TTAnt TPres ASimul) PPos (RelVP IdRP (ComplSlash (SlashV2a own_V2) (DetCN several_Det (UseN computer_N)))))))))",
         "MFI is a customer that owns several computers",
@@ -2021,9 +2031,24 @@ _SECTION4_TENSED_CHECKS = [
         "Bill went to Paris by train",
     ),
     (
+        # fracas_151's own gold premise 1 is identical to fracas_150's
+        # ("John went to Paris by car.") - reusing 150's own
+        # already-confirmed tree rather than re-linearizing it.
+        "fracas_151_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN car_N))))))",
+        "John went to Paris by car",
+    ),
+    (
         "fracas_151_hypothesis",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN berlin_PN))) (PrepNP by8means_Prep (MassNP (UseN train_N))))))",
         "Bill went to Berlin by train",
+    ),
+    (
+        # fracas_152's own gold premise 1 is identical to fracas_150's
+        # own - same precedent as fracas_151's own entry just above.
+        "fracas_152_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8means_Prep (MassNP (UseN car_N))))))",
+        "John went to Paris by car",
     ),
     (
         "fracas_152_hypothesis",
@@ -2078,6 +2103,16 @@ _SECTION4_TENSED_CHECKS = [
         "before John found Bill John found Mary",
     ),
     (
+        "fracas_175",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplVS say_VS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN mary_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))))",
+        "Bill said that Mary wrote a report",
+    ),
+    (
+        "fracas_176",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplVS say_VS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))))",
+        "John said that Bill wrote a report",
+    ),
+    (
         "fracas_178_premise1",
         "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))",
         "John wrote a report",
@@ -2091,6 +2126,11 @@ _SECTION4_TENSED_CHECKS = [
         "fracas_179",
         "linearize UttS (AdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))))",
         "if John wrote a report Bill wrote a report",
+    ),
+    (
+        "fracas_180_premise1",
+        "linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplVV want_VV (ComplSlash (SlashV2a buy_V2) (DetCN (DetQuant IndefArt NumSg) (UseN car_N))))))",
+        "John wanted to buy a car",
     ),
     (
         "fracas_180_hypothesis",

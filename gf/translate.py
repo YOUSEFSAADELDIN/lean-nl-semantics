@@ -167,8 +167,10 @@ def parse_tree(text: str):
 # _PN (proper nouns, e.g. pavarotti_PN) is content-bearing too, but -
 # unlike every other suffix here - it names a free *individual*, not a
 # free *predicate*; see _try_translate_partitive_identity below for the
-# one place that distinction actually matters.
-_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN", "_Adv", "_Prep")
+# one place that distinction actually matters. _V3 (a ditransitive verb,
+# e.g. award_V3) is confirmed needed by fracas_139's own reflexive
+# construction - the only id in this corpus that uses one.
+_LEXICAL_SUFFIXES = ("_A", "_N", "_V2", "_VV", "_V", "_AdA", "_PN", "_Adv", "_V3", "_Prep")
 
 
 def _is_leaf_lexical(name: str) -> bool:
@@ -1335,6 +1337,1228 @@ def _translate_existential(np) -> Translation:
     )
 
 
+# ---------------------------------------------------------------------
+# 3b. Cross-sentential discourse resolution (FraCaS Section 3's
+#     referential-pronoun class, problem 120: "Smith attended a
+#     meeting. She chaired it." -> Lean: `∃ m, attended smith m ∧
+#     chaired smith m`). This is a SEPARATE, PARALLEL pipeline from
+#     `translate_cl` above, not a new case inside it - deliberately,
+#     because the two pipelines disagree on what an indefinite object
+#     means. `translate_cl`'s own existing convention for "ProperNoun V2
+#     a/an N" (confirmed by fracas_103's real theorem, `hasCar jones`)
+#     fuses the whole VP into one unary predicate; but THAT fact, read
+#     with no discourse link to anything else, is exactly as ambiguous
+#     as `_try_translate_possessive_presupposition`'s own documented
+#     "Mary has a workstation" case - nothing in a single sentence's own
+#     syntax picks the fused reading over a fresh-existential one. What
+#     actually forces the existential reading for fracas_120's own
+#     hypothesis is that it has to type-match its premise's own shared
+#     bound variable - a discourse-structural fact, not something
+#     `translate_cl`'s single-sentence dispatch could or should guess at
+#     automatically (doing so would silently break fracas_103's own
+#     already-confirmed translation, which needs the fused reading for
+#     the identical tree shape). So this pipeline is invoked
+#     explicitly, per problem, by whatever caller already knows a
+#     specific sentence is playing a discourse-continuation role -
+#     narrower than `translate_cl`'s own "any PredVP" scope, the same
+#     "only what's confirmed needed" discipline every `_try_translate_*`
+#     special case above already follows. It is NOT a general DRT/
+#     assignment-function implementation (`Anaphora.lean`'s own header
+#     explains why this project doesn't build one) - just enough
+#     machinery to resolve a personal subject pronoun (she/he) to the
+#     most recently introduced PERSONAL referent and an impersonal
+#     object pronoun (it) to the most recently introduced IMPERSONAL
+#     (existentially-bound) referent, confirmed sufficient for
+#     fracas_120 and extended only when another confirmed GF tree needs
+#     more (fracas_121's own PP-complement VP and three-sentence chain,
+#     for instance, isn't handled yet).
+# ---------------------------------------------------------------------
+
+
+@dataclass
+class Referent:
+    """One discourse referent: either a NAMED individual (a proper noun
+    already given a Lean constant name, `bound=False`) or a freshly
+    introduced EXISTENTIAL variable (an indefinite object NP, `bound=
+    True` - the noun's own predicate is dropped entirely, matching this
+    project's existing convention elsewhere of not asserting "and x is
+    a meeting" when nothing downstream needs it). `personal` is the
+    primary disambiguator `DiscourseState.resolve` uses: True for a
+    referent a personal pronoun (she/he) can pick out, False for one an
+    impersonal pronoun (it/they) can. `proper` marks a referent
+    introduced by an actual proper noun (`UsePN`, e.g. "ITEL") as
+    opposed to a fresh indefinite object ("a report") - confirmed
+    needed by fracas_121's own "them": once a sentence has introduced
+    BOTH a named recipient (ITEL) and a same-impersonal-gender
+    indefinite theme (a report) in the same clause, "them" in a LATER
+    sentence has to prefer the proper-noun referent over the more
+    recently introduced indefinite one, not just take whichever was
+    added last (see `resolve`'s own comment)."""
+
+    name: str
+    bound: bool
+    personal: bool
+    proper: bool = False
+
+
+class DiscourseState:
+    """Threads discourse referents across a SEQUENCE of sentences, for
+    cross-sentential pronoun resolution. See this section's own module
+    comment for scope - this is deliberately narrow, not a general
+    assignment-function implementation."""
+
+    def __init__(self):
+        self.referents: list[Referent] = []
+        self._fresh_count = 0
+
+    def add_named(self, name: str, *, personal: bool, proper: bool = False) -> Referent:
+        for ref in self.referents:
+            if not ref.bound and ref.name == name:
+                return ref
+        ref = Referent(name=name, bound=False, personal=personal, proper=proper)
+        self.referents.append(ref)
+        return ref
+
+    def add_bound(self, *, personal: bool) -> Referent:
+        self._fresh_count += 1
+        name = "m" if self._fresh_count == 1 else f"m{self._fresh_count}"
+        ref = Referent(name=name, bound=True, personal=personal)
+        self.referents.append(ref)
+        return ref
+
+    def resolve(self, *, personal: bool) -> Referent:
+        """Among referents matching `personal`, prefers the most
+        recently introduced PROPER-NOUN one (a named recipient like
+        "ITEL" is a far more salient antecedent than a same-gender
+        indefinite theme mentioned in between), falling back to the
+        most recent match of any kind when no proper-noun candidate
+        exists (fracas_120's own "it", resolving to the indefinite
+        "a meeting" - there is no competing proper-noun referent to
+        prefer over it in that problem at all)."""
+        matches = [ref for ref in reversed(self.referents) if ref.personal == personal]
+        if not matches:
+            raise NotImplementedError(
+                f"no compatible discourse referent to resolve a pronoun to (personal={personal})"
+            )
+        proper_matches = [ref for ref in matches if ref.proper]
+        return proper_matches[0] if proper_matches else matches[0]
+
+
+# she_Pron/he_Pron resolve to the most recent PERSONAL referent;
+# it_Pron/they_Pron to the most recent IMPERSONAL one. they_Pron is
+# genuinely ambiguous in general (plural personal or plural impersonal)
+# - only its impersonal reading is handled, confirmed needed by
+# fracas_121's own "them" (referring back to ITEL, a company); a
+# PERSONAL plural "they" isn't needed yet and isn't guessed at.
+_PERSONAL_SUBJECT_PRON = {"she_Pron", "he_Pron"}
+_IMPERSONAL_OBJECT_PRON = {"it_Pron", "they_Pron"}
+
+# Proper nouns this corpus treats as IMPERSONAL (picked up again by
+# "it"/"they", never "she"/"he") despite using the same `UsePN` shape
+# personal names do - confirmed needed by fracas_121's "ITEL" (a
+# company); `UsePN`'s own tree carries no gender/animacy marking the
+# way a pronoun does, so this has to be an explicit lookup, extended
+# only when another confirmed GF tree needs another impersonal proper
+# noun, not guessed at from the name alone.
+_IMPERSONAL_PROPER_NOUNS = {"itel_PN"}
+
+
+def _resolve_np_referent(np, state: DiscourseState, *, existential: bool) -> Referent:
+    """Resolves one NP to a discourse referent against `state`,
+    introducing a new one when the NP is a proper noun (named) or a
+    singular indefinite, or looking one up when it's a pronoun. Raises
+    NotImplementedError for any other NP shape, same "narrow by design"
+    discipline as every `_try_translate_*` special case in this file.
+
+    `existential` controls what a singular indefinite NP introduces:
+    `True` (fracas_120's own convention) gives it a fresh EXISTENTIALLY-
+    BOUND referent, dropping the noun's own predicate entirely; `False`
+    (fracas_121's own convention - confirmed by its real theorem's `:=
+    id` proof, which has no existential anywhere) gives it a fresh
+    NAMED free individual instead, keyed by the noun's own name. Which
+    reading a given indefinite object needs is NOT recoverable from its
+    own syntax alone (the two trees have an identical shape) - it's a
+    discourse-structural fact about whether anything later needs to
+    refer back to a SPECIFIC witness by name, which is why this is a
+    parameter the caller supplies (already knowing the real theorem's
+    own shape), not something this function infers."""
+    if np.head == "UsePN" and len(np.args) == 1:
+        personal = np.args[0].head not in _IMPERSONAL_PROPER_NOUNS
+        return state.add_named(camel_name(_leaf_words(np)), personal=personal, proper=True)
+    if np.head == "UsePron" and len(np.args) == 1:
+        pron = np.args[0].head
+        if pron in _PERSONAL_SUBJECT_PRON:
+            return state.resolve(personal=True)
+        if pron in _IMPERSONAL_OBJECT_PRON:
+            return state.resolve(personal=False)
+        raise NotImplementedError(
+            f"pronoun {pron!r} not handled yet in discourse resolution "
+            "(see _PERSONAL_SUBJECT_PRON/_IMPERSONAL_OBJECT_PRON)"
+        )
+    if (
+        np.head == "DetCN"
+        and len(np.args) == 2
+        and np.args[0].head == "DetQuant"
+        and len(np.args[0].args) == 2
+        and np.args[0].args[0].head == "IndefArt"
+    ):
+        if existential:
+            return state.add_bound(personal=False)
+        return state.add_named(camel_name(_leaf_words(np)), personal=False)
+    raise NotImplementedError(f"NP shape {np.head!r} not handled yet in discourse resolution")
+
+
+def _strip_adv_wrapper(vp):
+    """Strips an `AdVVP` adverb wrapper ("she ALSO delivered...") down
+    to the VP it modifies - confirmed by fracas_121's own real theorem
+    that "also" carries no truth-conditional content of its own here
+    (its premise 2's formalization is the plain ternary relation, same
+    as premises 1/3, nothing "also"-shaped added). Only `AdVVP` is
+    stripped; any other wrapper is left alone for `translate_discourse`
+    to reject on its own terms."""
+    while vp.head == "AdVVP" and len(vp.args) == 2:
+        vp = vp.args[1]
+    return vp
+
+
+def translate_discourse(sentences, *, existential_objects: bool = True) -> Translation:
+    """Translates a SEQUENCE of already-tense-unwrapped `PredVP subject
+    vp` clauses sharing ONE threaded `DiscourseState`, producing a
+    single conjunction (bare, no outer parens - same convention as
+    every other `Translation.lean_prop` this file produces; the caller
+    wraps it if it's embedded in a larger expression). When
+    `existential_objects` is true (the default, fracas_120's own
+    reading), the result is existentially closed over every bound
+    (indefinite-object) referent introduced anywhere in the sequence -
+    fracas_120's own two premises, "Smith attended a meeting" + "she
+    chaired it", become `∃ m, attended smith m ∧ chaired smith m`, the
+    same proposition `scripts/gen_gf_cross_check.py`'s own
+    `_build_fracas_120` used to hand-build directly from the raw trees.
+    Called with a single sentence (no pronouns to resolve), this is
+    also how fracas_120's own HYPOTHESIS gets its existential reading
+    rather than `translate_cl`'s own fused-predicate one - see this
+    section's module comment for why that's a different, explicitly-
+    invoked pipeline rather than a new case inside `translate_cl`
+    itself. With `existential_objects=False` (fracas_121's own reading -
+    see `_resolve_np_referent`'s own comment on why that's a real,
+    discourse-structural choice rather than a flag this function could
+    infer), every indefinite object instead becomes a fresh NAMED free
+    individual, and nothing is existentially bound at all.
+
+    Two VP shapes are handled: a plain transitive `ComplSlash (SlashV2a
+    verb) obj` (fracas_120's own binary relation), and a PP-complement
+    `AdvVP (ComplSlash (SlashV2a verb) obj) (PrepNP prep pp)`
+    (fracas_121's own ternary one, "delivered a report to ITEL" -
+    `deliver subject pp obj`, confirmed argument order by
+    `scripts/gen_gf_cross_check.py`'s own prior hand-built version of
+    `_build_fracas_121`). An `AdVVP` adverb wrapper around either shape
+    is stripped first (`_strip_adv_wrapper`). The PP's own NP is always
+    resolved BEFORE the direct object within one sentence, regardless
+    of the trees' own nesting order - deliberately, since a pronoun in
+    the PP (fracas_121's own "them") must resolve against referents
+    introduced by EARLIER sentences only, not get shadowed by a brand
+    new indefinite direct object this SAME sentence is about to
+    introduce (confirmed necessary: "she delivered an invoice to them"
+    introduces "invoice" and resolves "them" in the same clause, and
+    processing them in the wrong order would make "them" resolve to the
+    invoice it sits next to instead of ITEL)."""
+    state = DiscourseState()
+    conjuncts: list[str] = []
+    free_predicates: list[str] = []
+    free_individuals: list[str] = []
+    for cl in sentences:
+        if cl.head != "PredVP" or len(cl.args) != 2:
+            raise NotImplementedError(
+                f"only 'PredVP subject vp' is handled in a discourse, got head={cl.head!r}"
+            )
+        subject, vp = cl.args
+        vp = _strip_adv_wrapper(vp)
+        subj_ref = _resolve_np_referent(subject, state, existential=existential_objects)
+        if (
+            vp.head == "ComplSlash"
+            and len(vp.args) == 2
+            and vp.args[0].head == "SlashV2a"
+            and len(vp.args[0].args) == 1
+        ):
+            obj_ref = _resolve_np_referent(vp.args[1], state, existential=existential_objects)
+            verb_name = camel_name(_leaf_words(vp.args[0]))
+            conjuncts.append(f"{verb_name} {subj_ref.name} {obj_ref.name}")
+            new_refs = (subj_ref, obj_ref)
+        elif (
+            vp.head == "AdvVP"
+            and len(vp.args) == 2
+            and vp.args[0].head == "ComplSlash"
+            and len(vp.args[0].args) == 2
+            and vp.args[0].args[0].head == "SlashV2a"
+            and len(vp.args[0].args[0].args) == 1
+            and vp.args[1].head == "PrepNP"
+            and len(vp.args[1].args) == 2
+        ):
+            inner = vp.args[0]
+            pp_ref = _resolve_np_referent(vp.args[1].args[1], state, existential=existential_objects)
+            obj_ref = _resolve_np_referent(inner.args[1], state, existential=existential_objects)
+            verb_name = camel_name(_leaf_words(inner.args[0]))
+            conjuncts.append(f"{verb_name} {subj_ref.name} {pp_ref.name} {obj_ref.name}")
+            new_refs = (subj_ref, pp_ref, obj_ref)
+        else:
+            raise NotImplementedError(
+                "only a plain transitive VP (ComplSlash (SlashV2a verb) obj) or a "
+                "PP-complement one (AdvVP (ComplSlash (SlashV2a verb) obj) (PrepNP "
+                f"prep pp)) is handled in a discourse so far, got vp head={vp.head!r}"
+            )
+        if verb_name not in free_predicates:
+            free_predicates.append(verb_name)
+        for ref in new_refs:
+            if not ref.bound and ref.name not in free_individuals:
+                free_individuals.append(ref.name)
+    bound_names = [r.name for r in state.referents if r.bound]
+    body = " ∧ ".join(conjuncts)
+    prop = f"∃ {' '.join(bound_names)}, {body}" if bound_names else body
+    return Translation(
+        lean_prop=prop,
+        free_predicates=free_predicates,
+        free_individuals=free_individuals,
+        binary_predicates=list(free_predicates),
+    )
+
+
+def _try_translate_reflexive_indefinite_subject(subject, vp):
+    """Handles an INDEFINITE subject with a reflexive ditransitive VP -
+    e.g. fracas_139's own "A company director awarded himself a large
+    payrise" -> `∃ d, awardLargePayrise d d`. Confirmed by the real
+    theorem's own `:= id` proof (`(exists d, awarded d d) -> exists d,
+    awarded d d`): the ditransitive's own direct object ("a large
+    payrise") contributes nothing beyond the predicate's OWN name (the
+    real Lean predicate is BINARY, `A -> A -> Prop`, not ternary), and
+    "a company director" itself - not just its reflexive pronoun - is
+    what's existentially bound, since nothing about being specifically
+    a company director survives into the real theorem's stated type
+    either. Matches `scripts/gen_gf_cross_check.py`'s own prior
+    hand-built `_build_fracas_139` exactly (same verb-name derivation:
+    the verb's own lexical content fused with the ditransitive object's,
+    e.g. "award" + "largePayrise" -> "awardLargePayrise").
+
+    Only a singular-indefinite subject (`DetCN (DetQuant IndefArt
+    NumSg) cn`) with a `ReflVP (Slash2V3 verb obj)` VP is handled -
+    confirmed sufficient for fracas_139, the only id in this corpus
+    using a ditransitive verb at all. Returns None when the shape
+    doesn't match, so the caller falls through to the general path."""
+    if (
+        subject.head != "DetCN"
+        or len(subject.args) != 2
+        or subject.args[0].head != "DetQuant"
+        or len(subject.args[0].args) != 2
+        or subject.args[0].args[0].head != "IndefArt"
+    ):
+        return None
+    if vp.head != "ReflVP" or len(vp.args) != 1:
+        return None
+    inner = vp.args[0]
+    if inner.head != "Slash2V3" or len(inner.args) != 2:
+        return None
+    verb_prefix = camel_name(_leaf_words(inner.args[0]))
+    obj_name = camel_name(_leaf_words(inner.args[1]))
+    verb_name = verb_prefix + obj_name[0].upper() + obj_name[1:]
+    return Translation(
+        lean_prop=f"∃ d, {verb_name} d d",
+        free_predicates=[verb_name],
+        free_individuals=[],
+        binary_predicates=[verb_name],
+    )
+
+
+def _try_translate_reflexive_named_subject(subject, vp):
+    """Handles a NAMED subject with a reflexive TRANSITIVE VP - e.g.
+    fracas_140's own embedded clause "Bill had hurt himself" -> `hurt
+    bill bill`. Distinct from `_try_translate_reflexive_indefinite_
+    subject` above (that one's subject is INDEFINITE and its verb
+    DITRANSITIVE, dropping its own direct object and existentially
+    binding the subject itself); here the subject is already a fixed
+    named individual and the verb is plain transitive, so nothing is
+    existentially bound and there's no ditransitive object to drop -
+    "himself" just doubles the named subject as both arguments of an
+    ordinary binary relation. Returns None when the shape doesn't
+    match."""
+    if subject.head != "UsePN" or len(subject.args) != 1:
+        return None
+    if vp.head != "ReflVP" or len(vp.args) != 1:
+        return None
+    inner = vp.args[0]
+    if inner.head != "SlashV2a" or len(inner.args) != 1:
+        return None
+    name = camel_name(_leaf_words(subject))
+    verb_name = camel_name(_leaf_words(inner))
+    return Translation(
+        lean_prop=f"{verb_name} {name} {name}",
+        free_predicates=[verb_name],
+        free_individuals=[name],
+        binary_predicates=[verb_name],
+    )
+
+
+def _unwrap_bare_usecl(t):
+    """Strips a BARE `UseCl tense PPos clause` (no outer `UttS` the way
+    `_unwrap_tense` expects) down to `clause` - needed for an EMBEDDED
+    clause under `ComplVS` (fracas_140's own "said [that] Bill had hurt
+    himself"), which this grammar never wraps in its own `UttS` (that
+    wrapper only ever appears at the top of a whole utterance). Only
+    PPos is handled, the same restriction `_unwrap_tense` already has."""
+    if t.head == "UseCl" and len(t.args) == 3 and t.args[1].head == "PPos":
+        return t.args[2]
+    return t
+
+
+def _try_translate_sentential_complement(subject, vp):
+    """Handles a `ComplVS verb embedded` VP - "John said [that] Bill had
+    hurt himself" -> `said john (hurt bill bill)`, confirmed by
+    fracas_140's own real theorem (`said : A -> Prop -> Prop`, a flat
+    embedding with no factivity/implicativity modeled - this project's
+    own Section 9, Attitudes, explicitly doesn't attempt that in
+    general; see `translate.py`'s own module-level comment on why
+    Section 9 isn't in the generic pipeline). The embedded clause is
+    translated RECURSIVELY via `translate_cl` itself (after stripping
+    its own bare `UseCl` tense wrapper), reusing every existing single-
+    sentence case - including `_try_translate_reflexive_named_subject`
+    above - rather than re-parsing it by hand.
+
+    Only `say_VS` is handled: `gf/run_gf_tests.py` confirms several
+    OTHER attitude verbs share the same `_VS` lexical suffix (`claim_VS`/
+    `know_VS`/`believe_VS`, across Section 4/9's own ids), but each of
+    those ids' own real theorem needs checking individually before
+    reusing this same flat-embedding treatment for it - not attempted
+    here, same "only what's confirmed needed" discipline as
+    `_LEXICAL_SUFFIXES` itself. Returns None when the shape doesn't
+    match."""
+    if vp.head != "ComplVS" or len(vp.args) != 2:
+        return None
+    verb_lemma, embedded = vp.args
+    if verb_lemma.head != "say_VS" or verb_lemma.args:
+        return None
+    embedded_t = translate_cl(_unwrap_bare_usecl(embedded))
+    subject_name = camel_name(_leaf_words(subject))
+    return Translation(
+        lean_prop=f"said {subject_name} ({embedded_t.lean_prop})",
+        free_predicates=["said", *embedded_t.free_predicates],
+        free_individuals=[subject_name, *embedded_t.free_individuals],
+        binary_predicates=list(embedded_t.binary_predicates),
+    )
+
+
+# ---------------------------------------------------------------------
+# 3c. Skolem-function continuation across a sentence pair (fracas_131/
+#     132's shared "Each department has a dedicated line." premise,
+#     continued either by a universally-bound pronoun subject ("They
+#     rent them from BT.", 131) or by a definite-description subject
+#     naming ONE specific instance ("The sales department rents it from
+#     BT.", 132)). This is a THIRD, separate pipeline alongside
+#     `translate_cl` and `translate_discourse` above - not a case inside
+#     either - because the Skolem-function reading it builds is exactly
+#     as context-dependent as `translate_discourse`'s own
+#     `existential_objects` flag: "every department has a dedicated
+#     line", read on its own, fuses into one unary predicate the same
+#     way fracas_103's "Jones has a company car" does (confirmed - there
+#     is no POSSESSIVE PRONOUN inside this sentence at all, the signal
+#     `_try_translate_possessive_presupposition` relies on instead);
+#     it's only a LATER sentence's own anaphoric
+#     continuation that forces "a dedicated line" to become a function
+#     of the department instead. Kept deliberately narrow to the one
+#     shape confirmed needed by 131/132's own real theorems, not a
+#     general "any later sentence licenses a Skolem function" rule.
+
+
+def _head_noun_word(cn):
+    """The innermost `UseN`'s own lexical head word, stripping any
+    `AdjCN` adjective wrapper (descending into the modified noun) or
+    `CompoundCN` noun-noun compounding (descending into the RIGHTMOST
+    component, the standard English compound-noun headedness rule -
+    "cover page" -> "page", confirmed needed by fracas_138's own "cover
+    page" Skolem object) - distinct from `camel_name(_leaf_words(cn))`,
+    which keeps the WHOLE compound (used to name the Skolem function
+    itself, "dedicated line" -> `dedicatedLineOf`, "cover page" ->
+    `coverPageOf`), whereas picking a short Lean bound-variable letter
+    ("l" from "line", not "d" from "dedicated"; "p" from "page") wants
+    just the head noun. Returns None if the shape isn't a bare, AdjCN-
+    wrapped, or CompoundCN-wrapped `UseN`."""
+    node = cn
+    while True:
+        if node.head == "AdjCN" and len(node.args) == 2:
+            node = node.args[1]
+        elif node.head == "CompoundCN" and len(node.args) == 2:
+            node = node.args[1]
+        else:
+            break
+    if node.head == "UseN" and len(node.args) == 1:
+        leaf = node.args[0]
+        for suf in _LEXICAL_SUFFIXES:
+            if leaf.head.endswith(suf):
+                return leaf.head[: -len(suf)]
+    return None
+
+
+@dataclass
+class SkolemTemplate:
+    restrictor: str
+    skolem: str
+    has_name: str
+    bound_var: str
+    witness_var: str
+
+
+def _try_translate_skolem_universal_premise(subject, vp):
+    """Recognizes "every/each X has a [possibly Adj-modified] Y" with NO
+    possessive pronoun inside (unlike `_try_translate_possessive_
+    presupposition`'s own single-sentence Skolem case) - confirmed
+    needed by fracas_131/132's shared premise 1 ("Each department has a
+    dedicated line"). Returns None on shape mismatch, else a
+    (SkolemTemplate, this sentence's own universally-quantified Lean
+    statement) pair; the caller decides, via which continuation
+    function it goes on to use, whether the Skolem reading or the
+    simpler fused one is the one actually wanted (matching this id's own
+    real theorem) - this function alone never commits to that choice."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if det.head not in ("every_Det", "each_Det") or det.args:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[0].args[0].head != "have_V2"
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    obj_det, obj_cn = obj.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "IndefArt"
+        or obj_det.args[1].head != "NumSg"
+    ):
+        return None
+    head_noun = _head_noun_word(obj_cn)
+    if head_noun is None:
+        return None
+    restrictor = camel_name(_leaf_words(cn))
+    skolem = camel_name(_leaf_words(obj_cn)) + "Of"
+    template = SkolemTemplate(
+        restrictor=restrictor,
+        skolem=skolem,
+        has_name="has",
+        bound_var=restrictor[0].lower(),
+        witness_var=head_noun[0].lower(),
+    )
+    v = template.bound_var
+    lean_prop = f"∀ {v}, {restrictor} {v} → has {v} ({skolem} {v})"
+    return template, lean_prop
+
+
+def _try_translate_skolem_continuation(subject, vp, template: SkolemTemplate):
+    """Recognizes premise 2's own two shapes continuing a
+    `SkolemTemplate`: a universally-bound pronoun subject ("they rent
+    them from BT", 131) or a definite-description subject naming ONE
+    instance ("the sales department rents it from BT", 132). Both are a
+    ternary PP-complement VP ("rent ... from BT") whose own name is
+    derived the SAME way `_try_translate_possessive_presupposition`'s
+    own fused names are - `camel_name(_leaf_words(...))` over the WHOLE
+    verb phrase INCLUDING its PP, which silently drops the preposition
+    itself (`_Prep` isn't a recognized lexical suffix) and keeps just
+    the verb and the PP's own object ("rent" + "BT" -> `rentBt`) -
+    because nothing in this discourse ever refers back to the PP's
+    object (BT) pronominally the way fracas_121's ITEL is (there "them"/
+    "it" pick out ITEL specifically; here "from BT" is a fixed,
+    never-anaphorically-continued modifier, so fusing it into the
+    predicate name is the intended reading, not an explicit ternary
+    argument). Returns None on shape mismatch, else (is_bound,
+    instantiation, rel_name): `instantiation` is None for the bound
+    (131) case, the camel-cased named individual for the named (132)
+    case."""
+    if (
+        subject.head == "UsePron"
+        and len(subject.args) == 1
+        and subject.args[0].head == "they_Pron"
+    ):
+        is_bound = True
+        instantiation = None
+    elif subject.head == "DetCN" and len(subject.args) == 2:
+        det, cn = subject.args
+        if (
+            det.head == "DetQuant"
+            and len(det.args) == 2
+            and det.args[0].head == "DefArt"
+            and det.args[1].head == "NumSg"
+        ):
+            is_bound = False
+            instantiation = camel_name(_leaf_words(cn))
+        else:
+            return None
+    else:
+        return None
+    if vp.head != "AdvVP" or len(vp.args) != 2 or vp.args[1].head != "PrepNP":
+        return None
+    inner, pp = vp.args
+    if (
+        inner.head != "ComplSlash"
+        or len(inner.args) != 2
+        or inner.args[0].head != "SlashV2a"
+        or inner.args[1].head != "UsePron"
+    ):
+        return None
+    rel_name = camel_name(_leaf_words(vp))
+    return is_bound, instantiation, rel_name
+
+
+# ---------------------------------------------------------------------
+# 3d. Donkey-pronoun MERGE across a sentence pair (fracas_122's own
+#     "Every committee has a chairman. He is appointed by its members."
+#     -> ONE combined statement, `∀c, committee c → ∃ch, chairman ch c
+#     ∧ appointedByMembers ch c`, confirmed by the real theorem's own
+#     `:= id` proof). This is a FOURTH pipeline, not a variant of 3c's
+#     Skolem-continuation one: the SAME "every/each X has a [Adj] Y"
+#     premise-1 shape needs a THIRD distinct reading here (an
+#     existentially-bound witness SHARED with - not a function
+#     parameter OF - the later sentence's own continuation, nested
+#     INSIDE the same `∀` scope as one conjunction, not two separate
+#     top-level antecedents), alongside fracas_103's fused-unary-
+#     predicate reading and fracas_131/132's Skolem-function one - each
+#     decided only by how (or whether) a later sentence continues it,
+#     never recoverable from this one sentence's own syntax. Premise
+#     2's own passive-voice continuation ("He is appointed by its
+#     members") additionally needs PASSIVE-VP parsing (`PassV2` +
+#     `by8agent_Prep`) and a POSSESSIVE-PRONOUN-governed agent phrase,
+#     neither handled anywhere else in this translator - both kept
+#     deliberately narrow to the one shape confirmed needed here.
+
+
+@dataclass
+class ExistentialTemplate:
+    restrictor: str
+    obj_name: str
+    bound_var: str
+    witness_var: str
+
+
+def _try_translate_universal_existential_premise(subject, vp):
+    """Recognizes the SAME "every/each X has a [possibly Adj-modified]
+    Y" shape `_try_translate_skolem_universal_premise` does, but commits
+    to a DIFFERENT reading of it: an existentially-bound witness SHARED
+    with a later sentence's own continuation inside the SAME `∀` scope,
+    rather than a Skolem function of the bound variable - confirmed
+    needed by fracas_122's own premise 1 ("Every committee has a
+    chairman"), whose real theorem merges it with "he is appointed by
+    its members" into ONE statement, `∀c, committee c → ∃ch, chairman
+    ch c ∧ appointedByMembers ch c` (see `_try_translate_universal_
+    existential_continuation` for the second conjunct). The witness
+    variable avoids colliding with the bound variable (both "committee"
+    and "chairman" start with the same letter here) by falling back to
+    a two-letter prefix - the same "ch" the prior hand-built version
+    already used. Returns None on shape mismatch, else (
+    ExistentialTemplate, this premise's own standalone existential
+    statement - not used to assemble the final combined theorem, which
+    needs premise 2's own continuation first, but kept for
+    documentation/debugging parity with `_try_translate_skolem_
+    universal_premise`'s own return shape)."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if det.head not in ("every_Det", "each_Det") or det.args:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[0].args[0].head != "have_V2"
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    obj_det, obj_cn = obj.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "IndefArt"
+        or obj_det.args[1].head != "NumSg"
+    ):
+        return None
+    head_noun = _head_noun_word(obj_cn)
+    if head_noun is None:
+        return None
+    restrictor = camel_name(_leaf_words(cn))
+    obj_name = camel_name(_leaf_words(obj_cn))
+    bound_var = restrictor[0].lower()
+    witness_var = head_noun[0].lower()
+    if witness_var == bound_var:
+        witness_var = head_noun[:2].lower()
+    template = ExistentialTemplate(
+        restrictor=restrictor, obj_name=obj_name, bound_var=bound_var, witness_var=witness_var
+    )
+    v, w = bound_var, witness_var
+    lean_prop = f"∀ {v}, {restrictor} {v} → ∃ {w}, {obj_name} {w} {v}"
+    return template, lean_prop
+
+
+def _try_translate_universal_existential_continuation(subject, vp, template: ExistentialTemplate):
+    """Recognizes premise 2's own passive-voice continuation of an
+    `ExistentialTemplate` - "he is appointed by its members"
+    (fracas_122) - a personal pronoun subject referring back to the
+    existentially-bound witness (not the universally-bound restrictor),
+    predicated by a passive VP (`PassV2`) whose own agent phrase
+    (`by8agent_Prep`) is a plural NP governed by a POSSESSIVE PRONOUN
+    referring back to the restrictor's own bound variable instead of a
+    fixed individual - neither passive voice nor a possessive-pronoun-
+    governed agent phrase is handled ANYWHERE else in this translator;
+    both are confirmed needed here and nowhere else, so kept narrowly
+    scoped to this one shape, the same "only what's confirmed needed"
+    discipline as every other `_try_translate_*` function. The
+    predicate name is derived the SAME way fracas_103's own fused names
+    are - `camel_name(_leaf_words(vp))` over the WHOLE verb phrase,
+    which (since neither `_Pron` nor the `by8agent_Prep`'s own `_Prep`
+    is a recognized lexical suffix) keeps just the verb and the agent
+    noun ("appoint" + "member" -> `appointMember`), silently dropping
+    the preposition and the pronoun itself - the same way `_Prep`
+    already drops "from" in fracas_131/132's own `rentBt`. Only
+    `he_Pron`/`it_Pron` are recognized (confirmed sufficient for
+    fracas_122 - the only id in this corpus using this shape at all).
+    Returns None on shape mismatch, else the predicate name (the caller
+    already has the template's own bound/witness variable names to
+    apply it to)."""
+    if subject.head != "UsePron" or len(subject.args) != 1 or subject.args[0].head != "he_Pron":
+        return None
+    if vp.head != "AdvVP" or len(vp.args) != 2 or vp.args[1].head != "PrepNP":
+        return None
+    inner, pp = vp.args
+    if inner.head != "PassV2" or len(inner.args) != 1:
+        return None
+    if len(pp.args) != 2 or pp.args[0].head != "by8agent_Prep":
+        return None
+    agent_np = pp.args[1]
+    if agent_np.head != "DetCN" or len(agent_np.args) != 2:
+        return None
+    agent_det, agent_cn = agent_np.args
+    if (
+        agent_det.head != "DetQuant"
+        or len(agent_det.args) != 2
+        or agent_det.args[0].head != "PossPron"
+        or len(agent_det.args[0].args) != 1
+        or agent_det.args[0].args[0].head != "it_Pron"
+    ):
+        return None
+    return camel_name(_leaf_words(vp))
+
+
+# ---------------------------------------------------------------------
+# 3e. Cardinal/set-based anaphora (fracas_124's own "Two out of ten
+#     machines are missing. They have been removed." -> "Two machines
+#     have been removed."). The "ten" (the partitive's own denominator)
+#     and the restrictor noun ("machines") both carry NO information in
+#     this id's own real theorem - the whole domain is treated as being
+#     exactly the ten machines, via a trivial `fun _ => True` restrictor
+#     rather than a named one - so only the numerator count and the
+#     adjective's/verb's own name are recovered from each sentence.
+
+
+def _try_translate_cardinal_adjective_property(subject, vp):
+    """Recognizes "N out of M Xs are ADJ" (fracas_124's own premise 1,
+    "two out of ten machines are missing"). Returns None on shape
+    mismatch, else (count, adj_name) - the restrictor noun and the
+    partitive's own denominator M are both discarded, confirmed by
+    this id's own real theorem never mentioning either."""
+    if (
+        subject.head != "AdvNP"
+        or len(subject.args) != 2
+        or subject.args[0].head != "DetNP"
+        or len(subject.args[0].args) != 1
+        or subject.args[1].head != "PrepNP"
+        or len(subject.args[1].args) != 2
+        or subject.args[1].args[0].head != "out_of_Prep"
+    ):
+        return None
+    det_quant = subject.args[0].args[0]
+    if (
+        det_quant.head != "DetQuant"
+        or len(det_quant.args) != 2
+        or det_quant.args[0].head != "IndefArt"
+        or det_quant.args[1].head != "NumCard"
+        or len(det_quant.args[1].args) != 1
+    ):
+        return None
+    count, approx = _decode_card(det_quant.args[1].args[0])
+    if approx is not None:
+        return None
+    if vp.head != "UseComp" or len(vp.args) != 1 or vp.args[0].head != "CompAP":
+        return None
+    return count, camel_name(_leaf_words(vp))
+
+
+def _try_translate_cardinal_passive_property(subject, vp):
+    """Recognizes "N Xs have been PASSIVE-VERBed" (fracas_124's own
+    hypothesis, "two machines have been removed"). Returns None on
+    shape mismatch, else (count, verb_name) - the restrictor noun is
+    again discarded, same reason as `_try_translate_cardinal_adjective_
+    property`."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "IndefArt"
+        or det.args[1].head != "NumCard"
+        or len(det.args[1].args) != 1
+    ):
+        return None
+    count, approx = _decode_card(det.args[1].args[0])
+    if approx is not None:
+        return None
+    if vp.head != "PassV2" or len(vp.args) != 1:
+        return None
+    return count, camel_name(_leaf_words(vp))
+
+
+# ---------------------------------------------------------------------
+# 3f. Definite-description-licensed total function (fracas_138's own
+#     "Every report has a cover page [...] Smith signed the cover page
+#     of R-95-103." -> `signed smith (coverPageOf r95103)`). Premise 1
+#     reuses `_try_translate_skolem_universal_premise` directly (the
+#     SAME "every X has a [possibly compound] Y" shape 131/132/138 all
+#     share - only the Skolem function's own NAME is needed here, not
+#     the bound/witness variables 131/132's own continuation uses,
+#     since 138 never weakens back to an existential at all). The
+#     hypothesis's own fully explicit "the cover page OF R-95-103" (an
+#     `AdvCN`-wrapped definite description with its own `of`-PP) is what
+#     licenses applying that Skolem function to a NAMED individual - not
+#     premise 3's own bare "the cover page" alone, whose tree has no
+#     link to R-95-103 at all (that link is a discourse fact, recovered
+#     here from the hypothesis's own fuller tree instead, since premise
+#     3 and the hypothesis share the identical fact textually anyway).
+
+
+def _try_translate_definite_skolem_application(subject, vp):
+    """Recognizes a named subject predicated of a definite description
+    explicitly linked to ANOTHER named individual via an `of`-PP -
+    "Smith signed the cover page of R-95-103" (fracas_138's own
+    hypothesis). Returns None on shape mismatch, else (subject_name,
+    verb_name, skolem_name, pn_name) - `skolem_name` matches the SAME
+    `camel_name(_leaf_words(cn)) + "Of"` convention `_try_translate_
+    skolem_universal_premise` already uses, so the two agree on the
+    Skolem function's own name without either calling the other."""
+    if subject.head != "UsePN":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2:
+        return None
+    obj_det, obj_cn = obj.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "DefArt"
+        or obj_det.args[1].head != "NumSg"
+    ):
+        return None
+    if obj_cn.head != "AdvCN" or len(obj_cn.args) != 2:
+        return None
+    base_cn, pp = obj_cn.args
+    if (
+        pp.head != "PrepNP"
+        or len(pp.args) != 2
+        or pp.args[0].head != "of_Prep"
+        or pp.args[1].head != "UsePN"
+    ):
+        return None
+    subject_name = camel_name(_leaf_words(subject))
+    verb_name = camel_name(_leaf_words(vp.args[0]))
+    skolem_name = camel_name(_leaf_words(base_cn)) + "Of"
+    pn_name = camel_name(_leaf_words(pp.args[1]))
+    return subject_name, verb_name, skolem_name, pn_name
+
+
+# ---------------------------------------------------------------------
+# 3g. Genuine multi-reading referential ambiguity (fracas_128/129's own
+#     shared premises, "John and his colleagues went to a meeting. They
+#     hated it." - already formalized as TWO SEPARATE theorems, one per
+#     reading of "they" (128: excludes John; 129: includes him), rather
+#     than one theorem picking a winner - the correct response to
+#     genuine ambiguity, not something either reading's own pipeline
+#     should try to resolve automatically. Both readings share the
+#     IDENTICAL premise 1 and premise 2 trees; only the hypothesis
+#     (translated separately per id) differs.
+
+
+def _try_translate_conjoined_possessive_restrictor(subject):
+    """Recognizes "NAME and his/her Ns" (fracas_128/129's own shared
+    premise 1 subject, "John and his colleagues") - a `ConjNP` of a
+    named individual with a plural NP governed by a possessive pronoun
+    referring back to that SAME individual. Returns None on shape
+    mismatch, else (person_name, restrictor_name); only the restrictor
+    name is used by either of this corpus's two callers - premise 1's
+    own VP ("went to a meeting") is a pure distractor neither 128 nor
+    129's real theorem ever uses, so the caller passes only `subject`,
+    never `vp`."""
+    if subject.head != "ConjNP" or len(subject.args) != 2 or subject.args[0].head != "and_Conj":
+        return None
+    base = subject.args[1]
+    if base.head != "BaseNP" or len(base.args) != 2:
+        return None
+    person, poss_np = base.args
+    if person.head != "UsePN":
+        return None
+    if poss_np.head != "DetCN" or len(poss_np.args) != 2:
+        return None
+    det, cn = poss_np.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "PossPron"
+        or len(det.args[0].args) != 1
+        or det.args[1].head != "NumPl"
+    ):
+        return None
+    person_name = camel_name(_leaf_words(person))
+    restrictor_name = camel_name(_leaf_words(cn))
+    return person_name, restrictor_name
+
+
+def _try_translate_pronoun_verb_pronoun(subject, vp):
+    """Recognizes a plain "PronSubj V2 PronObj" VP ("they hated it",
+    fracas_128/129's own shared premise 2) where BOTH the subject and
+    object are pronouns contributing nothing to naming - confirmed by
+    this corpus's own two callers, which only ever need the verb's own
+    name (same as every other pronoun this generator's builders have
+    seen). Returns None on shape mismatch, else the verb name."""
+    if subject.head != "UsePron":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[1].head != "UsePron"
+    ):
+        return None
+    return camel_name(_leaf_words(vp))
+
+
+# ---------------------------------------------------------------------
+# 3h. E-type anaphora (fracas_133's own "GFI owns several computers.
+#     ITEL maintains them." -> `(∃x, ownComputer x) → (∀x, ownComputer x
+#     → maintain x) → ∀x, ownComputer x → maintain x`). "Them" resolves
+#     to the MAXIMAL set GFI owns, not just the "several" witnesses, so
+#     premise 1's own named subject (GFI) is existentially QUANTIFIED
+#     AWAY entirely rather than kept as a fixed individual - the
+#     opposite move from every other named-subject case in this
+#     corpus, and the reason this needs its own dedicated pair of
+#     functions rather than reusing `translate_cl`'s own general fused-
+#     predicate path (which keeps the subject, giving `ownComputer gfi`
+#     - correct for fracas_103's identical shape, wrong for this one).
+
+
+def _try_translate_named_verb_several(subject, vp):
+    """Recognizes "NAME V2s several Ns" (fracas_133's own premise 1,
+    "GFI owns several computers"). Returns None on shape mismatch, else
+    the fused verb+object predicate name ("own"+"computer" ->
+    `ownComputer`) - the SAME fused-name convention `translate_cl`'s own
+    general path already uses for a named-subject-plus-indefinite-
+    object VP (fracas_103's `hasCar`), just confirmed here via
+    `several_Det` instead of an ordinary indefinite article. The named
+    subject itself is discarded entirely: this id's own real theorem
+    existentially quantifies over a FRESH variable instead of applying
+    the predicate to GFI, the e-type reading, not a fused "subject has
+    property" one."""
+    if subject.head != "UsePN":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "DetCN" or len(obj.args) != 2 or obj.args[0].head != "several_Det":
+        return None
+    return camel_name(_leaf_words(vp))
+
+
+def _try_translate_named_verb_pronoun_object(subject, vp):
+    """Recognizes "NAME V2s PronObj" (fracas_133's own premise 2, "ITEL
+    maintains them") - both the named subject and the pronoun object
+    are discarded entirely (the pronoun resolves to the SAME fresh
+    variable `_try_translate_named_verb_several`'s own premise 1
+    existentially quantifies, not to ITEL or to any individual named in
+    this sentence at all), leaving only the verb's own name. Returns
+    None on shape mismatch, else the verb name."""
+    if subject.head != "UsePN":
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+        or vp.args[1].head != "UsePron"
+    ):
+        return None
+    return camel_name(_leaf_words(vp))
+
+
+# ---------------------------------------------------------------------
+# 3i. Single-sentence donkey relative clause with a TWO-SORTED domain
+#     (fracas_134/135's shared "Every customer that owns a computer has
+#     a service contract for it." -> `∀x, customer x → ∀c, own x c →
+#     haveServiceContract x c`). Unlike every other donkey/Skolem
+#     pipeline in this file (120-122/131/132, all built across TWO
+#     sentences), this donkey binding is internal to ONE sentence's own
+#     subject-gap relative clause (`RelCN`+`RelVP IdRP`), continued by a
+#     pronoun in the SAME sentence's main-clause object ("for it"). The
+#     customer/computer distinction also needs a genuinely two-sorted
+#     Lean domain (`{A B : Type*}`) - every other id in this corpus
+#     (every CUSTOM_BUILD function before this one) uses a single
+#     `{A : Type*}`, but nothing about the GENERATOR's own dispatch
+#     mechanism requires that - `binders`/`arrow_chain` are plain
+#     strings a builder function is free to write however its own real
+#     theorem needs, so a second sort is just a matter of actually
+#     doing it, not a structural blocker.
+
+
+def _unwrap_rel_tense(t):
+    """Strips a `UseRCl tense PPos relvp` wrapper down to `relvp` - the
+    relative-clause analog of `_unwrap_tense`."""
+    if t.head == "UseRCl" and len(t.args) == 3 and t.args[1].head == "PPos":
+        return t.args[2]
+    return t
+
+
+def _try_translate_donkey_relative_premise(subject, vp):
+    """Recognizes "every CN that V2s a [indefinite] CN2 V2s [complex
+    object] for it" (fracas_134/135's own shared premise 1, "Every
+    customer that owns a computer has a service contract for it") - a
+    subject-gap relative clause (`RelCN`+`RelVP IdRP`) introducing a
+    donkey-bound indefinite, continued by a pronoun in the MAIN
+    clause's own object ("for it"), the standard donkey-sentence
+    construction (the same strong/weak donkey logical shape 134/135/136
+    already document, built here directly from ONE sentence's own
+    internal structure rather than across two sentences the way every
+    other donkey/Skolem pipeline in this file is). `translate_cl`'s own
+    general restrictor-fusion path ALSO parses this tree shape without
+    erroring, but commits to the WRONG reading for it (fusing the
+    relative clause into one conjunctive restrictor and the whole "for
+    it" object into one unary predicate, discarding the donkey
+    pronoun's own link entirely) - confirmed by direct comparison, not
+    assumed, the same "check what translate_cl already does before
+    writing a new case" discipline every other pipeline this session
+    followed. Returns None on shape mismatch, else (restrictor_name,
+    donkey_verb_name, main_verb_name)."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, relcn = subject.args
+    if det.head != "every_Det" or det.args:
+        return None
+    if relcn.head != "RelCN" or len(relcn.args) != 2:
+        return None
+    outer_cn, rel_clause = relcn.args
+    rel_clause = _unwrap_rel_tense(rel_clause)
+    if rel_clause.head != "RelVP" or len(rel_clause.args) != 2 or rel_clause.args[0].head != "IdRP":
+        return None
+    inner_vp = rel_clause.args[1]
+    if (
+        inner_vp.head != "ComplSlash"
+        or len(inner_vp.args) != 2
+        or inner_vp.args[0].head != "SlashV2a"
+        or len(inner_vp.args[0].args) != 1
+    ):
+        return None
+    donkey_obj = inner_vp.args[1]
+    if (
+        donkey_obj.head != "DetCN"
+        or len(donkey_obj.args) != 2
+        or donkey_obj.args[0].head != "DetQuant"
+        or len(donkey_obj.args[0].args) != 2
+        or donkey_obj.args[0].args[0].head != "IndefArt"
+        or donkey_obj.args[0].args[1].head != "NumSg"
+    ):
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    main_obj = vp.args[1]
+    if main_obj.head != "AdvNP" or len(main_obj.args) != 2 or main_obj.args[1].head != "PrepNP":
+        return None
+    pp = main_obj.args[1]
+    if (
+        len(pp.args) != 2
+        or pp.args[1].head != "UsePron"
+        or len(pp.args[1].args) != 1
+        or pp.args[1].args[0].head != "it_Pron"
+    ):
+        return None
+    restrictor_name = camel_name(_leaf_words(outer_cn))
+    donkey_verb_name = camel_name(_leaf_words(inner_vp.args[0]))
+    main_verb_name = camel_name(_leaf_words(vp))
+    return restrictor_name, donkey_verb_name, main_verb_name
+
+
+def _try_translate_named_copula_relative_restrictor(subject, vp):
+    """Recognizes "NAME is a CN that ..." (fracas_134/135's own shared
+    premise 2 shape, "MFI is a customer that owns exactly one/several
+    computers") - the relative clause's own content is a pure
+    distractor, confirmed by reading the real theorem's own stated type
+    directly (both 134 and 135 reduce premise 2 to just `customer mfi`,
+    discarding whether it's "exactly one" or "several" entirely, so
+    this function never even looks past the relative clause's own
+    opening `RelCN` node). Returns None on shape mismatch, else
+    (subject_name, restrictor_name)."""
+    if subject.head != "UsePN":
+        return None
+    if vp.head != "UseComp" or len(vp.args) != 1 or vp.args[0].head != "CompNP":
+        return None
+    np = vp.args[0].args[0] if vp.args[0].args else None
+    if np is None or np.head != "DetCN" or len(np.args) != 2:
+        return None
+    det, cn = np.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "IndefArt"
+        or det.args[1].head != "NumSg"
+    ):
+        return None
+    if cn.head != "RelCN" or len(cn.args) != 2:
+        return None
+    outer_cn = cn.args[0]
+    subject_name = camel_name(_leaf_words(subject))
+    restrictor_name = camel_name(_leaf_words(outer_cn))
+    return subject_name, restrictor_name
+
+
+# ---------------------------------------------------------------------
+# Section 4 (ellipsis/gapping). Per Ellipsis.lean's own approach note,
+# this project never models ellipsis/gapping RESOLUTION itself, only
+# the already-resolved content - most Section 4 ids already go through
+# `_atomic_name` (fusing a whole resolved sentence into one bare `Prop`
+# atom, gen_gf_cross_check.py's own helper, not translate.py's, since
+# there's no domain-quantified structure left to preserve once
+# resolved). These two functions are for the MINORITY of ids whose own
+# real theorem keeps real domain-quantified structure after resolution.
+
+
+def _try_translate_double_pp_verb(vp):
+    """Recognizes an intransitive verb with two PP adjuncts - "goes to
+    Paris by car" (fracas_150-153's own shared gapping pattern,
+    `AdvVP(AdvVP(UseV verb)(PrepNP prep1 obj1))(PrepNP prep2 obj2)`).
+    Returns None on shape mismatch, else (verb_name, pp1_name,
+    pp2_name)."""
+    if vp.head != "AdvVP" or len(vp.args) != 2 or vp.args[1].head != "PrepNP":
+        return None
+    inner, pp2 = vp.args
+    if inner.head != "AdvVP" or len(inner.args) != 2 or inner.args[1].head != "PrepNP":
+        return None
+    verb_vp, pp1 = inner.args
+    if verb_vp.head != "UseV" or len(verb_vp.args) != 1:
+        return None
+    if len(pp1.args) != 2 or len(pp2.args) != 2:
+        return None
+    verb_name = camel_name(_leaf_words(verb_vp))
+    pp1_name = camel_name(_leaf_words(pp1.args[1]))
+    pp2_name = camel_name(_leaf_words(pp2.args[1]))
+    return verb_name, pp1_name, pp2_name
+
+
+def _try_translate_gapped_travel_fact(subject, vp):
+    """Recognizes a full "X goes/went to CITY by VEHICLE" sentence
+    (fracas_150-153's own shared gapping pattern), subject either a
+    named individual (150-152's own "John"/"Bill") or a definite plural
+    (153's own "the students", this project's usual distributive-
+    universal convention for definite plurals, with a TRIVIAL
+    restrictor over the whole domain - the same `fun _ => True` device
+    id 124's own cardinal-anaphora case already established, since
+    "the students" here names the WHOLE domain, not a named subset of
+    a larger one). Returns None on shape mismatch, else (is_universal,
+    subject_name_or_restrictor, verb_name, pp1_name, pp2_name)."""
+    result = _try_translate_double_pp_verb(vp)
+    if result is None:
+        return None
+    verb_name, pp1_name, pp2_name = result
+    if subject.head == "UsePN":
+        return False, camel_name(_leaf_words(subject)), verb_name, pp1_name, pp2_name
+    if subject.head == "DetCN" and len(subject.args) == 2:
+        det, cn = subject.args
+        if (
+            det.head == "DetQuant"
+            and len(det.args) == 2
+            and det.args[0].head == "DefArt"
+            and det.args[1].head == "NumPl"
+        ):
+            return True, camel_name(_leaf_words(cn)), verb_name, pp1_name, pp2_name
+    return None
+
+
+def _try_translate_existential_universal_object(subject, vp):
+    """Recognizes "one N1 V2s all the N2s" (fracas_196's own premise 2/
+    hypothesis shape, "one lawyer signed all the reports") - a
+    cardinal-one subject taking EXISTENTIAL scope over an inner
+    universal, the wide-scope "so did" reading ("there is a single N1
+    who V2s every N2"), as opposed to `translate_cl`'s own general path
+    for this tree shape, which instead produces a cardinal-quantified
+    `Exactly 1` GQ statement fusing the whole VP into one unary
+    predicate - confirmed by direct comparison, not assumed, the wrong
+    reading for this id. Returns None on shape mismatch, else
+    (subject_cn_name, verb_name, object_cn_name)."""
+    if subject.head != "DetCN" or len(subject.args) != 2:
+        return None
+    det, cn = subject.args
+    if (
+        det.head != "DetQuant"
+        or len(det.args) != 2
+        or det.args[0].head != "IndefArt"
+        or det.args[1].head != "NumCard"
+        or len(det.args[1].args) != 1
+    ):
+        return None
+    count, approx = _decode_card(det.args[1].args[0])
+    if count != 1 or approx is not None:
+        return None
+    if (
+        vp.head != "ComplSlash"
+        or len(vp.args) != 2
+        or vp.args[0].head != "SlashV2a"
+        or len(vp.args[0].args) != 1
+    ):
+        return None
+    obj = vp.args[1]
+    if obj.head != "PredetNP" or len(obj.args) != 2 or obj.args[0].head != "all_Predet":
+        return None
+    obj_np = obj.args[1]
+    if obj_np.head != "DetCN" or len(obj_np.args) != 2:
+        return None
+    obj_det, obj_cn = obj_np.args
+    if (
+        obj_det.head != "DetQuant"
+        or len(obj_det.args) != 2
+        or obj_det.args[0].head != "DefArt"
+        or obj_det.args[1].head != "NumPl"
+    ):
+        return None
+    subject_cn_name = camel_name(_leaf_words(cn))
+    verb_name = camel_name(_leaf_words(vp.args[0]))
+    object_cn_name = camel_name(_leaf_words(obj_cn))
+    return subject_cn_name, verb_name, object_cn_name
+
+
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
     if t.head == "ExistNP" and len(t.args) == 1:
@@ -1344,6 +2568,18 @@ def translate_cl(t) -> Translation:
             f"only 'PredVP (DetCN det cn) vp' is handled so far, got head={t.head!r}"
         )
     subject, vp = t.args
+
+    sentential_complement = _try_translate_sentential_complement(subject, vp)
+    if sentential_complement is not None:
+        return sentential_complement
+
+    reflexive = _try_translate_reflexive_indefinite_subject(subject, vp)
+    if reflexive is not None:
+        return reflexive
+
+    reflexive_named = _try_translate_reflexive_named_subject(subject, vp)
+    if reflexive_named is not None:
+        return reflexive_named
 
     inverted = _try_translate_partitive_identity(subject, vp)
     if inverted is not None:

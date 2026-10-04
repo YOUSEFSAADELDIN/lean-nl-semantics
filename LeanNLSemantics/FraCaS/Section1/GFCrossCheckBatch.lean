@@ -47,20 +47,140 @@ sentence, since that sentence read in isolation is genuinely
 ambiguous between this bundle's own specific reading and this
 project's usual fused-unary-predicate one; its Skolem-function-bound
 variant (117-119, `SKOLEM_PROJECT`); a synthesized scope-entailment
-premise (123, `SYNTHESIZE_PREMISE`); and twelve fully hand-built
-cross-sentential-anaphora theorems bypassing `translate_cl` entirely
-(120-122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - a shared bound
-existential, a ternary named-individual relation, trivial-literal
-restrictors, Skolemized dependent-plural/paycheque pronouns, a
-dropped licensing-only premise, and reflexive/embedded-clause
-arguments). Not every Section 3 id is covered: 125/130/136/141 are
-countermodel-only (no bare theorem to cross-check at all); 126 needs
-a genuinely unstated extra premise ("the other eight machines were
-also here yesterday", no corresponding FraCaS sentence); and
-127/134/135 (two-sorted `{Person Machine}`/`{A B}` domains - this
-generator hardcodes a single domain `{A : Type*}` throughout) and 137
-(needs a `Fintype.card` premise plus one predicate bundling five
-separate FraCaS sentences) are structurally blocked. Section 4
+premise (123, `SYNTHESIZE_PREMISE`); two ids (120/121, `CUSTOM_BUILD`)
+built through `translate.py`'s own `translate_discourse` - a real,
+reusable (if narrowly-scoped) cross-sentential pronoun-resolution
+mechanism, not a per-id hand translation, though still invoked via
+`CUSTOM_BUILD` rather than the generic pipeline since combining a
+multi-sentence premise with a single-sentence hypothesis isn't this
+script's generic arrow-chain shape (121's own real theorem restates
+the same conjunction as both premise and hypothesis, via
+`existential_objects=False` - a ternary PP-complement relation over
+three sentences, confirmed by `translate_discourse`'s own proper-
+noun-vs-indefinite salience preference correctly resolving "them"
+to ITEL rather than the just-introduced report/invoice); two more
+(139/140, `CUSTOM_BUILD`) built through `translate_cl` itself -
+`_try_translate_reflexive_indefinite_subject` (139's own
+ditransitive reflexive, existentially binding the subject and
+dropping the ditransitive object) and `_try_translate_sentential_
+complement` composed with `_try_translate_reflexive_named_subject`
+(140's own "said [that] ... himself", the embedded clause
+translated RECURSIVELY through `translate_cl` rather than by hand);
+a Skolem-function-continuation PAIR (131/132, `CUSTOM_BUILD`) built
+through a THIRD pipeline, `_try_translate_skolem_universal_premise`/
+`_try_translate_skolem_continuation` - "each department has a
+dedicated line" only becomes a Skolem function (one line per
+department, not a fused unary predicate) because a LATER sentence
+anaphorically continues it, the exact same context-dependence
+`translate_discourse`'s own `existential_objects` flag already
+makes explicit elsewhere; 131 continues at the bound variable
+itself ("they rent them"), 132 at one named instance ("the sales
+department rents it"), both reusing the identical premise 1 and
+reproducing the prior hand-built derivation byte-for-byte,
+including the preposition-dropping fused name `rentBt` and the
+witness-letter convention (the object CN's own head noun, "line",
+stripped of its "dedicated" modifier, unlike the Skolem function's
+own name which keeps the whole compound); a donkey-pronoun MERGE
+(122, `CUSTOM_BUILD`) built through a FOURTH pipeline,
+`_try_translate_universal_existential_premise`/`_try_translate_
+universal_existential_continuation` - the SAME "every/each X has
+a Y" shape 131/132's premise 1 uses, but needing a THIRD distinct
+reading of it here (an existentially-bound witness SHARED with -
+not a function parameter of - premise 2's own continuation,
+nested INSIDE the same universal scope as one conjunction, not two
+separate antecedents), plus passive-VP parsing (`PassV2` +
+`by8agent_Prep`) and a possessive-pronoun-governed agent phrase
+for premise 2's own "is appointed by its members" - neither
+handled anywhere else in this translator, both narrowly scoped to
+this one shape - confirmed to reproduce the prior hand-built
+derivation byte-for-byte (`committee`/`chairman`/`appointMember`/
+bound var `c`/witness var `ch`, the last falling back to a
+two-letter prefix to avoid colliding with the bound variable,
+since both "committee" and "chairman" start with the same
+letter); cardinal/set-based anaphora (124, `CUSTOM_BUILD`) built
+through a FIFTH pipeline, `_try_translate_cardinal_adjective_
+property`/`_try_translate_cardinal_passive_property` - a
+shape-checked pair recognizing premise 1's own partitive-
+cardinal-adjective shape ("two out of ten machines are missing")
+and the hypothesis's own cardinal-passive shape ("two machines
+have been removed"), confirmed to reproduce the prior hand-built
+derivation byte-for-byte (count `2`, `missing`/`remove` - the
+restrictor noun and the partitive's own denominator both carry
+NO information in this id's own real theorem at all); a
+definite-description-licensed total function (138, `CUSTOM_
+BUILD`) reusing 131/132/138's own SHARED premise-1 recognizer,
+`_try_translate_skolem_universal_premise` (only the Skolem
+function's own name is needed here, not the bound/witness
+variables 131/132's own continuation uses, since 138 never
+weakens back to an existential), with a new `_try_translate_
+definite_skolem_application` recovering the Skolem function's
+application to a named individual directly from the
+HYPOTHESIS's own fully explicit "the cover page OF R-95-103"
+(an `of`-PP-linked definite description) rather than from
+premise 3's own bare "the cover page" (whose tree has no link
+to R-95-103 at all - that link is a discourse fact, and premise
+3/the hypothesis share the identical fact textually anyway, so
+premise 3 is no longer read at all); genuine multi-reading
+referential ambiguity (128/129, `CUSTOM_BUILD`) built through a
+SEVENTH pipeline, `_try_translate_conjoined_possessive_
+restrictor`/`_try_translate_pronoun_verb_pronoun` - "John and
+his colleagues went to a meeting. They hated it." is already
+formalized as TWO SEPARATE theorems, one per reading of "they"
+(128: excludes John; 129: includes him) - the correct response
+to genuine ambiguity, never collapsed into one pipeline picking a
+winner; both readings share the identical premise 1 ("NAME and
+his/her Ns", a `ConjNP`+`BaseNP`+possessive-pronoun shape) and
+premise 2 ("PronSubj V2 PronObj", contributing only the verb's
+own name), confirmed to reproduce the prior hand-built derivation
+byte-for-byte (`colleague`/`hate`); e-type anaphora (133,
+`CUSTOM_BUILD`) built through an EIGHTH pipeline, `_try_
+translate_named_verb_several`/`_try_translate_named_verb_
+pronoun_object` - "GFI owns several computers. ITEL maintains
+them.": "them" resolves to the MAXIMAL set GFI owns, not just
+the "several" witnesses, so premise 1's own named subject (GFI)
+is existentially quantified AWAY entirely rather than kept as a
+fixed individual - the opposite move from every other named-
+subject case in this corpus (contrast `translate_cl`'s own
+general fused-predicate path, which keeps the subject and gives
+`ownComputer gfi` - correct for fracas_103's identical shape,
+wrong for this one), confirmed to reproduce the prior hand-built
+derivation byte-for-byte (`ownComputer`/`maintain`). This was the
+last of this file's cross-sentential-anaphora ids using
+hand-indexed positional extraction rather than a named,
+shape-checked function - 114-119/123 are handled by the generic
+BUNDLE_PROJECT/SKOLEM_PROJECT/SYNTHESIZE_PREMISE mechanisms
+documented separately above, not by these pipelines. A ninth
+pipeline, `_try_translate_donkey_relative_premise`/`_try_
+translate_named_copula_relative_restrictor`, reproduces 134/135's
+own strong/universal donkey reading ("Every customer that owns a
+computer has a service contract for it") - unlike every other
+donkey/Skolem pipeline above (built across TWO sentences), this
+donkey binding is internal to ONE sentence's own subject-gap
+relative clause, continued by a pronoun in that SAME sentence's
+main-clause object; `translate_cl`'s own general restrictor-
+fusion path also parses this tree shape without erroring, but
+commits to the WRONG reading for it - confirmed by direct
+comparison, not assumed. Also the FIRST two-sorted Lean domain
+(`{A B : Type*}`) this generator has ever produced - nothing in
+the dispatch mechanism itself required a single domain; every
+prior id simply never needed more than one sort. Both ids share
+the identical premise 1 and reduce premise 2 to just
+`customer mfi`; the hypothesis is never independently
+translated either - the real proof is just premise 1's own
+universal instantiated at `mfi`. Confirmed to reproduce both
+real theorems' own identical stated type and proof. Not every
+Section 3 id is covered: 125/130/136/141 are
+countermodel-only (a witness construction, not an entailment
+chain - a different KIND of theorem, not a missing case); 126
+and 137 each need an extra premise with no corresponding FraCaS
+sentence and no tree to recover it from (137 also bundles five
+separate sentences into one predicate); and 127 stacks FOUR
+separate novel mechanisms (a conjoined two-clause premise,
+cumulative-plural distribution across two referents, a
+disjunctive-existential weakening, and its own unstated
+distinctness premise) on top of a two-sorted domain - a
+substantially bigger undertaking than 134/135's own single,
+reusable shape, not attempted here. Section 4
 (ellipsis, 142-196) adds 23 more ids, all via `CUSTOM_BUILD`: per
 Ellipsis.lean's own approach note, this project never models
 ellipsis RESOLUTION itself, only the already-resolved content, so
@@ -75,16 +195,60 @@ caught - a single-domain guess at fracas_150's own three-sorted
 `{Person City Vehicle}` domain, and a `Some`/`Exactly`-quantified
 guess at fracas_196's own direct `∃`/`∀` over a two-sorted
 `{Person Report}` domain), every Section 4 id goes through
-`CUSTOM_BUILD` or not at all. Not covered: 150/151/152/153/196
-(three- or two-sorted domains, the same blocker as 127/134/135);
-163/171/172/173/174/191-195 (genuine grammar gaps - embedded
-questions, relativizing a quantificational pronoun NP, a passive-
-impersonal-plus-reciprocal construction with no combinator -
-confirmed via `run_gf_tests.py`'s own comment on exactly these
-ids); 168/169/170/175/176/179/180 (each needs a genuinely new GF
-tree or an `AdvS`-headed conditional top level not yet built,
-left for a future round); and 143/156/158/161/174/177/181/184/
-188/192/194 (countermodel-only, already excluded automatically).
+`CUSTOM_BUILD` or not at all. 150/151/152/153 (gapping with PP
+modifiers, three-sorted `{A B C}`) ARE now built, through
+`translate.py`'s own `_try_translate_gapped_travel_fact` -
+"John went to Paris by car" (an intransitive verb with two PP
+adjuncts) continued by either a second named individual
+(150-152) or a definite-plural distributive universal over a
+TRIVIAL whole-domain restrictor (153, the same `fun _ => True`
+device id 124's own cardinal case established). All three share
+the identical premise 1, confirmed by `run_gf_tests.py`'s own
+`fracas_151_premise1`/`fracas_152_premise1` entries reusing
+fracas_150's tree. 196 (existential-over-universal wide scope,
+two-sorted `{A B}`) is also now built, through `_try_translate_
+existential_universal_object` - "one lawyer signed all the
+reports" needs an existential SUBJECT taking scope OVER an
+inner universal object, the wide-scope "so did" reading -
+`translate_cl`'s own general path parses the identical tree
+shape without erroring but commits to the WRONG `Exactly 1`
+cardinal-quantified reading instead, confirmed by direct
+comparison. Premise 1 is a pure distractor, never read; the
+premise's own SECOND conjunct ("so did one auditor") has no
+tree of its own either - built from the hypothesis's own tree
+instead, the same "elided sentence = reuse the hypothesis's own
+tree" convention 142/145-149's own builders already use. All
+five confirmed to typecheck against their own real `fracas_NNN`
+lemmas via Lean's own elaborator, the same cross-check every
+other id in this corpus gets - none of these were previously
+attempted at all (not a refactor of existing hand-built code).
+169/170/175/176/179/180 ARE also now built: 169/170 (a top-level
+"before"-conditional, the stipulated reading of a genuinely
+ambiguous sentence, `:= id` trivially) and 179 (an `if`-
+conditional, modus ponens over two atoms, split via the new
+`_split_advs_conditional` helper) reuse trees that were ALREADY
+confirmed via `gf`'s own linearize check but never wired into
+this generator at all; 175/176 ("Bill/John said that Mary/Bill
+wrote a report", `:= id` trivially) and 180's own premise 1
+("John wanted to buy a car", a `want_VV`+`ComplVV` control-verb
+construction) are genuinely NEW trees, confirmed directly via
+`gf`'s own linearize check this round - this project's local GF
+toolchain is available and fast enough to confirm new sentences
+directly, not just reuse already-confirmed ones. Still not
+covered: 163/171/172/173/174/191-195 (genuine grammar gaps -
+embedded questions, relativizing a quantificational pronoun NP,
+a passive-impersonal-plus-reciprocal construction with no
+combinator - confirmed via `run_gf_tests.py`'s own comment on
+exactly these ids); 168 ("forty-five women work part time") - a
+REAL, independently-reconfirmed gf-rgl TOOLCHAIN bug at the
+current pinned tag (`pot1plus`, the tens-plus-ones numeral
+combinator any two-digit number with a nonzero ones digit
+needs, renders its own bind tokens literally instead of
+collapsing them - confirmed directly via `gf`'s own linearize
+output this round, not merely re-read from a pre-existing
+comment), not fixable at the Python/translate.py level; and
+143/156/158/161/174/177/181/184/188/192/194 (countermodel-only,
+already excluded automatically).
 Section 5 (adjectives, 197-219) adds 14 more ids, all via
 `CUSTOM_BUILD` again: per Adjectives.lean's own approach note, this
 project treats adjective-noun predication directly (not via MTT's
@@ -101,7 +265,11 @@ implicitly animals) while others fuse adjective+noun into one
 predicate (210's `smallAnimal`, alongside a separate `animal`).
 Not covered: 197 (looked like 203's own adjective-drop shape at
 first glance, but its own stated type is actually two-sorted
-`{Person Thing}`, the same blocker as 127/134/135/150-153/196);
+`{Person Thing}` - two-sortedness alone is no longer a blocker,
+per 134/135's and 150-153/196's own pipelines, but 197's
+adjective-drop shape combined with it hasn't been individually
+built, the same remaining reason fracas_127 is still
+unattempted);
 200/201/206/207/213/215/217/219 (countermodel-only, already
 excluded automatically). Section 6 (comparatives, 220-250) adds 10
 more ids: 220/223/224/227/229 chain in an assumed comparative-
@@ -547,6 +715,14 @@ theorem fracas_133_from_gf {A : Type*} (ownComputer maintain : A → Prop) :
     (∃ x, ownComputer x) → (∀ x, ownComputer x → maintain x) → (∀ x, ownComputer x → maintain x) :=
   fun h1 h2 => fracas_133 _ _ h1 h2
 
+theorem fracas_134_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContractFor : A → B → Prop) (mfi : A) :
+    (∀ x, customer x → ∀ c, own x c → haveServiceContractFor x c) → customer mfi → (∀ c, own mfi c → haveServiceContractFor mfi c) :=
+  fun h hmfi => fracas_134 _ _ _ _ h hmfi
+
+theorem fracas_135_from_gf {A B : Type*} (customer : A → Prop) (own haveServiceContractFor : A → B → Prop) (mfi : A) :
+    (∀ x, customer x → ∀ c, own x c → haveServiceContractFor x c) → customer mfi → (∀ c, own mfi c → haveServiceContractFor mfi c) :=
+  fun h hmfi => fracas_135 _ _ _ _ h hmfi
+
 theorem fracas_138_from_gf {A : Type*} (report : A → Prop) (coverPageOf : A → A) (smith r95103 : A) (sign : A → A → Prop) :
     report r95103 → sign smith (coverPageOf r95103) → sign smith (coverPageOf r95103) :=
   fun h1 h2 => fracas_138 _ _ _ _ _ h1 h2
@@ -582,6 +758,22 @@ theorem fracas_148_from_gf (billSpeakToMary : Prop) :
 theorem fracas_149_from_gf {A : Type*} (student speakToMary : A → Prop) :
     Every student speakToMary → Every student speakToMary :=
   fun h => fracas_149 _ _ h
+
+theorem fracas_150_from_gf {A B C : Type*} (go : A → B → C → Prop) (john bill : A) (paris : B) (car train : C) :
+    (go john paris car ∧ go bill paris train) → go bill paris train :=
+  fun h => fracas_150 _ _ _ _ _ _ h
+
+theorem fracas_151_from_gf {A B C : Type*} (go : A → B → C → Prop) (john bill : A) (paris berlin : B) (car train : C) :
+    (go john paris car ∧ go bill berlin train) → go bill berlin train :=
+  fun h => fracas_151 _ _ _ _ _ _ _ h
+
+theorem fracas_152_from_gf {A B C : Type*} (go : A → B → C → Prop) (john bill : A) (paris berlin : B) (car : C) :
+    (go john paris car ∧ go bill berlin car) → go bill berlin car :=
+  fun h => fracas_152 _ _ _ _ _ _ h
+
+theorem fracas_153_from_gf {A B C : Type*} (go : A → B → C → Prop) (john : A) (paris : B) (car train : C) :
+    (go john paris car ∧ Every (fun _ : A => True) (fun s => go s paris train)) → Every (fun _ : A => True) (fun s => go s paris train) :=
+  fun h => fracas_153 _ _ _ _ _ h
 
 theorem fracas_155_from_gf {A : Type*} (car : A → Prop) (own : A → A → Prop) (john bill : A) :
     (∃ c, car c ∧ own john c) ∧ (∃ c, car c ∧ own bill c) → ∃ c, car c ∧ own bill c :=
@@ -619,9 +811,33 @@ theorem fracas_167_from_gf {A : Type*} [Fintype A] (womanWorkInSalesDepartment :
     Exactly 1 (fun _ : A => True) womanWorkInSalesDepartment → ¬ Exactly 2 (fun _ : A => True) womanWorkInSalesDepartment :=
   fun h => fracas_167 _ h
 
+theorem fracas_169_from_gf (billFindMaryJohnFindMary : Prop) :
+    billFindMaryJohnFindMary → billFindMaryJohnFindMary :=
+  fun h => fracas_169 _ h
+
+theorem fracas_170_from_gf (johnFindBillJohnFindMary : Prop) :
+    johnFindBillJohnFindMary → johnFindBillJohnFindMary :=
+  fun h => fracas_170 _ h
+
+theorem fracas_175_from_gf (billMaryWriteReport : Prop) :
+    billMaryWriteReport → billMaryWriteReport :=
+  fun h => fracas_175 _ h
+
+theorem fracas_176_from_gf (johnBillWriteReport : Prop) :
+    johnBillWriteReport → johnBillWriteReport :=
+  fun h => fracas_176 _ h
+
 theorem fracas_178_from_gf (johnWriteReport billPeterWriteReport : Prop) :
     johnWriteReport ∧ billPeterWriteReport → billPeterWriteReport :=
   fun h => fracas_178 _ _ h
+
+theorem fracas_179_from_gf (johnWriteReport billWriteReport : Prop) :
+    (johnWriteReport → billWriteReport) → johnWriteReport → billWriteReport :=
+  fun h hj => fracas_179 _ _ h hj
+
+theorem fracas_180_from_gf (johnWantBuyCar johnBuyCar : Prop) :
+    johnWantBuyCar ∧ johnBuyCar → johnBuyCar :=
+  fun h => fracas_180 _ _ h
 
 theorem fracas_182_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (smith jones : A) :
     (represent smith (companyOf smith)) ∧ (represent jones (companyOf jones)) → represent jones (companyOf jones) :=
@@ -650,6 +866,10 @@ theorem fracas_189_from_gf {A : Type*} (represent : A → A → Prop) (companyOf
 theorem fracas_190_from_gf {A : Type*} (represent : A → A → Prop) (companyOf : A → A) (john mary : A) (man woman : A → Prop) :
     (man john ∧ woman mary) → (represent john (companyOf john) ∧ represent mary (companyOf john)) → represent mary (companyOf john) :=
   fun hd h => fracas_190 _ _ _ _ _ _ hd h
+
+theorem fracas_196_from_gf {A B : Type*} (lawyer auditor : A → Prop) (report : B → Prop) (sign : A → B → Prop) :
+    (∃ l, lawyer l ∧ ∀ r, report r → sign l r) ∧ (∃ a, auditor a ∧ ∀ r, report r → sign a r) → (∃ a, auditor a ∧ ∀ r, report r → sign a r) :=
+  fun h => fracas_196 _ _ _ _ h
 
 theorem fracas_198_from_gf {A : Type*} (formerUniversityStudent universityStudent : A → Prop) (john : A) :
     (∀ x, formerUniversityStudent x → ¬ universityStudent x) → formerUniversityStudent john → ¬ universityStudent john :=

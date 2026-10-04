@@ -47,6 +47,22 @@ sys.path.insert(0, str(GF_DIR))
 from translate import (  # noqa: E402
     Translation,
     translate_cl,
+    translate_discourse,
+    _try_translate_skolem_universal_premise,
+    _try_translate_skolem_continuation,
+    _try_translate_universal_existential_premise,
+    _try_translate_universal_existential_continuation,
+    _try_translate_cardinal_adjective_property,
+    _try_translate_cardinal_passive_property,
+    _try_translate_definite_skolem_application,
+    _try_translate_conjoined_possessive_restrictor,
+    _try_translate_pronoun_verb_pronoun,
+    _try_translate_named_verb_several,
+    _try_translate_named_verb_pronoun_object,
+    _try_translate_donkey_relative_premise,
+    _try_translate_named_copula_relative_restrictor,
+    _try_translate_gapped_travel_fact,
+    _try_translate_existential_universal_object,
     parse_tree,
     camel_name,
     _leaf_words,
@@ -216,29 +232,34 @@ def _build_fracas_120(roles: dict) -> "tuple[str, str, str]":
     meeting." The two premises share ONE bound existential (the
     meeting), confirmed by reading the real theorem's own stated type
     directly (`(exists m, attended smith m and chaired smith m) ->
-    exists m, chaired smith m`). Built by hand straight from the three
-    raw GF trees rather than through translate_cl's own per-sentence
-    pipeline: no other id needs "keep the indefinite object
-    existentially open instead of fusing it into a predicate name" or
-    "she"/"it" resolving to the PRIOR sentence's own subject/object -
-    forcing either into translate_cl's general-purpose dispatch would
-    risk it misfiring on some unrelated future sentence shape it was
-    never meant to cover. Returns (binders, arrow_chain, proof)."""
+    exists m, chaired smith m`). Built via `translate.py`'s own general
+    `translate_discourse` pipeline (not `translate_cl`'s per-sentence
+    one - see that function's module comment for why cross-sentential
+    pronoun resolution needs a separate, explicitly-invoked mechanism
+    rather than a new case inside `translate_cl` itself, which would
+    silently misfire on fracas_103's own already-confirmed "ProperNoun
+    V2 a N" translation). The hypothesis is translated the same way,
+    as a one-sentence discourse - `translate_discourse` always prefers
+    the existential reading for an indefinite object, which is exactly
+    what's needed here to type-match the premise's own shared bound
+    variable (see fracas_103's real theorem, `hasCar jones`, for the
+    OTHER reading `translate_cl` picks for the identical tree shape
+    read with no discourse link). Returns (binders, arrow_chain, proof).
+    """
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
     hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
 
-    subject_name = camel_name(_leaf_words(p1.args[0]))
-    verb1 = camel_name(_leaf_words(p1.args[1].args[0]))
-    verb2 = camel_name(_leaf_words(p2.args[1].args[0]))
-    if camel_name(_leaf_words(hyp.args[0])) != subject_name:
+    premise_t = translate_discourse([p1, p2])
+    hyp_t = translate_discourse([hyp])
+    if hyp_t.free_individuals != premise_t.free_individuals[:1]:
         raise ValueError("hypothesis's own subject doesn't match premise 1's")
-    if camel_name(_leaf_words(hyp.args[1].args[0])) != verb2:
+    if hyp_t.free_predicates != premise_t.free_predicates[1:2]:
         raise ValueError("hypothesis's own verb doesn't match premise 2's")
 
-    combined = f"(∃ m, {verb1} {subject_name} m ∧ {verb2} {subject_name} m)"
-    conclusion = f"∃ m, {verb2} {subject_name} m"
-    arrow_chain = f"{combined} → {conclusion}"
+    subject_name = premise_t.free_individuals[0]
+    verb1, verb2 = premise_t.free_predicates
+    arrow_chain = f"({premise_t.lean_prop}) → {hyp_t.lean_prop}"
     binders = f"{{A : Type*}} ({subject_name} : A) ({verb1} {verb2} : A → A → Prop)"
     proof = "fun h1 => fracas_120 _ _ _ h1"
     return binders, arrow_chain, proof
@@ -250,36 +271,29 @@ def _build_fracas_121(roles: dict) -> "tuple[str, str, str]":
     same three-way conjunction, confirmed by reading the real theorem's
     own `:= id` proof directly. The real theorem treats each delivered
     item as a NAMED INDIVIDUAL constant, not a predicate (`delivered :
-    A -> A -> A -> Prop`, a genuinely TERNARY relation - the first this
-    generator has ever produced) - built by hand for the same reason as
-    fracas_120's own builder: "she"/"them" resolving to the first
-    sentence's own subject/PP-object, and a ternary named-individual
-    relation, are both one-off shapes no other id needs. Returns
-    (binders, arrow_chain, proof)."""
+    A -> A -> A -> Prop`, a genuinely TERNARY relation), via
+    `translate.py`'s own `translate_discourse(..., existential_objects=
+    False)` - the same general pipeline `_build_fracas_120` uses, just
+    with indefinite objects read as fresh NAMED individuals instead of
+    an existential (confirmed by this real theorem's own `:= id` proof,
+    which has no existential anywhere - see `_resolve_np_referent`'s own
+    comment on why that reading isn't recoverable from the tree's shape
+    alone and has to be a parameter the caller supplies). The
+    hypothesis's own tree (a conjoined-object NP translate.py doesn't
+    parse) is never translated independently either, matching the real
+    theorem's own `:= id` proof directly reusing the premise's exact
+    proposition as the conclusion. Returns (binders, arrow_chain, proof).
+    """
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
     p3 = _unwrap_tense(parse_tree(roles["_premise3"]))
 
-    subject_name = camel_name(_leaf_words(p1.args[0]))
-    vp1 = p1.args[1]
-    verb_name = camel_name(_leaf_words(vp1.args[0].args[0]))
-    obj1_name = camel_name(_leaf_words(vp1.args[0].args[1]))
-    pp_name = camel_name(_leaf_words(vp1.args[1].args[1]))
+    premise_t = translate_discourse([p1, p2, p3], existential_objects=False)
 
-    vp2 = p2.args[1].args[1]
-    obj2_name = camel_name(_leaf_words(vp2.args[0].args[1]))
-
-    vp3 = p3.args[1]
-    obj3_name = camel_name(_leaf_words(vp3.args[0].args[1]))
-
-    def conjunct(obj_name: str) -> str:
-        return f"{verb_name} {subject_name} {pp_name} {obj_name}"
-
-    combined = f"({conjunct(obj1_name)} ∧ {conjunct(obj2_name)} ∧ {conjunct(obj3_name)})"
-    arrow_chain = f"{combined} → {combined}"
+    arrow_chain = f"({premise_t.lean_prop}) → ({premise_t.lean_prop})"
     binders = (
-        f"{{A : Type*}} ({subject_name} {pp_name} {obj1_name} {obj2_name} {obj3_name} : A) "
-        f"({verb_name} : A → A → A → Prop)"
+        f"{{A : Type*}} ({' '.join(premise_t.free_individuals)} : A) "
+        f"({premise_t.free_predicates[0]} : A → A → A → Prop)"
     )
     proof = "fun h => fracas_121 _ _ _ _ _ _ h"
     return binders, arrow_chain, proof
@@ -291,26 +305,41 @@ def _build_fracas_122(roles: dict) -> "tuple[str, str, str]":
     of the committee" - the bound "he"/"its" fold into ONE combined
     statement, confirmed by reading the real theorem's own `:= id` proof
     directly (`(forall c, committee c -> exists ch, chairman ch c and
-    appointedByMembers ch c) -> ...`, the same statement restated). The
-    hypothesis's own GF tree (a single self-contained sentence using a
-    passive post-nominal modifier, "a chairman appointed by members of
-    the committee") is never translated independently - it would need
-    passive-post-nominal-modifier support this translator doesn't have,
-    for a shape that's provably equal to the premise anyway, so this
-    just reuses the SAME combined text as both. Built by hand for the
-    same reason as fracas_120/121's own builders: "he"/"its" resolving
-    to a NESTED bound variable, not a fixed individual, is one-off.
-    Returns (binders, arrow_chain, proof)."""
+    appointedByMembers ch c) -> ...`, the same statement restated).
+    Built through `translate.py`'s own `_try_translate_universal_
+    existential_premise`/`_try_translate_universal_existential_
+    continuation` - a real, shape-checked pair recognizing premise 1's
+    "every X has a Y" (merged into an existentially-bound witness SHARED
+    with premise 2, rather than fracas_103's fused unary predicate or
+    fracas_131/132's Skolem function - the THIRD distinct reading this
+    one tree shape needs) and premise 2's own passive-voice "is
+    appointed by its members" continuation, confirmed to reproduce this
+    same derivation byte-for-byte (`committee`/`chairman`/`appointMember`/
+    bound var `c`/witness var `ch`, all exactly as before this
+    refactor). The hypothesis's own GF tree (a single self-contained
+    sentence using a passive post-nominal modifier, "a chairman
+    appointed by members of the committee") is still never translated
+    independently - it would need passive-post-nominal-modifier support
+    this translator doesn't have, for a shape that's provably equal to
+    the premise anyway, so this still just reuses the SAME combined
+    text as both. Returns (binders, arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result = _try_translate_universal_existential_premise(*p1.args)
+    if result is None:
+        raise ValueError("fracas_122's premise 1 no longer matches the universal-existential shape")
+    template, _premise1_only_text = result
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    rel_name = _try_translate_universal_existential_continuation(*p2.args, template)
+    if rel_name is None:
+        raise ValueError("fracas_122's premise 2 no longer matches the passive-continuation shape")
+    v, w = template.bound_var, template.witness_var
 
-    committee_name = camel_name(_leaf_words(p1.args[0]))
-    chairman_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    appoint_name = camel_name(_leaf_words(p2.args[1]))
-
-    combined = f"(∀ c, {committee_name} c → ∃ ch, {chairman_name} ch c ∧ {appoint_name} ch c)"
+    combined = f"(∀ {v}, {template.restrictor} {v} → ∃ {w}, {template.obj_name} {w} {v} ∧ {rel_name} {w} {v})"
     arrow_chain = f"{combined} → {combined}"
-    binders = f"{{A : Type*}} ({committee_name} : A → Prop) ({chairman_name} {appoint_name} : A → A → Prop)"
+    binders = (
+        f"{{A : Type*}} ({template.restrictor} : A → Prop) "
+        f"({template.obj_name} {rel_name} : A → A → Prop)"
+    )
     proof = "fun h => fracas_122 _ _ _ h"
     return binders, arrow_chain, proof
 
@@ -326,34 +355,37 @@ def _build_fracas_124(roles: dict) -> "tuple[str, str, str]":
     trivial `fun _ => True` restrictor, not a named one (unlike every
     other restrictor this generator has ever produced) - only fracas_126
     (excluded separately, see CUSTOM_BUILD's own comment) needs that
-    cardinality made explicit. Premise 2 ("They have been removed") is
-    never translated at all (no tree needed): its only real content is
-    an aux scope-entailment fact bridging premise 1's own scope
-    ("missing") to the hypothesis's own ("removed"), built directly the
-    same way SYNTHESIZE_PREMISE's own `_scope_aux` already does, just
-    inlined here since the trivial restrictor doesn't fit that
-    mechanism's generic "reuse free_predicates[0]" hypothesis rebuild
-    (there IS no such free predicate to reuse). Returns (binders,
-    arrow_chain, proof)."""
+    cardinality made explicit. Built through `translate.py`'s own
+    `_try_translate_cardinal_adjective_property`/`_try_translate_
+    cardinal_passive_property` - a shape-checked pair recognizing
+    premise 1's own partitive-cardinal-adjective shape and the
+    hypothesis's own cardinal-passive shape, confirmed to reproduce the
+    prior hand-built derivation byte-for-byte (count `2`, `missing`/
+    `remove`). Premise 2 ("They have been removed") is still never
+    translated at all (no tree needed): its only real content is an aux
+    scope-entailment fact bridging premise 1's own scope ("missing") to
+    the hypothesis's own ("removed"), built directly the same way
+    SYNTHESIZE_PREMISE's own `_scope_aux` already does, just inlined
+    here since the trivial restrictor doesn't fit that mechanism's
+    generic "reuse free_predicates[0]" hypothesis rebuild (there IS no
+    such free predicate to reuse). Returns (binders, arrow_chain,
+    proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_cardinal_adjective_property(*p1.args)
+    if result1 is None:
+        raise ValueError("fracas_124's premise 1 no longer matches the cardinal-adjective shape")
+    count1, p1_scope = result1
     hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_cardinal_passive_property(*hyp.args)
+    if result2 is None:
+        raise ValueError("fracas_124's hypothesis no longer matches the cardinal-passive shape")
+    count2, hyp_scope = result2
+    if count1 != count2:
+        raise ValueError("fracas_124's premise 1 and hypothesis counts disagree")
 
-    if (
-        p1.args[0].head != "AdvNP"
-        or p1.args[0].args[1].head != "PrepNP"
-        or p1.args[0].args[1].args[0].head != "out_of_Prep"
-    ):
-        raise ValueError("premise 1's subject isn't the expected 'N out of M Xs' shape")
-    det_np = p1.args[0].args[0]
-    count, approx = _decode_card(det_np.args[0].args[1].args[0])
-    if approx is not None:
-        raise ValueError("premise 1's own count is AdNum-wrapped, expected a bare numeral")
-    p1_scope = camel_name(_leaf_words(p1.args[1]))
-    hyp_scope = camel_name(_leaf_words(hyp.args[1]))
-
-    combined_premise = f"Exactly {count} (fun _ : A => True) {p1_scope}"
+    combined_premise = f"Exactly {count1} (fun _ : A => True) {p1_scope}"
     aux = f"(∀ x, {p1_scope} x → {hyp_scope} x)"
-    conclusion = f"AtLeast {count} (fun _ : A => True) {hyp_scope}"
+    conclusion = f"AtLeast {count1} (fun _ : A => True) {hyp_scope}"
     arrow_chain = f"{combined_premise} → {aux} → {conclusion}"
     binders = f"{{A : Type*}} [Fintype A] ({p1_scope} {hyp_scope} : A → Prop)"
     proof = "fun h1 h2 => fracas_124 _ _ h1 h2"
@@ -370,12 +402,20 @@ def _build_fracas_128(roles: dict) -> "tuple[str, str, str]":
     supplies the restrictor name. Premise 2 ("they hated it") supplies
     the scope name directly (both pronouns contribute nothing to
     naming, same as every other pronoun this generator's builders have
-    seen). Returns (binders, arrow_chain, proof)."""
+    seen). Built through `translate.py`'s own `_try_translate_conjoined_
+    possessive_restrictor`/`_try_translate_pronoun_verb_pronoun` - a
+    shape-checked pair confirmed to reproduce this same derivation
+    byte-for-byte (`colleague`/`hate`). Returns (binders, arrow_chain,
+    proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    colleague_cn = p1.args[0].args[1].args[1].args[1]
-    colleague_name = camel_name(_leaf_words(colleague_cn))
+    result1 = _try_translate_conjoined_possessive_restrictor(p1.args[0])
+    if result1 is None:
+        raise ValueError("fracas_128's premise 1 no longer matches the conjoined-possessive shape")
+    _person_name, colleague_name = result1
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    hate_name = camel_name(_leaf_words(p2.args[1]))
+    hate_name = _try_translate_pronoun_verb_pronoun(*p2.args)
+    if hate_name is None:
+        raise ValueError("fracas_128's premise 2 no longer matches the pronoun-verb-pronoun shape")
 
     combined = f"Every {colleague_name} {hate_name}"
     arrow_chain = f"{combined} → {combined}"
@@ -396,10 +436,15 @@ def _build_fracas_129(roles: dict) -> "tuple[str, str, str]":
     restrictor has no GF tree of its own to translate at all (it's a
     hand-combination of fracas_128's own colleague name with John's own
     individual, read off the real theorem's own stated shape directly).
-    Returns (binders, arrow_chain, proof)."""
+    Premise 1's own restrictor is read through the SAME `_try_translate_
+    conjoined_possessive_restrictor` fracas_128's own builder uses (the
+    two ids share the identical premise 1 tree). Returns (binders,
+    arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    colleague_cn = p1.args[0].args[1].args[1].args[1]
-    colleague_name = camel_name(_leaf_words(colleague_cn))
+    result1 = _try_translate_conjoined_possessive_restrictor(p1.args[0])
+    if result1 is None:
+        raise ValueError("fracas_129's premise 1 no longer matches the conjoined-possessive shape")
+    _person_name, colleague_name = result1
     hyp = translate_cl(parse_tree(roles["_hypothesis"]))
     hate_name = hyp.free_predicates[-1]
     john_name = hyp.free_individuals[0]
@@ -417,32 +462,39 @@ def _build_fracas_131(roles: dict) -> "tuple[str, str, str]":
     the real theorem's own stated type directly (`(forall d, department
     d -> hasLine d (lineOf d)) -> (forall d, department d -> rentsFromBT
     d (lineOf d)) -> forall d, department d -> exists l, rentsFromBT d
-    l`): "a dedicated line" becomes a Skolem function (one line per
-    department, the same device 117-119 use for a BOUND possessive
-    pronoun, except triggered here by plain anaphoric continuation of
-    an indefinite object, not a possessive pronoun at all) - "they"/
-    "them" in premise 2 and the hypothesis's own weaker existential
-    conclusion are both built directly rather than independently
-    translated, since neither sentence's own compositional reading
-    matches the real theorem's shape (the hypothesis's own "rents A
-    line from BT" would otherwise fuse into one unary predicate, not
-    split into the needed `exists l, rentsFromBT d l`). Returns
-    (binders, arrow_chain, proof)."""
+    l`). Built through `translate.py`'s own `_try_translate_skolem_
+    universal_premise`/`_try_translate_skolem_continuation` - a real,
+    shape-checked (not blind-positional) pair of functions recognizing
+    "every/each X has a [Adj] Y" continued by a universally-bound
+    pronoun subject, confirmed to reproduce this same derivation
+    byte-for-byte (`dedicatedLineOf`/`rentBt`/bound var `d`/witness var
+    `l`, all exactly as before this refactor). The hypothesis's own
+    weaker existential conclusion is still built directly rather than
+    independently translated (the hypothesis's own "rents A line from
+    BT" would otherwise fuse into one unary predicate, not split into
+    the needed `exists l, rentsFromBT d l`) - that weakening step has no
+    GF tree of its own to recover it from. Returns (binders, arrow_chain,
+    proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    restrictor = camel_name(_leaf_words(p1.args[0]))
-    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    skolem = noun_name + "Of"
-    has_name = "has"
+    result = _try_translate_skolem_universal_premise(*p1.args)
+    if result is None:
+        raise ValueError("fracas_131's premise 1 no longer matches the Skolem-universal shape")
+    template, premise1_text = result
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    rel_name = camel_name(_leaf_words(p2.args[1]))
+    cont = _try_translate_skolem_continuation(*p2.args, template)
+    if cont is None:
+        raise ValueError("fracas_131's premise 2 no longer matches the Skolem-continuation shape")
+    is_bound, _instantiation, rel_name = cont
+    if not is_bound:
+        raise ValueError("fracas_131 needs the universally-bound continuation, got a named one")
+    v, w = template.bound_var, template.witness_var
 
-    premise1_text = f"∀ d, {restrictor} d → {has_name} d ({skolem} d)"
-    premise2_text = f"∀ d, {restrictor} d → {rel_name} d ({skolem} d)"
-    conclusion = f"∀ d, {restrictor} d → ∃ l, {rel_name} d l"
+    premise2_text = f"∀ {v}, {template.restrictor} {v} → {rel_name} {v} ({template.skolem} {v})"
+    conclusion = f"∀ {v}, {template.restrictor} {v} → ∃ {w}, {rel_name} {v} {w}"
     arrow_chain = f"({premise1_text}) → ({premise2_text}) → ({conclusion})"
     binders = (
-        f"{{A : Type*}} ({restrictor} : A → Prop) ({skolem} : A → A) "
-        f"({has_name} {rel_name} : A → A → Prop)"
+        f"{{A : Type*}} ({template.restrictor} : A → Prop) ({template.skolem} : A → A) "
+        f"({template.has_name} {rel_name} : A → A → Prop)"
     )
     proof = "fun h1 h2 => fracas_131 _ _ _ _ h1 h2"
     return binders, arrow_chain, proof
@@ -456,24 +508,30 @@ def _build_fracas_132(roles: dict) -> "tuple[str, str, str]":
     sales department") instead of the bound variable - confirmed by
     reading the real theorem's own stated type directly (`(forall d,
     department d -> hasLine d (lineOf d)) -> rentsFromBT salesDept
-    (lineOf salesDept) -> exists l, rentsFromBT salesDept l`). Returns
-    (binders, arrow_chain, proof)."""
+    (lineOf salesDept) -> exists l, rentsFromBT salesDept l`). Built
+    through the SAME `translate.py` pair of functions as fracas_131's
+    own builder, confirmed to reproduce this derivation byte-for-byte.
+    Returns (binders, arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    restrictor = camel_name(_leaf_words(p1.args[0]))
-    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    skolem = noun_name + "Of"
-    has_name = "has"
+    result = _try_translate_skolem_universal_premise(*p1.args)
+    if result is None:
+        raise ValueError("fracas_132's premise 1 no longer matches the Skolem-universal shape")
+    template, premise1_text = result
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    sales_dept_name = camel_name(_leaf_words(p2.args[0]))
-    rel_name = camel_name(_leaf_words(p2.args[1]))
+    cont = _try_translate_skolem_continuation(*p2.args, template)
+    if cont is None:
+        raise ValueError("fracas_132's premise 2 no longer matches the Skolem-continuation shape")
+    is_bound, instantiation, rel_name = cont
+    if is_bound:
+        raise ValueError("fracas_132 needs the named-individual continuation, got the bound one")
+    w = template.witness_var
 
-    premise1_text = f"∀ d, {restrictor} d → {has_name} d ({skolem} d)"
-    premise2_text = f"{rel_name} {sales_dept_name} ({skolem} {sales_dept_name})"
-    conclusion = f"∃ l, {rel_name} {sales_dept_name} l"
+    premise2_text = f"{rel_name} {instantiation} ({template.skolem} {instantiation})"
+    conclusion = f"∃ {w}, {rel_name} {instantiation} {w}"
     arrow_chain = f"({premise1_text}) → {premise2_text} → {conclusion}"
     binders = (
-        f"{{A : Type*}} ({restrictor} : A → Prop) ({skolem} : A → A) "
-        f"({sales_dept_name} : A) ({has_name} {rel_name} : A → A → Prop)"
+        f"{{A : Type*}} ({template.restrictor} : A → Prop) ({template.skolem} : A → A) "
+        f"({instantiation} : A) ({template.has_name} {rel_name} : A → A → Prop)"
     )
     proof = "fun h1 h2 => fracas_132 _ _ _ _ _ h1 h2"
     return binders, arrow_chain, proof
@@ -495,11 +553,19 @@ def _build_fracas_133(roles: dict) -> "tuple[str, str, str]":
     argument - the same restrictor-vs-two-predicates ambiguity
     `_try_translate_possessive_presupposition`'s own comment already
     flags for "has a N" sentences, just surfacing here for a relative
-    clause instead. Returns (binders, arrow_chain, proof)."""
+    clause instead. Built through `translate.py`'s own `_try_translate_
+    named_verb_several`/`_try_translate_named_verb_pronoun_object` -
+    a shape-checked pair confirmed to reproduce this same derivation
+    byte-for-byte (`ownComputer`/`maintain`). Returns (binders,
+    arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    owns_name = camel_name(_leaf_words(p1.args[1]))
+    owns_name = _try_translate_named_verb_several(*p1.args)
+    if owns_name is None:
+        raise ValueError("fracas_133's premise 1 no longer matches the named-verb-several shape")
     p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
-    maintain_name = camel_name(_leaf_words(p2.args[1]))
+    maintain_name = _try_translate_named_verb_pronoun_object(*p2.args)
+    if maintain_name is None:
+        raise ValueError("fracas_133's premise 2 no longer matches the named-verb-pronoun-object shape")
 
     premise1_text = f"∃ x, {owns_name} x"
     premise2_text = f"∀ x, {owns_name} x → {maintain_name} x"
@@ -507,6 +573,63 @@ def _build_fracas_133(roles: dict) -> "tuple[str, str, str]":
     binders = f"{{A : Type*}} ({owns_name} {maintain_name} : A → Prop)"
     proof = "fun h1 h2 => fracas_133 _ _ h1 h2"
     return binders, arrow_chain, proof
+
+
+def _build_fracas_134_or_135(roles: dict, fracas_name: str) -> "tuple[str, str, str]":
+    """Shared builder for fracas_134/135: "Every customer that owns a
+    computer has a service contract for it. MFI is a customer that owns
+    exactly one/several computers." -> "MFI has a service contract for
+    all its computers." Confirmed by reading both real theorems' own
+    stated types directly (`(forall x, customer x -> forall c, owns x c
+    -> hasContract x c) -> customer mfi -> forall c, owns mfi c ->
+    hasContract mfi c`, IDENTICAL for both ids - "exactly one" vs.
+    "several" never appears in either real theorem's own type at all).
+    Built through `translate.py`'s own `_try_translate_donkey_relative_
+    premise` (premise 1 - a donkey relative clause, "customer"/
+    "computer" genuinely two-sorted) and `_try_translate_named_copula_
+    relative_restrictor` (premise 2, discarding its own relative
+    clause's content entirely). The hypothesis is never independently
+    translated at all: the real proof (`fun h hmfi => h mfi hmfi`) is
+    just premise 1's own universal instantiated at `mfi`, so the
+    conclusion is built the same way directly, without parsing the
+    hypothesis's own "all its computers" tree (a `PredetNP`+possessive-
+    pronoun-plural shape this translator has no support for). The first
+    TWO-SORTED domain (`{A B : Type*}`) this generator has ever
+    produced - nothing in the dispatch mechanism itself required a
+    single domain; `binders`/`arrow_chain` are plain strings, so this
+    is just a builder actually using two sorts, not a structural change
+    elsewhere. Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_donkey_relative_premise(*p1.args)
+    if result1 is None:
+        raise ValueError(f"{fracas_name}'s premise 1 no longer matches the donkey-relative shape")
+    restrictor_name, donkey_verb_name, main_verb_name = result1
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    result2 = _try_translate_named_copula_relative_restrictor(*p2.args)
+    if result2 is None:
+        raise ValueError(f"{fracas_name}'s premise 2 no longer matches the named-copula-relative shape")
+    subject_name, restrictor_name2 = result2
+    if restrictor_name2 != restrictor_name:
+        raise ValueError(f"{fracas_name}'s premise 1 and premise 2 disagree on the restrictor name")
+
+    premise1_text = f"∀ x, {restrictor_name} x → ∀ c, {donkey_verb_name} x c → {main_verb_name} x c"
+    premise2_text = f"{restrictor_name} {subject_name}"
+    conclusion = f"∀ c, {donkey_verb_name} {subject_name} c → {main_verb_name} {subject_name} c"
+    arrow_chain = f"({premise1_text}) → {premise2_text} → ({conclusion})"
+    binders = (
+        f"{{A B : Type*}} ({restrictor_name} : A → Prop) "
+        f"({donkey_verb_name} {main_verb_name} : A → B → Prop) ({subject_name} : A)"
+    )
+    proof = f"fun h hmfi => {fracas_name} _ _ _ _ h hmfi"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_134(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_134_or_135(roles, "fracas_134")
+
+
+def _build_fracas_135(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_134_or_135(roles, "fracas_135")
 
 
 def _build_fracas_138(roles: dict) -> "tuple[str, str, str]":
@@ -520,21 +643,41 @@ def _build_fracas_138(roles: dict) -> "tuple[str, str, str]":
     the real theorem at all - the reverse of AUX_HYPOTHESIS's own
     pattern, which always ADDS a hypothesis, never removes one).
     Premise 2 ("R-95-103 is a report") translates fine via translate_cl
-    directly and is reused as-is; premise 3 and the hypothesis both get
-    hand-built from the same coverPageOf Skolem function and r95103
-    individual, since the hypothesis's own independent translation
-    would otherwise bake r95103 directly into a fused predicate name
-    rather than applying a separate function to it as an argument.
-    Returns (binders, arrow_chain, proof)."""
+    directly and is reused as-is. The Skolem function's own name is
+    still read off premise 1's tree, but now through `translate.py`'s
+    own `_try_translate_skolem_universal_premise` (the SAME "every X has
+    a [possibly compound] Y" shape fracas_131/132 share - only the
+    Skolem name itself is used here, not the bound/witness variables
+    131/132's own continuation needs, since 138 never weakens back to
+    an existential). Premise 3 is no longer read at all: `_try_
+    translate_definite_skolem_application` instead recovers the SAME
+    fact directly from the HYPOTHESIS's own tree (its fully explicit
+    "the cover page OF R-95-103", an `of`-PP-linked definite
+    description) - premise 3's own bare "the cover page" has no link to
+    R-95-103 in its own tree at all (that link is a discourse fact), and
+    premise 3/the hypothesis share the identical fact textually anyway,
+    so deriving it once from the hypothesis's own fuller tree is more
+    robust than reading the same names off two separate sentences and
+    hoping they agree. Confirmed to reproduce the prior hand-built
+    derivation byte-for-byte. Returns (binders, arrow_chain, proof)."""
     p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
-    noun_name = camel_name(_leaf_words(p1.args[1].args[1]))
-    skolem = noun_name + "Of"
+    result1 = _try_translate_skolem_universal_premise(*p1.args)
+    if result1 is None:
+        raise ValueError("fracas_138's premise 1 no longer matches the Skolem-universal shape")
+    template, _premise1_only_text = result1
+    skolem = template.skolem
     report_fact = translate_cl(parse_tree(roles["_premise2"]))
     report_name = report_fact.free_predicates[0]
     r_name = report_fact.free_individuals[0]
-    p3 = _unwrap_tense(parse_tree(roles["_premise3"]))
-    smith_name = camel_name(_leaf_words(p3.args[0]))
-    sign_name = camel_name(_leaf_words(p3.args[1].args[0]))
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_definite_skolem_application(*hyp.args)
+    if result2 is None:
+        raise ValueError("fracas_138's hypothesis no longer matches the definite-Skolem-application shape")
+    smith_name, sign_name, hyp_skolem, hyp_r_name = result2
+    if hyp_skolem != skolem:
+        raise ValueError("fracas_138's premise 1 and hypothesis disagree on the Skolem function's own name")
+    if hyp_r_name != r_name:
+        raise ValueError("fracas_138's premise 2 and hypothesis disagree on the named individual")
 
     fact = f"{sign_name} {smith_name} ({skolem} {r_name})"
     arrow_chain = f"{report_name} {r_name} → {fact} → {fact}"
@@ -554,21 +697,23 @@ def _build_fracas_139(roles: dict) -> "tuple[str, str, str]":
     director" is ERASED entirely (the real theorem existentially
     quantifies over ANY individual, not specifically company directors
     - a real semantic simplification, not a translation gap), and only
-    the reflexive "awarded... a large payrise" relation survives. The
-    verb's own GF lexical item (`award_V3`) uses a `_V3` suffix this
-    translator's `_LEXICAL_SUFFIXES` table doesn't recognize (the
-    ditransitive award_V3/ReflVP construction has never come up before
-    this problem), so "award" is prepended by hand rather than picked
-    up automatically - names don't need to match the real theorem's own
-    choice regardless. Returns (binders, arrow_chain, proof)."""
+    the reflexive "awarded... a large payrise" relation survives. Built
+    via `translate.py`'s own `translate_cl` directly (now a genuine new
+    case, `_try_translate_reflexive_indefinite_subject`, not a one-off
+    hand translation): `_V3` (a ditransitive verb, e.g. `award_V3`) was
+    added to `_LEXICAL_SUFFIXES` since this is the only id in the whole
+    corpus using one, so the verb's own name is now picked up the same
+    way every other lexical item is, not prepended by hand. The
+    hypothesis's own tree (a different active/passive-conjoined
+    surface form) is never translated independently, matching the real
+    theorem's own `:= id` proof directly reusing the premise's exact
+    proposition as the conclusion. Returns (binders, arrow_chain, proof).
+    """
     p = _unwrap_tense(parse_tree(roles["_premise"]))
-    obj_cn = p.args[1].args[0].args[1]
-    payrise_name = camel_name(_leaf_words(obj_cn))
-    verb_name = "award" + payrise_name[0].upper() + payrise_name[1:]
+    t = translate_cl(p)
 
-    combined = f"∃ d, {verb_name} d d"
-    arrow_chain = f"({combined}) → {combined}"
-    binders = f"{{A : Type*}} ({verb_name} : A → A → Prop)"
+    arrow_chain = f"({t.lean_prop}) → {t.lean_prop}"
+    binders = f"{{A : Type*}} ({t.free_predicates[0]} : A → A → Prop)"
     proof = "fun h => fracas_139 _ h"
     return binders, arrow_chain, proof
 
@@ -578,25 +723,24 @@ def _build_fracas_140(roles: dict) -> "tuple[str, str, str]":
     hurt." Confirmed by reading the real theorem's own `:= id` proof
     directly (`said john (hurt bill bill) -> said john (hurt bill
     bill)`) - "said" takes a Prop as its own second argument (`A -> Prop
-    -> Prop`, an embedded-clause-as-argument shape no other id in this
-    generator needs), and "himself" resolves to Bill, giving the
-    reflexive `hurt bill bill`. Both `say_VS`'s own GF lexical item and
-    "said" itself use suffixes (`_VS`) this translator doesn't recognize
-    as lexical, so "said" is supplied by hand, same reason as
-    fracas_139's own `award_V3`. Returns (binders, arrow_chain, proof)."""
+    -> Prop`), and "himself" resolves to Bill, giving the reflexive
+    `hurt bill bill`. Built via `translate.py`'s own `translate_cl`
+    directly now (`_try_translate_sentential_complement`, recursing into
+    `_try_translate_reflexive_named_subject` for the embedded clause),
+    not a one-off hand translation - `say_VS` is matched by name
+    specifically (its `_VS` suffix is shared by several OTHER attitude
+    verbs across Section 4/9's own ids, each needing its own real
+    theorem checked before reusing this same flat-embedding treatment,
+    so it isn't added to `_LEXICAL_SUFFIXES` generically yet). Returns
+    (binders, arrow_chain, proof)."""
     p = _unwrap_tense(parse_tree(roles["_premise"]))
-    john_name = camel_name(_leaf_words(p.args[0]))
-    embedded = p.args[1].args[1].args[2]
-    bill_name = camel_name(_leaf_words(embedded.args[0]))
-    hurt_name = camel_name(_leaf_words(embedded.args[1]))
-    said_name = "said"
+    t = translate_cl(p)
 
-    hurt_fact = f"{hurt_name} {bill_name} {bill_name}"
-    combined = f"{said_name} {john_name} ({hurt_fact})"
-    arrow_chain = f"{combined} → {combined}"
+    arrow_chain = f"{t.lean_prop} → {t.lean_prop}"
     binders = (
-        f"{{A : Type*}} ({john_name} {bill_name} : A) "
-        f"({said_name} : A → Prop → Prop) ({hurt_name} : A → A → Prop)"
+        f"{{A : Type*}} ({' '.join(t.free_individuals)} : A) "
+        f"({t.free_predicates[0]} : A → Prop → Prop) "
+        f"({' '.join(t.free_predicates[1:])} : A → A → Prop)"
     )
     proof = "fun h => fracas_140 _ _ _ _ h"
     return binders, arrow_chain, proof
@@ -727,6 +871,110 @@ def _build_fracas_149(roles: dict) -> "tuple[str, str, str]":
     return binders, arrow_chain, proof
 
 
+def _build_fracas_150_151_152(roles: dict, fracas_name: str) -> "tuple[str, str, str]":
+    """"John went to Paris by car. Bill [did] [too/to X/by Y]." -> "Bill
+    went to [Paris/Berlin] by [car/train]." Gapping with PP modifiers -
+    confirmed by reading each real theorem's own stated type directly
+    (`wentTo john paris car ∧ wentTo bill CITY VEHICLE -> wentTo bill
+    CITY VEHICLE`, CITY/VEHICLE varying per id). Built through
+    `translate.py`'s own `_try_translate_gapped_travel_fact` - premise 1
+    is IDENTICAL across all three ids ("John went to Paris by car"),
+    confirmed by `gf/run_gf_tests.py`'s own `fracas_151_premise1`/
+    `fracas_152_premise1` entries reusing fracas_150's tree, the same
+    precedent fracas_132/135's own premise 1 entries set. Which names
+    get ONE shared binder vs. TWO separate ones depends on whether this
+    id's own city/vehicle happen to match between premise 1 and the
+    hypothesis (150: same city, different vehicle; 151: both differ;
+    152: different city, same vehicle) - read directly off each pair's
+    own resolved text, not assumed from the id number. Returns (binders,
+    arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_gapped_travel_fact(*p1.args)
+    if result1 is None:
+        raise ValueError(f"{fracas_name}'s premise 1 no longer matches the gapped-travel shape")
+    _is_u1, subj1, verb, pp1a, pp2a = result1
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_gapped_travel_fact(*hyp.args)
+    if result2 is None:
+        raise ValueError(f"{fracas_name}'s hypothesis no longer matches the gapped-travel shape")
+    is_u2, subj2, verb2, pp1b, pp2b = result2
+    if is_u2:
+        raise ValueError(f"{fracas_name} needs a named (not universal) hypothesis subject")
+    if verb2 != verb:
+        raise ValueError(f"{fracas_name}'s premise 1 and hypothesis disagree on the verb name")
+
+    fact1 = f"{verb} {subj1} {pp1a} {pp2a}"
+    fact2 = f"{verb} {subj2} {pp1b} {pp2b}"
+    arrow_chain = f"({fact1} ∧ {fact2}) → {fact2}"
+
+    subj_names = [subj1] if subj1 == subj2 else [subj1, subj2]
+    pp1_names = [pp1a] if pp1a == pp1b else [pp1a, pp1b]
+    pp2_names = [pp2a] if pp2a == pp2b else [pp2a, pp2b]
+    binders = (
+        f"{{A B C : Type*}} ({verb} : A → B → C → Prop) "
+        f"({' '.join(subj_names)} : A) ({' '.join(pp1_names)} : B) ({' '.join(pp2_names)} : C)"
+    )
+    num_explicit = 1 + len(subj_names) + len(pp1_names) + len(pp2_names)
+    underscores = " ".join(["_"] * num_explicit)
+    proof = f"fun h => {fracas_name} {underscores} h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_150(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_150_151_152(roles, "fracas_150")
+
+
+def _build_fracas_151(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_150_151_152(roles, "fracas_151")
+
+
+def _build_fracas_152(roles: dict) -> "tuple[str, str, str]":
+    return _build_fracas_150_151_152(roles, "fracas_152")
+
+
+def _build_fracas_153(roles: dict) -> "tuple[str, str, str]":
+    """"John goes to Paris by car. The students [go] by train." -> "The
+    students go to Paris by train." Confirmed by reading the real
+    theorem's own stated type directly (`goingTo john paris car ∧ Every
+    (fun _ : Student => True) (fun s => goingTo s paris train) -> Every
+    (fun _ : Student => True) (fun s => goingTo s paris train)`) - "the
+    students" is a TRIVIAL restrictor over the whole domain (the same
+    `fun _ => True` device id 124's own cardinal-anaphora case already
+    established), not a named subset of a larger one. Built through
+    `translate.py`'s own `_try_translate_gapped_travel_fact`, reused
+    from 150-152's own builder but requiring the UNIVERSAL (not named)
+    continuation this time. Returns (binders, arrow_chain, proof)."""
+    p1 = _unwrap_tense(parse_tree(roles["_premise1"]))
+    result1 = _try_translate_gapped_travel_fact(*p1.args)
+    if result1 is None:
+        raise ValueError("fracas_153's premise 1 no longer matches the gapped-travel shape")
+    _is_u1, subj1, verb, pp1a, pp2a = result1
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    result2 = _try_translate_gapped_travel_fact(*p2.args)
+    if result2 is None:
+        raise ValueError("fracas_153's premise 2 no longer matches the gapped-travel shape")
+    is_u2, _restrictor2, verb2, pp1b, pp2b = result2
+    if not is_u2:
+        raise ValueError("fracas_153 needs a universal (definite-plural) continuation")
+    if verb2 != verb:
+        raise ValueError("fracas_153's premise 1 and premise 2 disagree on the verb name")
+
+    fact1 = f"{verb} {subj1} {pp1a} {pp2a}"
+    fact2 = f"Every (fun _ : A => True) (fun s => {verb} s {pp1b} {pp2b})"
+    arrow_chain = f"({fact1} ∧ {fact2}) → {fact2}"
+
+    pp1_names = [pp1a] if pp1a == pp1b else [pp1a, pp1b]
+    pp2_names = [pp2a] if pp2a == pp2b else [pp2a, pp2b]
+    binders = (
+        f"{{A B C : Type*}} ({verb} : A → B → C → Prop) "
+        f"({subj1} : A) ({' '.join(pp1_names)} : B) ({' '.join(pp2_names)} : C)"
+    )
+    num_explicit = 1 + 1 + len(pp1_names) + len(pp2_names)
+    underscores = " ".join(["_"] * num_explicit)
+    proof = f"fun h => fracas_153 {underscores} h"
+    return binders, arrow_chain, proof
+
+
 def _build_fracas_164(roles: dict) -> "tuple[str, str, str]":
     """"John spoke to Mary. [He spoke] to Sue [too]." -> "John spoke to
     Sue." Confirmed by reading the real theorem's own stated type
@@ -808,6 +1056,151 @@ def _build_fracas_167(roles: dict) -> "tuple[str, str, str]":
     )
     binders = f"{{A : Type*}} [Fintype A] ({pred_name} : A → Prop)"
     proof = "fun h => fracas_167 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_169(roles: dict) -> "tuple[str, str, str]":
+    """"John found Mary before Bill found Mary." (the stipulated
+    reading of a genuinely ambiguous sentence) -> itself, trivially.
+    Confirmed by reading the real theorem's own `:= id` proof directly
+    (`johnFoundMaryBeforeBillFoundMary -> johnFoundMaryBeforeBillFoundMary`).
+    The whole `AdvS (SubjS before_Subj ...) ...` tree is registered
+    under a single bare check name (`fracas_169`, no `_premise1`/
+    `_hypothesis` suffix - `roles[""]`), confirmed via `gf`'s own
+    linearize check (`run_gf_tests.py`'s own `CHECKS` list) independent
+    of this cross-check script; `_atomic_name` fuses its own whole word
+    list into one bare `Prop` atom, same convention as 142/145-149 -
+    word ORDER doesn't matter to that fusion (GF's own AdvS/SubjS always
+    fronts the subordinate clause regardless of FraCaS's own clause
+    order, but since the real theorem only needs ONE atom reused on both
+    sides of a trivial self-implication, that surface-order mismatch
+    has no effect on the derivation at all). Returns (binders,
+    arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_169 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_170(roles: dict) -> "tuple[str, str, str]":
+    """The other stipulated reading of the same ambiguous sentence,
+    "John found Mary before John found Bill" -> itself, trivially.
+    Confirmed by reading the real theorem's own `:= id` proof directly.
+    Built the same way as fracas_169's own builder - see its docstring.
+    Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_170 _ h"
+    return binders, arrow_chain, proof
+
+
+def _split_advs_conditional(tree_text: str):
+    """Splits a `UttS (AdvS (SubjS conn embedded) main)` top-level
+    conditional (fracas_179's own "if John wrote a report, Bill wrote a
+    report") into its two clauses, each independently fused into its
+    own bare `Prop` atom via the SAME `camel_name(_leaf_words(...))`
+    convention `_atomic_name` uses - but applied to EACH clause
+    separately rather than the whole tree, since this id's own real
+    theorem needs two SEPARATE atoms (`johnWroteReport`/
+    `billWroteReport`), not one fused name the way 169/170's own
+    trivial self-implication does. Returns None on shape mismatch, else
+    (embedded_name, main_name)."""
+    t = parse_tree(tree_text)
+    if t.head != "UttS" or len(t.args) != 1:
+        return None
+    advs = t.args[0]
+    if advs.head != "AdvS" or len(advs.args) != 2:
+        return None
+    subjs, main = advs.args
+    if subjs.head != "SubjS" or len(subjs.args) != 2:
+        return None
+    _conn, embedded = subjs.args
+    return camel_name(_leaf_words(embedded)), camel_name(_leaf_words(main))
+
+
+def _build_fracas_179(roles: dict) -> "tuple[str, str, str]":
+    """"If John wrote a report, Bill did [write a report] too. John
+    wrote a report." -> "Bill wrote a report." (ellipsis inside a
+    conditional's own consequent). Confirmed by reading the real
+    theorem's own stated type directly (`(johnWroteReport ->
+    billWroteReport) -> johnWroteReport -> billWroteReport`) - modus
+    ponens over two bare `Prop` atoms. The whole "if"-sentence is
+    registered under a single bare check name (`fracas_179`, no
+    `_premise1`/`_hypothesis` suffix - `roles[""]`), confirmed via
+    `gf`'s own linearize check independent of this script. Built
+    through the new `_split_advs_conditional` helper, splitting the
+    `AdvS (SubjS if_Subj embedded) main` tree into its own antecedent
+    and consequent atoms, rather than fusing the whole conditional into
+    one name the way 169/170's own trivial self-implication does.
+    Returns (binders, arrow_chain, proof)."""
+    result = _split_advs_conditional(roles[""])
+    if result is None:
+        raise ValueError("fracas_179's own tree no longer matches the AdvS-conditional shape")
+    embedded_name, main_name = result
+    arrow_chain = f"({embedded_name} → {main_name}) → {embedded_name} → {main_name}"
+    binders = f"({embedded_name} {main_name} : Prop)"
+    proof = "fun h hj => fracas_179 _ _ h hj"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_175(roles: dict) -> "tuple[str, str, str]":
+    """""Bill said that Mary wrote a report, and [so did/and that] Bill
+    [said that she] did too." -> itself, trivially (one available parse:
+    "Bill did too" resolves INSIDE "said", giving "Bill said Mary wrote
+    a report" directly). Confirmed by reading the real theorem's own
+    `:= id` proof directly (`billSaidMaryWroteReport ->
+    billSaidMaryWroteReport`). Registered under a single bare check name
+    (`fracas_175`, no `_premise1`/`_hypothesis` suffix - `roles[""]`),
+    a genuinely NEW tree this round (not previously confirmed), built
+    from the SAME `ComplVS say_VS` construction fracas_140/178's own
+    already-confirmed trees use, confirmed via `gf`'s own linearize
+    check. `_atomic_name` fuses it into one bare `Prop` atom, same
+    convention as 169/170. Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_175 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_176(roles: dict) -> "tuple[str, str, str]":
+    """A different available parse of the same sentence (per FraCaS's
+    own `<why>`, a genuine attachment ambiguity, not just anaphora):
+    "and Bill did too" attaches INSIDE the "said"-clause as a second
+    reported claim, giving "John said Bill wrote a report" -> itself,
+    trivially. Confirmed by reading the real theorem's own `:= id`
+    proof directly. Built the same way as fracas_175's own builder -
+    see its docstring; a genuinely NEW tree this round, confirmed via
+    `gf`'s own linearize check. Returns (binders, arrow_chain, proof)."""
+    n = _atomic_name(roles[""])
+    arrow_chain = f"{n} → {n}"
+    binders = f"({n} : Prop)"
+    proof = "fun h => fracas_176 _ h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_180(roles: dict) -> "tuple[str, str, str]":
+    """"John wanted to buy a car, and he did [buy a car]." -> "John
+    bought a car." Confirmed by reading the real theorem's own stated
+    type directly (`johnWantedBuyCar ∧ johnBoughtCar -> johnBoughtCar`).
+    Premise 1 ("John wanted to buy a car", a `want_VV`+`ComplVV`
+    control-verb construction) is a genuinely NEW tree this round,
+    confirmed via `gf`'s own linearize check from constructs already
+    proven elsewhere (`want_VV`/`ComplVV` from Section 1's own "wants a
+    great tenor" cluster, `buy_V2`/`car_N` from this id's own
+    already-confirmed hypothesis). The elided "he did [buy a car]"
+    (premise 2) is never given its own tree - its resolved content is
+    literally the hypothesis's own sentence, reused directly, the same
+    "elided sentence = reuse the hypothesis's own tree" convention
+    142/145-149/196's own builders already use. Returns (binders,
+    arrow_chain, proof)."""
+    n1 = _atomic_name(roles["_premise1"])
+    n2 = _atomic_name(roles["_hypothesis"])
+    arrow_chain = f"{n1} ∧ {n2} → {n2}"
+    binders = f"({n1} {n2} : Prop)"
+    proof = "fun h => fracas_180 _ _ h"
     return binders, arrow_chain, proof
 
 
@@ -1181,6 +1574,56 @@ def _build_fracas_190(roles: dict) -> "tuple[str, str, str]":
         f"({john} {mary} : A) ({man} {woman} : A → Prop)"
     )
     proof = "fun hd h => fracas_190 _ _ _ _ _ _ hd h"
+    return binders, arrow_chain, proof
+
+
+def _build_fracas_196(roles: dict) -> "tuple[str, str, str]":
+    """"A lawyer signed every report. One lawyer signed all the
+    reports. So did one auditor." -> "One auditor signed all the
+    reports." (the wide-scope "so did" reading, restated). Confirmed by
+    reading the real theorem's own stated type directly (`(exists l,
+    lawyer l and forall r, report r -> signed l r) and (exists a,
+    auditor a and forall r, report r -> signed a r) -> exists a, auditor
+    a and forall r, report r -> signed a r`) - premise 1 ("a lawyer
+    signed every report") is a PURE DISTRACTOR, never read at all
+    (confirmed by the real theorem's own type never mentioning it).
+    Premise 2's own resolved content ("one lawyer signed all the
+    reports") supplies the FIRST conjunct of the real premise; the
+    SECOND conjunct ("so did one auditor") is never given its own tree
+    at all - it's built directly from the hypothesis's own tree instead
+    (the same "elided sentence = reuse the hypothesis's own tree"
+    convention 142/145-149's own builders already use), since the
+    resolved "one auditor signed all the reports" is textually
+    identical either way. Built through `translate.py`'s own
+    `_try_translate_existential_universal_object` - the wide-scope
+    existential-over-universal reading `translate_cl`'s own general
+    path does NOT produce for this tree shape (it instead fuses the
+    whole VP into one unary predicate under an `Exactly 1` GQ reading -
+    confirmed by direct comparison, the wrong reading for this id).
+    Returns (binders, arrow_chain, proof)."""
+    p2 = _unwrap_tense(parse_tree(roles["_premise2"]))
+    result1 = _try_translate_existential_universal_object(*p2.args)
+    if result1 is None:
+        raise ValueError("fracas_196's premise 2 no longer matches the existential-universal shape")
+    lawyer_name, verb, report_name = result1
+    hyp = _unwrap_tense(parse_tree(roles["_hypothesis"]))
+    result2 = _try_translate_existential_universal_object(*hyp.args)
+    if result2 is None:
+        raise ValueError("fracas_196's hypothesis no longer matches the existential-universal shape")
+    auditor_name, verb2, report_name2 = result2
+    if verb2 != verb:
+        raise ValueError("fracas_196's premise 2 and hypothesis disagree on the verb name")
+    if report_name2 != report_name:
+        raise ValueError("fracas_196's premise 2 and hypothesis disagree on the object restrictor name")
+
+    fact_lawyer = f"∃ l, {lawyer_name} l ∧ ∀ r, {report_name} r → {verb} l r"
+    fact_auditor = f"∃ a, {auditor_name} a ∧ ∀ r, {report_name} r → {verb} a r"
+    arrow_chain = f"({fact_lawyer}) ∧ ({fact_auditor}) → ({fact_auditor})"
+    binders = (
+        f"{{A B : Type*}} ({lawyer_name} {auditor_name} : A → Prop) "
+        f"({report_name} : B → Prop) ({verb} : A → B → Prop)"
+    )
+    proof = "fun h => fracas_196 _ _ _ _ h"
     return binders, arrow_chain, proof
 
 
@@ -2823,11 +3266,27 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # with no corresponding FraCaS sentence at all - confirmed by reading
 # its stated type directly - the same "genuinely unstated background
 # premise" gap as id 5's `hNonempty`, not fixable by any translation
-# mechanism. fracas_127/134/135 (two-sorted domains, `{Person Machine}`/
-# `{A B}`) and fracas_137 (needs a `Fintype.card` premise plus a single
-# predicate bundling five separate FraCaS sentences) are structurally
-# blocked the same way - confirmed by reading their own stated types
-# directly, not attempted.
+# mechanism. fracas_134/135 (two-sorted donkey relative clause, "every
+# customer that owns a computer has a service contract for it") ARE now
+# built, through `translate.py`'s own `_try_translate_donkey_relative_
+# premise`/`_try_translate_named_copula_relative_restrictor` - the
+# first genuinely TWO-SORTED domain (`{A B : Type*}`) this generator has
+# ever produced. Nothing in the dispatch mechanism just above required
+# a single domain - `binders`/`arrow_chain` have always been plain
+# strings a builder is free to write however its own real theorem
+# needs - the single-domain convention up to this point was simply
+# every PRIOR id's own real theorem never needing more than one sort,
+# not a structural limit. fracas_127 (two-sorted, `{Person Machine}`,
+# but ALSO a conjoined two-clause premise, a cumulative-plural "they
+# put them" distribution across two previously-introduced referents, a
+# disjunctive-existential weakening of a determinate pairing, AND an
+# unstated distinctness premise `hne : m1 ≠ m2` with no corresponding
+# FraCaS sentence - four separate novel mechanisms stacked on one
+# id, a substantially bigger undertaking than 134/135's own single,
+# reusable donkey-relative-clause shape) and fracas_137 (needs a
+# `Fintype.card` premise plus a single predicate bundling five separate
+# FraCaS sentences) remain structurally blocked - confirmed by reading
+# their own stated types directly, not attempted.
 #
 # Section 4 (ellipsis, 142-196) adds 23 more ids, all via the same
 # mechanism: per Ellipsis.lean's own approach note, this project never
@@ -2838,18 +3297,46 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # sentence, not a domain-quantified predicate at all - see
 # `_atomic_name`). Not attempted: 150/151/152/153/196 (three- or
 # two-sorted domains - `{Person City Vehicle}`/`{Student City Vehicle}`/
-# `{Person Report}` - the same structural blocker as 127/134/135);
+# `{Person Report}` - a multi-sorted domain is no longer itself a
+# structural blocker, per 134/135's own two-sorted pipeline above, but
+# each of these ids has its own distinct sentence shape that hasn't
+# been individually read and built yet, same as any other unattempted
+# id);
 # 163/171/172/173/174/191-195 (genuine grammar gaps - embedded questions
 # under "know"/"want", relativizing a quantificational pronoun NP, and a
 # passive-impersonal-plus-reciprocal construction this grammar has no
 # combinator for - confirmed by `run_gf_tests.py`'s own comment on
-# exactly these ids, not just unattempted); 168/169/170/175/176/179/180
-# (each needs at least one genuinely NEW GF tree - "forty five women
-# work part time", "John wanted to buy a car", or an `AdvS`-headed
-# before/if-conditional top level this generator's builders haven't
-# been shaped for yet - left for a future round rather than rushed).
-# 143/156/158/161/174/177/181/184/188/192/194 are countermodel-only,
-# already excluded automatically (no bare theorem to cross-check).
+# exactly these ids, not just unattempted). 169/170/175/176/179/180 ARE
+# now built: 169/170 (an `AdvS (SubjS before_Subj ...) ...` top-level
+# "before"-conditional, the stipulated reading of a genuinely ambiguous
+# sentence, `:= id` trivially) reuse trees that were ALREADY confirmed
+# via `gf`'s own linearize check but never wired into this generator at
+# all; 179 (an `if`-conditional, modus ponens over two atoms) likewise
+# reuses an already-confirmed tree, split into its antecedent/consequent
+# via the new `_split_advs_conditional` helper; 175/176 ("Bill/John said
+# that Mary/Bill wrote a report", `:= id` trivially) and 180's own
+# premise 1 ("John wanted to buy a car", a `want_VV`+`ComplVV`
+# control-verb construction) are genuinely NEW trees, confirmed directly
+# via `gf`'s own linearize check this round (this project's local GF
+# toolchain - `gf` plus the pinned gf-rgl tag - is available and fast
+# enough to confirm new sentences directly, not just reuse already-
+# confirmed ones, confirmed by actually invoking it, not assumed) -
+# all six built from constructs (`say_VS`/`ComplVS`, `want_VV`/
+# `ComplVV`) already proven elsewhere in this corpus. Genuinely still
+# not attempted: 168 ("forty-five women work part time") - a REAL,
+# independently-reconfirmed gf-rgl toolchain bug at the current pinned
+# tag: `pot1plus` (the tens-plus-ones numeral combinator any two-digit
+# number with a nonzero ones digit needs) renders its own bind tokens
+# literally ("forty &+ - &+ five") instead of collapsing them, confirmed
+# directly via `gf`'s own linearize output this round, not merely
+# re-read from the pre-existing comment - round tens via bare `pot1`
+# ("twenty") are unaffected, but nothing fixable at the Python/
+# translate.py level changes a gf-rgl bug; the construction this
+# generator CAN build (168's own first sentence, "five men work part
+# time") already exercises the construction cleanly, just under a
+# different, wrong number. 143/156/158/161/174/177/181/184/188/192/194
+# are countermodel-only, already excluded automatically (no bare
+# theorem to cross-check).
 #
 # Section 5 (adjectives, 197-219) adds 5 more ids this round - the
 # straightforward subset only, deliberately paced after Section 4's two
@@ -2860,9 +3347,13 @@ def _build_fracas_346(roles: dict) -> "tuple[str, str, str]":
 # 203 (adjective-drop, splitting an `AdjCN` into separate adjective/noun
 # conjuncts rather than fusing them). fracas_197 looked tractable at
 # first glance (same adjective-drop shape as 203) but its own `variable`
-# block is actually two-sorted (`{Person Thing}`), the same structural
-# blocker as 127/134/135/150-153/196 - caught by reading its stated type
-# directly before building, not after.
+# block is actually two-sorted (`{Person Thing}`) - two-sortedness
+# itself is no longer a blocker per 134/135's and 150-153/196's own
+# pipelines above, but 197's own adjective-drop shape combined with it
+# hasn't been individually built, the same remaining reason fracas_127
+# is still unattempted - caught by reading its stated type directly
+# before building,
+# not after.
 #
 # The remaining 9 (202/204/205/208/209/210/211/212/214) each needed a
 # genuinely new "assumed world-knowledge fact" mechanism confirmed by
@@ -2922,6 +3413,8 @@ CUSTOM_BUILD = {
     131: _build_fracas_131,
     132: _build_fracas_132,
     133: _build_fracas_133,
+    134: _build_fracas_134,
+    135: _build_fracas_135,
     138: _build_fracas_138,
     139: _build_fracas_139,
     140: _build_fracas_140,
@@ -2931,6 +3424,10 @@ CUSTOM_BUILD = {
     147: _build_fracas_147,
     148: _build_fracas_148,
     149: _build_fracas_149,
+    150: _build_fracas_150,
+    151: _build_fracas_151,
+    152: _build_fracas_152,
+    153: _build_fracas_153,
     155: _build_fracas_155,
     157: _build_fracas_157,
     159: _build_fracas_159,
@@ -2940,7 +3437,13 @@ CUSTOM_BUILD = {
     165: _build_fracas_165,
     166: _build_fracas_166,
     167: _build_fracas_167,
+    169: _build_fracas_169,
+    170: _build_fracas_170,
+    175: _build_fracas_175,
+    176: _build_fracas_176,
     178: _build_fracas_178,
+    179: _build_fracas_179,
+    180: _build_fracas_180,
     182: _build_fracas_182,
     183: _build_fracas_183,
     185: _build_fracas_185,
@@ -2948,6 +3451,7 @@ CUSTOM_BUILD = {
     187: _build_fracas_187,
     189: _build_fracas_189,
     190: _build_fracas_190,
+    196: _build_fracas_196,
     198: _build_fracas_198,
     199: _build_fracas_199,
     203: _build_fracas_203,
@@ -3213,20 +3717,140 @@ def main() -> None:
         "ambiguous between this bundle's own specific reading and this",
         "project's usual fused-unary-predicate one; its Skolem-function-bound",
         "variant (117-119, `SKOLEM_PROJECT`); a synthesized scope-entailment",
-        "premise (123, `SYNTHESIZE_PREMISE`); and twelve fully hand-built",
-        "cross-sentential-anaphora theorems bypassing `translate_cl` entirely",
-        "(120-122/124/128/129/131-133/138-140, `CUSTOM_BUILD` - a shared bound",
-        "existential, a ternary named-individual relation, trivial-literal",
-        "restrictors, Skolemized dependent-plural/paycheque pronouns, a",
-        "dropped licensing-only premise, and reflexive/embedded-clause",
-        "arguments). Not every Section 3 id is covered: 125/130/136/141 are",
-        "countermodel-only (no bare theorem to cross-check at all); 126 needs",
-        "a genuinely unstated extra premise (\"the other eight machines were",
-        "also here yesterday\", no corresponding FraCaS sentence); and",
-        "127/134/135 (two-sorted `{Person Machine}`/`{A B}` domains - this",
-        "generator hardcodes a single domain `{A : Type*}` throughout) and 137",
-        "(needs a `Fintype.card` premise plus one predicate bundling five",
-        "separate FraCaS sentences) are structurally blocked. Section 4",
+        "premise (123, `SYNTHESIZE_PREMISE`); two ids (120/121, `CUSTOM_BUILD`)",
+        "built through `translate.py`'s own `translate_discourse` - a real,",
+        "reusable (if narrowly-scoped) cross-sentential pronoun-resolution",
+        "mechanism, not a per-id hand translation, though still invoked via",
+        "`CUSTOM_BUILD` rather than the generic pipeline since combining a",
+        "multi-sentence premise with a single-sentence hypothesis isn't this",
+        "script's generic arrow-chain shape (121's own real theorem restates",
+        "the same conjunction as both premise and hypothesis, via",
+        "`existential_objects=False` - a ternary PP-complement relation over",
+        "three sentences, confirmed by `translate_discourse`'s own proper-",
+        "noun-vs-indefinite salience preference correctly resolving \"them\"",
+        "to ITEL rather than the just-introduced report/invoice); two more",
+        "(139/140, `CUSTOM_BUILD`) built through `translate_cl` itself -",
+        "`_try_translate_reflexive_indefinite_subject` (139's own",
+        "ditransitive reflexive, existentially binding the subject and",
+        "dropping the ditransitive object) and `_try_translate_sentential_",
+        "complement` composed with `_try_translate_reflexive_named_subject`",
+        "(140's own \"said [that] ... himself\", the embedded clause",
+        "translated RECURSIVELY through `translate_cl` rather than by hand);",
+        "a Skolem-function-continuation PAIR (131/132, `CUSTOM_BUILD`) built",
+        "through a THIRD pipeline, `_try_translate_skolem_universal_premise`/",
+        "`_try_translate_skolem_continuation` - \"each department has a",
+        "dedicated line\" only becomes a Skolem function (one line per",
+        "department, not a fused unary predicate) because a LATER sentence",
+        "anaphorically continues it, the exact same context-dependence",
+        "`translate_discourse`'s own `existential_objects` flag already",
+        "makes explicit elsewhere; 131 continues at the bound variable",
+        "itself (\"they rent them\"), 132 at one named instance (\"the sales",
+        "department rents it\"), both reusing the identical premise 1 and",
+        "reproducing the prior hand-built derivation byte-for-byte,",
+        "including the preposition-dropping fused name `rentBt` and the",
+        "witness-letter convention (the object CN's own head noun, \"line\",",
+        "stripped of its \"dedicated\" modifier, unlike the Skolem function's",
+        "own name which keeps the whole compound); a donkey-pronoun MERGE",
+        "(122, `CUSTOM_BUILD`) built through a FOURTH pipeline,",
+        "`_try_translate_universal_existential_premise`/`_try_translate_",
+        "universal_existential_continuation` - the SAME \"every/each X has",
+        "a Y\" shape 131/132's premise 1 uses, but needing a THIRD distinct",
+        "reading of it here (an existentially-bound witness SHARED with -",
+        "not a function parameter of - premise 2's own continuation,",
+        "nested INSIDE the same universal scope as one conjunction, not two",
+        "separate antecedents), plus passive-VP parsing (`PassV2` +",
+        "`by8agent_Prep`) and a possessive-pronoun-governed agent phrase",
+        "for premise 2's own \"is appointed by its members\" - neither",
+        "handled anywhere else in this translator, both narrowly scoped to",
+        "this one shape - confirmed to reproduce the prior hand-built",
+        "derivation byte-for-byte (`committee`/`chairman`/`appointMember`/",
+        "bound var `c`/witness var `ch`, the last falling back to a",
+        "two-letter prefix to avoid colliding with the bound variable,",
+        "since both \"committee\" and \"chairman\" start with the same",
+        "letter); cardinal/set-based anaphora (124, `CUSTOM_BUILD`) built",
+        "through a FIFTH pipeline, `_try_translate_cardinal_adjective_",
+        "property`/`_try_translate_cardinal_passive_property` - a",
+        "shape-checked pair recognizing premise 1's own partitive-",
+        "cardinal-adjective shape (\"two out of ten machines are missing\")",
+        "and the hypothesis's own cardinal-passive shape (\"two machines",
+        "have been removed\"), confirmed to reproduce the prior hand-built",
+        "derivation byte-for-byte (count `2`, `missing`/`remove` - the",
+        "restrictor noun and the partitive's own denominator both carry",
+        "NO information in this id's own real theorem at all); a",
+        "definite-description-licensed total function (138, `CUSTOM_",
+        "BUILD`) reusing 131/132/138's own SHARED premise-1 recognizer,",
+        "`_try_translate_skolem_universal_premise` (only the Skolem",
+        "function's own name is needed here, not the bound/witness",
+        "variables 131/132's own continuation uses, since 138 never",
+        "weakens back to an existential), with a new `_try_translate_",
+        "definite_skolem_application` recovering the Skolem function's",
+        "application to a named individual directly from the",
+        "HYPOTHESIS's own fully explicit \"the cover page OF R-95-103\"",
+        "(an `of`-PP-linked definite description) rather than from",
+        "premise 3's own bare \"the cover page\" (whose tree has no link",
+        "to R-95-103 at all - that link is a discourse fact, and premise",
+        "3/the hypothesis share the identical fact textually anyway, so",
+        "premise 3 is no longer read at all); genuine multi-reading",
+        "referential ambiguity (128/129, `CUSTOM_BUILD`) built through a",
+        "SEVENTH pipeline, `_try_translate_conjoined_possessive_",
+        "restrictor`/`_try_translate_pronoun_verb_pronoun` - \"John and",
+        "his colleagues went to a meeting. They hated it.\" is already",
+        "formalized as TWO SEPARATE theorems, one per reading of \"they\"",
+        "(128: excludes John; 129: includes him) - the correct response",
+        "to genuine ambiguity, never collapsed into one pipeline picking a",
+        "winner; both readings share the identical premise 1 (\"NAME and",
+        "his/her Ns\", a `ConjNP`+`BaseNP`+possessive-pronoun shape) and",
+        "premise 2 (\"PronSubj V2 PronObj\", contributing only the verb's",
+        "own name), confirmed to reproduce the prior hand-built derivation",
+        "byte-for-byte (`colleague`/`hate`); e-type anaphora (133,",
+        "`CUSTOM_BUILD`) built through an EIGHTH pipeline, `_try_",
+        "translate_named_verb_several`/`_try_translate_named_verb_",
+        "pronoun_object` - \"GFI owns several computers. ITEL maintains",
+        "them.\": \"them\" resolves to the MAXIMAL set GFI owns, not just",
+        "the \"several\" witnesses, so premise 1's own named subject (GFI)",
+        "is existentially quantified AWAY entirely rather than kept as a",
+        "fixed individual - the opposite move from every other named-",
+        "subject case in this corpus (contrast `translate_cl`'s own",
+        "general fused-predicate path, which keeps the subject and gives",
+        "`ownComputer gfi` - correct for fracas_103's identical shape,",
+        "wrong for this one), confirmed to reproduce the prior hand-built",
+        "derivation byte-for-byte (`ownComputer`/`maintain`). This was the",
+        "last of this file's cross-sentential-anaphora ids using",
+        "hand-indexed positional extraction rather than a named,",
+        "shape-checked function - 114-119/123 are handled by the generic",
+        "BUNDLE_PROJECT/SKOLEM_PROJECT/SYNTHESIZE_PREMISE mechanisms",
+        "documented separately above, not by these pipelines. A ninth",
+        "pipeline, `_try_translate_donkey_relative_premise`/`_try_",
+        "translate_named_copula_relative_restrictor`, reproduces 134/135's",
+        "own strong/universal donkey reading (\"Every customer that owns a",
+        "computer has a service contract for it\") - unlike every other",
+        "donkey/Skolem pipeline above (built across TWO sentences), this",
+        "donkey binding is internal to ONE sentence's own subject-gap",
+        "relative clause, continued by a pronoun in that SAME sentence's",
+        "main-clause object; `translate_cl`'s own general restrictor-",
+        "fusion path also parses this tree shape without erroring, but",
+        "commits to the WRONG reading for it - confirmed by direct",
+        "comparison, not assumed. Also the FIRST two-sorted Lean domain",
+        "(`{A B : Type*}`) this generator has ever produced - nothing in",
+        "the dispatch mechanism itself required a single domain; every",
+        "prior id simply never needed more than one sort. Both ids share",
+        "the identical premise 1 and reduce premise 2 to just",
+        "`customer mfi`; the hypothesis is never independently",
+        "translated either - the real proof is just premise 1's own",
+        "universal instantiated at `mfi`. Confirmed to reproduce both",
+        "real theorems' own identical stated type and proof. Not every",
+        "Section 3 id is covered: 125/130/136/141 are",
+        "countermodel-only (a witness construction, not an entailment",
+        "chain - a different KIND of theorem, not a missing case); 126",
+        "and 137 each need an extra premise with no corresponding FraCaS",
+        "sentence and no tree to recover it from (137 also bundles five",
+        "separate sentences into one predicate); and 127 stacks FOUR",
+        "separate novel mechanisms (a conjoined two-clause premise,",
+        "cumulative-plural distribution across two referents, a",
+        "disjunctive-existential weakening, and its own unstated",
+        "distinctness premise) on top of a two-sorted domain - a",
+        "substantially bigger undertaking than 134/135's own single,",
+        "reusable shape, not attempted here. Section 4",
         "(ellipsis, 142-196) adds 23 more ids, all via `CUSTOM_BUILD`: per",
         "Ellipsis.lean's own approach note, this project never models",
         "ellipsis RESOLUTION itself, only the already-resolved content, so",
@@ -3241,16 +3865,60 @@ def main() -> None:
         "`{Person City Vehicle}` domain, and a `Some`/`Exactly`-quantified",
         "guess at fracas_196's own direct `∃`/`∀` over a two-sorted",
         "`{Person Report}` domain), every Section 4 id goes through",
-        "`CUSTOM_BUILD` or not at all. Not covered: 150/151/152/153/196",
-        "(three- or two-sorted domains, the same blocker as 127/134/135);",
-        "163/171/172/173/174/191-195 (genuine grammar gaps - embedded",
-        "questions, relativizing a quantificational pronoun NP, a passive-",
-        "impersonal-plus-reciprocal construction with no combinator -",
-        "confirmed via `run_gf_tests.py`'s own comment on exactly these",
-        "ids); 168/169/170/175/176/179/180 (each needs a genuinely new GF",
-        "tree or an `AdvS`-headed conditional top level not yet built,",
-        "left for a future round); and 143/156/158/161/174/177/181/184/",
-        "188/192/194 (countermodel-only, already excluded automatically).",
+        "`CUSTOM_BUILD` or not at all. 150/151/152/153 (gapping with PP",
+        "modifiers, three-sorted `{A B C}`) ARE now built, through",
+        "`translate.py`'s own `_try_translate_gapped_travel_fact` -",
+        "\"John went to Paris by car\" (an intransitive verb with two PP",
+        "adjuncts) continued by either a second named individual",
+        "(150-152) or a definite-plural distributive universal over a",
+        "TRIVIAL whole-domain restrictor (153, the same `fun _ => True`",
+        "device id 124's own cardinal case established). All three share",
+        "the identical premise 1, confirmed by `run_gf_tests.py`'s own",
+        "`fracas_151_premise1`/`fracas_152_premise1` entries reusing",
+        "fracas_150's tree. 196 (existential-over-universal wide scope,",
+        "two-sorted `{A B}`) is also now built, through `_try_translate_",
+        "existential_universal_object` - \"one lawyer signed all the",
+        "reports\" needs an existential SUBJECT taking scope OVER an",
+        "inner universal object, the wide-scope \"so did\" reading -",
+        "`translate_cl`'s own general path parses the identical tree",
+        "shape without erroring but commits to the WRONG `Exactly 1`",
+        "cardinal-quantified reading instead, confirmed by direct",
+        "comparison. Premise 1 is a pure distractor, never read; the",
+        "premise's own SECOND conjunct (\"so did one auditor\") has no",
+        "tree of its own either - built from the hypothesis's own tree",
+        "instead, the same \"elided sentence = reuse the hypothesis's own",
+        "tree\" convention 142/145-149's own builders already use. All",
+        "five confirmed to typecheck against their own real `fracas_NNN`",
+        "lemmas via Lean's own elaborator, the same cross-check every",
+        "other id in this corpus gets - none of these were previously",
+        "attempted at all (not a refactor of existing hand-built code).",
+        "169/170/175/176/179/180 ARE also now built: 169/170 (a top-level",
+        "\"before\"-conditional, the stipulated reading of a genuinely",
+        "ambiguous sentence, `:= id` trivially) and 179 (an `if`-",
+        "conditional, modus ponens over two atoms, split via the new",
+        "`_split_advs_conditional` helper) reuse trees that were ALREADY",
+        "confirmed via `gf`'s own linearize check but never wired into",
+        "this generator at all; 175/176 (\"Bill/John said that Mary/Bill",
+        "wrote a report\", `:= id` trivially) and 180's own premise 1",
+        "(\"John wanted to buy a car\", a `want_VV`+`ComplVV` control-verb",
+        "construction) are genuinely NEW trees, confirmed directly via",
+        "`gf`'s own linearize check this round - this project's local GF",
+        "toolchain is available and fast enough to confirm new sentences",
+        "directly, not just reuse already-confirmed ones. Still not",
+        "covered: 163/171/172/173/174/191-195 (genuine grammar gaps -",
+        "embedded questions, relativizing a quantificational pronoun NP,",
+        "a passive-impersonal-plus-reciprocal construction with no",
+        "combinator - confirmed via `run_gf_tests.py`'s own comment on",
+        "exactly these ids); 168 (\"forty-five women work part time\") - a",
+        "REAL, independently-reconfirmed gf-rgl TOOLCHAIN bug at the",
+        "current pinned tag (`pot1plus`, the tens-plus-ones numeral",
+        "combinator any two-digit number with a nonzero ones digit",
+        "needs, renders its own bind tokens literally instead of",
+        "collapsing them - confirmed directly via `gf`'s own linearize",
+        "output this round, not merely re-read from a pre-existing",
+        "comment), not fixable at the Python/translate.py level; and",
+        "143/156/158/161/174/177/181/184/188/192/194 (countermodel-only,",
+        "already excluded automatically).",
         "Section 5 (adjectives, 197-219) adds 14 more ids, all via",
         "`CUSTOM_BUILD` again: per Adjectives.lean's own approach note, this",
         "project treats adjective-noun predication directly (not via MTT's",
@@ -3267,7 +3935,11 @@ def main() -> None:
         "predicate (210's `smallAnimal`, alongside a separate `animal`).",
         "Not covered: 197 (looked like 203's own adjective-drop shape at",
         "first glance, but its own stated type is actually two-sorted",
-        "`{Person Thing}`, the same blocker as 127/134/135/150-153/196);",
+        "`{Person Thing}` - two-sortedness alone is no longer a blocker,",
+        "per 134/135's and 150-153/196's own pipelines, but 197's",
+        "adjective-drop shape combined with it hasn't been individually",
+        "built, the same remaining reason fracas_127 is still",
+        "unattempted);",
         "200/201/206/207/213/215/217/219 (countermodel-only, already",
         "excluded automatically). Section 6 (comparatives, 220-250) adds 10",
         "more ids: 220/223/224/227/229 chain in an assumed comparative-",

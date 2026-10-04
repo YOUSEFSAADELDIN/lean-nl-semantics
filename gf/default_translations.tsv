@@ -150,6 +150,7 @@ fracas_133_premise2	maintain itel
 fracas_133_hypothesis	maintainEveryComputerGfiOwn itel
 fracas_134_premise1	Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor
 fracas_134_premise2	(fun x => customer x ∧ ownExactly1Computer x) mfi
+fracas_135_premise1	Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor
 fracas_135_premise2	(fun x => customer x ∧ ownSeveralComputer x) mfi
 fracas_134_hypothesis	haveServiceContractForComputer mfi
 fracas_136_premise2	(fun x => executive x ∧ own5DifferentLaptopComputer x) smith
@@ -439,6 +440,7 @@ fracas_133_premise2_tense_reconfirm	maintain itel
 fracas_133_hypothesis_tense_reconfirm	maintainEveryComputerGfiOwn itel
 fracas_134_premise1_tense_reconfirm	Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor
 fracas_134_premise2_tense_reconfirm	(fun x => customer x ∧ ownExactly1Computer x) mfi
+fracas_135_premise1_tense_reconfirm	Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor
 fracas_135_premise2_tense_reconfirm	(fun x => customer x ∧ ownSeveralComputer x) mfi
 fracas_134_hypothesis_tense_reconfirm	haveServiceContractForComputer mfi
 fracas_136_premise2_tense_reconfirm	(fun x => executive x ∧ own5DifferentLaptopComputer x) smith
@@ -631,9 +633,9 @@ fracas_136_premise1	Every (fun x => executive x ∧ haveLaptopComputer x) bringT
 fracas_136_hypothesis	take5LaptopComputerToMeeting smith
 fracas_138_premise3	signCoverPage smith
 fracas_138_hypothesis	signCoverPageOfR95103 smith
-fracas_139_premise	Some companyDirector largePayrise
-fracas_140_premise	billHurt john
-fracas_140_hypothesis	billHurt john
+fracas_139_premise	∃ d, awardLargePayrise d d
+fracas_140_premise	said john (hurt bill bill)
+fracas_140_hypothesis	said john (hurt bill)
 fracas_141_hypothesis	-
 fracas_123_premise1	Most reportSmithNeed sendByItel
 fracas_142_premise1	speakToMary john
@@ -650,7 +652,9 @@ fracas_148_hypothesis	speakToMary bill
 fracas_149_premise2	Every student speakToMary
 fracas_150_premise1	goToParisByCar john
 fracas_150_hypothesis	goToParisByTrain bill
+fracas_151_premise1	goToParisByCar john
 fracas_151_hypothesis	goToBerlinByTrain bill
+fracas_152_premise1	goToParisByCar john
 fracas_152_hypothesis	goToBerlinByCar bill
 fracas_164_hypothesis	speakToSue john
 fracas_165_hypothesis	speakToMaryOnFriday john
@@ -660,9 +664,12 @@ fracas_165_premise1	speakToMary john
 fracas_166_hypothesis	speakToMaryOnFriday john
 fracas_169	-
 fracas_170	-
+fracas_175	said bill (writeReport mary)
+fracas_176	said john (writeReport bill)
 fracas_178_premise1	writeReport john
-fracas_178_hypothesis	peterWriteReport bill
+fracas_178_hypothesis	said bill (writeReport peter)
 fracas_179	-
+fracas_180_premise1	wantBuyCar john
 fracas_180_hypothesis	buyCar john
 fracas_185_premise	costProposal smith
 fracas_185_hypothesis	costProposal jones

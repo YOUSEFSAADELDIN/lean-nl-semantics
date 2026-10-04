@@ -9,7 +9,7 @@ Extends `LeanNLSemantics/MTT/AssumptionAudit.lean`'s own methodology -
 a faithful port of `atlas/mtt_ranta/MTT.v` Part 9, Coq's `Print
 Assumptions` becoming Lean's `#print axioms` - from the 14 MTT example
 theorems that file already covers to every `fracas_*` theorem in the
-FraCaS corpus: 631 theorems as of this generation, extracted
+FraCaS corpus: 644 theorems as of this generation, extracted
 automatically (see scripts/gen_fracas_assumption_audit.py), not
 hand-picked.
 
@@ -582,6 +582,8 @@ computed from. If this file's own theorem count above no longer reads
 #print axioms fracas_131_from_gf
 #print axioms fracas_132_from_gf
 #print axioms fracas_133_from_gf
+#print axioms fracas_134_from_gf
+#print axioms fracas_135_from_gf
 #print axioms fracas_138_from_gf
 #print axioms fracas_139_from_gf
 #print axioms fracas_140_from_gf
@@ -591,6 +593,10 @@ computed from. If this file's own theorem count above no longer reads
 #print axioms fracas_147_from_gf
 #print axioms fracas_148_from_gf
 #print axioms fracas_149_from_gf
+#print axioms fracas_150_from_gf
+#print axioms fracas_151_from_gf
+#print axioms fracas_152_from_gf
+#print axioms fracas_153_from_gf
 #print axioms fracas_155_from_gf
 #print axioms fracas_157_from_gf
 #print axioms fracas_159_from_gf
@@ -600,7 +606,13 @@ computed from. If this file's own theorem count above no longer reads
 #print axioms fracas_165_from_gf
 #print axioms fracas_166_from_gf
 #print axioms fracas_167_from_gf
+#print axioms fracas_169_from_gf
+#print axioms fracas_170_from_gf
+#print axioms fracas_175_from_gf
+#print axioms fracas_176_from_gf
 #print axioms fracas_178_from_gf
+#print axioms fracas_179_from_gf
+#print axioms fracas_180_from_gf
 #print axioms fracas_182_from_gf
 #print axioms fracas_183_from_gf
 #print axioms fracas_185_from_gf
@@ -608,6 +620,7 @@ computed from. If this file's own theorem count above no longer reads
 #print axioms fracas_187_from_gf
 #print axioms fracas_189_from_gf
 #print axioms fracas_190_from_gf
+#print axioms fracas_196_from_gf
 #print axioms fracas_198_from_gf
 #print axioms fracas_199_from_gf
 #print axioms fracas_202_from_gf
