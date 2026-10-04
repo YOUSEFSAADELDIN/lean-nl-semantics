@@ -388,6 +388,35 @@ readings where anaphoric one is anything but the head of a noun phrase or
 a bare argument - a well-formedness condition, not a ranking tweak - and
 agreement is back to 381/382.
 
+**Quantity comparatives.** "ITEL won more orders than APCOM did" (and
+"... than APCOM", "... than APCOM lost", FraCaS 230-241) gets three
+FraCaSLogic functions, `MoreThanAux`/`MoreThanNP`/`MoreThanV2 : CN -> NP
+-> ... -> NP`. Each realizes the whole object NP "more CN than NP [did |
+V-ed]", with a confirmed check apiece. As with ellipsis, the "than" part
+is not a full clause in the grammar: an elided verb is resolved to the
+main clause's own verb by `translate.py`, which translates the sentence
+as `More order (win itel) (win apcom)`. `More` is the three-place
+quantifier `card (P ∧ Q) > card (P ∧ R)` in `GQ.lean`. This needed
+object quantifiers, which `translate.py` did not have: it fused the
+whole VP into one predicate name. It now keeps the verb as a binary
+predicate and the determiner as a quantifier over it, but only for a
+proper-name subject (no scope interaction) whose object counts
+(numerals, "some/several/a few/many Xs", "more Xs than ..."), and only
+in the end-to-end readings. Other objects keep the fused name, so a
+problem mixing the two shapes can lose an inference, never gain a wrong
+one.
+
+The same work found a soundness bug in the fused names: numerals were
+dropped, so "won ten orders" and "won eleven orders" were one predicate.
+Fused names now keep the numeral (`win10Order`). A bare numeral is also a
+fifth ambiguity kind in the end-to-end readings: "at least n" (weak) or
+"exactly n" (strong). "Just/only n" is always exact, and "at least/at
+most/exactly n" say which outright.
+
+Free-choice "any" (DictEng's `anySg_Det`, FraCaS 248: "faster than any
+ITEL computer") is read universally, but only as a comparative's
+standard; everywhere else "any" still does not translate.
+
 **Measured and rejected: a corpus-vocabulary lexicon.** Giving the parse
 grammar DictEng's entries for every word FraCaS uses (404 lexical
 functions for 94 missing words) let only 25 more of the 230 failing
