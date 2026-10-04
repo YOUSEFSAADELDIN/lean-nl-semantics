@@ -3890,6 +3890,11 @@ _FRACAS_ENGLISH_CHECKS = [
         'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (MoreThanV2 (UseN order_N) (UsePN apcom_PN) lose_V2)))',
         'ITEL won more orders than APCOM lost',
     ),
+    (
+        'english_248_premise1',
+        'linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN anySg_Det (UseN itelComputer_N)))))',
+        'the PC-6082 is faster than any ITEL computer',
+    ),
 ]
 
 CHECKS = (

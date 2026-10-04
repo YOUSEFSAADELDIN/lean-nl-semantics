@@ -15,9 +15,9 @@ for the exact pipeline and what it deliberately does not supply (any
 background-knowledge premise). Evaluated by
 `BlindEvalParsedScan.lean`.
 
-185 of 342 problems carried all the way through;
+186 of 342 problems carried all the way through;
 the rest, by first failing stage:
-- a sentence does not parse: 112
+- a sentence does not parse: 111
 - a sentence parses but translate.py does not cover its reading: 32
 - a translation needs non-generic assembly: 13
 
@@ -122,7 +122,6 @@ Per-problem skip reasons (first failing sentence/stage):
 - 243: premise 1 does not parse: 'ITEL sold 3000 more computers than APCOM.'
 - 244: premise 1 does not parse: 'APCOM has a more important customer than ITEL.'
 - 245: premise 1 does not parse: 'APCOM has a more important customer than ITEL.'
-- 248: premise 1 does not parse: 'The PC-6082 is faster than any ITEL computer.'
 - 251: hypothesis does not parse: 'ITEL currently has a factory in Birmingham.'
 - 252: premise 2 does not parse: 'It is now 1996.'
 - 253: premise 2 does not parse: 'It is now 1996.'
@@ -3099,6 +3098,22 @@ def fracas_247_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_248_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_248_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_248_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_248_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_249_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
@@ -3844,6 +3859,7 @@ def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean
   (241, .yes, [``BlindEvalParsedClaims.fracas_241_parsed_yes_0, ``BlindEvalParsedClaims.fracas_241_parsed_yes_1], [``BlindEvalParsedClaims.fracas_241_parsed_no_0, ``BlindEvalParsedClaims.fracas_241_parsed_no_1]),
   (246, .yes, [``BlindEvalParsedClaims.fracas_246_parsed_yes_0], [``BlindEvalParsedClaims.fracas_246_parsed_no_0]),
   (247, .unknown, [``BlindEvalParsedClaims.fracas_247_parsed_yes_0], [``BlindEvalParsedClaims.fracas_247_parsed_no_0]),
+  (248, .yes, [``BlindEvalParsedClaims.fracas_248_parsed_yes_0], [``BlindEvalParsedClaims.fracas_248_parsed_no_0]),
   (249, .yes, [``BlindEvalParsedClaims.fracas_249_parsed_yes_0], [``BlindEvalParsedClaims.fracas_249_parsed_no_0]),
   (250, .yes, [``BlindEvalParsedClaims.fracas_250_parsed_yes_0], [``BlindEvalParsedClaims.fracas_250_parsed_no_0]),
   (261, .yes, [``BlindEvalParsedClaims.fracas_261_parsed_yes_0], [``BlindEvalParsedClaims.fracas_261_parsed_no_0]),
@@ -4034,6 +4050,7 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Le
   (241, .yes, [``BlindEvalParsedClaims.fracas_241_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_241_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_241_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_241_parsed_bk_no_1]),
   (246, .yes, [``BlindEvalParsedClaims.fracas_246_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_246_parsed_bk_no_0]),
   (247, .unknown, [``BlindEvalParsedClaims.fracas_247_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_247_parsed_bk_no_0]),
+  (248, .yes, [``BlindEvalParsedClaims.fracas_248_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_248_parsed_bk_no_0]),
   (249, .yes, [``BlindEvalParsedClaims.fracas_249_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_249_parsed_bk_no_0]),
   (250, .yes, [``BlindEvalParsedClaims.fracas_250_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_250_parsed_bk_no_0]),
   (261, .yes, [``BlindEvalParsedClaims.fracas_261_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_261_parsed_bk_no_0]),

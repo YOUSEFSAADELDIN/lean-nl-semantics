@@ -830,10 +830,17 @@ def _try_translate_comparative(subject_name: str, vp):
             )
         return None
     if standard.head == "DetCN" and len(standard.args) == 2:
-        try:
-            quant = _resolve_quantifier(standard.args[0])
-        except NotImplementedError:
-            return None
+        # Free-choice "any" in a comparative's standard is universal:
+        # "faster than any ITEL computer" is faster than each of them
+        # (FraCaS 248). Read this way only here - elsewhere "any" is
+        # mostly a negative-polarity existential.
+        if standard.args[0].head == "anySg_Det" and not standard.args[0].args:
+            quant = "Every"
+        else:
+            try:
+                quant = _resolve_quantifier(standard.args[0])
+            except NotImplementedError:
+                return None
         if quant not in ("Every", "Some"):
             return None
         restrictor_expr, restrictor_preds = _restrictor_expr(standard.args[1])
