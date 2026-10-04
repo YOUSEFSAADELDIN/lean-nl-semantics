@@ -18,7 +18,7 @@ Deliberately not imported by anything - run directly, as its own CI step.
 open Lean Lean.Meta Lean.Elab Lean.Elab.Command
 open FraCaS.Section1.Monotonicity (goalHeadConst)
 open FraCaS.Section1.Monotonicity.BlindEval
-  (attemptClose flipConclusion isNegHead answerMatches answerToString)
+  (attemptClose flipConclusion isNegHead answerMatches answerToString withFreshBudget)
 
 namespace FraCaS.BlindEvalParsedScan
 
@@ -36,17 +36,17 @@ elab "#blind_eval_parsed" : command => liftTermElabM do
         missing := missing.push idn
         continue
     logInfo m!"blind_eval_parsed: attempting fracas_{idn}"
-    let result ←
-      try
+    let result ← withFreshBudget
+      (do
         let isNeg := isNegHead (← goalHeadConst ty)
         let closesAsWritten ← attemptClose ty
         let closesFlipped ← attemptClose (← flipConclusion ty)
         let hypClose := if isNeg then closesFlipped else closesAsWritten
         let notHypClose := if isNeg then closesAsWritten else closesFlipped
-        pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool))
-      catch e =>
+        pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool)))
+      (fun e => do
         let msg ← try e.toMessageData.toString catch _ => pure "<error message could not be rendered>"
-        pure (.error msg)
+        pure (.error msg))
     match result with
     | .error msg => errored := errored.push (idn, msg)
     | .ok (hypClose, notHypClose) =>

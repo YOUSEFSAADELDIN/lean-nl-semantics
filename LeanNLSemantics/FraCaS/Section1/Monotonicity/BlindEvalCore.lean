@@ -174,7 +174,10 @@ blind-evaluation result published before the fix came from the other
 steps of the chain alone, never from `aesop`. The `example`s right below
 this macro now make that failure mode a *build* error instead.
 
-The lemma rules are `unsafe 50%` rather than `safe`: safe rules are never
+`no_iff_not_some` is an `Iff`, so it is a `simp` rule rather than an
+`apply` rule (Aesop warns that `apply` on an `A ↔ B` conclusion is almost
+never what's meant). The other lemma rules are `unsafe 50%` rather than
+`safe`: safe rules are never
 backtracked, and once `Every`/`Some` are unfoldable, `apply` can unify
 some of these lemmas' conclusions (`entails_refl : Every P P`, unfolding
 to `∀ x, P x → P x`) with almost any atomic goal, making no progress -
@@ -189,7 +192,7 @@ macro "blind_aesop" : tactic => `(tactic|
       unsafe 50% apply FraCaS.Section1.every_some,
       unsafe 50% apply FraCaS.Section1.some_of_nonempty,
       unsafe 50% apply FraCaS.Section1.every_trans, unsafe 50% apply FraCaS.Section1.every_mp,
-      unsafe 50% apply FraCaS.Section1.no_iff_not_some,
+      norm simp FraCaS.Section1.no_iff_not_some,
       unsafe 50% apply FraCaS.Section1.atLeast_some, unsafe 50% apply FraCaS.Section1.most_some,
       unsafe 50% apply FraCaS.Section1.some_mono_scope,
       unsafe 50% apply FraCaS.Section1.every_mono_scope,
@@ -236,6 +239,18 @@ example {A : Type} (P Q : A → Prop) (x : A) :
     FraCaS.Section1.Every P Q → P x → Q x := by blind_aesop_unfold
 example {A : Type} (P Q : A → Prop) (x : A) :
     FraCaS.Section1.Every P Q → P x → Q x := by blind_grind
+
+/-- Runs one *problem's* whole evaluation (not just one tactic attempt -
+`runTacticOn` already isolates those) with a fresh heartbeat budget,
+catching a resource-limit failure as an ordinary error via `h`. The scan
+loops' own bookkeeping between attempts (`goalHeadConst`, `flipConclusion`,
+`negateConclusion` - all of which can `whnf`) is otherwise charged against
+the *whole* scanning command's cumulative count: CI run 37169187753, the
+first run with a working `aesop`, crossed 200000 heartbeats that way at
+`fracas_011` and the uncaught runtime exception aborted the rest of
+Section 1's scan. -/
+def withFreshBudget {α : Type} (x : TermElabM α) (h : Exception → TermElabM α) : TermElabM α :=
+  withCurrHeartbeats <| tryCatchRuntimeEx x h
 
 /-- The fixed tactic chain both directions get, in order: this corpus's
 own certified monotonicity fragment first (`mono_nl`, `exist_nl`,
@@ -341,9 +356,9 @@ generalized quantifier, which turned out not to be load-bearing (see
 `BLIND_EVAL.md`) - posing "does the hypothesis follow" and "does its
 negation follow" via `attemptClose`, with `flipConclusion`/`isNegHead`
 keeping the two straight whichever polarity the theorem's own conclusion
-was written in. A per-theorem `try`/`catch` (kept expression-level,
-never wrapping a `continue`) means one unanticipated shape is reported
-as "errored" rather than aborting the whole scan. -/
+was written in. Each theorem's evaluation runs under `withFreshBudget`, so one
+unanticipated shape or one expensive search is reported as "errored"
+rather than aborting the whole scan. -/
 def runBlindEvalGeneric (namePrefix : Lean.Name) (label : String) : TermElabM Unit := do
   let env ← getEnv
   let mut skippedNotBare : Nat := 0
@@ -363,8 +378,8 @@ def runBlindEvalGeneric (namePrefix : Lean.Name) (label : String) : TermElabM Un
 
     let ty := info.type
     logInfo m!"{label}: attempting fracas_{problemNum}"
-    let result ←
-      try
+    let result ← withFreshBudget
+      (do
         let isNeg := isNegHead (← goalHeadConst ty)
         let closesAsWritten ← attemptClose ty
         let tyFlipped ← flipConclusion ty
@@ -373,10 +388,10 @@ def runBlindEvalGeneric (namePrefix : Lean.Name) (label : String) : TermElabM Un
         -- on whether the theorem's own conclusion already is the negation
         let hypClose := if isNeg then closesFlipped else closesAsWritten
         let notHypClose := if isNeg then closesAsWritten else closesFlipped
-        pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool))
-      catch e =>
+        pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool)))
+      (fun e => do
         let msg ← try e.toMessageData.toString catch _ => pure "<error message could not be rendered>"
-        pure (.error msg)
+        pure (.error msg))
 
     match result with
     | .error msg => errored := errored.push (problemNum, msg)

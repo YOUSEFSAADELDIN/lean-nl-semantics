@@ -24,7 +24,7 @@ Deliberately not imported by anything (same reasoning as every other
 blind-eval scan file) - run directly.
 -/
 open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Lean.Elab.Command
-open FraCaS.Section1.Monotonicity.BlindEval (attemptClose negateConclusion)
+open FraCaS.Section1.Monotonicity.BlindEval (attemptClose negateConclusion withFreshBudget)
 
 namespace FraCaS.BlindEvalUnknown3to9Scan
 
@@ -34,6 +34,7 @@ elab "#blind_eval_unknown_3to9" : command => liftTermElabM do
   let mut mismatches : Array (Nat × String × String) := #[]
   let mut contradictions : Array Nat := #[]
   let mut missingClaim : Array Nat := #[]
+  let mut errored : Array Nat := #[]
 
   for (idn, goldStr, claimName) in FraCaS.blindEvalUnknownRegistry3to9 do
     let some cinfo := env.find? claimName
@@ -46,9 +47,21 @@ elab "#blind_eval_unknown_3to9" : command => liftTermElabM do
         continue
 
     logInfo m!"blind_eval_unknown_3to9: attempting fracas_{idn}"
-    let posOk ← attemptClose ty
-    let tyNeg ← negateConclusion ty
-    let negOk ← attemptClose tyNeg
+    -- `withFreshBudget` (BlindEvalCore.lean): one expensive search can't
+    -- exhaust the whole command's heartbeat count and abort the scan. An
+    -- attempt that fails that way is reported as errored, never counted
+    -- as "unknown" - every gold answer here IS unknown, so that would
+    -- silently turn a failed attempt into a match.
+    let attempt ← withFreshBudget
+      (do
+        let posOk ← attemptClose ty
+        let negOk ← attemptClose (← negateConclusion ty)
+        pure (some (posOk, negOk)))
+      (fun _ => pure none)
+    let some (posOk, negOk) := attempt
+      | do
+        errored := errored.push idn
+        continue
 
     let decision :=
       if posOk && !negOk then "yes"
@@ -65,7 +78,7 @@ elab "#blind_eval_unknown_3to9" : command => liftTermElabM do
     else
       mismatches := mismatches.push (idn, goldStr, decision)
 
-  let total := matched.size + mismatches.size + contradictions.size + missingClaim.size
+  let total := matched.size + mismatches.size + contradictions.size + missingClaim.size + errored.size
   logInfo m!"blind_eval_unknown_3to9: {matched.size}/{total} automated verdicts correctly say \
     unknown ({contradictions.size} contradictions, {missingClaim.size} missing claim constants)"
   logInfo m!"matched [{matched.size}]: {matched.toList}"
@@ -74,6 +87,7 @@ elab "#blind_eval_unknown_3to9" : command => liftTermElabM do
   logInfo m!"contradictions (both directions closed - flag, do not silently resolve) \
     [{contradictions.size}]: {contradictions.toList}"
   logInfo m!"missing claim constants [{missingClaim.size}]: {missingClaim.toList}"
+  logInfo m!"errored during attempt (resource limit - flag, not a verdict) [{errored.size}]: {errored.toList}"
 
 end FraCaS.BlindEvalUnknown3to9Scan
 
