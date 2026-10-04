@@ -15,33 +15,23 @@ assembled by one generic rule. See `EndToEnd/gen_claims.py` for the
 exact pipeline and what it deliberately does not supply. Evaluated by
 `EndToEnd/Scan.lean`.
 
-195 of 342 problems carried all the way through;
+209 of 342 problems carried all the way through;
 the rest, by first failing stage:
 - a sentence does not parse: 111
-- a sentence parses but translate.py does not cover its reading: 23
-- a translation needs non-generic assembly: 13
+- a sentence parses but translate.py does not cover its reading: 16
+- a translation needs non-generic assembly: 6
 
 Per-problem skip reasons (first failing sentence/stage):
 
-- 46: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 62: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 78: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 81: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 82: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 83: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 84: hypothesis does not parse: 'If Smith and Anderson did not sign the contract, Jones signed the contract.'
-- 85: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
-- 86: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 89: hypothesis does not parse: 'Every representative and every client was at the meeting.'
-- 91: hypothesis parses (2 readings) but does not translate: AdvNP's own wrapped NP is only handled as a bare DetCN so far, got head='everyone_NP'
-- 92: hypothesis parses (2 readings) but does not translate: AdvNP's own wrapped NP is only handled as a bare DetCN so far, got head='everyone_NP'
 - 93: premise 1 does not parse: 'The people who were at the meeting all voted for a new chairman.'
 - 97: hypothesis does not parse: 'The system failure was blamed on one or more software faults.'
 - 101: hypothesis does not parse: 'Smith is likely to make a poor stock market trader.'
 - 104: hypothesis does not parse: 'Jones has more than one company car.'
-- 111: hypothesis needs non-generic assembly (conjuncts/Skolem/bundle)
-- 112: hypothesis needs non-generic assembly (conjuncts/Skolem/bundle)
-- 113: hypothesis needs non-generic assembly (conjuncts/Skolem/bundle)
+- 111: hypothesis parses (2 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
+- 112: hypothesis parses (2 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
+- 113: hypothesis parses (2 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
 - 114: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 115: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 116: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
@@ -158,11 +148,7 @@ Per-problem skip reasons (first failing sentence/stage):
 - 325: premise 1 does not parse: 'Nobody who is asleep ever knows that he is asleep.'
 - 327: premise 1 does not parse: 'ITEL was building MTALK in 1993.'
 - 329: premise 1 does not parse: 'ITEL was winning the contract from APCOM in 1993.'
-- 331: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
-- 332: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
-- 333: premise 1 parses (1 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 338: premise 1 parses (20 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 339: premise 1 parses (20 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
+- 333: premise 1 parses (1 readings) but does not translate: coordinated subject of a collective verb
 - 340: premise 1 does not parse: 'Smith saw Jones sign the contract.'
 - 341: premise 1 does not parse: 'Smith saw Jones sign the contract.'
 - 342: premise 1 does not parse: 'Smith saw Jones sign the contract.'
@@ -402,19 +388,19 @@ def fracas_008_bk_no_1 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_009_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (Some greatTenor british)
+  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount greatTenor british) → (Some greatTenor british)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_009_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (¬ (Some greatTenor british))
+  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount greatTenor british) → (¬ (Some greatTenor british))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_009_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (Some greatTenor british)
+  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount greatTenor british) → (Some greatTenor british)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_009_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (¬ (Some greatTenor british))
+  ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount greatTenor british) → (¬ (Some greatTenor british))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_010_yes_0 : Prop :=
@@ -754,19 +740,19 @@ def fracas_024_bk_no_1 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_025_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublish)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (AtLeast severalCount delegate getEveryResultPublish)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_025_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublish))
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (AtLeast severalCount delegate getEveryResultPublish))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_025_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublish)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (AtLeast severalCount delegate getEveryResultPublish)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_025_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublish))
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (AtLeast severalCount delegate getEveryResultPublish))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_026_yes_0 : Prop :=
@@ -1074,19 +1060,19 @@ def fracas_040_bk_no_1 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_041_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublish) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_041_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublish) → (¬ (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_041_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublish) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_041_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublish) → (¬ (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_042_yes_0 : Prop :=
@@ -1167,6 +1153,38 @@ def fracas_045_bk_yes_0 : Prop :=
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_045_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (¬ (Both commissioner usedToLeadingBusinessman))
+
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_046_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (AtLeast 1 commissioner spendALotOfTimeAtHome)
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_046_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (AtLeast 1 commissioner spendALotOfTimeAtHome))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_046_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (AtLeast 1 commissioner spendALotOfTimeAtHome)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_046_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (AtLeast 1 commissioner spendALotOfTimeAtHome))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_046_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (Exactly 1 commissioner spendALotOfTimeAtHome)
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_046_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (Exactly 1 commissioner spendALotOfTimeAtHome))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_046_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (Exactly 1 commissioner spendALotOfTimeAtHome)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_046_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (Exactly 1 commissioner spendALotOfTimeAtHome))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_047_yes_0 : Prop :=
@@ -1378,19 +1396,19 @@ def fracas_056_bk_no_1 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_057_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_057_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
+  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_057_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (∀ x, portugueseDelegate x → delegate x) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate] (severalCount : Nat), (severalCount ≥ 2) → (∀ x, portugueseDelegate x → delegate x) → (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_057_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (∀ x, portugueseDelegate x → delegate x) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
+  ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate] (severalCount : Nat), (severalCount ≥ 2) → (∀ x, portugueseDelegate x → delegate x) → (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_058_yes_0 : Prop :=
@@ -1471,6 +1489,38 @@ def fracas_061_bk_yes_0 : Prop :=
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_061_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both femaleCommissioner usedToInBusiness) → (¬ (Both commissioner usedToInBusiness))
+
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_062_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (AtLeast 1 commissioner spendALotOfTimeAtHome)
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_062_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (¬ (AtLeast 1 commissioner spendALotOfTimeAtHome))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_062_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither femaleCommissioner spendALotOfTimeAtHome) → (AtLeast 1 commissioner spendALotOfTimeAtHome)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_062_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither femaleCommissioner spendALotOfTimeAtHome) → (¬ (AtLeast 1 commissioner spendALotOfTimeAtHome))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_062_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (Exactly 1 commissioner spendALotOfTimeAtHome)
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_062_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (Neither femaleCommissioner spendALotOfTimeAtHome) → (¬ (Exactly 1 commissioner spendALotOfTimeAtHome))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_062_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither femaleCommissioner spendALotOfTimeAtHome) → (Exactly 1 commissioner spendALotOfTimeAtHome)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_062_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommissioner spendALotOfTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither femaleCommissioner spendALotOfTimeAtHome) → (¬ (Exactly 1 commissioner spendALotOfTimeAtHome))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_063_yes_0 : Prop :=
@@ -1682,19 +1732,19 @@ def fracas_072_bk_no_1 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_073_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_073_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper))
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_073_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (∀ x, portugueseDelegate x → delegate x) → (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate] (severalCount : Nat), (severalCount ≥ 2) → (∀ x, portugueseDelegate x → delegate x) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_073_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (∀ x, portugueseDelegate x → delegate x) → (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper))
+  ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate] (severalCount : Nat), (severalCount ≥ 2) → (∀ x, portugueseDelegate x → delegate x) → (AtLeast severalCount delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (AtLeast severalCount portugueseDelegate getEveryResultPublishInMajorNationalNewspaper))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_074_yes_0 : Prop :=
@@ -1776,6 +1826,38 @@ def fracas_077_bk_yes_0 : Prop :=
 def fracas_077_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both commissioner usedToInBusiness) → (¬ (Both femaleCommissioner usedToInBusiness))
 
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_078_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (AtLeast 1 femaleCommissioner spendALotOfTimeAtHome)
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_078_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (¬ (AtLeast 1 femaleCommissioner spendALotOfTimeAtHome))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_078_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither commissioner spendALotOfTimeAtHome) → (AtLeast 1 femaleCommissioner spendALotOfTimeAtHome)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_078_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither commissioner spendALotOfTimeAtHome) → (¬ (AtLeast 1 femaleCommissioner spendALotOfTimeAtHome))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_078_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (Exactly 1 femaleCommissioner spendALotOfTimeAtHome)
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_078_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (Neither commissioner spendALotOfTimeAtHome) → (¬ (Exactly 1 femaleCommissioner spendALotOfTimeAtHome))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_078_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither commissioner spendALotOfTimeAtHome) → (Exactly 1 femaleCommissioner spendALotOfTimeAtHome)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_078_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither commissioner spendALotOfTimeAtHome) → (¬ (Exactly 1 femaleCommissioner spendALotOfTimeAtHome))
+
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_079_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 maleCommissioner spendTimeAtHome)
@@ -1807,6 +1889,118 @@ def fracas_080_bk_yes_0 : Prop :=
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_080_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 femaleCommissioner spendTimeAtHome))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_081_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∧ signContract jones ∧ signContract anderson)) → (signContract jones)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_081_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∧ signContract jones ∧ signContract anderson)) → (¬ (signContract jones))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_081_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∧ signContract jones ∧ signContract anderson)) → (signContract jones)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_081_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∧ signContract jones ∧ signContract anderson)) → (¬ (signContract jones))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_082_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract lawyer : A → Prop) [DecidablePred signContract] [DecidablePred lawyer] (smith jones : A) (severalCount : Nat), (severalCount ≥ 2) → ((signContract smith ∧ signContract jones ∧ AtLeast severalCount lawyer signContract)) → (signContract jones)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_082_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract lawyer : A → Prop) [DecidablePred signContract] [DecidablePred lawyer] (smith jones : A) (severalCount : Nat), (severalCount ≥ 2) → ((signContract smith ∧ signContract jones ∧ AtLeast severalCount lawyer signContract)) → (¬ (signContract jones))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_082_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract lawyer : A → Prop) [DecidablePred signContract] [DecidablePred lawyer] (smith jones : A) (severalCount : Nat), (severalCount ≥ 2) → ((signContract smith ∧ signContract jones ∧ AtLeast severalCount lawyer signContract)) → (signContract jones)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_082_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract lawyer : A → Prop) [DecidablePred signContract] [DecidablePred lawyer] (smith jones : A) (severalCount : Nat), (severalCount ≥ 2) → ((signContract smith ∧ signContract jones ∧ AtLeast severalCount lawyer signContract)) → (¬ (signContract jones))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_083_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (signContract jones)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_083_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (¬ (signContract jones))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_083_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (signContract jones)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_083_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (¬ (signContract jones))
+
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_085_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (AtLeast 6 lawyer signContract)
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_085_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (¬ (AtLeast 6 lawyer signContract))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_085_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (AtLeast 6 lawyer signContract)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_085_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (¬ (AtLeast 6 lawyer signContract))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_085_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (Exactly 6 lawyer signContract)
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_085_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (¬ (Exactly 6 lawyer signContract))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_085_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (Exactly 6 lawyer signContract)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_085_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (¬ (Exactly 6 lawyer signContract))
+
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_086_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (AtLeast 6 accountant signContract)
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_086_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (¬ (AtLeast 6 accountant signContract))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_086_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (AtLeast 6 accountant signContract)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_086_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (¬ (AtLeast 6 accountant signContract))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_086_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (Exactly 6 accountant signContract)
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_086_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (¬ (Exactly 6 accountant signContract))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_086_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (Exactly 6 accountant signContract)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_086_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ Exactly 3 accountant signContract)) → (¬ (Exactly 6 accountant signContract))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_087_yes_0 : Prop :=
@@ -1855,6 +2049,86 @@ def fracas_090_bk_yes_0 : Prop :=
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_090_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (¬ (Every chairman read_outEveryItemOnAgenda))
+
+/-- Reading assignment 0 (defpl weak, generic weak): "yes" test. -/
+def fracas_091_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- Reading assignment 0 (defpl weak, generic weak): "no" test. -/
+def fracas_091_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_091_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_091_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- Reading assignment 1 (defpl weak, generic strong): "yes" test. -/
+def fracas_091_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- Reading assignment 1 (defpl weak, generic strong): "no" test. -/
+def fracas_091_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_091_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_091_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- Reading assignment 2 (defpl strong, generic weak): "yes" test. -/
+def fracas_091_yes_2 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- Reading assignment 2 (defpl strong, generic weak): "no" test. -/
+def fracas_091_no_2 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- As `_yes_2`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_091_bk_yes_2 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- As `_no_2`, with the same background knowledge. -/
+def fracas_091_bk_no_2 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- Reading assignment 3 (defpl strong, generic strong): "yes" test. -/
+def fracas_091_yes_3 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- Reading assignment 3 (defpl strong, generic strong): "no" test. -/
+def fracas_091_no_3 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- As `_yes_3`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_091_bk_yes_3 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- As `_no_3`, with the same background knowledge. -/
+def fracas_091_bk_no_3 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_092_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_092_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_092_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_092_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
 
 /-- Reading assignment 0 (defpl weak): "yes" test. -/
 def fracas_094_yes_0 : Prop :=
@@ -2162,19 +2436,19 @@ def fracas_132_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_133_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A) (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount computer (own gfi)) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_133_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A) (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount computer (own gfi)) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_133_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A) (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount computer (own gfi)) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_133_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A) (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount computer (own gfi)) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_134_yes_0 : Prop :=
@@ -3857,6 +4131,38 @@ def fracas_330_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (¬ (ownApcomIn1990 itel))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_331_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (leaveMeeting smith)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_331_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (¬ (leaveMeeting smith))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_331_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (leaveMeeting smith)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_331_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (¬ (leaveMeeting smith))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_332_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (leaveMeeting jones)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_332_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (¬ (leaveMeeting jones))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_332_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (leaveMeeting jones)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_332_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (leaveMeeting : A → Prop) [DecidablePred leaveMeeting] (smith jones : A), ((leaveMeeting smith ∧ leaveMeeting jones)) → (¬ (leaveMeeting jones))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_334_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
@@ -3920,6 +4226,38 @@ def fracas_337_bk_yes_0 : Prop :=
 def fracas_337_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (¬ (winContractIn1992 itel))
 
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_338_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (winContractIn1992 itel) → (winContractIn1992 itel)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_338_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (winContractIn1992 itel) → (¬ (winContractIn1992 itel))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_338_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (winContractIn1992 itel) → (winContractIn1992 itel)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_338_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (winContractIn1992 itel) → (¬ (winContractIn1992 itel))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_339_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (¬ (winContractIn1992 itel)) → (winContractIn1992 itel)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_339_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (¬ (winContractIn1992 itel)) → (¬ (winContractIn1992 itel))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_339_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (¬ (winContractIn1992 itel)) → (winContractIn1992 itel)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_339_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (¬ (winContractIn1992 itel)) → (¬ (winContractIn1992 itel))
+
 end Claims
 
 /-- `(problem id, gold answer, yes-claims, no-claims)` - one claim per
@@ -3971,6 +4309,7 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (43, .unknown, [``Claims.fracas_043_yes_0], [``Claims.fracas_043_no_0]),
   (44, .yes, [``Claims.fracas_044_yes_0, ``Claims.fracas_044_yes_1], [``Claims.fracas_044_no_0, ``Claims.fracas_044_no_1]),
   (45, .unknown, [``Claims.fracas_045_yes_0], [``Claims.fracas_045_no_0]),
+  (46, .no, [``Claims.fracas_046_yes_0, ``Claims.fracas_046_yes_1], [``Claims.fracas_046_no_0, ``Claims.fracas_046_no_1]),
   (47, .unknown, [``Claims.fracas_047_yes_0], [``Claims.fracas_047_no_0]),
   (48, .yes, [``Claims.fracas_048_yes_0], [``Claims.fracas_048_no_0]),
   (49, .yes, [``Claims.fracas_049_yes_0], [``Claims.fracas_049_no_0]),
@@ -3986,6 +4325,7 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (59, .yes, [``Claims.fracas_059_yes_0], [``Claims.fracas_059_no_0]),
   (60, .unknown, [``Claims.fracas_060_yes_0, ``Claims.fracas_060_yes_1], [``Claims.fracas_060_no_0, ``Claims.fracas_060_no_1]),
   (61, .undef, [``Claims.fracas_061_yes_0], [``Claims.fracas_061_no_0]),
+  (62, .undef, [``Claims.fracas_062_yes_0, ``Claims.fracas_062_yes_1], [``Claims.fracas_062_no_0, ``Claims.fracas_062_no_1]),
   (63, .yes, [``Claims.fracas_063_yes_0], [``Claims.fracas_063_no_0]),
   (64, .unknown, [``Claims.fracas_064_yes_0], [``Claims.fracas_064_no_0]),
   (65, .unknown, [``Claims.fracas_065_yes_0], [``Claims.fracas_065_no_0]),
@@ -4001,11 +4341,19 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (75, .unknown, [``Claims.fracas_075_yes_0], [``Claims.fracas_075_no_0]),
   (76, .yes, [``Claims.fracas_076_yes_0, ``Claims.fracas_076_yes_1], [``Claims.fracas_076_no_0, ``Claims.fracas_076_no_1]),
   (77, .undef, [``Claims.fracas_077_yes_0], [``Claims.fracas_077_no_0]),
+  (78, .undef, [``Claims.fracas_078_yes_0, ``Claims.fracas_078_yes_1], [``Claims.fracas_078_no_0, ``Claims.fracas_078_no_1]),
   (79, .unknown, [``Claims.fracas_079_yes_0], [``Claims.fracas_079_no_0]),
   (80, .yes, [``Claims.fracas_080_yes_0], [``Claims.fracas_080_no_0]),
+  (81, .yes, [``Claims.fracas_081_yes_0], [``Claims.fracas_081_no_0]),
+  (82, .yes, [``Claims.fracas_082_yes_0], [``Claims.fracas_082_no_0]),
+  (83, .unknown, [``Claims.fracas_083_yes_0], [``Claims.fracas_083_no_0]),
+  (85, .no, [``Claims.fracas_085_yes_0, ``Claims.fracas_085_yes_1], [``Claims.fracas_085_no_0, ``Claims.fracas_085_no_1]),
+  (86, .no, [``Claims.fracas_086_yes_0, ``Claims.fracas_086_yes_1], [``Claims.fracas_086_no_0, ``Claims.fracas_086_no_1]),
   (87, .yes, [``Claims.fracas_087_yes_0], [``Claims.fracas_087_no_0]),
   (88, .unknown, [``Claims.fracas_088_yes_0], [``Claims.fracas_088_no_0]),
   (90, .yes, [``Claims.fracas_090_yes_0], [``Claims.fracas_090_no_0]),
+  (91, .unknown, [``Claims.fracas_091_yes_0, ``Claims.fracas_091_yes_1, ``Claims.fracas_091_yes_2, ``Claims.fracas_091_yes_3], [``Claims.fracas_091_no_0, ``Claims.fracas_091_no_1, ``Claims.fracas_091_no_2, ``Claims.fracas_091_no_3]),
+  (92, .yes, [``Claims.fracas_092_yes_0], [``Claims.fracas_092_no_0]),
   (94, .unknown, [``Claims.fracas_094_yes_0, ``Claims.fracas_094_yes_1], [``Claims.fracas_094_no_0, ``Claims.fracas_094_no_1]),
   (95, .unknown, [``Claims.fracas_095_yes_0, ``Claims.fracas_095_yes_1], [``Claims.fracas_095_no_0, ``Claims.fracas_095_no_1]),
   (96, .yes, [``Claims.fracas_096_yes_0], [``Claims.fracas_096_no_0]),
@@ -4117,10 +4465,14 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (326, .yes, [``Claims.fracas_326_yes_0], [``Claims.fracas_326_no_0]),
   (328, .yes, [``Claims.fracas_328_yes_0], [``Claims.fracas_328_no_0]),
   (330, .yes, [``Claims.fracas_330_yes_0], [``Claims.fracas_330_no_0]),
+  (331, .yes, [``Claims.fracas_331_yes_0], [``Claims.fracas_331_no_0]),
+  (332, .yes, [``Claims.fracas_332_yes_0], [``Claims.fracas_332_no_0]),
   (334, .yes, [``Claims.fracas_334_yes_0], [``Claims.fracas_334_no_0]),
   (335, .unknown, [``Claims.fracas_335_yes_0], [``Claims.fracas_335_no_0]),
   (336, .yes, [``Claims.fracas_336_yes_0], [``Claims.fracas_336_no_0]),
-  (337, .unknown, [``Claims.fracas_337_yes_0], [``Claims.fracas_337_no_0])
+  (337, .unknown, [``Claims.fracas_337_yes_0], [``Claims.fracas_337_no_0]),
+  (338, .yes, [``Claims.fracas_338_yes_0], [``Claims.fracas_338_no_0]),
+  (339, .no, [``Claims.fracas_339_yes_0], [``Claims.fracas_339_no_0])
 ]
 
 /-- The same problems, each claim with `EndToEnd/background.py`'s
@@ -4171,6 +4523,7 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (43, .unknown, [``Claims.fracas_043_bk_yes_0], [``Claims.fracas_043_bk_no_0]),
   (44, .yes, [``Claims.fracas_044_bk_yes_0, ``Claims.fracas_044_bk_yes_1], [``Claims.fracas_044_bk_no_0, ``Claims.fracas_044_bk_no_1]),
   (45, .unknown, [``Claims.fracas_045_bk_yes_0], [``Claims.fracas_045_bk_no_0]),
+  (46, .no, [``Claims.fracas_046_bk_yes_0, ``Claims.fracas_046_bk_yes_1], [``Claims.fracas_046_bk_no_0, ``Claims.fracas_046_bk_no_1]),
   (47, .unknown, [``Claims.fracas_047_bk_yes_0], [``Claims.fracas_047_bk_no_0]),
   (48, .yes, [``Claims.fracas_048_bk_yes_0], [``Claims.fracas_048_bk_no_0]),
   (49, .yes, [``Claims.fracas_049_bk_yes_0], [``Claims.fracas_049_bk_no_0]),
@@ -4186,6 +4539,7 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (59, .yes, [``Claims.fracas_059_bk_yes_0], [``Claims.fracas_059_bk_no_0]),
   (60, .unknown, [``Claims.fracas_060_bk_yes_0, ``Claims.fracas_060_bk_yes_1], [``Claims.fracas_060_bk_no_0, ``Claims.fracas_060_bk_no_1]),
   (61, .undef, [``Claims.fracas_061_bk_yes_0], [``Claims.fracas_061_bk_no_0]),
+  (62, .undef, [``Claims.fracas_062_bk_yes_0, ``Claims.fracas_062_bk_yes_1], [``Claims.fracas_062_bk_no_0, ``Claims.fracas_062_bk_no_1]),
   (63, .yes, [``Claims.fracas_063_bk_yes_0], [``Claims.fracas_063_bk_no_0]),
   (64, .unknown, [``Claims.fracas_064_bk_yes_0], [``Claims.fracas_064_bk_no_0]),
   (65, .unknown, [``Claims.fracas_065_bk_yes_0], [``Claims.fracas_065_bk_no_0]),
@@ -4201,11 +4555,19 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (75, .unknown, [``Claims.fracas_075_bk_yes_0], [``Claims.fracas_075_bk_no_0]),
   (76, .yes, [``Claims.fracas_076_bk_yes_0, ``Claims.fracas_076_bk_yes_1], [``Claims.fracas_076_bk_no_0, ``Claims.fracas_076_bk_no_1]),
   (77, .undef, [``Claims.fracas_077_bk_yes_0], [``Claims.fracas_077_bk_no_0]),
+  (78, .undef, [``Claims.fracas_078_bk_yes_0, ``Claims.fracas_078_bk_yes_1], [``Claims.fracas_078_bk_no_0, ``Claims.fracas_078_bk_no_1]),
   (79, .unknown, [``Claims.fracas_079_bk_yes_0], [``Claims.fracas_079_bk_no_0]),
   (80, .yes, [``Claims.fracas_080_bk_yes_0], [``Claims.fracas_080_bk_no_0]),
+  (81, .yes, [``Claims.fracas_081_bk_yes_0], [``Claims.fracas_081_bk_no_0]),
+  (82, .yes, [``Claims.fracas_082_bk_yes_0], [``Claims.fracas_082_bk_no_0]),
+  (83, .unknown, [``Claims.fracas_083_bk_yes_0], [``Claims.fracas_083_bk_no_0]),
+  (85, .no, [``Claims.fracas_085_bk_yes_0, ``Claims.fracas_085_bk_yes_1], [``Claims.fracas_085_bk_no_0, ``Claims.fracas_085_bk_no_1]),
+  (86, .no, [``Claims.fracas_086_bk_yes_0, ``Claims.fracas_086_bk_yes_1], [``Claims.fracas_086_bk_no_0, ``Claims.fracas_086_bk_no_1]),
   (87, .yes, [``Claims.fracas_087_bk_yes_0], [``Claims.fracas_087_bk_no_0]),
   (88, .unknown, [``Claims.fracas_088_bk_yes_0], [``Claims.fracas_088_bk_no_0]),
   (90, .yes, [``Claims.fracas_090_bk_yes_0], [``Claims.fracas_090_bk_no_0]),
+  (91, .unknown, [``Claims.fracas_091_bk_yes_0, ``Claims.fracas_091_bk_yes_1, ``Claims.fracas_091_bk_yes_2, ``Claims.fracas_091_bk_yes_3], [``Claims.fracas_091_bk_no_0, ``Claims.fracas_091_bk_no_1, ``Claims.fracas_091_bk_no_2, ``Claims.fracas_091_bk_no_3]),
+  (92, .yes, [``Claims.fracas_092_bk_yes_0], [``Claims.fracas_092_bk_no_0]),
   (94, .unknown, [``Claims.fracas_094_bk_yes_0, ``Claims.fracas_094_bk_yes_1], [``Claims.fracas_094_bk_no_0, ``Claims.fracas_094_bk_no_1]),
   (95, .unknown, [``Claims.fracas_095_bk_yes_0, ``Claims.fracas_095_bk_yes_1], [``Claims.fracas_095_bk_no_0, ``Claims.fracas_095_bk_no_1]),
   (96, .yes, [``Claims.fracas_096_bk_yes_0], [``Claims.fracas_096_bk_no_0]),
@@ -4317,10 +4679,14 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (326, .yes, [``Claims.fracas_326_bk_yes_0], [``Claims.fracas_326_bk_no_0]),
   (328, .yes, [``Claims.fracas_328_bk_yes_0], [``Claims.fracas_328_bk_no_0]),
   (330, .yes, [``Claims.fracas_330_bk_yes_0], [``Claims.fracas_330_bk_no_0]),
+  (331, .yes, [``Claims.fracas_331_bk_yes_0], [``Claims.fracas_331_bk_no_0]),
+  (332, .yes, [``Claims.fracas_332_bk_yes_0], [``Claims.fracas_332_bk_no_0]),
   (334, .yes, [``Claims.fracas_334_bk_yes_0], [``Claims.fracas_334_bk_no_0]),
   (335, .unknown, [``Claims.fracas_335_bk_yes_0], [``Claims.fracas_335_bk_no_0]),
   (336, .yes, [``Claims.fracas_336_bk_yes_0], [``Claims.fracas_336_bk_no_0]),
-  (337, .unknown, [``Claims.fracas_337_bk_yes_0], [``Claims.fracas_337_bk_no_0])
+  (337, .unknown, [``Claims.fracas_337_bk_yes_0], [``Claims.fracas_337_bk_no_0]),
+  (338, .yes, [``Claims.fracas_338_bk_yes_0], [``Claims.fracas_338_bk_no_0]),
+  (339, .no, [``Claims.fracas_339_bk_yes_0], [``Claims.fracas_339_bk_no_0])
 ]
 
 end FraCaS.EndToEnd

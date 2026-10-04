@@ -387,6 +387,11 @@ def _decode_card(card):
 # (gf/default_translations.tsv) fails if anything here changes what the
 # default produces.
 class Readings:
+    def sentence(self, t):
+        """A translation of a whole clause that takes precedence over the
+        translator's own rules, or None."""
+        return None
+
     def quantifier(self, det):
         """Override `_resolve_quantifier` for `det`, or None."""
         return None
@@ -2434,6 +2439,9 @@ def _try_translate_existential_universal_object(subject, vp):
 
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
+    override = _readings.sentence(t)
+    if override is not None:
+        return override
     if t.head == "ExistNP" and len(t.args) == 1:
         return _translate_existential(t.args[0])
     if t.head != "PredVP" or len(t.args) != 2:

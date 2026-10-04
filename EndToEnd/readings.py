@@ -36,6 +36,10 @@ than the default does:
   - "a few"/"at least a few" are vague: `AtLeast aFewCount` for an
     unknown threshold `aFewCount ≥ 1` (the default's plain `Some` makes
     "some X are Y" entail "a few X are Y");
+  - "several" is vague the same way: `AtLeast severalCount` for an
+    unknown threshold `severalCount ≥ 2` (whether "several" needs three
+    is contested; every use excludes one). The default's plain `Some`
+    made "some X are Y" entail "several X are Y";
   - "both"/"neither" use GQ.lean's own `Both`/`Neither`, which keep the
     exactly-two presupposition the default's `Every`/`No` drop;
   - a proper-name subject's counted object ("APCOM won ten orders") and
@@ -43,7 +47,10 @@ than the default does:
     the verb as a binary predicate (see `named_object`);
   - counting existentials ("there are few committee members from
     southern Europe") and a floated "all" ("the Ancient Greeks were all
-    noted philosophers").
+    noted philosophers");
+  - whole sentences the default does not handle (see `sentence`):
+    coordinated subjects, "it is true/false that S", "everyone", and
+    "one of the Ns".
 
 `reading` may also be a dict assigning "weak"/"strong" per KIND of
 ambiguity (AMBIGUITY_KINDS), so a caller can read the same kind of
@@ -59,6 +66,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gf"))
 from translate import (  # noqa: E402
     App,
+    translate_cl,
     Readings,
     Translation,
     _bare_count,
@@ -90,6 +98,56 @@ def _is_counting_det(det) -> bool:
     )
 
 
+# Verbs whose subject is a group as a whole ("Smith, Anderson and Jones
+# met"): a coordinated subject does not distribute over them.
+_COLLECTIVE_VERBS = ("meet_V", "gather_V")
+
+
+def _np_list(t):
+    """`BaseNP a b` / `ConsNP a (...)` -> [a, b, ...]."""
+    if t.head == "BaseNP" and len(t.args) == 2:
+        return list(t.args)
+    if t.head == "ConsNP" and len(t.args) == 2:
+        rest = _np_list(t.args[1])
+        return None if rest is None else [t.args[0], *rest]
+    return None
+
+
+def _mentions(t, heads) -> bool:
+    return t.head in heads or any(_mentions(a, heads) for a in t.args)
+
+
+def _counted_object(vp) -> bool:
+    """Whether `vp`'s object counts ("signed two contracts", "won
+    several orders")."""
+    return (
+        vp.head == "ComplSlash"
+        and len(vp.args) == 2
+        and vp.args[1].head == "DetCN"
+        and len(vp.args[1].args) == 2
+        and _is_counting_det(vp.args[1].args[0])
+    )
+
+
+def _plain(tr) -> bool:
+    """A translation the generic assembly can use as it stands."""
+    return not (tr.conjuncts or tr.free_functions or tr.template)
+
+
+def _combine(parts, op: str) -> Translation:
+    preds, individuals, binary = [], [], []
+    for tr in parts:
+        for name, seen in ((tr.free_predicates, preds), (tr.free_individuals, individuals),
+                           (tr.binary_predicates, binary)):
+            seen.extend(n for n in name if n not in seen)
+    return Translation(
+        lean_prop="(" + f" {op} ".join(tr.lean_prop for tr in parts) + ")",
+        free_predicates=preds,
+        free_individuals=individuals,
+        binary_predicates=binary,
+    )
+
+
 class EndToEndReadings(Readings):
     def __init__(self, reading, position: str):
         self.reading = reading
@@ -103,6 +161,119 @@ class EndToEndReadings(Readings):
             return self.reading.get(kind, "weak")
         return self.reading
 
+    def sentence(self, t):
+        if t.head != "PredVP" or len(t.args) != 2:
+            return None
+        subject, vp = t.args
+        if subject.head == "UsePron" and subject.args[0].head == "it_Pron":
+            return self._truth_of(vp)
+        if subject.head == "ConjNP" and len(subject.args) == 2:
+            return self._coordinated(subject, vp)
+        if subject.head == "everyone_NP" or (
+            subject.head == "AdvNP" and len(subject.args) == 2 and subject.args[0].head == "everyone_NP"
+        ):
+            return self._everyone(subject, vp)
+        if subject.head == "CountNP" and len(subject.args) == 2:
+            return self._partitive(subject, vp)
+        return None
+
+    def _truth_of(self, vp):
+        """"It is true that S" is S, and "it is false that S" is not-S:
+        `true`/`false` are the veridical and anti-veridical sentential
+        predicates (FraCaS 338/339). Only a positive embedded clause."""
+        if not (
+            vp.head == "UseComp"
+            and vp.args[0].head == "CompAP"
+            and vp.args[0].args[0].head == "SentAP"
+            and len(vp.args[0].args[0].args) == 2
+        ):
+            return None
+        adj, embedded = vp.args[0].args[0].args
+        if adj.head != "PositA" or adj.args[0].head not in ("true_A", "false_A") or embedded.head != "EmbedS":
+            return None
+        s = embedded.args[0]
+        if not (s.head == "UseCl" and len(s.args) == 3 and s.args[1].head == "PPos"):
+            raise NotImplementedError("'it is true/false that' with a negative or non-clausal complement")
+        tr = translate_cl(s.args[2])
+        if not _plain(tr) or adj.args[0].head == "true_A":
+            return tr
+        return Translation(
+            lean_prop=f"¬ ({tr.lean_prop})",
+            free_predicates=tr.free_predicates,
+            free_individuals=tr.free_individuals,
+            binary_predicates=tr.binary_predicates,
+        )
+
+    def _coordinated(self, subject, vp):
+        """"Smith, Jones and Anderson signed the contract": the VP holds of
+        each conjunct ("and") or of at least one ("or"/"either ... or").
+        Distributing is a reading, not a given: a coordinated subject can
+        also be read collectively. It is the only reading for an ordinary
+        distributive predicate (signing a contract, leaving a meeting),
+        so two cases where the collective reading is live are left
+        untranslated: a collective verb ("Smith, Anderson and Jones
+        met"), and a counted object ("Smith and Jones signed two
+        contracts", which on its cumulative reading is two in all -
+        FraCaS 111-113 turn on exactly that)."""
+        conj, items = subject.args
+        ops = {"and_Conj": "∧", "both7and_DConj": "∧", "or_Conj": "∨", "either7or_DConj": "∨"}
+        nps = _np_list(items)
+        if conj.head not in ops or nps is None:
+            return None
+        if _mentions(vp, _COLLECTIVE_VERBS):
+            raise NotImplementedError("coordinated subject of a collective verb")
+        if _counted_object(vp):
+            raise NotImplementedError("coordinated subject with a counted object (cumulative reading)")
+        parts = [translate_cl(App("PredVP", [np, vp])) for np in nps]
+        if not all(_plain(tr) for tr in parts):
+            raise NotImplementedError("a conjunct of a coordinated subject needs non-generic assembly")
+        return _combine(parts, ops[conj.head])
+
+    def _everyone(self, subject, vp):
+        """"everyone (at the meeting) VP": every person (at the meeting)."""
+        restrictor_preds = ["person"]
+        restrictor_expr = "person"
+        if subject.head == "AdvNP":
+            pp_name = _scope_name(App("UseComp", [App("CompAdv", [subject.args[1]])]))
+            restrictor_preds.append(pp_name)
+            restrictor_expr = f"(fun x => person x ∧ {pp_name} x)"
+        scope_name = _scope_name(vp)
+        return Translation(
+            lean_prop=self.quantified("Every", restrictor_expr, scope_name),
+            free_predicates=[*restrictor_preds, scope_name],
+        )
+
+    def _partitive(self, subject, vp):
+        """"one of the commissioners", "two of the machines": a counted
+        partitive over a definite plural, read like a bare numeral (at
+        least n / exactly n, the "numeral" ambiguity). "One of the Ns is
+        NAME" is an identity, not a count, and is left to translate.py's
+        own partitive-identity rule (FraCaS 14)."""
+        det, np = subject.args
+        if vp.head == "UseComp" and vp.args[0].head == "CompNP":
+            return None
+        if not (
+            np.head == "DetCN"
+            and len(np.args) == 2
+            and np.args[0].head == "DetQuant"
+            and np.args[0].args[0].head == "DefArt"
+            and np.args[0].args[1].head == "NumPl"
+        ):
+            return None
+        if det.head == "DetQuant" and len(det.args) == 2 and det.args[1].head == "NumSg":
+            count = 1
+        else:
+            count = _bare_count(det)
+        if count is None:
+            return None
+        quant = f"AtLeast {count}" if self.mode("numeral") == "weak" else f"Exactly {count}"
+        restrictor_expr, restrictor_preds = _restrictor_expr(_normalize_cn(np.args[1]))
+        scope_name = _scope_name(vp)
+        return Translation(
+            lean_prop=self.quantified(quant, restrictor_expr, scope_name),
+            free_predicates=[*restrictor_preds, scope_name],
+        )
+
     def quantifier(self, det):
         if not det.args:
             if det.head == "atLeastAFew_Det":
@@ -115,6 +286,8 @@ class EndToEndReadings(Readings):
                 return "AtLeast 2+"
             if det.head == "aFew_Det":
                 return "AtLeast aFewCount"
+            if det.head == "several_Det":
+                return "AtLeast severalCount"
             if det.head == "both_Det":
                 return "Both"
             if det.head == "neither_Det":

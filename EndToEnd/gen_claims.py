@@ -85,7 +85,7 @@ LEAN_RESERVED = {
     "open", "show", "then", "from", "with", "where", "for", "this", "calc",
     "suffices", "obtain", "def", "theorem", "x", "A", "Prop", "Type", "Sort",
     # bound by the assembler itself
-    "Many", "Few", "fewCount", "aFewCount",
+    "Many", "Few", "fewCount", "aFewCount", "severalCount",
 }
 
 
@@ -313,7 +313,8 @@ def assemble(idn, sentences):
     # southern Europe" => "few are from Portugal", FraCaS 44). It is not
     # monotone in its restrictor on that reading, and does not entail that
     # any such X exist (12). The cardinal reading, `AtMost fewCount`, and
-    # "a few", `AtLeast aFewCount`, count against an unknown threshold.
+    # "a few", `AtLeast aFewCount`, and "several", `AtLeast severalCount`,
+    # count against an unknown threshold.
     if any(re.search(r"\bFew\b", p) for _a, trs in translated for *_, p in trs):
         binders.append("(Few : (A → Prop) → (A → Prop) → Prop)")
         meaning.append("(∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R)")
@@ -322,6 +323,9 @@ def assemble(idn, sentences):
     if any(re.search(r"\baFewCount\b", p) for _a, trs in translated for *_, p in trs):
         binders.append("(aFewCount : Nat)")
         meaning.append("(aFewCount ≥ 1)")
+    if any(re.search(r"\bseveralCount\b", p) for _a, trs in translated for *_, p in trs):
+        binders.append("(severalCount : Nat)")
+        meaning.append("(severalCount ≥ 2)")
     knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary))
     head = f"∀ {' '.join(binders)}, "
 
