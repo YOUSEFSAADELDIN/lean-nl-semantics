@@ -346,6 +346,25 @@ and reverted - it leaks subject determiners into the cross-check
 generator's restrictor names (`everyCommittee`) and breaks the
 `fracas_090` cross-check - so it needs a targeted fix, not a blanket one.
 
+**Later round - FraCaS's own wording, and the fixes it needed.** Parsing
+FraCaS's original English (not the confirmed rewordings) surfaced four
+constructions no hand-built tree used, each now added to FraCaSLogic with
+one confirmed linearize check (`run_gf_tests.py`'s
+`_FRACAS_ENGLISH_CHECKS`, labelled `english_*` so `gen_gf_cross_check.py`
+ignores them): `who_RP` (`IdRP` realizes "that" by design), a
+self-declared `ExistNP` ("there are/was NP" - IdiomEng's own lin, since
+extending `Idiom` fails at this gf-rgl tag), a frozen `usedTo_VV` (DictEng's
+`use_VV` is the freely conjugated verb), and DictEng's own `just_Predet`.
+`parse_rank.tokenize` is a single generic lexer step (final punctuation
+dropped, commas split off, tokens looked up case-insensitively in the
+grammar's own `pg -words` vocabulary). The targeted determiner fix this
+note asked for is in: `_scope_name` now keeps lexical `_Det` words inside
+a VP ("spend a lot of time" vs "spend time") and reads a definite plural
+object universally - the convention already used for subjects - so
+`fracas_090`'s "the items"/"every item" still name one predicate.
+Comparatives and equatives now translate as binary relations
+(`fastThan`/`fastAs`, the naming the cross-check builders already used).
+
 ## SOLVED: `UseCl`/tense support - the missing piece was `TenseX`, not a real RGL bug
 
 **This was wrong for a long time and is now fixed - full story below,

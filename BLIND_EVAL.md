@@ -185,9 +185,10 @@ problem the automated pipeline can carry all the way through
 (`scripts/gen_blind_eval_parsed.py`):
 
 1. **English**: each premise and hypothesis exactly as FraCaS states it,
-   normalized only mechanically (final period dropped; first letter
-   lowercased if the sentence doesn't parse as written) — not the
-   project's own confirmed rewordings in `gf/run_gf_tests.py`.
+   through one generic lexer step (`gf/parse_rank.py`'s `tokenize`: final
+   punctuation dropped, commas split off, each token looked up in the
+   grammar's own vocabulary case-insensitively) — never the project's own
+   confirmed rewordings in `gf/run_gf_tests.py`.
 2. **Parse** with a restricted GF grammar (`gf/gen_parse_grammar.py`).
    Parsing with the full FraCaSLogic grammar is unusable — 69,115
    readings in five minutes for one Section 1 sentence, none free of junk
@@ -195,64 +196,104 @@ problem the automated pipeline can carry all the way through
    words the CI-confirmed trees use. That makes it a controlled-language
    grammar fit to FraCaS's vocabulary (the same kind of artifact FraCoq's
    FraCaS-specific grammar is); it does not tell the parser which tree
-   goes with which sentence.
+   goes with which sentence. FraCaS's own wording needed four
+   constructions the hand-built trees (written for the project's
+   rewordings) never used: the "who" relative pronoun, the "there
+   are/was X who…" existential that most Section 1 hypotheses use, the
+   frozen "used to", and "just one"; each has one confirmed linearize
+   check (`_FRACAS_ENGLISH_CHECKS`).
 3. **Rank** the readings generically (`gf/parse_rank.py`): fewest nodes,
    ties broken by right association (attach adverbials as low as
    possible).
 4. **Translate** the top reading with `gf/translate.py`, and **assemble**
    by one generic rule — bind every free predicate/individual, chain
-   premises into the hypothesis — with no per-problem cases and no
-   background-knowledge premise ever supplied.
+   premises into the hypothesis — with no per-problem cases.
+5. Each problem is scored twice: as translated, and with **background
+   knowledge** from `gf/background.py` added as premises. That knowledge
+   is problem-independent: entailments derived from the parse trees
+   themselves (deleting an intersective modifier in an upward-monotone
+   position — "win the Nobel prize *for literature*" ⊑ "win a Nobel
+   prize" — never for non-subsective adjectives like "former", never
+   under `every`/`no` objects or VP-complement verbs, never for a
+   durative "for two hours"), plus a small closed degree-semantics
+   lexicon (antonym contraries such as small/large over the *same* noun,
+   a comparative's standard transferring upward, comparative asymmetry,
+   antonym converses). Nothing in it is keyed by problem or gold answer,
+   but the lists were written with this corpus in view, so it is not a
+   held-out resource.
 
 The `build-gf` CI job regenerates the claims file from the English and
 fails if it differs from the committed copy, so the scored claims are
 reproducible.
 
-**Parser quality, on the 437 distinct CI-confirmed sentences**
-(`gf/parse_eval.py`): all 437 parse; the hand-built tree is among the
-readings for all 437; median 4 readings (max 3,600); and the top-ranked
-reading translates to the same `Prop` as the hand tree for 371 of the 373
-sentences `translate.py` covers. The two exceptions are a genuine
-ambiguity (13: bare plural "leading tenors that are excellent" — generic
-or existential) and one remaining relative-clause attachment (136). The
-right-association tie-breaker was added after inspecting misses of the
-size rule alone on these same sentences, so this is not a held-out
-figure.
+**Parser quality, on the 443 distinct CI-confirmed sentences**
+(`gf/parse_eval.py`): all 443 parse; the hand-built tree is among the
+readings for all 443; median 4 readings (max 3,600); and the top-ranked
+reading translates to the same `Prop` as the hand tree for 380 of the 381
+sentences `translate.py` covers. The one exception (136) is a garden-path
+compound ("[executive that had a laptop] computer") tied in size with the
+correct reading. The right-association tie-breaker was added after
+inspecting misses of the size rule alone on these same sentences, so this
+is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 111 of 342 problems go all
-the way through. 188 stop at a sentence the restricted grammar doesn't
-parse (FraCaS's hypotheses are often "There are X who…" existentials,
-which no confirmed tree uses), 30 at a reading `translate.py` doesn't
-cover, 13 at a translation needing non-generic assembly.
+**Coverage, on FraCaS's original English**: 159 of 342 problems go all
+the way through (46.5%). 130 stop at a sentence the restricted grammar
+doesn't parse, 40 at a reading `translate.py` doesn't cover, 13 at a
+translation needing non-generic assembly.
 
-**Result: 48/111 (43.2%) — against an always-"unknown" baseline of
-45/111 (40.5%) on the same problems.** End-to-end, the pipeline is barely
-better than the trivial baseline, and that is the honest headline. 40 of
-the 48 matches are "unknown" verdicts. The 63 mismatches break down as:
+**Result** (CI run 37175702581), on those 159 problems:
 
-- **58 `(gold yes/no, automated unknown)`**, overwhelmingly missing
-  knowledge the hand-written theorems supply as an explicit premise and
-  this pipeline deliberately never does ("winning the Nobel prize for
-  literature" ⇒ "winning a Nobel prize", 17; "small animal" vs "large
-  animal" being contraries, 204/205) or comparatives flattened into
-  unrelated unary predicates (220–229).
-- **5 wrong "yes"** (30, 32, 47, 94, 228), all translation conflations:
-  `translate.py` drops object determiners from predicate names, so
-  "spend **a lot of** time at home" and "spend time at home" become the
-  same predicate (30, 32, 47); it drops comparative morphology, so "**as**
-  fast as" and "fast**er** than" coincide (228); and it reads "the
-  inhabitants … voted" distributively, where FraCaS's "unknown" turns on
-  the collective reading (94).
+| | matched | wrong answers |
+|---|---|---|
+| always "unknown" (baseline) | 60/159 (37.7%) | — |
+| as translated | **88/159 (55.3%)** | 3 |
+| with background knowledge | **106/159 (66.7%)** | 5 |
 
-Some of the 8 "yes" matches are also right partly for the wrong reason
-(31 and 48 involve the same determiner collision, in a direction where it
-happens not to matter). Building this pipeline also found and fixed three
-`translate.py` fidelity bugs that were silently conflating distinct
-meanings: prepositions were dropped from predicate names (FraCaS 74's
-"resident **in** Europe" vs "resident **outside** Europe" both became
-`residentEurope`), GF word-sense tags leaked into names (`by8agent` vs
-`by8means`), and a relative clause was translated differently depending
-on whether a parse attached the article via `CompCN` or `CompNP`.
+Counting the 183 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 152/342 (44.4%), against a 31.0% baseline. 0
+contradictions and 0 errored attempts in either variant.
+
+Every remaining mismatch fails safe ("unknown" where gold says yes/no)
+except these 5 wrong answers — none caused by an unsound background-
+knowledge rule, all by simplifications in translation:
+
+- **94, 95**: "The inhabitants of Cambridge voted for a Labour MP" / "The
+  Ancient Greeks were noted philosophers" read distributively (`Every`),
+  where FraCaS's "unknown" turns on the collective reading.
+- **109**: "Some accountant**s** attended" read as `Some` (at least one),
+  where the plural implies at least two.
+- **56** (with knowledge only): "**many** British delegates" read as `Some`
+  — `GQ.lean`'s own documented stand-in for "many" — which makes the valid
+  fact "British delegate ⊑ delegate" yield "many delegates"; FraCaS treats
+  "many" as proportional, so gold is "unknown".
+- **77** (with knowledge only): "**both** commissioners" read as `Every`,
+  dropping both's exactly-two presupposition — which `translate.py`'s own
+  comment on `both_Det` already flags as unsafe whenever the restrictor
+  changes, exactly as it does here ("both *female* commissioners", gold
+  undefined).
+
+One background-knowledge rule *was* unsound and has been fixed, a fix
+found from its observed failure: the first version deleted durative
+"for two hours" like any other modifier, so "Smith wrote a report for
+two hours" ⇒ "Smith wrote a report" (304, gold unknown — an
+accomplishment need not culminate). Durative "for"-phrases are no longer
+deletable. That also removes the fact for 306 ("discovered a new species
+for two years" ⇒ "discovered a new species", gold yes, valid for an
+iterated achievement); telling those apart needs lexical aspect classes,
+which this pipeline does not have, so it takes the conservative side.
+
+How the translator was improved for this, beyond the grammar additions:
+`translate.py` now keeps prepositions and determiners in verb-phrase
+predicate names ("resident **in**" vs "resident **outside** Europe",
+FraCaS 74; "spend **a lot of** time" vs "spend time", 30–32/47 — the
+cause of three wrong "yes" answers in the first version of this scan),
+translates comparatives and equatives as binary relations (`fastThan`,
+`fastAs`) instead of fusing the standard into a unary name ("as fast as"
+and "faster than" had coincided, 228), reads "there are X who VP" as
+`Some X VP`, "only/just one" as `Exactly 1`, and translates the two
+attachments of an adjective-plus-relative-clause noun phrase identically
+(their divergence, not ranking, was behind FraCaS 13's former "ranking
+miss").
 
 ## What's still excluded, and why
 
@@ -272,14 +313,13 @@ automated translation from English and its score absorbs that step's
 mistakes, while the 336/342 premises/hypotheses were translated by hand.
 It isolates and scores the inference step only.
 
-The end-to-end scan above is the comparable kind of measurement, and it
-says the translation step is where nearly all of the difficulty lives:
-48/111 (43.2%) on the problems the pipeline reaches at all, barely above
-a 40.5% always-"unknown" baseline, covering only a third of the corpus.
-Closing that gap is a translation problem — grammar coverage of FraCaS's
-own hypothesis constructions, determiner- and comparative-preserving
-translation, and some account of background knowledge — not an
-inference problem.
+The end-to-end scan above is the comparable kind of measurement. It
+reaches 46.5% of the corpus and scores 55.3% as translated (66.7% with
+background knowledge) on what it reaches — 44.4% corpus-wide if every
+unreached problem counts as "unknown". Most of the remaining gap is
+translation coverage (130 problems stop at a sentence the grammar can't
+parse) and translation fidelity (collective/distributive readings,
+proportional "many", presuppositions of "both"), not inference.
 
 ## Other limitations worth stating plainly
 
@@ -313,5 +353,13 @@ inference problem.
 - A 98.2% match is partly a statement about how much of each problem's
   difficulty the hand translation already absorbed (an explicit
   background-knowledge premise, a pre-resolved ellipsis, a literal `Nat`
-  comparison). The end-to-end scan's 43.2% is the counterweight to read
-  next to it.
+  comparison). The end-to-end scan's 55.3%/66.7% (on the 46.5% of the corpus it
+  reaches) is the counterweight to read next to it.
+- The end-to-end numbers inherit every caveat above plus three of their
+  own: the parse grammar's vocabulary and constructions are read off
+  this corpus's confirmed trees; the ranker's tie-breaker and one
+  background-knowledge rule were chosen after observing failures on this
+  same corpus; and the background-knowledge lexicon was written with
+  FraCaS in view. Both the with- and without-knowledge scores are
+  reported so the knowledge module's contribution can be read off
+  directly.
