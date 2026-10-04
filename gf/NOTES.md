@@ -365,6 +365,36 @@ object universally - the convention already used for subjects - so
 Comparatives and equatives now translate as binary relations
 (`fastThan`/`fastAs`, the naming the cross-check builders already used).
 
+**Ellipsis, one-anaphora, negation.** A census of every FraCaS sentence
+the parser still rejected showed half contain no unknown word at all -
+they are construction gaps, dominated by Section 4's VP ellipsis ("So
+did Bill", "Bill didn't", "the students have too") and one-anaphora
+("Bill owns a blue one"). FraCaSLogic now has an `EllAux` category with
+`ElliptS`/`SoS`/`TooS` for the elliptical clauses, `anaphOne_N`/
+`anaphOne_NP` for anaphoric "one", and `UncNeg` for uncontracted "is not"
+(this grammar's `PNeg` realizes "isn't"), each with a confirmed check.
+The grammar deliberately does not represent the elided material:
+`scripts/gen_blind_eval_parsed.py` resolves it by copying the antecedent
+clause's VP or noun (the standard copy treatment). `EllAux` had to be
+added to `gen_parse_grammar.py`'s `EXTRA_CATS` for the same reason as the
+list categories.
+
+One trap worth recording: the single-node `anaphOne_NP`/`anaphOne_N`
+immediately outranked the multi-node numeral "one" under the
+fewest-nodes rule ("Smith signed [one] contract" as a compound noun, "just
+[one] accountant", "[one] of the leading tenors"), dropping top-reading
+agreement from 380/381 to 374/382. `parse_rank.ranked` now discards
+readings where anaphoric one is anything but the head of a noun phrase or
+a bare argument - a well-formedness condition, not a ranking tweak - and
+agreement is back to 381/382.
+
+**Measured and rejected: a corpus-vocabulary lexicon.** Giving the parse
+grammar DictEng's entries for every word FraCaS uses (404 lexical
+functions for 94 missing words) let only 25 more of the 230 failing
+sentences parse - nearly all ellipsis or aspect sentences translate.py
+cannot translate anyway - while one of them reached 34,902 readings. Not
+adopted: the remaining failures are constructions, not vocabulary.
+
 ## SOLVED: `UseCl`/tense support - the missing piece was `TenseX`, not a real RGL bug
 
 **This was wrong for a long time and is now fixed - full story below,
