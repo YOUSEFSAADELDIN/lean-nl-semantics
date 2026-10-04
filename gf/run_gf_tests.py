@@ -3875,6 +3875,21 @@ _FRACAS_ENGLISH_CHECKS = [
         'linearize UseCl (TTAnt TPres ASimul) UncNeg (PredVP (UsePN fido_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N))))))',
         'Fido is not a small animal',
     ),
+    (
+        'english_230_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (MoreThanAux (UseN order_N) (UsePN apcom_PN) ellDid)))',
+        'ITEL won more orders than APCOM did',
+    ),
+    (
+        'english_233_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (MoreThanNP (UseN order_N) (UsePN apcom_PN))))',
+        'ITEL won more orders than APCOM',
+    ),
+    (
+        'english_239_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (MoreThanV2 (UseN order_N) (UsePN apcom_PN) lose_V2)))',
+        'ITEL won more orders than APCOM lost',
+    ),
 ]
 
 CHECKS = (

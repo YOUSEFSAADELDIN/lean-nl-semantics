@@ -15,9 +15,9 @@ for the exact pipeline and what it deliberately does not supply (any
 background-knowledge premise). Evaluated by
 `BlindEvalParsedScan.lean`.
 
-176 of 342 problems carried all the way through;
+185 of 342 problems carried all the way through;
 the rest, by first failing stage:
-- a sentence does not parse: 121
+- a sentence does not parse: 112
 - a sentence parses but translate.py does not cover its reading: 32
 - a translation needs non-generic assembly: 13
 
@@ -115,18 +115,9 @@ Per-problem skip reasons (first failing sentence/stage):
 - 196: premise 1 does not parse: 'A lawyer signed every report, and so did an auditor.'
 - 216: premise 1 does not parse: 'John is a fatter politician than Bill.'
 - 217: premise 1 does not parse: 'John is a cleverer politician than Bill.'
-- 230: premise 1 does not parse: 'ITEL won more orders than APCOM did.'
-- 231: premise 1 does not parse: 'ITEL won more orders than APCOM did.'
-- 232: premise 1 does not parse: 'ITEL won more orders than APCOM did.'
-- 233: premise 1 does not parse: 'ITEL won more orders than APCOM.'
-- 234: premise 1 does not parse: 'ITEL won more orders than APCOM.'
-- 235: premise 1 does not parse: 'ITEL won more orders than APCOM.'
 - 236: premise 1 does not parse: 'ITEL won more orders than the APCOM contract.'
 - 237: premise 1 does not parse: 'ITEL won more orders than the APCOM contract.'
 - 238: premise 1 does not parse: 'ITEL won twice as many orders than APCOM.'
-- 239: premise 1 does not parse: 'ITEL won more orders than APCOM lost.'
-- 240: premise 1 does not parse: 'ITEL won more orders than APCOM lost.'
-- 241: premise 1 does not parse: 'ITEL won more orders than APCOM lost.'
 - 242: premise 1 does not parse: 'The PC-6082 is faster than 500 MIPS.'
 - 243: premise 1 does not parse: 'ITEL sold 3000 more computers than APCOM.'
 - 244: premise 1 does not parse: 'APCOM has a more important customer than ITEL.'
@@ -1957,35 +1948,35 @@ def fracas_132_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_133_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_133_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_133_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_133_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
+  ∀ {A : Type} [Fintype A] (computer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A), (Some computer (own gfi)) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_134_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (haveServiceContractForComputer mfi)
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (haveServiceContractForComputer mfi)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_134_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_134_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (haveServiceContractForComputer mfi)
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (haveServiceContractForComputer mfi)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_134_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
+  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_135_parsed_yes_0 : Prop :=
@@ -2469,35 +2460,35 @@ def fracas_207_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_208_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) [DecidableRel smallThan] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_208_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (smallThan mickey dumbo))
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) [DecidableRel smallThan] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (smallThan mickey dumbo))
 
 /-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_208_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) [DecidableRel smallThan] (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_208_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (smallThan mickey dumbo))
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) [DecidableRel smallThan] (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (smallThan mickey dumbo))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_209_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_209_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (largeThan mickey dumbo))
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (largeThan mickey dumbo))
 
 /-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_209_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_209_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (largeThan mickey dumbo))
+  ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (largeThan mickey dumbo))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_210_parsed_yes_0 : Prop :=
@@ -2533,19 +2524,19 @@ def fracas_211_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_212_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_212_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (¬ (largeThan dumbo mickey))
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (¬ (largeThan dumbo mickey))
 
 /-- As `_yes_0`, with 4 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_212_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_212_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (¬ (largeThan dumbo mickey))
+  ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) [DecidableRel largeThan] (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (¬ (largeThan dumbo mickey))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_213_parsed_yes_0 : Prop :=
@@ -2629,227 +2620,515 @@ def fracas_219_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_220_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_220_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
 /-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_220_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_220_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_221_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_221_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (¬ (fast pc6082))
 
 /-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_221_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_221_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (¬ (fast pc6082))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_222_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_222_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
 /-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_222_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_222_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_223_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_223_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
 /-- As `_yes_0`, with 3 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_223_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_223_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_224_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_224_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_224_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_224_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_225_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_225_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fast pc6082))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_225_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_225_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (¬ (fast pc6082))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (¬ (fast pc6082))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_226_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_226_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_226_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_226_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_227_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_227_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
 /-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_227_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_227_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
+  ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) [DecidableRel fastAs] (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_228_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
+  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel fastThan] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_228_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fastThan pc6082 itelXZ))
+  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel fastThan] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fastThan pc6082 itelXZ))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_228_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
+  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_228_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (¬ (fastThan pc6082 itelXZ))
+  ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel fastThan] (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (¬ (fastThan pc6082 itelXZ))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_229_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
+  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel slowThan] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_229_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (slowThan pc6082 itelXZ))
+  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel slowThan] (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (slowThan pc6082 itelXZ))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_229_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
+  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel slowThan] (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_229_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (¬ (slowThan pc6082 itelXZ))
+  ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) [DecidableRel fastAs] [DecidableRel slowThan] (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (¬ (slowThan pc6082 itelXZ))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_230_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win itel))
+
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_230_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win itel)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_230_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win itel))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_230_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win itel)))
+
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_230_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win itel))
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_230_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win itel)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_230_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win itel))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_230_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win itel)))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_231_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win apcom))
+
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_231_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win apcom)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_231_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win apcom))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_231_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win apcom)))
+
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_231_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win apcom))
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_231_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win apcom)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_231_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win apcom))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_231_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win apcom)))
+
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_232_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_232_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_232_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_232_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_232_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_232_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_232_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_232_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_233_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win itel))
+
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_233_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win itel)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_233_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win itel))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_233_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win itel)))
+
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_233_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win itel))
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_233_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win itel)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_233_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win itel))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_233_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win itel)))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_234_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win apcom))
+
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_234_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win apcom)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_234_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Some order (win apcom))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_234_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (Some order (win apcom)))
+
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_234_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win apcom))
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_234_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win apcom)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_234_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 2 order (win apcom))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_234_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (¬ (AtLeast 2 order (win apcom)))
+
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_235_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_235_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_235_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_235_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (AtLeast 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_235_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_235_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_235_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (AtLeast 11 order (win itel))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_235_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win : A → A → Prop) [DecidableRel win] (itel apcom : A), (More order (win itel) (win apcom)) → (Exactly 10 order (win apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_239_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Some order (win itel))
+
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_239_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (Some order (win itel)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_239_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Some order (win itel))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_239_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (Some order (win itel)))
+
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_239_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 2 order (win itel))
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_239_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (AtLeast 2 order (win itel)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_239_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 2 order (win itel))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_239_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (AtLeast 2 order (win itel)))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_240_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Some order (lose apcom))
+
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_240_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (Some order (lose apcom)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_240_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Some order (lose apcom))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_240_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (Some order (lose apcom)))
+
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_240_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 2 order (lose apcom))
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_240_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (AtLeast 2 order (lose apcom)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_240_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 2 order (lose apcom))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_240_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (¬ (AtLeast 2 order (lose apcom)))
+
+/-- Reading assignment 0 (numeral weak): "yes" test. -/
+def fracas_241_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 10 order (lose apcom)) → (AtLeast 11 order (win itel))
+
+/-- Reading assignment 0 (numeral weak): "no" test. -/
+def fracas_241_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 10 order (lose apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_241_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 10 order (lose apcom)) → (AtLeast 11 order (win itel))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_241_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (AtLeast 10 order (lose apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- Reading assignment 1 (numeral strong): "yes" test. -/
+def fracas_241_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Exactly 10 order (lose apcom)) → (AtLeast 11 order (win itel))
+
+/-- Reading assignment 1 (numeral strong): "no" test. -/
+def fracas_241_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Exactly 10 order (lose apcom)) → (¬ (AtLeast 11 order (win itel)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_241_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Exactly 10 order (lose apcom)) → (AtLeast 11 order (win itel))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_241_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order] (win lose : A → A → Prop) [DecidableRel win] [DecidableRel lose] (itel apcom : A), (More order (win itel) (lose apcom)) → (Exactly 10 order (lose apcom)) → (¬ (AtLeast 11 order (win itel)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_246_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_246_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_246_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_246_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_247_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_247_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_247_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_247_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_249_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_249_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_249_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_249_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_250_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_250_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
 /-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_250_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_250_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
+  ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) [DecidableRel fastThan] (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_261_parsed_yes_0 : Prop :=
@@ -3554,6 +3833,15 @@ def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean
   (227, .no, [``BlindEvalParsedClaims.fracas_227_parsed_yes_0], [``BlindEvalParsedClaims.fracas_227_parsed_no_0]),
   (228, .unknown, [``BlindEvalParsedClaims.fracas_228_parsed_yes_0], [``BlindEvalParsedClaims.fracas_228_parsed_no_0]),
   (229, .no, [``BlindEvalParsedClaims.fracas_229_parsed_yes_0], [``BlindEvalParsedClaims.fracas_229_parsed_no_0]),
+  (230, .yes, [``BlindEvalParsedClaims.fracas_230_parsed_yes_0, ``BlindEvalParsedClaims.fracas_230_parsed_yes_1], [``BlindEvalParsedClaims.fracas_230_parsed_no_0, ``BlindEvalParsedClaims.fracas_230_parsed_no_1]),
+  (231, .unknown, [``BlindEvalParsedClaims.fracas_231_parsed_yes_0, ``BlindEvalParsedClaims.fracas_231_parsed_yes_1], [``BlindEvalParsedClaims.fracas_231_parsed_no_0, ``BlindEvalParsedClaims.fracas_231_parsed_no_1]),
+  (232, .yes, [``BlindEvalParsedClaims.fracas_232_parsed_yes_0, ``BlindEvalParsedClaims.fracas_232_parsed_yes_1], [``BlindEvalParsedClaims.fracas_232_parsed_no_0, ``BlindEvalParsedClaims.fracas_232_parsed_no_1]),
+  (233, .yes, [``BlindEvalParsedClaims.fracas_233_parsed_yes_0, ``BlindEvalParsedClaims.fracas_233_parsed_yes_1], [``BlindEvalParsedClaims.fracas_233_parsed_no_0, ``BlindEvalParsedClaims.fracas_233_parsed_no_1]),
+  (234, .unknown, [``BlindEvalParsedClaims.fracas_234_parsed_yes_0, ``BlindEvalParsedClaims.fracas_234_parsed_yes_1], [``BlindEvalParsedClaims.fracas_234_parsed_no_0, ``BlindEvalParsedClaims.fracas_234_parsed_no_1]),
+  (235, .yes, [``BlindEvalParsedClaims.fracas_235_parsed_yes_0, ``BlindEvalParsedClaims.fracas_235_parsed_yes_1], [``BlindEvalParsedClaims.fracas_235_parsed_no_0, ``BlindEvalParsedClaims.fracas_235_parsed_no_1]),
+  (239, .yes, [``BlindEvalParsedClaims.fracas_239_parsed_yes_0, ``BlindEvalParsedClaims.fracas_239_parsed_yes_1], [``BlindEvalParsedClaims.fracas_239_parsed_no_0, ``BlindEvalParsedClaims.fracas_239_parsed_no_1]),
+  (240, .unknown, [``BlindEvalParsedClaims.fracas_240_parsed_yes_0, ``BlindEvalParsedClaims.fracas_240_parsed_yes_1], [``BlindEvalParsedClaims.fracas_240_parsed_no_0, ``BlindEvalParsedClaims.fracas_240_parsed_no_1]),
+  (241, .yes, [``BlindEvalParsedClaims.fracas_241_parsed_yes_0, ``BlindEvalParsedClaims.fracas_241_parsed_yes_1], [``BlindEvalParsedClaims.fracas_241_parsed_no_0, ``BlindEvalParsedClaims.fracas_241_parsed_no_1]),
   (246, .yes, [``BlindEvalParsedClaims.fracas_246_parsed_yes_0], [``BlindEvalParsedClaims.fracas_246_parsed_no_0]),
   (247, .unknown, [``BlindEvalParsedClaims.fracas_247_parsed_yes_0], [``BlindEvalParsedClaims.fracas_247_parsed_no_0]),
   (249, .yes, [``BlindEvalParsedClaims.fracas_249_parsed_yes_0], [``BlindEvalParsedClaims.fracas_249_parsed_no_0]),
@@ -3735,6 +4023,15 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Le
   (227, .no, [``BlindEvalParsedClaims.fracas_227_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_227_parsed_bk_no_0]),
   (228, .unknown, [``BlindEvalParsedClaims.fracas_228_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_228_parsed_bk_no_0]),
   (229, .no, [``BlindEvalParsedClaims.fracas_229_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_229_parsed_bk_no_0]),
+  (230, .yes, [``BlindEvalParsedClaims.fracas_230_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_230_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_230_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_230_parsed_bk_no_1]),
+  (231, .unknown, [``BlindEvalParsedClaims.fracas_231_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_231_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_231_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_231_parsed_bk_no_1]),
+  (232, .yes, [``BlindEvalParsedClaims.fracas_232_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_232_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_232_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_232_parsed_bk_no_1]),
+  (233, .yes, [``BlindEvalParsedClaims.fracas_233_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_233_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_233_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_233_parsed_bk_no_1]),
+  (234, .unknown, [``BlindEvalParsedClaims.fracas_234_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_234_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_234_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_234_parsed_bk_no_1]),
+  (235, .yes, [``BlindEvalParsedClaims.fracas_235_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_235_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_235_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_235_parsed_bk_no_1]),
+  (239, .yes, [``BlindEvalParsedClaims.fracas_239_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_239_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_239_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_239_parsed_bk_no_1]),
+  (240, .unknown, [``BlindEvalParsedClaims.fracas_240_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_240_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_240_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_240_parsed_bk_no_1]),
+  (241, .yes, [``BlindEvalParsedClaims.fracas_241_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_241_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_241_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_241_parsed_bk_no_1]),
   (246, .yes, [``BlindEvalParsedClaims.fracas_246_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_246_parsed_bk_no_0]),
   (247, .unknown, [``BlindEvalParsedClaims.fracas_247_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_247_parsed_bk_no_0]),
   (249, .yes, [``BlindEvalParsedClaims.fracas_249_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_249_parsed_bk_no_0]),

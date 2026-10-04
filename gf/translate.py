@@ -189,6 +189,17 @@ def _leaf_words(t, keep_det: bool = False) -> list[str]:
         and t.args[1].head == "NumPl"
     ):
         return ["every"]
+    # A counted numeral on the object stays in the name too ("won TEN
+    # orders" -> `win10Order`): dropping it made "won ten orders" and "won
+    # eleven orders" one predicate, so either would have "followed" from
+    # the other.
+    if keep_det and t.head == "NumCard" and len(t.args) == 1:
+        try:
+            count, approx = _decode_card(t.args[0])
+        except NotImplementedError:
+            count, approx = None, None
+        if count is not None:
+            return ([approx[:1].lower() + approx[1:]] if approx else []) + [str(count)]
     if not t.args:
         if keep_det and t.head.endswith("_Det"):
             return [t.head[: -len("_Det")]]
@@ -378,16 +389,19 @@ def _decode_card(card):
 #     `Many` relation with no properties (no GQ here entails both);
 #   - plural "some Xs": number-neutral vs at-least-two - weak `Some`,
 #     strong `AtLeast 2` (with its "some" consequence spelled out);
+#   - a bare numeral ("APCOM won ten orders"): at least n vs exactly n -
+#     weak `AtLeast n`, strong `Exactly n` ("only/just n" is always
+#     `Exactly n`, and "at least/at most/exactly n" say which outright);
 #   - "both"/"neither": not ambiguous, just previously simplified to
 #     `Every`/`No` (see the CAUTION below) - both modes use GQ.lean's own
 #     `Both`/`Neither`, which keep the exactly-two presupposition.
 #
 # `reading` may also be a dict assigning "weak"/"strong" per KIND of
-# ambiguity - "defpl", "generic", "many", "somepl" (AMBIGUITY_KINDS) - so a
+# ambiguity - "defpl", "generic", "many", "somepl", "numeral" (AMBIGUITY_KINDS) - so a
 # caller can read the same kind of ambiguity the same way in every
 # sentence of a problem (scripts/gen_blind_eval_parsed.py enumerates all
 # such assignments); a kind missing from the dict reads "weak".
-AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl")
+AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl", "numeral")
 _READING = "default"
 
 
@@ -448,7 +462,10 @@ def _resolve_quantifier(det) -> str:
             # fracas_085/086's own real theorems (`Exactly 6 lawyer
             # signed`/`Exactly 6 accountant signed`, for the gold
             # hypotheses "Six lawyers/accountants signed the contract"),
-            # not guessed from the English alone.
+            # not guessed from the English alone. The end-to-end readings
+            # treat it as ambiguous instead (at least n / exactly n).
+            if _READING != "default" and _mode("numeral") == "weak":
+                return f"AtLeast {count}"
             return f"Exactly {count}"
         if _READING != "default" and quant.head == "DefArt" and num.head == "NumPl":
             return "Some" if _mode("defpl") == "weak" else "Every+"
@@ -462,6 +479,18 @@ def _resolve_quantifier(det) -> str:
         f"determiner shape {det.head!r} has no known Lean quantifier mapping yet "
         "(see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)"
     )
+
+
+def _bare_count(det):
+    """n for a bare counted numeral determiner ("six", not "at least
+    six"), else None."""
+    if det.head == "DetQuant" and len(det.args) == 2:
+        num = det.args[1]
+        if num.head == "NumCard" and len(num.args) == 1:
+            count, approx = _decode_card(num.args[0])
+            if approx is None:
+                return count
+    return None
 
 
 # Predeterminers (PredetNP predet np - "all Italian men", not a *_Det
@@ -519,9 +548,9 @@ def _resolve_subject(subject):
         # different, focus-sensitive construction, not handled).
         if predet.head in ("only_Predet", "just_Predet"):
             det, cn = _det_and_restrictor(np)
-            quant = _resolve_quantifier(det)
-            if quant.startswith("Exactly "):
-                return quant, cn
+            count = _bare_count(det)
+            if count is not None:
+                return f"Exactly {count}", cn
             raise NotImplementedError(f"{predet.head} without a counted numeral is not handled")
         if predet.head not in _QUANTIFIER_BY_PREDET:
             raise NotImplementedError(
@@ -817,6 +846,74 @@ def _try_translate_comparative(subject_name: str, vp):
     return None
 
 
+# Object determiners that make a named subject's transitive VP count its
+# objects, so the count is kept as a quantifier over a binary verb rather
+# than fused into one predicate name (see _try_translate_object_quantifier).
+_COUNTING_OBJECT_DETS = ("somePl_Det", "several_Det", "aFew_Det", "many_Det")
+
+
+def _is_counting_det(det) -> bool:
+    if det.head in _COUNTING_OBJECT_DETS and not det.args:
+        return True
+    return (
+        det.head == "DetQuant"
+        and len(det.args) == 2
+        and det.args[1].head == "NumCard"
+    )
+
+
+def _try_translate_object_quantifier(subject_name: str, vp):
+    """A proper-name subject with a transitive verb whose object COUNTS:
+    "APCOM won ten orders" (`AtLeast 10 order (win apcom)` / `Exactly 10
+    ...`, see the "numeral" reading), "ITEL won some orders", and the
+    quantity comparative "ITEL won more orders than APCOM did / than APCOM
+    / than APCOM lost" (`More order (win itel) (win apcom)`; an elided
+    verb is the main clause's own). The verb becomes a binary predicate
+    and the object's determiner a quantifier over it, so counts can be
+    compared and added - fused into one name ("won ten orders" ->
+    `win10Order`) they can't. Only with a proper-name subject (no scope
+    interaction with a quantified subject) and only in the end-to-end
+    readings; other objects keep the fused name, so a problem mixing the
+    two shapes may lose an inference, never gain a wrong one. Returns None
+    when the shape doesn't match."""
+    if _READING == "default":
+        return None
+    if not (
+        vp.head == "ComplSlash"
+        and len(vp.args) == 2
+        and vp.args[0].head == "SlashV2a"
+        and len(vp.args[0].args) == 1
+    ):
+        return None
+    verb = camel_name(_leaf_words(vp.args[0]))
+    obj = vp.args[1]
+    if obj.head in ("MoreThanNP", "MoreThanAux", "MoreThanV2") and len(obj.args) >= 2:
+        cn, standard = obj.args[0], obj.args[1]
+        if standard.head != "UsePN" or len(standard.args) != 1:
+            return None
+        if obj.head == "MoreThanAux" and obj.args[2].head not in ("ellDid", "ellDoes", "ellHas"):
+            return None
+        other = camel_name(_leaf_words(standard))
+        other_verb = camel_name(_leaf_words(obj.args[2])) if obj.head == "MoreThanV2" else verb
+        restrictor_expr, restrictor_preds = _restrictor_expr(cn)
+        return Translation(
+            lean_prop=f"More {restrictor_expr} ({verb} {subject_name}) ({other_verb} {other})",
+            free_predicates=[*restrictor_preds, verb, other_verb],
+            free_individuals=[subject_name, other],
+            binary_predicates=[verb, other_verb],
+        )
+    if obj.head != "DetCN" or len(obj.args) != 2 or not _is_counting_det(obj.args[0]):
+        return None
+    quant = _resolve_quantifier(obj.args[0])
+    restrictor_expr, restrictor_preds = _restrictor_expr(_normalize_cn(obj.args[1]))
+    return Translation(
+        lean_prop=_quantified(quant, restrictor_expr, f"({verb} {subject_name})"),
+        free_predicates=[*restrictor_preds, verb],
+        free_individuals=[subject_name],
+        binary_predicates=[verb],
+    )
+
+
 def _try_translate_named_individual_fact(subject, vp):
     """Handles a bare 'ProperNoun is/was a CN' or 'ProperNoun VERB-PHRASE'
     fact about a single named individual - e.g. fracas_099's "Smith was
@@ -845,6 +942,9 @@ def _try_translate_named_individual_fact(subject, vp):
     comparative = _try_translate_comparative(individual_name, vp)
     if comparative is not None:
         return comparative
+    counted = _try_translate_object_quantifier(individual_name, vp)
+    if counted is not None:
+        return counted
     if (
         vp.head == "UseComp"
         and len(vp.args) == 1

@@ -513,4 +513,15 @@ abstract FraCaSLogic =
     ellDid, ellDidnt, ellDoes, ellHas : EllAux ;
     anaphOne_N : N ;
     anaphOne_NP : NP ;
+    -- Quantity comparatives, FraCaS's own wording (Section 6, 230-241):
+    -- "more orders than APCOM", "more orders than APCOM did", "more
+    --   orders than APCOM lost". An object NP whose meaning is a
+    --   comparison of two counts (gf/translate.py: `More`); the "than"
+    --   part is not a full clause here - the elided verb ("did", or
+    --   nothing) is resolved to the main clause's verb by the translator,
+    --   and an explicit one ("lost") is a bare past-tense V2 with the
+    --   object gap that the compared noun fills.
+    MoreThanNP : CN -> NP -> NP ;
+    MoreThanAux : CN -> NP -> EllAux -> NP ;
+    MoreThanV2 : CN -> NP -> V2 -> NP ;
 }

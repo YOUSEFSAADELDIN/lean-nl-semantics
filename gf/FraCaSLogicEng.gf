@@ -144,6 +144,14 @@ concrete FraCaSLogicEng of FraCaSLogic =
     ellHas = {s = table {Sg => "has" ; Pl => "have"}} ;
     anaphOne_N = mkN "one" "ones" ;
     anaphOne_NP = {s = \\_ => "one" ; a = agrP3 Sg} ;
+    MoreThanNP cn np =
+      {s = \\_ => "more" ++ cn.s ! Pl ! Nom ++ "than" ++ np.s ! npNom ; a = agrP3 Pl} ;
+    MoreThanAux cn np aux =
+      {s = \\_ => "more" ++ cn.s ! Pl ! Nom ++ "than" ++ np.s ! npNom ++ aux.s ! (fromAgr np.a).n ;
+       a = agrP3 Pl} ;
+    MoreThanV2 cn np v2 =
+      {s = \\_ => "more" ++ cn.s ! Pl ! Nom ++ "than" ++ np.s ! npNom ++ v2.s ! VPast ++ v2.p ;
+       a = agrP3 Pl} ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

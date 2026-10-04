@@ -116,6 +116,16 @@ abbrev Both {A : Type*} [Fintype A] (P Q : A → Prop) [DecidablePred P] : Prop 
 abbrev Neither {A : Type*} [Fintype A] (P Q : A → Prop) [DecidablePred P] : Prop :=
   card P = 2 ∧ No P Q
 
+/-- "More P are Q than are R" - the quantity comparative ("ITEL won more
+orders than APCOM did": `More order (win itel) (win apcom)`), a
+three-place quantifier comparing two counts over the same restrictor.
+Used only by the end-to-end pipeline (`gf/translate.py`); the
+hand-written Section 6 theorems state these problems over `Nat` counts
+directly. -/
+abbrev More {A : Type*} [Fintype A] (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x] : Prop :=
+  card (fun x => P x ∧ Q x) > card (fun x => P x ∧ R x)
+
 /-! ## Composition lemmas
 
 Reusable across many Section 1 problems, the same way `Subtyping.lean`'s
@@ -251,6 +261,29 @@ theorem atLeast_some {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
   obtain ⟨x, hx⟩ := Finset.card_pos.mp hpos
   simp only [Finset.mem_filter] at hx
   exact ⟨x, hx.2⟩
+
+/-- `More P Q R` gives `Some P Q`: a count strictly above another count
+is positive - FraCaS 230's "ITEL won more orders than APCOM did ⊢ ITEL
+won some orders" shape (number-neutral "some"). -/
+theorem more_some {A : Type*} [Fintype A] (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x]
+    (h : More P Q R) : Some P Q := by
+  have h' : card (fun x => P x ∧ Q x) > card (fun x => P x ∧ R x) := h
+  have hpos : 0 < card (fun x => P x ∧ Q x) := by omega
+  obtain ⟨x, hx⟩ := Finset.card_pos.mp hpos
+  simp only [Finset.mem_filter] at hx
+  exact ⟨x, hx.2⟩
+
+/-- `More P Q R` and `AtLeast n P R` give `AtLeast (n + 1) P Q` - FraCaS
+232's "more orders than APCOM did, APCOM won ten orders ⊢ ITEL won at
+least eleven orders" shape. -/
+theorem more_atLeast {A : Type*} [Fintype A] (n : Nat) (P Q R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x]
+    (h : More P Q R) (hR : AtLeast n P R) : AtLeast (n + 1) P Q := by
+  have h1 : card (fun x => P x ∧ Q x) > card (fun x => P x ∧ R x) := h
+  have h2 : card (fun x => P x ∧ R x) ≥ n := hR
+  show card (fun x => P x ∧ Q x) ≥ n + 1
+  omega
 
 /-- `Most P Q` gives `Some P Q`: a strict majority of `P ∩ Q` over `P`
 forces `P ∩ Q` nonempty, since `P ∩ Q ⊆ P` already bounds

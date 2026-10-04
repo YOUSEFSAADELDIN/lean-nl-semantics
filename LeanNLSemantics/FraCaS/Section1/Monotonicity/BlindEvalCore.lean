@@ -194,6 +194,7 @@ macro "blind_aesop" : tactic => `(tactic|
       unsafe 50% apply FraCaS.Section1.every_trans, unsafe 50% apply FraCaS.Section1.every_mp,
       norm simp FraCaS.Section1.no_iff_not_some,
       unsafe 50% apply FraCaS.Section1.atLeast_some, unsafe 50% apply FraCaS.Section1.most_some,
+      unsafe 50% apply FraCaS.Section1.more_some,
       unsafe 50% apply FraCaS.Section1.some_mono_scope,
       unsafe 50% apply FraCaS.Section1.every_mono_scope,
       unsafe 50% apply FraCaS.Section1.atLeast_mono_scope,
@@ -228,6 +229,16 @@ CI run 37168342088). -/
 macro "blind_grind" : tactic => `(tactic|
   grind [FraCaS.Section1.Every, FraCaS.Section1.Some, FraCaS.Section1.No])
 
+set_option hygiene false in
+/-- Counting arguments: unfold the cardinality quantifiers (`AtLeast`/
+`AtMost`/`Exactly`/`More`, all `abbrev`s for comparisons of `card`s) and
+hand the resulting linear arithmetic over the `card` atoms to `omega` -
+FraCaS 232's "ITEL won more orders than APCOM did, APCOM won ten orders
+⊢ ITEL won at least eleven orders". -/
+macro "blind_count" : tactic => `(tactic|
+  (intros; (try simp only [FraCaS.Section1.More, FraCaS.Section1.AtLeast,
+    FraCaS.Section1.AtMost, FraCaS.Section2.Exactly] at *); omega))
+
 -- Canaries: if either `aesop` rule set ever stops building (the silent
 -- failure documented on `blind_aesop`), or `blind_grind` stops seeing
 -- through the quantifier defs, these fail `lake build` itself.
@@ -239,6 +250,18 @@ example {A : Type} (P Q : A → Prop) (x : A) :
     FraCaS.Section1.Every P Q → P x → Q x := by blind_aesop_unfold
 example {A : Type} (P Q : A → Prop) (x : A) :
     FraCaS.Section1.Every P Q → P x → Q x := by blind_grind
+-- The exact shape the end-to-end pipeline generates for FraCaS 232 (a
+-- binary verb under a counting quantifier, both readings of "ten").
+example {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order]
+    (win : A → A → Prop) [DecidableRel win] (itel apcom : A) :
+    FraCaS.Section1.More order (win itel) (win apcom) →
+    FraCaS.Section1.AtLeast 10 order (win apcom) →
+    FraCaS.Section1.AtLeast 11 order (win itel) := by blind_count
+example {A : Type} [Fintype A] (order : A → Prop) [DecidablePred order]
+    (win : A → A → Prop) [DecidableRel win] (itel apcom : A) :
+    FraCaS.Section1.More order (win itel) (win apcom) →
+    FraCaS.Section2.Exactly 10 order (win apcom) →
+    FraCaS.Section1.AtLeast 11 order (win itel) := by blind_count
 
 /-- Runs one *problem's* whole evaluation (not just one tactic attempt -
 `runTacticOn` already isolates those) with a fresh heartbeat budget,
@@ -269,7 +292,9 @@ and its unarmed fallback `blind_aesop_unfold`, then plain `grind` and
 3-9 problems - FraCaS's own cardinal comparatives in particular, see
 `Section6/Comparatives.lean`'s own header - are literal `Nat`
 inequalities their own hand proofs already close with bare `omega`;
-`intros` first since `omega` doesn't peel leading implications itself).
+`intros` first since `omega` doesn't peel leading implications itself),
+then `blind_count` (the same after unfolding the cardinality quantifiers,
+for counting arguments stated with `AtLeast`/`Exactly`/`More`).
 Stops at the first success. Every step is a sound, kernel-checked proof
 search, so adding steps can only turn "unknown" into a verdict the
 translated `Prop` genuinely supports, or expose jointly inconsistent
@@ -286,6 +311,7 @@ def attemptClose (ty : Expr) : TermElabM Bool := do
   if ← runTacticBool ty (← `(tactic| grind)) then return true
   if ← runTacticBool ty (← `(tactic| blind_grind)) then return true
   if ← runTacticBool ty (← `(tactic| (intros; omega))) then return true
+  if ← runTacticBool ty (← `(tactic| blind_count)) then return true
   return false
 
 /-- Whether a (post-Pi-peeling) head constant name is a negation

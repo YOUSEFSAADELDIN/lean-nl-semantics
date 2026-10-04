@@ -285,6 +285,10 @@ def assemble(idn, sentences):
         binders += [f"[DecidablePred {n}]" for n in unary]
     if binary:
         binders.append(f"({' '.join(binary)} : A → A → Prop)")
+        # Counting over a binary verb ("more orders than APCOM won":
+        # `card (fun x => order x ∧ win apcom x)`) needs it decidable,
+        # like the unary predicates above.
+        binders += [f"[DecidableRel {n}]" for n in binary]
     if inds:
         binders.append(f"({' '.join(inds)} : A)")
     # The proportional reading of "many" is an opaque relation, stated
