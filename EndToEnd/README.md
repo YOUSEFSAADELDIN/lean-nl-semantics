@@ -140,7 +140,7 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 37195314343), on those 195 problems:
+**Result** (CI run 37199853258, after the separation; identical to run 37195314343 before it), on those 195 problems:
 
 | | matched | wrong answers |
 |---|---|---|

@@ -140,7 +140,8 @@ theorem scans' own `answerMatches` already does.
 
 ## Current result (CI-confirmed)
 
-CI run 37170606363:
+CI run 37170606363, reproduced exactly with the frozen prover in CI run
+37199853258:
 
 | | problems | attempted | matched |
 |---|---|---|---|
