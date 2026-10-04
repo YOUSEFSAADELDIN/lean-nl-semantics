@@ -1258,16 +1258,16 @@ def fracas_303_parsed_bk : Prop :=
 def fracas_304_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (writeReport smith)
 
-/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_304_parsed_bk : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (∀ x, writeReportForTwoHours x → writeReport x) → (writeReportForTwoHours smith) → (writeReport smith)
+  ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (writeReport smith)
 
 def fracas_306_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
 
-/-- With 1 background-knowledge premise(s) from `gf/background.py`. -/
+/-- With 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_306_parsed_bk : Prop :=
-  ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (∀ x, discoverNewSpeciesForTwoYears x → discoverNewSpecies x) → (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
+  ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
 
 def fracas_308_parsed : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (∃ x, representativeMascSmithWriteToEveryWeek x)

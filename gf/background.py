@@ -18,7 +18,8 @@ nothing else. Two sources, both stated here in full:
      `NON_SUBSECTIVE` ("former", "fake", ...: a former student is not
      thereby a student);
    - an adverbial/PP on a noun (`AdvCN`) or verb phrase (`AdvVP`), unless
-     the adverb is listed in `NON_VERIDICAL`;
+     the adverb is listed in `NON_VERIDICAL`, or the PP is a durative
+     measure ("for two hours" - `_is_aspectual`), wherever it attaches;
    - a relative clause on a noun (`RelCN`);
    - a degree word on an adjective (`AdAP`: "really great" -> "great");
    - recursively inside a verb's object or a copula complement, but only
@@ -51,6 +52,30 @@ from translate import App, _leaf_words, _scope_name, camel_name  # noqa: E402
 
 NON_SUBSECTIVE = {"former", "fake", "alleged", "false", "imaginary", "would-be", "fictional", "potential"}
 NON_VERIDICAL = {"allegedly", "apparently", "likely", "possibly", "nearly", "almost"}
+# Prepositions whose verb-phrase adverbials change aspect rather than just
+# restricting the event: "write a report FOR TWO HOURS" does not entail
+# "write a report" (the imperfective paradox - an accomplishment with a
+# durative adverbial need not culminate). Added after the first CI run of
+# this module produced exactly that wrong inference (FraCaS 304) - a rule
+# found from an observed failure, stated as such in BLIND_EVAL.md.
+ASPECTUAL_PREPS = {"for"}
+# ...but only when the PP measures a duration ("for two hours"), wherever
+# the parser attached it - "the Nobel prize FOR LITERATURE" is an ordinary
+# restrictive modifier and stays deletable (FraCaS 17).
+TIME_UNITS = {"second", "minute", "hour", "day", "week", "month", "year", "decade"}
+
+
+def _is_aspectual(pp) -> bool:
+    # FraCaSLogic.gf also lexicalizes some durations as fixed adverbs
+    # (`forTwoHours_Adv`, `forAYear_Adv`, ...) - the same thing, one token.
+    if not pp.args and pp.head.endswith("_Adv"):
+        word = _lemma(pp.head).lower()
+        return any(word.startswith(p) for p in ASPECTUAL_PREPS) and any(u in word for u in TIME_UNITS)
+    if not (pp.head == "PrepNP" and len(pp.args) == 2):
+        return False
+    if _lemma(pp.args[0].head) not in ASPECTUAL_PREPS:
+        return False
+    return any(_lemma(h) in TIME_UNITS for h in _leaf_heads(pp.args[1]))
 ANTONYMS = [("small", "large"), ("fast", "slow"), ("fat", "thin"), ("old", "new"), ("cheap", "expensive")]
 
 CN_HEADS = {"UseN", "AdjCN", "AdvCN", "RelCN", "CompoundCN", "SentCN", "ApposCN"}
@@ -91,11 +116,12 @@ def weakenings(t):
         out += [App("AdjCN", [w, a[1]]) for w in weakenings(a[0])]
         out += [App("AdjCN", [a[0], w]) for w in weakenings(a[1])]
     elif h in ("AdvCN", "RelCN") and len(a) == 2:
-        out.append(a[0])
+        if not (h == "AdvCN" and _is_aspectual(a[1])):
+            out.append(a[0])
         out += [App(h, [w, a[1]]) for w in weakenings(a[0])]
     elif h == "AdvVP" and len(a) == 2:
         adv_words = {_lemma(x) for x in _leaf_heads(a[1])}
-        if not (adv_words & NON_VERIDICAL):
+        if not (adv_words & NON_VERIDICAL) and not _is_aspectual(a[1]):
             out.append(a[0])
         out += [App("AdvVP", [w, a[1]]) for w in weakenings(a[0])]
     elif h == "AdAP" and len(a) == 2:
