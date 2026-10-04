@@ -323,20 +323,4 @@ theorem fracas_044_via_mono_nl :
 
 end P044
 
--- The `(AtLeast, scope)` counterpart of the same Phase-5 schema
--- (`atLeast_mono_scope_conditioned`): FraCaS 27, "a few committee members
--- are from Sweden ... ⊢ at least a few committee members are from
--- Scandinavia", in the shape the end-to-end pipeline generates for it.
-section P027
-variable {A : Type*} [Fintype A] (n : Nat) (committee sweden person scandinavia : A → Prop)
-variable [DecidablePred fun x => committee x ∧ sweden x]
-variable [DecidablePred fun x => committee x ∧ scandinavia x]
-
-theorem fracas_027_via_mono_nl :
-    AtLeast n committee sweden → Every committee person →
-      Every (fun x => person x ∧ sweden x) scandinavia →
-        AtLeast n committee scandinavia := by mono_nl
-
-end P027
-
 end FraCaS.Section1.Monotonicity

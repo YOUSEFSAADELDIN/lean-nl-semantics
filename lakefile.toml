@@ -11,3 +11,11 @@ git = "https://github.com/leanprover-community/mathlib4.git"
 
 [[lean_lib]]
 name = "LeanNLSemantics"
+
+# The end-to-end pipeline's Lean side (`EndToEnd/`): the claims translated
+# automatically from FraCaS's English, the quantifiers only those claims
+# use, and the prover that scores them. A separate library so the default
+# `lake build` (the MTT core and the hand-written FraCaS corpus) never
+# builds it; its own CI job runs `lake build EndToEnd`.
+[[lean_lib]]
+name = "EndToEnd"

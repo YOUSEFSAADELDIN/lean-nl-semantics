@@ -3800,7 +3800,7 @@ _FRACAS_084_HYPOTHESIS_CHECK = [
 ]
 
 # FraCaS's OWN wording, for the constructions the end-to-end parser
-# (parse_rank.py / scripts/gen_blind_eval_parsed.py) needs but which the
+# (parse_rank.py / EndToEnd/gen_claims.py) needs but which the
 # hand-built trees above never used, because they were written for the
 # project's rewordings ("leading tenors THAT are excellent", "SOME Italian
 # men want ..."): the `who` relative pronoun, the "there are/was NP"

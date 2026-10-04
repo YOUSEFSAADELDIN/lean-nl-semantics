@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Problem-independent background knowledge for the end-to-end pipeline
-(scripts/gen_blind_eval_parsed.py).
+(EndToEnd/gen_claims.py).
 
 translate.py names a predicate after the words of its whole CN/VP subtree
 ("win the Nobel prize for literature" -> `winNobelPrizeForLiterature`),

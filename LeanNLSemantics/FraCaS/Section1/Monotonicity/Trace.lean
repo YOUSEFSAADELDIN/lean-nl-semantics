@@ -50,7 +50,8 @@ this is a registered *fallback*, not a table entry.
 `atLeastMonoScopeConditioned` is the `(AtLeast, scope)` cell's fallback
 of the same kind (`GQ.lean`'s `atLeast_mono_scope_conditioned`), added
 for the end-to-end pipeline's "a few ... ⊢ at least a few ..." (FraCaS
-27). -/
+27) and used only when `searchMonoNl` is asked for it
+(`upwardConditioned`), which only `EndToEnd/Prover.lean` does. -/
 inductive MonoRule where
   | everyMonoScope
   | everyRestrict

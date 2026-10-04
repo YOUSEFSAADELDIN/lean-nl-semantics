@@ -408,7 +408,7 @@ def _decode_card(card):
 # `reading` may also be a dict assigning "weak"/"strong" per KIND of
 # ambiguity - "defpl", "generic", "many", "somepl", "numeral", "few" (AMBIGUITY_KINDS) - so a
 # caller can read the same kind of ambiguity the same way in every
-# sentence of a problem (scripts/gen_blind_eval_parsed.py enumerates all
+# sentence of a problem (EndToEnd/gen_claims.py enumerates all
 # such assignments); a kind missing from the dict reads "weak".
 AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl", "numeral", "few")
 _READING = "default"

@@ -245,7 +245,7 @@ passes `fun _ => pure #[]` (Phase 1/2, unchanged behaviour). Returns `true`
 (and assigns `goal`) iff it closed the goal; `false`, never a thrown
 error, otherwise - callers decide whether/how to report failure. -/
 def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.Name)))
-    (goal : MVarId) : MetaM Bool := do
+    (goal : MVarId) (upwardConditioned : Bool := false) : MetaM Bool := do
   let (_introduced, goal) ← introAll goal
   goal.withContext do
     -- Raw type, not `whnf` - see `introAll`'s comment: whnf unfolds
@@ -421,12 +421,18 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
       -- `Trace.lean`'s `NarrowStep`/`atMostMonoScopeConditioned` for why
       -- this is a registered fallback rather than a table cell). Only a
       -- cell with a registered conditioned rule gets one; today that's
-      -- `(AtMost, scope)` and `(AtLeast, scope)` - everywhere else `condRule?` is `none`
+      -- exactly `(AtMost, scope)` - everywhere else `condRule?` is `none`
       -- and this block does nothing, so it can only ever widen what
       -- already-passing goals close, never change how they do.
+      -- `(AtLeast, scope)`'s counterpart is opt-in (`upwardConditioned`):
+      -- only the end-to-end pipeline's prover (`EndToEnd/Prover.lean`)
+      -- turns it on, so `mono_nl` itself - and every evaluation of the
+      -- hand-written corpus that uses it - behaves exactly as before that
+      -- rule existed.
       let condRule? : Option MonoRule :=
         if rule == .atMostMonoScope then some .atMostMonoScopeConditioned
-        else if rule == .atLeastMonoScope then some .atLeastMonoScopeConditioned
+        else if upwardConditioned && rule == .atLeastMonoScope then
+          some .atLeastMonoScopeConditioned
         else none
       if let some condRule := condRule? then
         -- The conditioned fact `entails_narrow` would produce is `Every

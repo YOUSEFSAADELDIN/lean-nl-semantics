@@ -329,7 +329,7 @@ distinct confirmed sentences: all parse, the hand tree is among the
 readings for every one, and the top reading translates like the hand tree
 for 371/373 of those `translate.py` covers. This restricted grammar is
 fit to FraCaS's own vocabulary and constructions - a controlled-language
-grammar, not open-domain parsing - and `scripts/gen_blind_eval_parsed.py`
+grammar, not open-domain parsing - and `EndToEnd/gen_claims.py`
 uses it to translate FraCaS's original English end to end; see
 `BLIND_EVAL.md` for what that achieves (and doesn't).
 
@@ -374,7 +374,7 @@ did Bill", "Bill didn't", "the students have too") and one-anaphora
 `anaphOne_NP` for anaphoric "one", and `UncNeg` for uncontracted "is not"
 (this grammar's `PNeg` realizes "isn't"), each with a confirmed check.
 The grammar deliberately does not represent the elided material:
-`scripts/gen_blind_eval_parsed.py` resolves it by copying the antecedent
+`EndToEnd/gen_claims.py` resolves it by copying the antecedent
 clause's VP or noun (the standard copy treatment). `EllAux` had to be
 added to `gen_parse_grammar.py`'s `EXTRA_CATS` for the same reason as the
 list categories.

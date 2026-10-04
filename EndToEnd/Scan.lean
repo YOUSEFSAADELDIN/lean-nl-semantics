@@ -1,24 +1,26 @@
-import LeanNLSemantics.FraCaS.Section1.Monotonicity.BlindEvalCore
-import LeanNLSemantics.FraCaS.BlindEvalParsed
+import EndToEnd
 
 /-!
-# End-to-end blind evaluation scan
+# End-to-end evaluation scan
 
-Runs the same `attemptClose` chain as `runBlindEvalGeneric` over the
-claims in `BlindEvalParsed.lean` - FraCaS problems translated from their
-original English with no human in the translation step (see
-`scripts/gen_blind_eval_parsed.py`). So unlike every other scan, a
-mismatch here can come from the parse, the reading ranker, `translate.py`,
-the generic assembly, or a background-knowledge premise the pipeline
-deliberately never supplies - not only from the inference step.
+Runs the end-to-end prover (`EndToEnd/Prover.lean`'s
+`attemptCloseEndToEnd`) over the claims in `EndToEnd/Claims.lean` -
+FraCaS problems translated from their original English with no human in
+the translation step (see `EndToEnd/gen_claims.py`). So unlike the
+hand-written corpus's scans, a mismatch here can come from the parse, the
+reading ranker, `translate.py`, the generic assembly, or a missing
+background-knowledge premise - not only from the inference step.
 
-Deliberately not imported by anything - run directly, as its own CI step.
+These are development-set figures: the grammar, translator and prover
+were extended by looking at which of these same problems failed.
+
+Not part of any library - run directly, as its own CI job.
 -/
 open Lean Lean.Meta Lean.Elab Lean.Elab.Term Lean.Elab.Command
 open FraCaS.Section1.Monotonicity.BlindEval
-  (attemptClose answerMatches answerToString withFreshBudget)
+  (answerMatches answerToString withFreshBudget)
 
-namespace FraCaS.BlindEvalParsedScan
+namespace FraCaS.EndToEnd.Scan
 
 /-- One pass over a registry of end-to-end claims; `label` prefixes the
 log lines so the two variants' results are reported separately. -/
@@ -47,11 +49,11 @@ def runParsed (registry : List (Nat × FraCaS.Answer × List Lean.Name × List L
         let mut hypClose := true
         for ty in yesTys do
           if hypClose then
-            hypClose ← attemptClose ty
+            hypClose ← FraCaS.EndToEnd.attemptCloseEndToEnd ty
         let mut notHypClose := true
         for ty in noTys do
           if notHypClose then
-            notHypClose ← attemptClose ty
+            notHypClose ← FraCaS.EndToEnd.attemptCloseEndToEnd ty
         pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool)))
       (fun e => do
         let msg ← try e.toMessageData.toString catch _ => pure "<error message could not be rendered>"
@@ -83,16 +85,16 @@ def runParsed (registry : List (Nat × FraCaS.Answer × List Lean.Name × List L
   logInfo m!"errored during attempt [{errored.size}]: {errored.toList}"
 
 -- Without background knowledge: exactly what the parsed English says.
-elab "#blind_eval_parsed" : command => liftTermElabM do
-  runParsed FraCaS.blindEvalParsedRegistry "blind_eval_parsed"
+elab "#end_to_end_eval" : command => liftTermElabM do
+  runParsed FraCaS.EndToEnd.registry "end_to_end"
 
 -- The same claims with `gf/background.py`'s problem-independent
 -- background knowledge added as premises (tree-structural entailments and
 -- a small degree-semantics lexicon - see that file for the full list).
-elab "#blind_eval_parsed_bk" : command => liftTermElabM do
-  runParsed FraCaS.blindEvalParsedBkRegistry "blind_eval_parsed_bk"
+elab "#end_to_end_eval_bk" : command => liftTermElabM do
+  runParsed FraCaS.EndToEnd.registryBk "end_to_end_bk"
 
-end FraCaS.BlindEvalParsedScan
+end FraCaS.EndToEnd.Scan
 
-#blind_eval_parsed
-#blind_eval_parsed_bk
+#end_to_end_eval
+#end_to_end_eval_bk
