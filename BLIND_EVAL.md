@@ -216,16 +216,25 @@ problem the automated pipeline can carry all the way through
    by one generic rule — bind every free predicate/individual, chain
    premises into the hypothesis — with no per-problem cases. Sentential
    negation is translated only with a proper-name subject, where its
-   scope is unambiguous.
-5. **Never commit to one reading of ambiguous English.** Four kinds of
+   scope is unambiguous. A proper-name subject's counted object ("APCOM
+   won ten orders", "ITEL won some orders") keeps its verb as a binary
+   predicate and its determiner as a quantifier over it, rather than
+   being fused into one predicate name. Quantity comparatives ("ITEL won
+   more orders than APCOM did / than APCOM / than APCOM lost") translate
+   to `More order (win itel) (win apcom)`, a comparison of two counts
+   (`GQ.lean`), with an elided verb resolved to the main clause's. Fused
+   names keep an object's numeral: they used to drop it, which made "won
+   ten orders" and "won eleven orders" the same predicate.
+5. **Never commit to one reading of ambiguous English.** Five kinds of
    ambiguity are translated in a weak and a strong reading: a definite
    plural subject ("the inhabitants voted" — collective/generic `Some`,
    or distributive `Every` plus the definite's existence presupposition);
    a bare plural with a relative clause (existential or generic); "many"
    (cardinal, read as `Some`, or proportional — an opaque relation stated
    only with properties every reading shares: it entails "some" and is
-   upward monotone in its scope, but not in its restrictor); and plural
-   "some Xs" (number-neutral, or at least two). "Both"/"neither" use the
+   upward monotone in its scope, but not in its restrictor); plural
+   "some Xs" (number-neutral, or at least two); and a bare numeral ("ten
+   orders": at least ten, or exactly ten). "Both"/"neither" use the
    corpus's own `Both`/`Neither`, which keep the exactly-two
    presupposition. Each problem is translated under every *consistent*
    assignment of readings — the same word read the same way in each of
@@ -259,29 +268,32 @@ correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 176 of 342 problems go all
-the way through (51.5%). 121 stop at a sentence the restricted grammar
+**Coverage, on FraCaS's original English**: 186 of 342 problems go all
+the way through (54.4%). 111 stop at a sentence the restricted grammar
 doesn't parse, 32 at a reading `translate.py` doesn't cover, 13 at a
 translation needing non-generic assembly. A census of every failing
 sentence found the remaining parse failures are mostly hard phenomena
-rather than missing glue — quantity comparatives ("ITEL won more orders
-than APCOM did", 10 problems, which need object-quantifier semantics
-`translate.py` doesn't have), more ellipsis forms, aspect and duration,
-perception and attitude reports. Giving the parse grammar the full
+rather than missing glue: more ellipsis forms, aspect and duration,
+perception and attitude reports. The quantity comparatives that census
+also found ("ITEL won more orders than APCOM did") are now covered (step
+4 above). Giving the parse grammar the full
 dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 37187332946), on those 176 problems:
+**Result** (CI run 37191610696), on those 186 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 66/176 (37.5%) | — |
-| as translated | **104/176 (59.1%)** | **0** |
-| with background knowledge | **124/176 (70.5%)** | **0** |
+| always "unknown" (baseline) | 69/186 (37.1%) | — |
+| as translated | **111/186 (59.7%)** | **0** |
+| with background knowledge | **131/186 (70.4%)** | **0** |
 
-Counting the 166 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 164/342 (48.0%), against a 31.0% baseline. 0
+Counting the 156 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 148/342 (43.3%) as translated and 168/342 (49.1%)
+with background knowledge, against a 31.0% baseline. (The previous
+version of this file gave one corpus-wide figure, 164/342; that was the
+with-background-knowledge number, and it was not labelled as such.) 0
 contradictions and 0 errored attempts in either variant.
 
 **Every mismatch is fail-safe**: "unknown" where gold says yes or no,
@@ -298,6 +310,11 @@ problem cases. Its cost is that a genuinely ambiguous problem now gets
   meeting": yes in 107, no in 109) — FraCaS encodes the number-neutral vs
   at-least-two ambiguity as a pair. No consistent system can get both;
   "unknown" on both is the principled outcome.
+- **230, 233, 239** ("ITEL won more orders than APCOM [did / lost]" ⇒
+  "ITEL won some orders", gold yes) follow on the number-neutral reading
+  of "some orders" but not on the at-least-two reading, the same
+  ambiguity as 107/109, so the pipeline says "unknown". The other six
+  problems in the group (231, 232, 234, 235, 240, 241) match.
 - **13** ("Leading tenors who are excellent are indispensable" read
   generically) and **160** ("a fast one" after "a red car" read as "a
   fast red car") are FraCaS committing to one reading of a genuinely
@@ -352,12 +369,12 @@ mistakes, while the 336/342 premises/hypotheses were translated by hand.
 It isolates and scores the inference step only.
 
 The end-to-end scan above is the comparable kind of measurement. It
-reaches 51.5% of the corpus and scores 59.1% as translated (70.5% with
+reaches 54.4% of the corpus and scores 59.7% as translated (70.4% with
 background knowledge) on what it reaches, with no wrong answers at all —
-48.0% corpus-wide if every unreached problem counts as "unknown". Most
-of the remaining gap is translation coverage (121 problems stop at a
-sentence the grammar can't parse, mostly quantity comparatives, ellipsis,
-aspect and attitude reports) rather than inference.
+43.3% (49.1%) corpus-wide if every unreached problem counts as "unknown".
+Most of the remaining gap is translation coverage (111 problems stop at a
+sentence the grammar can't parse, mostly ellipsis, aspect and attitude
+reports) rather than inference.
 
 ## Other limitations worth stating plainly
 
@@ -391,7 +408,7 @@ aspect and attitude reports) rather than inference.
 - A 98.2% match is partly a statement about how much of each problem's
   difficulty the hand translation already absorbed (an explicit
   background-knowledge premise, a pre-resolved ellipsis, a literal `Nat`
-  comparison). The end-to-end scan's 59.1%/70.5% (on the 51.5% of the corpus it
+  comparison). The end-to-end scan's 59.7%/70.4% (on the 54.4% of the corpus it
   reaches) is the counterweight to read next to it.
 - The end-to-end numbers inherit every caveat above plus three of their
   own: the parse grammar's vocabulary and constructions are read off
