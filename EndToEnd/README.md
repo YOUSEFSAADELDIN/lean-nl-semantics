@@ -147,9 +147,9 @@ correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 195 of 342 problems go all
-the way through (57.0%). 111 stop at a sentence the restricted grammar
-doesn't parse, 23 at a reading `translate.py` doesn't cover, 13 at a
+**Coverage, on FraCaS's original English**: 213 of 342 problems go all
+the way through (62.3%). 111 stop at a sentence the restricted grammar
+doesn't parse, 12 at a reading the translation doesn't cover, 6 at a
 translation needing non-generic assembly. A census of every failing
 sentence found the remaining parse failures are mostly hard phenomena
 rather than missing glue: more ellipsis forms, aspect and duration,
@@ -160,17 +160,31 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 37199853258, after the separation; identical to run 37195314343 before it), on those 195 problems:
+**Result** (CI run 37205860267), on those 213 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 74/195 (37.9%) | — |
-| as translated | **118/195 (60.5%)** | **0** |
-| with background knowledge | **139/195 (71.3%)** | **0** |
+| always "unknown" (baseline) | 79/213 (37.1%) | — |
+| as translated | **131/213 (61.5%)** | **0** |
+| with background knowledge | **153/213 (71.8%)** | **0** |
 
-Counting the 147 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 150/342 (43.9%) as translated and 171/342 (50.0%)
-with background knowledge, against a 31.0% baseline. (The previous
+Counting the 129 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 158/342 (46.2%) as translated and 180/342 (52.6%)
+with background knowledge, against a 31.0% baseline ("unknown" also
+counts as matching FraCaS's "undef").
+
+Before the last round (coordinated subjects, "several", "it is
+true/false that", "everyone", counted partitives, fronted adverbials;
+CI run 37199853258, reproduced after `readings.py` was split out of
+`translate.py` in run 37205385335) the figures were 118/195 and
+139/195, also with no wrong answers; that round lost no previously
+matched problem and gained 62, 78, 81, 82, 83, 85, 91, 92, 295, 331,
+332, 338, 339, and 297 with background knowledge. Of the problems it
+newly reaches, 46 and 86 (gold "no") stay "unknown" because refuting
+them needs the exactly-two of "neither" or an "exactly" read as
+distributing over both conjuncts of "exactly two lawyers and three
+accountants"; 133 needs e-type anaphora ("ITEL maintains them"); and
+258 and 307 need temporal reasoning. (The previous
 version of this file gave one corpus-wide figure, 164/342; that was the
 with-background-knowledge number, and it was not labelled as such.) 0
 contradictions and 0 errored attempts in either variant.
