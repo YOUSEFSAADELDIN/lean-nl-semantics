@@ -392,16 +392,25 @@ def _decode_card(card):
 #   - a bare numeral ("APCOM won ten orders"): at least n vs exactly n -
 #     weak `AtLeast n`, strong `Exactly n` ("only/just n" is always
 #     `Exactly n`, and "at least/at most/exactly n" say which outright);
+#   - "few": cardinal vs proportional (Partee's two readings, as for
+#     "many") - weak `AtMost fewCount` for an unknown threshold
+#     `fewCount`; strong an opaque `Few` relation, stated (by the
+#     generator) only with the property every reading shares: narrowing
+#     its scope within its restrictor preserves it. Neither reading entails
+#     that any such X exist (FraCaS 12);
+#   - "a few"/"at least a few" are not ambiguous but vague: `AtLeast
+#     aFewCount` for an unknown threshold `aFewCount ≥ 1` (previously
+#     plain `Some`, which made "some X are Y" entail "a few X are Y");
 #   - "both"/"neither": not ambiguous, just previously simplified to
 #     `Every`/`No` (see the CAUTION below) - both modes use GQ.lean's own
 #     `Both`/`Neither`, which keep the exactly-two presupposition.
 #
 # `reading` may also be a dict assigning "weak"/"strong" per KIND of
-# ambiguity - "defpl", "generic", "many", "somepl", "numeral" (AMBIGUITY_KINDS) - so a
+# ambiguity - "defpl", "generic", "many", "somepl", "numeral", "few" (AMBIGUITY_KINDS) - so a
 # caller can read the same kind of ambiguity the same way in every
 # sentence of a problem (scripts/gen_blind_eval_parsed.py enumerates all
 # such assignments); a kind missing from the dict reads "weak".
-AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl", "numeral")
+AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl", "numeral", "few")
 _READING = "default"
 
 
@@ -435,12 +444,18 @@ def _mode(kind: str) -> str:
 
 
 def _resolve_quantifier(det) -> str:
+    if det.head == "atLeastAFew_Det" and not det.args and _READING != "default":
+        return "AtLeast aFewCount"
+    if det.head == "few_Det" and not det.args and _READING != "default":
+        return "AtMost fewCount" if _mode("few") == "weak" else "Few"
     if det.head in _QUANTIFIER_BY_DET and not det.args:
         if _READING != "default":
             if det.head == "many_Det":
                 return "Many" if _mode("many") == "strong" else "Some"
             if det.head == "somePl_Det" and _mode("somepl") == "strong":
                 return "AtLeast 2+"
+            if det.head == "aFew_Det":
+                return "AtLeast aFewCount"
             if det.head == "both_Det":
                 return "Both"
             if det.head == "neither_Det":
@@ -1263,9 +1278,41 @@ def _translate_existential(np) -> Translation:
     shape this project's own Lean statement of those problems uses - and
     a bare one is plain existence."""
     quant, cn = _resolve_subject(np)
-    if quant != "Some":
-        raise NotImplementedError(f"existential with a non-indefinite NP ({quant}) is not handled")
     cn = _normalize_cn(cn)
+    if quant != "Some":
+        # A counting existential ("there are few committee members from
+        # southern Europe", FraCaS 28/44) says the same as "few committee
+        # members are from southern Europe": the NP's own relative clause
+        # or PP is the scope. Without one there is nothing to count, so it
+        # is not handled. (The existential `Some` keeps its long-standing
+        # fused translation below.)
+        if _READING == "default":
+            raise NotImplementedError(f"existential with a non-indefinite NP ({quant}) is not handled")
+        if cn.head == "CompoundCN" and len(cn.args) == 2 and cn.args[1].head == "AdvCN":
+            # "committee [members from southern Europe]" is the same set as
+            # "[committee members] from southern Europe"
+            inner = cn.args[1]
+            cn = App("AdvCN", [App("CompoundCN", [cn.args[0], inner.args[0]]), inner.args[1]])
+        if cn.head == "AdvCN" and len(cn.args) == 2 and cn.args[1].head == "PrepNP":
+            restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
+            scope_name = _scope_name(App("UseComp", [App("CompAdv", [cn.args[1]])]))
+        elif (
+            cn.head == "RelCN"
+            and len(cn.args) == 2
+            and cn.args[1].head == "UseRCl"
+            and len(cn.args[1].args) == 3
+            and cn.args[1].args[2].head == "RelVP"
+            and len(cn.args[1].args[2].args) == 2
+            and cn.args[1].args[2].args[0].head in _RELATIVE_PRONOUNS
+        ):
+            restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
+            scope_name = _scope_name(cn.args[1].args[2].args[1])
+        else:
+            raise NotImplementedError(f"counting existential ({quant}) without a relative clause or PP")
+        return Translation(
+            lean_prop=_quantified(quant, restrictor_expr, scope_name),
+            free_predicates=[*restrictor_preds, scope_name],
+        )
     if (
         cn.head == "RelCN"
         and len(cn.args) == 2

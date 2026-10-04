@@ -82,6 +82,8 @@ LEAN_RESERVED = {
     "at", "by", "do", "else", "end", "fun", "have", "if", "in", "let", "match",
     "open", "show", "then", "from", "with", "where", "for", "this", "calc",
     "suffices", "obtain", "def", "theorem", "x", "A", "Prop", "Type", "Sort",
+    # bound by the assembler itself
+    "Many", "Few", "fewCount", "aFewCount",
 }
 
 
@@ -303,6 +305,21 @@ def assemble(idn, sentences):
         binders.append("(Many : (A → Prop) → (A → Prop) → Prop)")
         meaning.append("(∀ P Q : A → Prop, Many P Q → Some P Q)")
         meaning.append("(∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R)")
+    # "few" on its proportional reading is likewise opaque, stated with the
+    # one property every reading of "few" has: narrowing its scope within
+    # its restrictor preserves it ("few committee members are from
+    # southern Europe" => "few are from Portugal", FraCaS 44). It is not
+    # monotone in its restrictor on that reading, and does not entail that
+    # any such X exist (12). The cardinal reading, `AtMost fewCount`, and
+    # "a few", `AtLeast aFewCount`, count against an unknown threshold.
+    if any(re.search(r"\bFew\b", p) for _a, trs in translated for _tr, p in trs):
+        binders.append("(Few : (A → Prop) → (A → Prop) → Prop)")
+        meaning.append("(∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R)")
+    if any(re.search(r"\bfewCount\b", p) for _a, trs in translated for _tr, p in trs):
+        binders.append("(fewCount : Nat)")
+    if any(re.search(r"\baFewCount\b", p) for _a, trs in translated for _tr, p in trs):
+        binders.append("(aFewCount : Nat)")
+        meaning.append("(aFewCount ≥ 1)")
     knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary))
     head = f"∀ {' '.join(binders)}, "
 

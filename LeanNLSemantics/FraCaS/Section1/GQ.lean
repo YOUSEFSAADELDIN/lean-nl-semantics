@@ -379,6 +379,24 @@ theorem atMost_trans {A : Type*} [Fintype A] (n : Nat) (P Q S R : A → Prop)
   have hle : card (fun x => P x ∧ Q x) ≤ card (fun x => P x ∧ R x) := Finset.card_le_card hsub
   omega
 
+/-- `atMost_trans`'s upward counterpart: if at least `n` `P`s are `Q`,
+every `P` is an `S`, and every `S` that is `Q` is `R`, then at least `n`
+`P`s are `R` - FraCaS 27's "a few committee members are from Sweden,
+all committee members are people, all people from Sweden are from
+Scandinavia ⊢ at least a few committee members are from Scandinavia"
+shape (`some_trans` for a counted quantifier). -/
+theorem atLeast_trans {A : Type*} [Fintype A] (n : Nat) (P Q S R : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] [DecidablePred fun x => P x ∧ R x]
+    (h1 : AtLeast n P Q) (h2 : Every P S) (h3 : Every (fun x => S x ∧ Q x) R) : AtLeast n P R := by
+  have hsub : (Finset.univ.filter fun x => P x ∧ Q x) ⊆ Finset.univ.filter fun x => P x ∧ R x := by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+    exact ⟨hx.1, h3 x ⟨h2 x hx.1, hx.2⟩⟩
+  have hle : card (fun x => P x ∧ Q x) ≤ card (fun x => P x ∧ R x) := Finset.card_le_card hsub
+  have h1' : card (fun x => P x ∧ Q x) ≥ n := h1
+  show card (fun x => P x ∧ R x) ≥ n
+  omega
+
 /-- Weakening the scope predicate under `AtMost`, in the direction that
 *narrows* it (dual of `atLeast_mono_scope`, which widens): if at most `n`
 `P`s are `Q`, and `R` implies `Q`, then at most `n` `P`s are `R` too,

@@ -15,25 +15,16 @@ for the exact pipeline and what it deliberately does not supply (any
 background-knowledge premise). Evaluated by
 `BlindEvalParsedScan.lean`.
 
-186 of 342 problems carried all the way through;
+195 of 342 problems carried all the way through;
 the rest, by first failing stage:
 - a sentence does not parse: 111
-- a sentence parses but translate.py does not cover its reading: 32
+- a sentence parses but translate.py does not cover its reading: 23
 - a translation needs non-generic assembly: 13
 
 Per-problem skip reasons (first failing sentence/stage):
 
-- 12: premise 1 parses (1 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
-- 27: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
-- 28: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
-- 43: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
-- 44: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
 - 46: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 59: hypothesis parses (11 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
-- 60: premise 1 parses (22 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
 - 62: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 75: hypothesis parses (22 readings) but does not translate: determiner shape 'atLeastAFew_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUA
-- 76: premise 1 parses (11 readings) but does not translate: determiner shape 'few_Det' has no known Lean quantifier mapping yet (see _QUANTIFIER_BY_DET / _QUANTIFIER_BY_QUANT)
 - 78: hypothesis parses (180 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 81: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 82: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
@@ -443,35 +434,67 @@ def fracas_010_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (somepl weak): "yes" test. -/
 def fracas_011_parsed_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
 /-- Reading assignment 0 (somepl weak): "no" test. -/
 def fracas_011_parsed_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_011_parsed_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_011_parsed_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_011_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_011_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_011_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_011_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
+
+/-- Reading assignment 0 (few weak): "yes" test. -/
+def fracas_012_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount greatTenor poor) → (Some greatTenor poor)
+
+/-- Reading assignment 0 (few weak): "no" test. -/
+def fracas_012_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount greatTenor poor) → (¬ (Some greatTenor poor))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_012_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount greatTenor poor) → (Some greatTenor poor)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_012_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount greatTenor poor) → (¬ (Some greatTenor poor))
+
+/-- Reading assignment 1 (few strong): "yes" test. -/
+def fracas_012_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few greatTenor poor) → (Some greatTenor poor)
+
+/-- Reading assignment 1 (few strong): "no" test. -/
+def fracas_012_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few greatTenor poor) → (¬ (Some greatTenor poor))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_012_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few greatTenor poor) → (Some greatTenor poor)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_012_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor poor : A → Prop) [DecidablePred greatTenor] [DecidablePred poor] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few greatTenor poor) → (¬ (Some greatTenor poor))
 
 /-- Reading assignment 0 (generic weak): "yes" test. -/
 def fracas_013_parsed_yes_0 : Prop :=
@@ -762,6 +785,54 @@ def fracas_026_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_027_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSweden person fromScandinavia : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSweden] [DecidablePred person] [DecidablePred fromScandinavia] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromSweden) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (AtLeast aFewCount committeeMember fromScandinavia)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_027_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSweden person fromScandinavia : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSweden] [DecidablePred person] [DecidablePred fromScandinavia] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromSweden) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromScandinavia))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_027_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSweden person fromScandinavia : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSweden] [DecidablePred person] [DecidablePred fromScandinavia] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromSweden) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (AtLeast aFewCount committeeMember fromScandinavia)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_027_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSweden person fromScandinavia : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSweden] [DecidablePred person] [DecidablePred fromScandinavia] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromSweden) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromScandinavia))
+
+/-- Reading assignment 0 (few weak): "yes" test. -/
+def fracas_028_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (AtMost fewCount committeeMember fromSouthernEurope)
+
+/-- Reading assignment 0 (few weak): "no" test. -/
+def fracas_028_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromSouthernEurope))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_028_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (AtMost fewCount committeeMember fromSouthernEurope)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_028_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromSouthernEurope))
+
+/-- Reading assignment 1 (few strong): "yes" test. -/
+def fracas_028_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (Few committeeMember fromSouthernEurope)
+
+/-- Reading assignment 1 (few strong): "no" test. -/
+def fracas_028_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (Few committeeMember fromSouthernEurope))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_028_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (Few committeeMember fromSouthernEurope)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_028_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromPortugal person fromSouthernEurope : A → Prop) [DecidablePred committeeMember] [DecidablePred fromPortugal] [DecidablePred person] [DecidablePred fromSouthernEurope] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromPortugal) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (Few committeeMember fromSouthernEurope))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_029_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Both commissioner usedToLeadingBusinessman) → (Both commissioner usedToBusinessman)
 
@@ -1034,6 +1105,54 @@ def fracas_042_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european residentInEurope))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_043_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia person fromSweden : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred person] [DecidablePred fromSweden] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (AtLeast aFewCount committeeMember fromSweden)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_043_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia person fromSweden : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred person] [DecidablePred fromSweden] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromSweden))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_043_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia person fromSweden : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred person] [DecidablePred fromSweden] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (AtLeast aFewCount committeeMember fromSweden)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_043_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia person fromSweden : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred person] [DecidablePred fromSweden] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (Every committeeMember person) → (Every (fun x => person x ∧ fromSweden x) fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromSweden))
+
+/-- Reading assignment 0 (few weak): "yes" test. -/
+def fracas_044_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (AtMost fewCount committeeMember fromPortugal)
+
+/-- Reading assignment 0 (few weak): "no" test. -/
+def fracas_044_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromPortugal))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_044_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (AtMost fewCount committeeMember fromPortugal)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_044_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromPortugal))
+
+/-- Reading assignment 1 (few strong): "yes" test. -/
+def fracas_044_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (Few committeeMember fromPortugal)
+
+/-- Reading assignment 1 (few strong): "no" test. -/
+def fracas_044_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (Few committeeMember fromPortugal))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_044_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (Few committeeMember fromPortugal)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_044_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope person fromPortugal : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred person] [DecidablePred fromPortugal] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (Every committeeMember person) → (Every (fun x => person x ∧ fromPortugal x) fromSouthernEurope) → (¬ (Few committeeMember fromPortugal))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_045_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (Both commissioner usedToLeadingBusinessman)
 
@@ -1290,6 +1409,54 @@ def fracas_058_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_059_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromScandinavia] [DecidablePred committeeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia) → (AtLeast aFewCount committeeMember fromScandinavia)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_059_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromScandinavia] [DecidablePred committeeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromScandinavia))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_059_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromScandinavia] [DecidablePred committeeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia) → (AtLeast aFewCount committeeMember fromScandinavia)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_059_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromScandinavia committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromScandinavia] [DecidablePred committeeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia) → (¬ (AtLeast aFewCount committeeMember fromScandinavia))
+
+/-- Reading assignment 0 (few weak): "yes" test. -/
+def fracas_060_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope) → (AtMost fewCount committeeMember fromSouthernEurope)
+
+/-- Reading assignment 0 (few weak): "no" test. -/
+def fracas_060_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromSouthernEurope))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_060_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope) → (AtMost fewCount committeeMember fromSouthernEurope)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_060_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope) → (¬ (AtMost fewCount committeeMember fromSouthernEurope))
+
+/-- Reading assignment 1 (few strong): "yes" test. -/
+def fracas_060_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few femaleCommitteeMember fromSouthernEurope) → (Few committeeMember fromSouthernEurope)
+
+/-- Reading assignment 1 (few strong): "no" test. -/
+def fracas_060_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few femaleCommitteeMember fromSouthernEurope) → (¬ (Few committeeMember fromSouthernEurope))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_060_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (Few femaleCommitteeMember fromSouthernEurope) → (Few committeeMember fromSouthernEurope)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_060_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (femaleCommitteeMember fromSouthernEurope committeeMember : A → Prop) [DecidablePred femaleCommitteeMember] [DecidablePred fromSouthernEurope] [DecidablePred committeeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (Few femaleCommitteeMember fromSouthernEurope) → (¬ (Few committeeMember fromSouthernEurope))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_061_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (Both femaleCommissioner usedToInBusiness) → (Both commissioner usedToInBusiness)
 
@@ -1544,6 +1711,54 @@ def fracas_074_parsed_bk_yes_0 : Prop :=
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_074_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (¬ (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_075_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred femaleCommitteeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_075_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred femaleCommitteeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (AtLeast aFewCount committeeMember fromScandinavia) → (¬ (AtLeast aFewCount femaleCommitteeMember fromScandinavia))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_075_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred femaleCommitteeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtLeast aFewCount committeeMember fromScandinavia) → (AtLeast aFewCount femaleCommitteeMember fromScandinavia)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_075_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromScandinavia femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromScandinavia] [DecidablePred femaleCommitteeMember] (aFewCount : Nat), (aFewCount ≥ 1) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtLeast aFewCount committeeMember fromScandinavia) → (¬ (AtLeast aFewCount femaleCommitteeMember fromScandinavia))
+
+/-- Reading assignment 0 (few weak): "yes" test. -/
+def fracas_076_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope)
+
+/-- Reading assignment 0 (few weak): "no" test. -/
+def fracas_076_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (AtMost fewCount committeeMember fromSouthernEurope) → (¬ (AtMost fewCount femaleCommitteeMember fromSouthernEurope))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_076_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtMost fewCount committeeMember fromSouthernEurope) → (AtMost fewCount femaleCommitteeMember fromSouthernEurope)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_076_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (AtMost fewCount committeeMember fromSouthernEurope) → (¬ (AtMost fewCount femaleCommitteeMember fromSouthernEurope))
+
+/-- Reading assignment 1 (few strong): "yes" test. -/
+def fracas_076_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (Few femaleCommitteeMember fromSouthernEurope)
+
+/-- Reading assignment 1 (few strong): "no" test. -/
+def fracas_076_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (Few committeeMember fromSouthernEurope) → (¬ (Few femaleCommitteeMember fromSouthernEurope))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_076_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (Few committeeMember fromSouthernEurope) → (Few femaleCommitteeMember fromSouthernEurope)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_076_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (committeeMember fromSouthernEurope femaleCommitteeMember : A → Prop) [DecidablePred committeeMember] [DecidablePred fromSouthernEurope] [DecidablePred femaleCommitteeMember] (Few : (A → Prop) → (A → Prop) → Prop) (fewCount : Nat), (∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R) → (∀ x, femaleCommitteeMember x → committeeMember x) → (Few committeeMember fromSouthernEurope) → (¬ (Few femaleCommitteeMember fromSouthernEurope))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_077_parsed_yes_0 : Prop :=
@@ -3722,6 +3937,7 @@ def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean
   (9, .yes, [``BlindEvalParsedClaims.fracas_009_parsed_yes_0], [``BlindEvalParsedClaims.fracas_009_parsed_no_0]),
   (10, .yes, [``BlindEvalParsedClaims.fracas_010_parsed_yes_0], [``BlindEvalParsedClaims.fracas_010_parsed_no_0]),
   (11, .yes, [``BlindEvalParsedClaims.fracas_011_parsed_yes_0, ``BlindEvalParsedClaims.fracas_011_parsed_yes_1], [``BlindEvalParsedClaims.fracas_011_parsed_no_0, ``BlindEvalParsedClaims.fracas_011_parsed_no_1]),
+  (12, .undef, [``BlindEvalParsedClaims.fracas_012_parsed_yes_0, ``BlindEvalParsedClaims.fracas_012_parsed_yes_1], [``BlindEvalParsedClaims.fracas_012_parsed_no_0, ``BlindEvalParsedClaims.fracas_012_parsed_no_1]),
   (13, .yes, [``BlindEvalParsedClaims.fracas_013_parsed_yes_0, ``BlindEvalParsedClaims.fracas_013_parsed_yes_1], [``BlindEvalParsedClaims.fracas_013_parsed_no_0, ``BlindEvalParsedClaims.fracas_013_parsed_no_1]),
   (14, .no, [``BlindEvalParsedClaims.fracas_014_parsed_yes_0], [``BlindEvalParsedClaims.fracas_014_parsed_no_0]),
   (15, .yes, [``BlindEvalParsedClaims.fracas_015_parsed_yes_0], [``BlindEvalParsedClaims.fracas_015_parsed_no_0]),
@@ -3736,6 +3952,8 @@ def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean
   (24, .yes, [``BlindEvalParsedClaims.fracas_024_parsed_yes_0, ``BlindEvalParsedClaims.fracas_024_parsed_yes_1], [``BlindEvalParsedClaims.fracas_024_parsed_no_0, ``BlindEvalParsedClaims.fracas_024_parsed_no_1]),
   (25, .yes, [``BlindEvalParsedClaims.fracas_025_parsed_yes_0], [``BlindEvalParsedClaims.fracas_025_parsed_no_0]),
   (26, .yes, [``BlindEvalParsedClaims.fracas_026_parsed_yes_0], [``BlindEvalParsedClaims.fracas_026_parsed_no_0]),
+  (27, .yes, [``BlindEvalParsedClaims.fracas_027_parsed_yes_0], [``BlindEvalParsedClaims.fracas_027_parsed_no_0]),
+  (28, .unknown, [``BlindEvalParsedClaims.fracas_028_parsed_yes_0, ``BlindEvalParsedClaims.fracas_028_parsed_yes_1], [``BlindEvalParsedClaims.fracas_028_parsed_no_0, ``BlindEvalParsedClaims.fracas_028_parsed_no_1]),
   (29, .yes, [``BlindEvalParsedClaims.fracas_029_parsed_yes_0], [``BlindEvalParsedClaims.fracas_029_parsed_no_0]),
   (30, .unknown, [``BlindEvalParsedClaims.fracas_030_parsed_yes_0], [``BlindEvalParsedClaims.fracas_030_parsed_no_0]),
   (31, .yes, [``BlindEvalParsedClaims.fracas_031_parsed_yes_0], [``BlindEvalParsedClaims.fracas_031_parsed_no_0]),
@@ -3750,6 +3968,8 @@ def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean
   (40, .unknown, [``BlindEvalParsedClaims.fracas_040_parsed_yes_0, ``BlindEvalParsedClaims.fracas_040_parsed_yes_1], [``BlindEvalParsedClaims.fracas_040_parsed_no_0, ``BlindEvalParsedClaims.fracas_040_parsed_no_1]),
   (41, .unknown, [``BlindEvalParsedClaims.fracas_041_parsed_yes_0], [``BlindEvalParsedClaims.fracas_041_parsed_no_0]),
   (42, .unknown, [``BlindEvalParsedClaims.fracas_042_parsed_yes_0], [``BlindEvalParsedClaims.fracas_042_parsed_no_0]),
+  (43, .unknown, [``BlindEvalParsedClaims.fracas_043_parsed_yes_0], [``BlindEvalParsedClaims.fracas_043_parsed_no_0]),
+  (44, .yes, [``BlindEvalParsedClaims.fracas_044_parsed_yes_0, ``BlindEvalParsedClaims.fracas_044_parsed_yes_1], [``BlindEvalParsedClaims.fracas_044_parsed_no_0, ``BlindEvalParsedClaims.fracas_044_parsed_no_1]),
   (45, .unknown, [``BlindEvalParsedClaims.fracas_045_parsed_yes_0], [``BlindEvalParsedClaims.fracas_045_parsed_no_0]),
   (47, .unknown, [``BlindEvalParsedClaims.fracas_047_parsed_yes_0], [``BlindEvalParsedClaims.fracas_047_parsed_no_0]),
   (48, .yes, [``BlindEvalParsedClaims.fracas_048_parsed_yes_0], [``BlindEvalParsedClaims.fracas_048_parsed_no_0]),
@@ -3763,6 +3983,8 @@ def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean
   (56, .unknown, [``BlindEvalParsedClaims.fracas_056_parsed_yes_0, ``BlindEvalParsedClaims.fracas_056_parsed_yes_1], [``BlindEvalParsedClaims.fracas_056_parsed_no_0, ``BlindEvalParsedClaims.fracas_056_parsed_no_1]),
   (57, .yes, [``BlindEvalParsedClaims.fracas_057_parsed_yes_0], [``BlindEvalParsedClaims.fracas_057_parsed_no_0]),
   (58, .unknown, [``BlindEvalParsedClaims.fracas_058_parsed_yes_0], [``BlindEvalParsedClaims.fracas_058_parsed_no_0]),
+  (59, .yes, [``BlindEvalParsedClaims.fracas_059_parsed_yes_0], [``BlindEvalParsedClaims.fracas_059_parsed_no_0]),
+  (60, .unknown, [``BlindEvalParsedClaims.fracas_060_parsed_yes_0, ``BlindEvalParsedClaims.fracas_060_parsed_yes_1], [``BlindEvalParsedClaims.fracas_060_parsed_no_0, ``BlindEvalParsedClaims.fracas_060_parsed_no_1]),
   (61, .undef, [``BlindEvalParsedClaims.fracas_061_parsed_yes_0], [``BlindEvalParsedClaims.fracas_061_parsed_no_0]),
   (63, .yes, [``BlindEvalParsedClaims.fracas_063_parsed_yes_0], [``BlindEvalParsedClaims.fracas_063_parsed_no_0]),
   (64, .unknown, [``BlindEvalParsedClaims.fracas_064_parsed_yes_0], [``BlindEvalParsedClaims.fracas_064_parsed_no_0]),
@@ -3776,6 +3998,8 @@ def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean
   (72, .unknown, [``BlindEvalParsedClaims.fracas_072_parsed_yes_0, ``BlindEvalParsedClaims.fracas_072_parsed_yes_1], [``BlindEvalParsedClaims.fracas_072_parsed_no_0, ``BlindEvalParsedClaims.fracas_072_parsed_no_1]),
   (73, .unknown, [``BlindEvalParsedClaims.fracas_073_parsed_yes_0], [``BlindEvalParsedClaims.fracas_073_parsed_no_0]),
   (74, .unknown, [``BlindEvalParsedClaims.fracas_074_parsed_yes_0], [``BlindEvalParsedClaims.fracas_074_parsed_no_0]),
+  (75, .unknown, [``BlindEvalParsedClaims.fracas_075_parsed_yes_0], [``BlindEvalParsedClaims.fracas_075_parsed_no_0]),
+  (76, .yes, [``BlindEvalParsedClaims.fracas_076_parsed_yes_0, ``BlindEvalParsedClaims.fracas_076_parsed_yes_1], [``BlindEvalParsedClaims.fracas_076_parsed_no_0, ``BlindEvalParsedClaims.fracas_076_parsed_no_1]),
   (77, .undef, [``BlindEvalParsedClaims.fracas_077_parsed_yes_0], [``BlindEvalParsedClaims.fracas_077_parsed_no_0]),
   (79, .unknown, [``BlindEvalParsedClaims.fracas_079_parsed_yes_0], [``BlindEvalParsedClaims.fracas_079_parsed_no_0]),
   (80, .yes, [``BlindEvalParsedClaims.fracas_080_parsed_yes_0], [``BlindEvalParsedClaims.fracas_080_parsed_no_0]),
@@ -3913,6 +4137,7 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Le
   (9, .yes, [``BlindEvalParsedClaims.fracas_009_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_009_parsed_bk_no_0]),
   (10, .yes, [``BlindEvalParsedClaims.fracas_010_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_010_parsed_bk_no_0]),
   (11, .yes, [``BlindEvalParsedClaims.fracas_011_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_011_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_011_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_011_parsed_bk_no_1]),
+  (12, .undef, [``BlindEvalParsedClaims.fracas_012_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_012_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_012_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_012_parsed_bk_no_1]),
   (13, .yes, [``BlindEvalParsedClaims.fracas_013_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_013_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_013_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_013_parsed_bk_no_1]),
   (14, .no, [``BlindEvalParsedClaims.fracas_014_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_014_parsed_bk_no_0]),
   (15, .yes, [``BlindEvalParsedClaims.fracas_015_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_015_parsed_bk_no_0]),
@@ -3927,6 +4152,8 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Le
   (24, .yes, [``BlindEvalParsedClaims.fracas_024_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_024_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_024_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_024_parsed_bk_no_1]),
   (25, .yes, [``BlindEvalParsedClaims.fracas_025_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_025_parsed_bk_no_0]),
   (26, .yes, [``BlindEvalParsedClaims.fracas_026_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_026_parsed_bk_no_0]),
+  (27, .yes, [``BlindEvalParsedClaims.fracas_027_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_027_parsed_bk_no_0]),
+  (28, .unknown, [``BlindEvalParsedClaims.fracas_028_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_028_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_028_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_028_parsed_bk_no_1]),
   (29, .yes, [``BlindEvalParsedClaims.fracas_029_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_029_parsed_bk_no_0]),
   (30, .unknown, [``BlindEvalParsedClaims.fracas_030_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_030_parsed_bk_no_0]),
   (31, .yes, [``BlindEvalParsedClaims.fracas_031_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_031_parsed_bk_no_0]),
@@ -3941,6 +4168,8 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Le
   (40, .unknown, [``BlindEvalParsedClaims.fracas_040_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_040_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_040_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_040_parsed_bk_no_1]),
   (41, .unknown, [``BlindEvalParsedClaims.fracas_041_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_041_parsed_bk_no_0]),
   (42, .unknown, [``BlindEvalParsedClaims.fracas_042_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_042_parsed_bk_no_0]),
+  (43, .unknown, [``BlindEvalParsedClaims.fracas_043_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_043_parsed_bk_no_0]),
+  (44, .yes, [``BlindEvalParsedClaims.fracas_044_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_044_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_044_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_044_parsed_bk_no_1]),
   (45, .unknown, [``BlindEvalParsedClaims.fracas_045_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_045_parsed_bk_no_0]),
   (47, .unknown, [``BlindEvalParsedClaims.fracas_047_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_047_parsed_bk_no_0]),
   (48, .yes, [``BlindEvalParsedClaims.fracas_048_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_048_parsed_bk_no_0]),
@@ -3954,6 +4183,8 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Le
   (56, .unknown, [``BlindEvalParsedClaims.fracas_056_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_056_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_056_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_056_parsed_bk_no_1]),
   (57, .yes, [``BlindEvalParsedClaims.fracas_057_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_057_parsed_bk_no_0]),
   (58, .unknown, [``BlindEvalParsedClaims.fracas_058_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_058_parsed_bk_no_0]),
+  (59, .yes, [``BlindEvalParsedClaims.fracas_059_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_059_parsed_bk_no_0]),
+  (60, .unknown, [``BlindEvalParsedClaims.fracas_060_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_060_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_060_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_060_parsed_bk_no_1]),
   (61, .undef, [``BlindEvalParsedClaims.fracas_061_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_061_parsed_bk_no_0]),
   (63, .yes, [``BlindEvalParsedClaims.fracas_063_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_063_parsed_bk_no_0]),
   (64, .unknown, [``BlindEvalParsedClaims.fracas_064_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_064_parsed_bk_no_0]),
@@ -3967,6 +4198,8 @@ def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Le
   (72, .unknown, [``BlindEvalParsedClaims.fracas_072_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_072_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_072_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_072_parsed_bk_no_1]),
   (73, .unknown, [``BlindEvalParsedClaims.fracas_073_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_073_parsed_bk_no_0]),
   (74, .unknown, [``BlindEvalParsedClaims.fracas_074_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_074_parsed_bk_no_0]),
+  (75, .unknown, [``BlindEvalParsedClaims.fracas_075_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_075_parsed_bk_no_0]),
+  (76, .yes, [``BlindEvalParsedClaims.fracas_076_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_076_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_076_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_076_parsed_bk_no_1]),
   (77, .undef, [``BlindEvalParsedClaims.fracas_077_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_077_parsed_bk_no_0]),
   (79, .unknown, [``BlindEvalParsedClaims.fracas_079_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_079_parsed_bk_no_0]),
   (80, .yes, [``BlindEvalParsedClaims.fracas_080_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_080_parsed_bk_no_0]),
