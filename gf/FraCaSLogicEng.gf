@@ -152,6 +152,16 @@ concrete FraCaSLogicEng of FraCaSLogic =
     MoreThanV2 cn np v2 =
       {s = \\_ => "more" ++ cn.s ! Pl ! Nom ++ "than" ++ np.s ! npNom ++ v2.s ! VPast ++ v2.p ;
        a = agrP3 Pl} ;
+    -- See FraCaSLogic.gf for why each of these exists.
+    seeDo_V2V = mkV2V (mkV "see" "sees" "saw" "seen" "seeing") noPrep noPrep ;
+    AndEveryNP cn1 cn2 =
+      {s = \\_ => "every" ++ cn1.s ! Sg ! Nom ++ "and" ++ "every" ++ cn2.s ! Sg ! Nom ;
+       a = agrP3 Sg} ;
+    floatAll_AdV = mkAdV "all" ;
+    moreThan_AdN = mkAdN "more than" ;
+    ComparCN a cn np =
+      {s = \\n,c => a.s ! AAdj Compar Nom ++ cn.s ! n ! Nom ++ "than" ++ np.s ! npNom ;
+       g = cn.g} ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

@@ -49,8 +49,14 @@ than the default does:
     southern Europe") and a floated "all" ("the Ancient Greeks were all
     noted philosophers");
   - whole sentences the default does not handle (see `sentence`):
-    coordinated subjects, "it is true/false that S", "everyone", and
-    "one of the Ns".
+    coordinated subjects ("Smith and Jones", "every representative and
+    every client"), "it is true/false that S", "everyone", "one of the
+    Ns", perception reports ("Smith saw Jones sign the contract"),
+    comparatives inside a noun phrase ("a fatter politician than Bill"),
+    and conditionals ("if S, S");
+  - "more than n" is `AtLeast (n+1)`, and a floated "all" before the
+    verb ("the people who were at the meeting all voted") makes a plural
+    subject universal.
 
 `reading` may also be a dict assigning "weak"/"strong" per KIND of
 ambiguity (AMBIGUITY_KINDS), so a caller can read the same kind of
@@ -70,6 +76,7 @@ from translate import (  # noqa: E402
     Readings,
     Translation,
     _bare_count,
+    _decode_numeral,
     _leaf_words,
     _normalize_cn,
     _RELATIVE_PRONOUNS,
@@ -162,9 +169,20 @@ class EndToEndReadings(Readings):
         return self.reading
 
     def sentence(self, t):
+        if t.head == "ExtAdvS" and len(t.args) == 2:
+            return self._conditional(*t.args)
         if t.head != "PredVP" or len(t.args) != 2:
             return None
         subject, vp = t.args
+        if subject.head == "AndEveryNP" and len(subject.args) == 2:
+            every = [App("DetCN", [App("every_Det", []), cn]) for cn in subject.args]
+            return self._distribute(every, vp, "∧")
+        if subject.head == "UsePN" and vp.head == "ComplSlash" and vp.args[0].head == "SlashV2V":
+            return self._perception(subject, vp)
+        if subject.head == "UsePN" and vp.head == "UseComp" and len(vp.args) == 1:
+            compared = self._compared_cn(vp.args[0])
+            if compared is not None:
+                return self._comparative_cn(subject, *compared)
         if subject.head == "UsePron" and subject.args[0].head == "it_Pron":
             return self._truth_of(vp)
         if subject.head == "ConjNP" and len(subject.args) == 2:
@@ -220,6 +238,10 @@ class EndToEndReadings(Readings):
         nps = _np_list(items)
         if conj.head not in ops or nps is None:
             return None
+        return self._distribute(nps, vp, ops[conj.head])
+
+    def _distribute(self, nps, vp, op: str):
+        """The VP of each of `nps`, joined by `op` (see `_coordinated`)."""
         if _mentions(vp, _COLLECTIVE_VERBS):
             raise NotImplementedError("coordinated subject of a collective verb")
         if _counted_object(vp):
@@ -227,7 +249,110 @@ class EndToEndReadings(Readings):
         parts = [translate_cl(App("PredVP", [np, vp])) for np in nps]
         if not all(_plain(tr) for tr in parts):
             raise NotImplementedError("a conjunct of a coordinated subject needs non-generic assembly")
-        return _combine(parts, ops[conj.head])
+        return _combine(parts, op)
+
+    def _perception(self, subject, vp):
+        """"Smith saw Jones sign the contract": a perception report with a
+        bare infinitive is veridical - what was seen happened ("Jones
+        signed the contract", FraCaS 342) - and relates the perceiver to
+        the event's agent: `seeSignContract smith jones ∧ signContract
+        jones`. Only with proper names on both sides; a description as the
+        perceived agent ("saw the chairman of ITEL sign", 343) is left
+        untranslated."""
+        slash, agent = vp.args
+        if slash.args[0].head != "seeDo_V2V" or len(slash.args) != 2:
+            return None
+        if agent.head != "UsePN":
+            raise NotImplementedError("perception report whose perceived agent is not a proper name")
+        seen = translate_cl(App("PredVP", [agent, slash.args[1]]))
+        if not _plain(seen):
+            raise NotImplementedError("perceived event needs non-generic assembly")
+        relation = camel_name(["see", *_leaf_words(slash.args[1], keep_det=True)])
+        report = Translation(
+            lean_prop=f"{relation} {camel_name(_leaf_words(subject))} {camel_name(_leaf_words(agent))}",
+            free_predicates=[relation],
+            free_individuals=[camel_name(_leaf_words(subject)), camel_name(_leaf_words(agent))],
+            binary_predicates=[relation],
+        )
+        return _combine([report, seen], "∧")
+
+    @staticmethod
+    def _compared_cn(comp):
+        """(adjective, noun, standard) for "is a ADJer N than NP"."""
+        if comp.head == "CompNP" and comp.args[0].head == "DetCN" and len(comp.args[0].args) == 2:
+            det, cn = comp.args[0].args
+            if not (det.head == "DetQuant" and det.args[0].head == "IndefArt" and det.args[1].head == "NumSg"):
+                return None
+        elif comp.head == "CompCN":
+            cn = comp.args[0]
+        else:
+            return None
+        if cn.head != "ComparCN" or len(cn.args) != 3:
+            return None
+        return tuple(cn.args)
+
+    def _comparative_cn(self, subject, adj, cn, standard):
+        """"John is a fatter politician than Bill": John is a politician,
+        and fatter *as a politician* than Bill - a relation of its own,
+        `fatPoliticianThan john bill`, not `fatThan`. For some adjectives
+        the two coincide ("fat") and for others they do not ("clever":
+        clever for a politician need not be clever), and FraCaS tests
+        exactly that pair (216/217); telling them apart needs lexical
+        knowledge this pipeline does not have, so neither follows."""
+        if standard.head != "UsePN":
+            raise NotImplementedError("noun-phrase comparative with a non-proper-name standard")
+        restrictor_expr, restrictor_preds = _restrictor_expr(_normalize_cn(cn))
+        relation = camel_name([*_leaf_words(adj), *_leaf_words(cn)]) + "Than"
+        x, y = camel_name(_leaf_words(subject)), camel_name(_leaf_words(standard))
+        return Translation(
+            lean_prop=f"({restrictor_expr} {x} ∧ {relation} {x} {y})",
+            free_predicates=[*restrictor_preds, relation],
+            free_individuals=[x, y],
+            binary_predicates=[relation],
+        )
+
+    def _polar(self, s):
+        """A tensed clause `UseCl tense pol cl` as a Prop. Negation only
+        with a proper-name subject or a coordination of them; for the
+        latter it is homogeneous - "Smith and Anderson did not sign" says
+        neither signed - as plural predication is generally (Križ 2015)."""
+        if not (s.head == "UseCl" and len(s.args) == 3):
+            raise NotImplementedError("conditional clause that is not a plain tensed clause")
+        pol, cl = s.args[1], s.args[2]
+        tr = translate_cl(cl)
+        if not _plain(tr):
+            raise NotImplementedError("conditional clause needs non-generic assembly")
+        if pol.head == "PPos":
+            return tr
+        subject = cl.args[0] if cl.head == "PredVP" else None
+        if subject is not None and subject.head == "UsePN":
+            names = [subject]
+        elif subject is not None and subject.head == "ConjNP" and subject.args[0].head == "and_Conj":
+            names = _np_list(subject.args[1]) or []
+            if not all(np.head == "UsePN" for np in names):
+                names = []
+        else:
+            names = []
+        if not names:
+            raise NotImplementedError("negated conditional clause without proper-name subjects (scope)")
+        parts = []
+        for np in names:
+            one = translate_cl(App("PredVP", [np, cl.args[1]]))
+            parts.append(Translation(
+                lean_prop=f"¬ ({one.lean_prop})",
+                free_predicates=one.free_predicates,
+                free_individuals=one.free_individuals,
+                binary_predicates=one.binary_predicates,
+            ))
+        return _combine(parts, "∧") if len(parts) > 1 else parts[0]
+
+    def _conditional(self, adv, main):
+        """"If S1, S2" as the material conditional S1 → S2."""
+        if not (adv.head == "SubjS" and len(adv.args) == 2 and adv.args[0].head == "if_Subj"):
+            return None
+        antecedent, consequent = self._polar(adv.args[1]), self._polar(main)
+        both = _combine([antecedent, consequent], "→")
+        return both
 
     def _everyone(self, subject, vp):
         """"everyone (at the meeting) VP": every person (at the meeting)."""
@@ -295,6 +420,14 @@ class EndToEndReadings(Readings):
             return None
         if det.head == "DetQuant" and len(det.args) == 2:
             quant, num = det.args
+            if (
+                num.head == "NumCard"
+                and len(num.args) == 1
+                and num.args[0].head == "AdNum"
+                and num.args[0].args[0].head == "moreThan_AdN"
+                and num.args[0].args[1].head == "NumNumeral"
+            ):
+                return f"AtLeast {_decode_numeral(num.args[0].args[1].args[0]) + 1}"
             if num.head == "NumCard" and len(num.args) == 1:
                 count = _bare_count(det)
                 if count is not None and self.mode("numeral") == "weak":
@@ -305,6 +438,14 @@ class EndToEndReadings(Readings):
         return None
 
     def clause(self, quant: str, cn, vp):
+        if vp.head == "AdVVP" and len(vp.args) == 2 and vp.args[0].head == "floatAll_AdV":
+            # "The people who were at the meeting ALL voted" (FraCaS 93):
+            # a floated "all" makes a plural subject universal, removing
+            # the definite plural's collective/generic reading; the
+            # definite still presupposes that there are such people.
+            if quant not in ("Some", "Every+"):
+                raise NotImplementedError(f"floated 'all' with quantifier {quant}")
+            return "Every+", cn, vp.args[1]
         if quant == "Some" and cn.head == "RelCN" and self.mode("generic") != "weak":
             quant = "Every"
         # A floated "all" ("the Ancient Greeks were ALL noted philosophers",

@@ -826,3 +826,9 @@ english_230_premise1	winOrderApcom itel
 english_233_premise1	winOrderApcom itel
 english_239_premise1	winOrderApcomLose itel
 english_248_premise1	Every itelComputer (fastThan pc6082)
+english_342_premise1	signContractJones smith
+english_089_hypothesis	-
+english_093_premise1	Every (fun x => person x ∧ atMeeting x) voteForNewChairman
+english_104_hypothesis	haveCompanyCar jones
+english_216_premise1	fatPoliticianBill john
+english_084_hypothesis	-

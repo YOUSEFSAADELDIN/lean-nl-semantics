@@ -3935,6 +3935,36 @@ _FRACAS_ENGLISH_CHECKS = [
         'linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN anySg_Det (UseN itelComputer_N)))))',
         'the PC-6082 is faster than any ITEL computer',
     ),
+    (
+        'english_342_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ComplSlash (SlashV2V seeDo_V2V (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))) (UsePN jones_PN)))',
+        'Smith saw Jones sign the contract',
+    ),
+    (
+        'english_089_hypothesis',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (AndEveryNP (UseN representativeMasc_N) (UseN client_N)) (UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N))))))',
+        'every representative and every client was at the meeting',
+    ),
+    (
+        'english_093_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (DetCN (DetQuant DefArt NumPl) (RelCN (UseN person_N) (UseRCl (TTAnt TPast ASimul) PPos (RelVP who_RP (UseComp (CompAdv (PrepNP at_Prep (DetCN (DetQuant DefArt NumSg) (UseN meeting_N))))))))) (AdVVP floatAll_AdV (AdvVP (UseV vote_V) (PrepNP for_Prep (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA new_A) (UseN chairman_N)))))))',
+        'the people who were at the meeting all voted for a new chairman',
+    ),
+    (
+        'english_104_hypothesis',
+        'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt (NumCard (AdNum moreThan_AdN (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01)))))))) (CompoundCN (UseN company_N) (UseN car_N)))))',
+        'Jones has more than one company car',
+    ),
+    (
+        'english_216_premise1',
+        'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN john_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (ComparCN fat_A (UseN politician_N) (UsePN bill_PN))))))',
+        'John is a fatter politician than Bill',
+    ),
+    (
+        'english_084_hypothesis',
+        'linearize ExtAdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) UncNeg (PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN anderson_PN))) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))',
+        'if Smith and Anderson did not sign the contract , Jones signed the contract',
+    ),
 ]
 
 CHECKS = (

@@ -524,4 +524,24 @@ abstract FraCaSLogic =
     MoreThanNP : CN -> NP -> NP ;
     MoreThanAux : CN -> NP -> EllAux -> NP ;
     MoreThanV2 : CN -> NP -> V2 -> NP ;
+    -- More of FraCaS's own wording, each confirmed by one linearize
+    -- check in run_gf_tests.py's _FRACAS_ENGLISH_CHECKS:
+    -- seeDo_V2V: perception with a bare infinitive ("Smith saw Jones
+    --   sign the contract", 340-346). DictEng's see_V2V takes "to" ("saw
+    --   Jones to sign"), which is not FraCaS's English.
+    -- AndEveryNP: "every representative and every client WAS at the
+    --   meeting" (89) - English allows singular agreement for coordinated
+    --   "every" phrases; ConjNP only gives the plural.
+    -- floatAll_AdV: a floated "all" before the verb ("the people who
+    --   were at the meeting all voted", 93), as an AdV like "always".
+    -- moreThan_AdN: "more than one company car" (104), the strict
+    --   counterpart of Structural's at_least_AdN/at_most_AdN.
+    -- ComparCN: a comparative inside a noun phrase ("John is a fatter
+    --   politician than Bill", 216/217), which the RGL's ComparA can
+    --   only place after the noun.
+    seeDo_V2V : V2V ;
+    AndEveryNP : CN -> CN -> NP ;
+    floatAll_AdV : AdV ;
+    moreThan_AdN : AdN ;
+    ComparCN : A -> CN -> NP -> CN ;
 }

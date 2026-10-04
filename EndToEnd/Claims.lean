@@ -15,20 +15,18 @@ assembled by one generic rule. See `EndToEnd/gen_claims.py` for the
 exact pipeline and what it deliberately does not supply. Evaluated by
 `EndToEnd/Scan.lean`.
 
-213 of 342 problems carried all the way through;
+219 of 342 problems carried all the way through;
 the rest, by first failing stage:
-- a sentence does not parse: 111
-- a sentence parses but translate.py does not cover its reading: 12
+- a sentence does not parse: 103
+- a sentence parses but translate.py does not cover its reading: 13
 - a translation needs non-generic assembly: 6
+- a generated name is not a usable Lean binder: 1
 
 Per-problem skip reasons (first failing sentence/stage):
 
-- 84: hypothesis does not parse: 'If Smith and Anderson did not sign the contract, Jones signed the contract.'
-- 89: hypothesis does not parse: 'Every representative and every client was at the meeting.'
-- 93: premise 1 does not parse: 'The people who were at the meeting all voted for a new chairman.'
 - 97: hypothesis does not parse: 'The system failure was blamed on one or more software faults.'
 - 101: hypothesis does not parse: 'Smith is likely to make a poor stock market trader.'
-- 104: hypothesis does not parse: 'Jones has more than one company car.'
+- 104: generated names unusable as Lean binders: ['have']
 - 111: hypothesis parses (2 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
 - 112: hypothesis parses (2 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
 - 113: hypothesis parses (2 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
@@ -94,8 +92,6 @@ Per-problem skip reasons (first failing sentence/stage):
 - 194: premise 1 does not parse: "Bill suggested to Frank's boss that they should go to the meeting together, and Carl to Alan's wife."
 - 195: premise 1 does not parse: "Bill suggested to Frank's boss that they should go to the meeting together, and Carl to Alan's wife."
 - 196: premise 1 does not parse: 'A lawyer signed every report, and so did an auditor.'
-- 216: premise 1 does not parse: 'John is a fatter politician than Bill.'
-- 217: premise 1 does not parse: 'John is a cleverer politician than Bill.'
 - 236: premise 1 does not parse: 'ITEL won more orders than the APCOM contract.'
 - 237: premise 1 does not parse: 'ITEL won more orders than the APCOM contract.'
 - 238: premise 1 does not parse: 'ITEL won twice as many orders than APCOM.'
@@ -145,13 +141,12 @@ Per-problem skip reasons (first failing sentence/stage):
 - 327: premise 1 does not parse: 'ITEL was building MTALK in 1993.'
 - 329: premise 1 does not parse: 'ITEL was winning the contract from APCOM in 1993.'
 - 333: premise 1 parses (1 readings) but does not translate: coordinated subject of a collective verb
-- 340: premise 1 does not parse: 'Smith saw Jones sign the contract.'
-- 341: premise 1 does not parse: 'Smith saw Jones sign the contract.'
-- 342: premise 1 does not parse: 'Smith saw Jones sign the contract.'
-- 343: premise 1 does not parse: 'Smith saw Jones sign the contract.'
-- 344: premise 1 does not parse: 'Helen saw the chairman of the department answer the phone.'
+- 340: premise 2 does not parse: 'If Jones signed the contract, his heart was beating.'
+- 341: premise 2 does not parse: 'When Jones signed the contract, his heart was beating.'
+- 343: hypothesis parses (8 readings) but does not translate: perception report whose perceived agent is not a proper name
+- 344: hypothesis does not parse: 'There is someone whom Helen saw answer the phone.'
 - 345: premise 1 does not parse: 'Smith saw Jones sign the contract and his secretary make a copy.'
-- 346: premise 1 does not parse: 'Smith saw Jones sign the contract or cross out the crucial clause.'
+- 346: hypothesis does not parse: 'Smith either saw Jones sign the contract or saw Jones cross out the crucial clause.'
 -/
 
 namespace FraCaS.EndToEnd
@@ -1934,6 +1929,22 @@ def fracas_083_bk_yes_0 : Prop :=
 def fracas_083_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (¬ (signContract jones))
 
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_084_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (((¬ (signContract smith) ∧ ¬ (signContract anderson)) → signContract jones))
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_084_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (¬ (((¬ (signContract smith) ∧ ¬ (signContract anderson)) → signContract jones)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_084_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (((¬ (signContract smith) ∧ ¬ (signContract anderson)) → signContract jones))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_084_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (smith jones anderson : A), ((signContract smith ∨ signContract jones ∨ signContract anderson)) → (¬ (((¬ (signContract smith) ∧ ¬ (signContract anderson)) → signContract jones)))
+
 /-- Reading assignment 0 (numeral weak): "yes" test. -/
 def fracas_085_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (lawyer signContract accountant : A → Prop) [DecidablePred lawyer] [DecidablePred signContract] [DecidablePred accountant], ((Exactly 2 lawyer signContract ∧ AtLeast 3 accountant signContract)) → (AtLeast 6 lawyer signContract)
@@ -2031,6 +2042,22 @@ def fracas_088_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (¬ (Every representativeMasc atMeeting))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_089_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∨ client x) atMeeting) → ((Every representativeMasc atMeeting ∧ Every client atMeeting))
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_089_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∨ client x) atMeeting) → (¬ ((Every representativeMasc atMeeting ∧ Every client atMeeting)))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_089_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∨ client x) atMeeting) → ((Every representativeMasc atMeeting ∧ Every client atMeeting))
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_089_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∨ client x) atMeeting) → (¬ ((Every representativeMasc atMeeting ∧ Every client atMeeting)))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_090_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (Every chairman read_outEveryItemOnAgenda)
 
@@ -2126,6 +2153,22 @@ def fracas_092_bk_yes_0 : Prop :=
 def fracas_092_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
 
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_093_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_093_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_093_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Every (fun x => person x ∧ atMeeting x) voteForNewChairman)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_093_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (person atMeeting voteForNewChairman : A → Prop) [DecidablePred person] [DecidablePred atMeeting] [DecidablePred voteForNewChairman], (Every (fun x => person x ∧ atMeeting x) voteForNewChairman) → (Some (fun x => person x ∧ atMeeting x) voteForNewChairman) → (¬ (Every (fun x => person x ∧ atMeeting x) voteForNewChairman))
+
 /-- Reading assignment 0 (defpl weak): "yes" test. -/
 def fracas_094_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Some inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
@@ -2192,19 +2235,19 @@ def fracas_095_bk_no_1 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_096_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_096_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_096_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_096_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_098_yes_0 : Prop :=
@@ -2224,19 +2267,19 @@ def fracas_098_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_099_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_099_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_099_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_099_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_100_yes_0 : Prop :=
@@ -3069,6 +3112,38 @@ def fracas_215_bk_yes_0 : Prop :=
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_215_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (∀ x, competentLegalAuthority x → legalAuthority x) → (∀ x, competentLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (¬ (Every competentLegalAuthority competentLawLecturer))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_216_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (fatPoliticianThan fatThan : A → A → Prop) [DecidableRel fatPoliticianThan] [DecidableRel fatThan] (john bill : A), ((politician john ∧ fatPoliticianThan john bill)) → (fatThan john bill)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_216_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (fatPoliticianThan fatThan : A → A → Prop) [DecidableRel fatPoliticianThan] [DecidableRel fatThan] (john bill : A), ((politician john ∧ fatPoliticianThan john bill)) → (¬ (fatThan john bill))
+
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_216_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (fatPoliticianThan fatThan : A → A → Prop) [DecidableRel fatPoliticianThan] [DecidableRel fatThan] (john bill : A), (∀ x y, fatPoliticianThan x y → ¬ fatPoliticianThan y x) → (∀ x y, fatThan x y → ¬ fatThan y x) → ((politician john ∧ fatPoliticianThan john bill)) → (fatThan john bill)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_216_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (fatPoliticianThan fatThan : A → A → Prop) [DecidableRel fatPoliticianThan] [DecidableRel fatThan] (john bill : A), (∀ x y, fatPoliticianThan x y → ¬ fatPoliticianThan y x) → (∀ x y, fatThan x y → ¬ fatThan y x) → ((politician john ∧ fatPoliticianThan john bill)) → (¬ (fatThan john bill))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_217_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (cleverPoliticianThan cleverThan : A → A → Prop) [DecidableRel cleverPoliticianThan] [DecidableRel cleverThan] (john bill : A), ((politician john ∧ cleverPoliticianThan john bill)) → (cleverThan john bill)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_217_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (cleverPoliticianThan cleverThan : A → A → Prop) [DecidableRel cleverPoliticianThan] [DecidableRel cleverThan] (john bill : A), ((politician john ∧ cleverPoliticianThan john bill)) → (¬ (cleverThan john bill))
+
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_217_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (cleverPoliticianThan cleverThan : A → A → Prop) [DecidableRel cleverPoliticianThan] [DecidableRel cleverThan] (john bill : A), (∀ x y, cleverPoliticianThan x y → ¬ cleverPoliticianThan y x) → (∀ x y, cleverThan x y → ¬ cleverThan y x) → ((politician john ∧ cleverPoliticianThan john bill)) → (cleverThan john bill)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_217_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (politician : A → Prop) [DecidablePred politician] (cleverPoliticianThan cleverThan : A → A → Prop) [DecidableRel cleverPoliticianThan] [DecidableRel cleverThan] (john bill : A), (∀ x y, cleverPoliticianThan x y → ¬ cleverPoliticianThan y x) → (∀ x y, cleverThan x y → ¬ cleverThan y x) → ((politician john ∧ cleverPoliticianThan john bill)) → (¬ (cleverThan john bill))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_218_yes_0 : Prop :=
@@ -4318,6 +4393,22 @@ def fracas_339_bk_yes_0 : Prop :=
 def fracas_339_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (winContractIn1992 : A → Prop) [DecidablePred winContractIn1992] (itel : A), (¬ (winContractIn1992 itel)) → (¬ (winContractIn1992 itel))
 
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_342_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (seeSignContract : A → A → Prop) [DecidableRel seeSignContract] (smith jones : A), ((seeSignContract smith jones ∧ signContract jones)) → (signContract jones)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_342_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (seeSignContract : A → A → Prop) [DecidableRel seeSignContract] (smith jones : A), ((seeSignContract smith jones ∧ signContract jones)) → (¬ (signContract jones))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_342_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (seeSignContract : A → A → Prop) [DecidableRel seeSignContract] (smith jones : A), ((seeSignContract smith jones ∧ signContract jones)) → (signContract jones)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_342_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (signContract : A → Prop) [DecidablePred signContract] (seeSignContract : A → A → Prop) [DecidableRel seeSignContract] (smith jones : A), ((seeSignContract smith jones ∧ signContract jones)) → (¬ (signContract jones))
+
 end Claims
 
 /-- `(problem id, gold answer, yes-claims, no-claims)` - one claim per
@@ -4407,13 +4498,16 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (81, .yes, [``Claims.fracas_081_yes_0], [``Claims.fracas_081_no_0]),
   (82, .yes, [``Claims.fracas_082_yes_0], [``Claims.fracas_082_no_0]),
   (83, .unknown, [``Claims.fracas_083_yes_0], [``Claims.fracas_083_no_0]),
+  (84, .yes, [``Claims.fracas_084_yes_0], [``Claims.fracas_084_no_0]),
   (85, .no, [``Claims.fracas_085_yes_0, ``Claims.fracas_085_yes_1], [``Claims.fracas_085_no_0, ``Claims.fracas_085_no_1]),
   (86, .no, [``Claims.fracas_086_yes_0, ``Claims.fracas_086_yes_1], [``Claims.fracas_086_no_0, ``Claims.fracas_086_no_1]),
   (87, .yes, [``Claims.fracas_087_yes_0], [``Claims.fracas_087_no_0]),
   (88, .unknown, [``Claims.fracas_088_yes_0], [``Claims.fracas_088_no_0]),
+  (89, .yes, [``Claims.fracas_089_yes_0], [``Claims.fracas_089_no_0]),
   (90, .yes, [``Claims.fracas_090_yes_0], [``Claims.fracas_090_no_0]),
   (91, .unknown, [``Claims.fracas_091_yes_0, ``Claims.fracas_091_yes_1, ``Claims.fracas_091_yes_2, ``Claims.fracas_091_yes_3], [``Claims.fracas_091_no_0, ``Claims.fracas_091_no_1, ``Claims.fracas_091_no_2, ``Claims.fracas_091_no_3]),
   (92, .yes, [``Claims.fracas_092_yes_0], [``Claims.fracas_092_no_0]),
+  (93, .yes, [``Claims.fracas_093_yes_0], [``Claims.fracas_093_no_0]),
   (94, .unknown, [``Claims.fracas_094_yes_0, ``Claims.fracas_094_yes_1], [``Claims.fracas_094_no_0, ``Claims.fracas_094_no_1]),
   (95, .unknown, [``Claims.fracas_095_yes_0, ``Claims.fracas_095_yes_1], [``Claims.fracas_095_no_0, ``Claims.fracas_095_no_1]),
   (96, .yes, [``Claims.fracas_096_yes_0], [``Claims.fracas_096_no_0]),
@@ -4468,6 +4562,8 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (213, .undef, [``Claims.fracas_213_yes_0], [``Claims.fracas_213_no_0]),
   (214, .yes, [``Claims.fracas_214_yes_0], [``Claims.fracas_214_no_0]),
   (215, .unknown, [``Claims.fracas_215_yes_0], [``Claims.fracas_215_no_0]),
+  (216, .yes, [``Claims.fracas_216_yes_0], [``Claims.fracas_216_no_0]),
+  (217, .unknown, [``Claims.fracas_217_yes_0], [``Claims.fracas_217_no_0]),
   (218, .yes, [``Claims.fracas_218_yes_0], [``Claims.fracas_218_no_0]),
   (219, .unknown, [``Claims.fracas_219_yes_0], [``Claims.fracas_219_no_0]),
   (220, .yes, [``Claims.fracas_220_yes_0], [``Claims.fracas_220_no_0]),
@@ -4536,7 +4632,8 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (336, .yes, [``Claims.fracas_336_yes_0], [``Claims.fracas_336_no_0]),
   (337, .unknown, [``Claims.fracas_337_yes_0], [``Claims.fracas_337_no_0]),
   (338, .yes, [``Claims.fracas_338_yes_0], [``Claims.fracas_338_no_0]),
-  (339, .no, [``Claims.fracas_339_yes_0], [``Claims.fracas_339_no_0])
+  (339, .no, [``Claims.fracas_339_yes_0], [``Claims.fracas_339_no_0]),
+  (342, .yes, [``Claims.fracas_342_yes_0], [``Claims.fracas_342_no_0])
 ]
 
 /-- The same problems, each claim with `EndToEnd/background.py`'s
@@ -4625,13 +4722,16 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (81, .yes, [``Claims.fracas_081_bk_yes_0], [``Claims.fracas_081_bk_no_0]),
   (82, .yes, [``Claims.fracas_082_bk_yes_0], [``Claims.fracas_082_bk_no_0]),
   (83, .unknown, [``Claims.fracas_083_bk_yes_0], [``Claims.fracas_083_bk_no_0]),
+  (84, .yes, [``Claims.fracas_084_bk_yes_0], [``Claims.fracas_084_bk_no_0]),
   (85, .no, [``Claims.fracas_085_bk_yes_0, ``Claims.fracas_085_bk_yes_1], [``Claims.fracas_085_bk_no_0, ``Claims.fracas_085_bk_no_1]),
   (86, .no, [``Claims.fracas_086_bk_yes_0, ``Claims.fracas_086_bk_yes_1], [``Claims.fracas_086_bk_no_0, ``Claims.fracas_086_bk_no_1]),
   (87, .yes, [``Claims.fracas_087_bk_yes_0], [``Claims.fracas_087_bk_no_0]),
   (88, .unknown, [``Claims.fracas_088_bk_yes_0], [``Claims.fracas_088_bk_no_0]),
+  (89, .yes, [``Claims.fracas_089_bk_yes_0], [``Claims.fracas_089_bk_no_0]),
   (90, .yes, [``Claims.fracas_090_bk_yes_0], [``Claims.fracas_090_bk_no_0]),
   (91, .unknown, [``Claims.fracas_091_bk_yes_0, ``Claims.fracas_091_bk_yes_1, ``Claims.fracas_091_bk_yes_2, ``Claims.fracas_091_bk_yes_3], [``Claims.fracas_091_bk_no_0, ``Claims.fracas_091_bk_no_1, ``Claims.fracas_091_bk_no_2, ``Claims.fracas_091_bk_no_3]),
   (92, .yes, [``Claims.fracas_092_bk_yes_0], [``Claims.fracas_092_bk_no_0]),
+  (93, .yes, [``Claims.fracas_093_bk_yes_0], [``Claims.fracas_093_bk_no_0]),
   (94, .unknown, [``Claims.fracas_094_bk_yes_0, ``Claims.fracas_094_bk_yes_1], [``Claims.fracas_094_bk_no_0, ``Claims.fracas_094_bk_no_1]),
   (95, .unknown, [``Claims.fracas_095_bk_yes_0, ``Claims.fracas_095_bk_yes_1], [``Claims.fracas_095_bk_no_0, ``Claims.fracas_095_bk_no_1]),
   (96, .yes, [``Claims.fracas_096_bk_yes_0], [``Claims.fracas_096_bk_no_0]),
@@ -4686,6 +4786,8 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (213, .undef, [``Claims.fracas_213_bk_yes_0], [``Claims.fracas_213_bk_no_0]),
   (214, .yes, [``Claims.fracas_214_bk_yes_0], [``Claims.fracas_214_bk_no_0]),
   (215, .unknown, [``Claims.fracas_215_bk_yes_0], [``Claims.fracas_215_bk_no_0]),
+  (216, .yes, [``Claims.fracas_216_bk_yes_0], [``Claims.fracas_216_bk_no_0]),
+  (217, .unknown, [``Claims.fracas_217_bk_yes_0], [``Claims.fracas_217_bk_no_0]),
   (218, .yes, [``Claims.fracas_218_bk_yes_0], [``Claims.fracas_218_bk_no_0]),
   (219, .unknown, [``Claims.fracas_219_bk_yes_0], [``Claims.fracas_219_bk_no_0]),
   (220, .yes, [``Claims.fracas_220_bk_yes_0], [``Claims.fracas_220_bk_no_0]),
@@ -4754,7 +4856,8 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (336, .yes, [``Claims.fracas_336_bk_yes_0], [``Claims.fracas_336_bk_no_0]),
   (337, .unknown, [``Claims.fracas_337_bk_yes_0], [``Claims.fracas_337_bk_no_0]),
   (338, .yes, [``Claims.fracas_338_bk_yes_0], [``Claims.fracas_338_bk_no_0]),
-  (339, .no, [``Claims.fracas_339_bk_yes_0], [``Claims.fracas_339_bk_no_0])
+  (339, .no, [``Claims.fracas_339_bk_yes_0], [``Claims.fracas_339_bk_no_0]),
+  (342, .yes, [``Claims.fracas_342_bk_yes_0], [``Claims.fracas_342_bk_no_0])
 ]
 
 end FraCaS.EndToEnd
