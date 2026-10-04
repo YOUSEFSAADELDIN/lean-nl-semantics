@@ -167,6 +167,19 @@ def resolve(t, antecedent_vp, antecedent_cn):
         t = t.args[0]
     if t.head == "TooS" and len(t.args) == 1:
         t = t.args[0]
+    if t.head == "AdvS" and len(t.args) == 2:
+        # A fronted adverbial ("In 1993 ITEL won the contract") modifies
+        # the clause's VP, as it would in final position ("ITEL won the
+        # contract in 1993"). Only with a positive clause and a
+        # proper-name subject: under negation or a quantified subject a
+        # fronted adverbial can take wider scope than a final one.
+        adv, inner = t.args
+        clause, negated, err = resolve(inner, antecedent_vp, antecedent_cn)
+        if clause is None:
+            return None, False, err
+        if negated or clause.head != "PredVP" or clause.args[0].head != "UsePN":
+            return None, False, "fronted adverbial with negation or a non-proper-name subject (scope)"
+        return App("PredVP", [clause.args[0], App("AdvVP", [clause.args[1], adv])]), False, None
     negated = False
     if t.head in ("ElliptS", "SoS") and len(t.args) == 2:
         np, aux = (t.args if t.head == "ElliptS" else (t.args[1], t.args[0]))
