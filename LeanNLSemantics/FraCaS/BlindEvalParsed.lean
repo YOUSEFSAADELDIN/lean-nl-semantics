@@ -693,19 +693,19 @@ def fracas_023_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_023_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurvey)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_023_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurvey))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_023_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurvey)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_023_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurvey))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_024_parsed_yes_0 : Prop :=
@@ -965,19 +965,19 @@ def fracas_039_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_039_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_039_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (¬ ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)))
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_039_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_039_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (¬ ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)))
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_040_parsed_yes_0 : Prop :=
@@ -1221,19 +1221,19 @@ def fracas_055_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_055_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_055_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (¬ ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)))
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_055_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_055_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (¬ ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)))
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_056_parsed_yes_0 : Prop :=
@@ -1477,19 +1477,19 @@ def fracas_071_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_071_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 irishDelegate finishSurveyOnTime)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_071_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_071_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 irishDelegate finishSurveyOnTime)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_071_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_072_parsed_yes_0 : Prop :=
@@ -1861,19 +1861,19 @@ def fracas_107_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_107_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_107_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting)))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_107_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_107_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting)))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_108_parsed_yes_0 : Prop :=
@@ -1909,19 +1909,19 @@ def fracas_109_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_109_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_109_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting)))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_109_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_109_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ ((AtLeast 2 accountant attendMeeting ∧ Some accountant attendMeeting)))
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_110_parsed_yes_0 : Prop :=

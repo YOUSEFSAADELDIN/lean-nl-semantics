@@ -391,15 +391,22 @@ AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl")
 _READING = "default"
 
 
-def translate_cl_reading(t, reading):
+_POSITION = "premise"
+
+
+def translate_cl_reading(t, reading, position: str = "premise"):
     """`translate_cl` under a given reading: "default", "weak", "strong",
-    or a dict {kind: "weak"|"strong"} over AMBIGUITY_KINDS."""
-    global _READING
+    or a dict {kind: "weak"|"strong"} over AMBIGUITY_KINDS. `position`
+    ("premise"/"hypothesis") only chooses between equivalent renderings
+    (see _quantified)."""
+    global _READING, _POSITION
     previous, _READING = _READING, reading
+    previous_pos, _POSITION = _POSITION, position
     try:
         return translate_cl(t)
     finally:
         _READING = previous
+        _POSITION = previous_pos
 
 
 def _mode(kind: str) -> str:
@@ -1256,10 +1263,15 @@ def _quantified(quant: str, restrictor: str, scope: str) -> str:
     referents exist ("Every+": `Every` alone is vacuously true of no
     tenors at all), and "at least two" entails "some" ("AtLeast 2+": the
     conjunct only states that consequence outright, so the prover need not
-    rediscover it - the two forms are equivalent)."""
+    rediscover it - the two forms are equivalent, and the conjunct is only
+    added in premise position)."""
     if quant == "Every+":
         return f"(Every {restrictor} {scope} ∧ Some {restrictor} {scope})"
     if quant == "AtLeast 2+":
+        # Equivalent forms; the explicit "some" conjunct helps only as a
+        # premise - as a hypothesis it just adds a goal to prove.
+        if _POSITION == "hypothesis":
+            return f"AtLeast 2 {restrictor} {scope}"
         return f"(AtLeast 2 {restrictor} {scope} ∧ Some {restrictor} {scope})"
     return f"{quant} {restrictor} {scope}"
 

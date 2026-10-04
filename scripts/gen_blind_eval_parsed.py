@@ -226,9 +226,10 @@ def assemble(idn, sentences):
 
     def translate_all(reading):
         out = []
-        for role, clause, negated, n in clauses:
+        for idx, (role, clause, negated, n) in enumerate(clauses):
+            position = "hypothesis" if idx == len(clauses) - 1 else "premise"
             try:
-                tr = translate_cl_reading(clause, reading)
+                tr = translate_cl_reading(clause, reading, position)
             except Exception as e:  # translate.py signals unsupported shapes this way
                 raise ValueError(f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}")
             if tr.conjuncts or tr.free_functions or tr.template:
