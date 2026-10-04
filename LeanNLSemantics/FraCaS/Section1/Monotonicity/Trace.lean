@@ -46,7 +46,11 @@ for the general schema this instantiates. Added deliberately outside
 `ruleFor`'s total table (which stays exactly the eight-cell map it
 always was) rather than replacing `atMostMonoScope` there, since the
 flat rule still fires first whenever a flat fact is actually available -
-this is a registered *fallback*, not a table entry. -/
+this is a registered *fallback*, not a table entry.
+`atLeastMonoScopeConditioned` is the `(AtLeast, scope)` cell's fallback
+of the same kind (`GQ.lean`'s `atLeast_mono_scope_conditioned`), added
+for the end-to-end pipeline's "a few ... ⊢ at least a few ..." (FraCaS
+27). -/
 inductive MonoRule where
   | everyMonoScope
   | everyRestrict
@@ -57,18 +61,19 @@ inductive MonoRule where
   | atMostMonoScope
   | atMostRestrict
   | atMostMonoScopeConditioned
+  | atLeastMonoScopeConditioned
   deriving DecidableEq, Repr, Inhabited
 
 def MonoRule.quantifier : MonoRule → Quantifier
   | .everyMonoScope | .everyRestrict => .every
   | .someMonoScope | .someRestrict => .some
-  | .atLeastMonoScope | .atLeastRestrict => .atLeast
+  | .atLeastMonoScope | .atLeastRestrict | .atLeastMonoScopeConditioned => .atLeast
   | .atMostMonoScope | .atMostRestrict | .atMostMonoScopeConditioned => .atMost
 
 def MonoRule.position : MonoRule → Position
   | .everyRestrict | .someRestrict | .atLeastRestrict | .atMostRestrict => .restrictor
   | .everyMonoScope | .someMonoScope | .atLeastMonoScope | .atMostMonoScope
-  | .atMostMonoScopeConditioned => .scope
+  | .atMostMonoScopeConditioned | .atLeastMonoScopeConditioned => .scope
 
 /-- The unique rule for a given `(Quantifier, Position)` cell - total,
 since the fragment's table (`Signature.lean`) covers all eight cells. -/

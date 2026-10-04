@@ -203,6 +203,7 @@ macro "blind_aesop" : tactic => `(tactic|
       unsafe 50% apply FraCaS.Section1.atLeast_trans,
       unsafe 50% apply FraCaS.Section1.atMost_mono_scope,
       unsafe 50% apply FraCaS.Section1.atMost_mono_scope_conditioned,
+      unsafe 50% apply FraCaS.Section1.atLeast_mono_scope_conditioned,
       unsafe 50% apply FraCaS.Section1.some_restrict,
       unsafe 50% apply FraCaS.Section1.every_restrict,
       unsafe 50% apply FraCaS.Section1.atLeast_restrict,

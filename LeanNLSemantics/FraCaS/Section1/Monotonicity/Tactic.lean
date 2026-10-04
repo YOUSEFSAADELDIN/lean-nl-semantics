@@ -145,6 +145,7 @@ def MonoRule.lemmaName : MonoRule → Lean.Name
   | .atMostMonoScope  => ``FraCaS.Section1.atMost_mono_scope
   | .atMostRestrict   => ``FraCaS.Section1.atMost_restrict
   | .atMostMonoScopeConditioned => ``FraCaS.Section1.atMost_mono_scope_conditioned
+  | .atLeastMonoScopeConditioned => ``FraCaS.Section1.atLeast_mono_scope_conditioned
 
 /-- Repeatedly `intro`s the goal's leading Π-binders (every problem in
 this fragment is stated as a chain of implications ending in the
@@ -346,6 +347,7 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
             | .atMostMonoScope  => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
             | .atMostRestrict   => pure #[n, shapeP, goalQ, goalP, shapeExpr, factExpr]
             | .atMostMonoScopeConditioned => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
+            | .atLeastMonoScopeConditioned => pure #[n, goalP, shapeQ, goalQ, shapeExpr, factExpr]
           let proof ← mkAppM effRule.lemmaName lemmaArgs
           unless ← isDefEq (← inferType proof) (← goal.getType) do return false
           let step : MonoStep :=
@@ -419,11 +421,13 @@ def searchMonoNl (computeExtra : List LocalDecl → MetaM (Array (Expr × Lean.N
       -- `Trace.lean`'s `NarrowStep`/`atMostMonoScopeConditioned` for why
       -- this is a registered fallback rather than a table cell). Only a
       -- cell with a registered conditioned rule gets one; today that's
-      -- exactly `(AtMost, scope)` - everywhere else `condRule?` is `none`
+      -- `(AtMost, scope)` and `(AtLeast, scope)` - everywhere else `condRule?` is `none`
       -- and this block does nothing, so it can only ever widen what
       -- already-passing goals close, never change how they do.
       let condRule? : Option MonoRule :=
-        if rule == .atMostMonoScope then some .atMostMonoScopeConditioned else none
+        if rule == .atMostMonoScope then some .atMostMonoScopeConditioned
+        else if rule == .atLeastMonoScope then some .atLeastMonoScopeConditioned
+        else none
       if let some condRule := condRule? then
         -- The conditioned fact `entails_narrow` would produce is `Every
         -- (fun x => auxRestrictor x ∧ needFrom x) needTo` for some

@@ -9,7 +9,7 @@ Extends `LeanNLSemantics/MTT/AssumptionAudit.lean`'s own methodology -
 a faithful port of `atlas/mtt_ranta/MTT.v` Part 9, Coq's `Print
 Assumptions` becoming Lean's `#print axioms` - from the 14 MTT example
 theorems that file already covers to every `fracas_*` theorem in the
-FraCaS corpus: 628 theorems as of this generation, extracted
+FraCaS corpus: 632 theorems as of this generation, extracted
 automatically (see scripts/gen_fracas_assumption_audit.py), not
 hand-picked.
 
@@ -57,6 +57,7 @@ computed from. If this file's own theorem count above no longer reads
 #print axioms FraCaS.Section1.Monotonicity.fracas_015_via_exist_nl
 #print axioms FraCaS.Section1.Monotonicity.fracas_018_via_mono_nl
 #print axioms FraCaS.Section1.Monotonicity.fracas_021_via_mono_nl
+#print axioms FraCaS.Section1.Monotonicity.fracas_027_via_mono_nl
 #print axioms FraCaS.Section1.Monotonicity.fracas_027_via_mono_nl_compose
 #print axioms FraCaS.Section1.Monotonicity.fracas_029_via_mono_nl
 #print axioms FraCaS.Section1.Monotonicity.fracas_031_via_mono_nl
@@ -524,6 +525,8 @@ computed from. If this file's own theorem count above no longer reads
 #print axioms FraCaS.Section9.fracas_344
 #print axioms FraCaS.Section9.fracas_345
 #print axioms FraCaS.Section9.fracas_346
+#print axioms MTT.fracas_029_from_cn
+#print axioms MTT.fracas_044_from_cn
 #print axioms fracas_001_from_gf
 #print axioms fracas_002_from_gf
 #print axioms fracas_003_from_gf
@@ -563,6 +566,7 @@ computed from. If this file's own theorem count above no longer reads
 #print axioms fracas_097_from_gf
 #print axioms fracas_099_from_gf
 #print axioms fracas_103_from_gf
+#print axioms fracas_105_from_gf
 #print axioms fracas_114_from_gf
 #print axioms fracas_115_from_gf
 #print axioms fracas_116_from_gf
