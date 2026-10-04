@@ -147,33 +147,48 @@ correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 213 of 342 problems go all
-the way through (62.3%). 111 stop at a sentence the restricted grammar
-doesn't parse, 12 at a reading the translation doesn't cover, 6 at a
-translation needing non-generic assembly. A census of every failing
-sentence found the remaining parse failures are mostly hard phenomena
-rather than missing glue: more ellipsis forms, aspect and duration,
-perception and attitude reports. The quantity comparatives that census
+**Coverage, on FraCaS's original English**: 219 of 342 problems go all
+the way through (64.0%). 103 stop at a sentence the restricted grammar
+doesn't parse, 13 at a reading the translation doesn't cover, 6 at a
+translation needing non-generic assembly, and 1 (104) at a predicate
+named after a Lean keyword (`have`). Of the 103, the remaining parse
+failures are mostly hard phenomena rather than missing glue: tense and
+aspect (41 problems, Section 7), ellipsis forms such as gapping and
+fragments ("Bill by train.", 39, Section 4), cross-sentence anaphora,
+attitude reports, and numbers written as digits. The last cheap round
+added the remaining small constructions: perception reports ("Smith saw
+Jones sign the contract"), "every X and every Y was", a floated "all"
+before the verb, "if S, S", "more than n", and comparatives inside a
+noun phrase ("a fatter politician than Bill"), each with one linearize
+check of FraCaS's own sentence. The quantity comparatives that census
 also found ("ITEL won more orders than APCOM did") are now covered (step
 4 above). Giving the parse grammar the full
 dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 37205860267), on those 213 problems:
+**Result** (CI run 37240689801), on those 219 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 79/213 (37.1%) | — |
-| as translated | **131/213 (61.5%)** | **0** |
-| with background knowledge | **153/213 (71.8%)** | **0** |
+| always "unknown" (baseline) | 80/219 (36.5%) | — |
+| as translated | **136/219 (62.1%)** | **0** |
+| with background knowledge | **158/219 (72.1%)** | **0** |
 
-Counting the 129 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 158/342 (46.2%) as translated and 180/342 (52.6%)
+Counting the 123 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 162/342 (47.4%) as translated and 184/342 (53.8%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
 
-Before the last round (coordinated subjects, "several", "it is
+The cheap-construction round (CI run 37240689801) lost no previously
+matched problem and gained 84, 89, 93, 217 and 342; 216 ("John is a
+fatter politician than Bill" ⇒ "John is fatter than Bill", gold yes) is
+"unknown" by design, since "fatter as a politician" coincides with
+"fatter" only for some adjectives (not "clever", 217), which the
+pipeline has no lexicon for. Before that, CI run 37205860267 gave
+131/213 and 153/213.
+
+Before the round before that (coordinated subjects, "several", "it is
 true/false that", "everyone", counted partitives, fronted adverbials;
 CI run 37199853258, reproduced after `readings.py` was split out of
 `translate.py` in run 37205385335) the figures were 118/195 and

@@ -91,8 +91,8 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   English parsed with a restricted GF grammar, the top reading chosen by
   a generic ranker and translated by `gf/translate.py` under the
   pipeline's own readings of ambiguous English (`EndToEnd/readings.py`),
-  scored by its own prover. It reaches 213 of 342 problems and matches
-  gold on 131 of them as translated (153 with problem-independent
+  scored by its own prover. It reaches 219 of 342 problems and matches
+  gold on 136 of them as translated (158 with problem-independent
   background knowledge), with no wrong answers. These are
   **development-set** figures: the pipeline was extended by looking at
   which of these same problems failed. Full write-up:
