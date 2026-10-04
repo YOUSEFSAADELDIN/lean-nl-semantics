@@ -380,11 +380,19 @@ def _decode_card(card):
 #   - "both"/"neither": not ambiguous, just previously simplified to
 #     `Every`/`No` (see the CAUTION below) - both modes use GQ.lean's own
 #     `Both`/`Neither`, which keep the exactly-two presupposition.
+#
+# `reading` may also be a dict assigning "weak"/"strong" per KIND of
+# ambiguity - "defpl", "generic", "many", "somepl" (AMBIGUITY_KINDS) - so a
+# caller can read the same kind of ambiguity the same way in every
+# sentence of a problem (scripts/gen_blind_eval_parsed.py enumerates all
+# such assignments); a kind missing from the dict reads "weak".
+AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl")
 _READING = "default"
 
 
-def translate_cl_reading(t, reading: str):
-    """`translate_cl` under a given reading ("default"/"weak"/"strong")."""
+def translate_cl_reading(t, reading):
+    """`translate_cl` under a given reading: "default", "weak", "strong",
+    or a dict {kind: "weak"|"strong"} over AMBIGUITY_KINDS."""
     global _READING
     previous, _READING = _READING, reading
     try:
@@ -393,12 +401,18 @@ def translate_cl_reading(t, reading: str):
         _READING = previous
 
 
+def _mode(kind: str) -> str:
+    if isinstance(_READING, dict):
+        return _READING.get(kind, "weak")
+    return _READING
+
+
 def _resolve_quantifier(det) -> str:
     if det.head in _QUANTIFIER_BY_DET and not det.args:
         if _READING != "default":
             if det.head == "many_Det":
-                return "Many" if _READING == "strong" else "Some"
-            if det.head == "somePl_Det" and _READING == "strong":
+                return "Many" if _mode("many") == "strong" else "Some"
+            if det.head == "somePl_Det" and _mode("somepl") == "strong":
                 return "AtLeast 2"
             if det.head == "both_Det":
                 return "Both"
@@ -424,7 +438,7 @@ def _resolve_quantifier(det) -> str:
             # not guessed from the English alone.
             return f"Exactly {count}"
         if (
-            _READING == "weak"
+            _mode("defpl") == "weak"
             and quant.head == "DefArt"
             and num.head == "NumPl"
         ):
@@ -1209,8 +1223,26 @@ def translate_cl(t) -> Translation:
     # which would be wrong for a genuine existential bare plural) for
     # exactly the shape that's actually confirmed to need it: a
     # RelCN-restricted bare plural.
-    if quant == "Some" and cn.head == "RelCN" and _READING != "weak":
+    if quant == "Some" and cn.head == "RelCN" and _mode("generic") != "weak":
         quant = "Every"
+
+    # A floated "all" ("the Ancient Greeks were ALL noted philosophers",
+    # FraCaS 96): a parse attaches it to the predicate nominal ("[all noted
+    # philosophers]"), but a predicate nominal is not itself quantified, so
+    # "all" there can only be floated off the subject - which makes the
+    # subject unambiguously universal, whatever its own determiner.
+    if (
+        vp.head == "UseComp"
+        and len(vp.args) == 1
+        and vp.args[0].head == "CompNP"
+        and len(vp.args[0].args) == 1
+        and vp.args[0].args[0].head == "PredetNP"
+        and len(vp.args[0].args[0].args) == 2
+        and vp.args[0].args[0].args[0].head == "all_Predet"
+        and _READING != "default"
+    ):
+        quant = "Every"
+        vp = App("UseComp", [App("CompNP", [vp.args[0].args[0].args[1]])])
 
     restrictor_expr, restrictor_preds = _restrictor_expr(cn)
     scope_name = _scope_name(vp)

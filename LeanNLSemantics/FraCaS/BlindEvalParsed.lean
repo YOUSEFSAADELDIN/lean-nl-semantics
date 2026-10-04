@@ -17,8 +17,8 @@ background-knowledge premise). Evaluated by
 
 176 of 342 problems carried all the way through;
 the rest, by first failing stage:
-- a sentence does not parse: 113
-- a sentence parses but translate.py does not cover its reading: 40
+- a sentence does not parse: 121
+- a sentence parses but translate.py does not cover its reading: 32
 - a translation needs non-generic assembly: 13
 
 Per-problem skip reasons (first failing sentence/stage):
@@ -38,7 +38,7 @@ Per-problem skip reasons (first failing sentence/stage):
 - 81: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 82: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
 - 83: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 84: premise 1 parses (2 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
+- 84: hypothesis does not parse: 'If Smith and Anderson did not sign the contract, Jones signed the contract.'
 - 85: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 86: premise 1 needs non-generic assembly (conjuncts/Skolem/bundle)
 - 89: hypothesis does not parse: 'Every representative and every client was at the meeting.'
@@ -83,7 +83,7 @@ Per-problem skip reasons (first failing sentence/stage):
 - 164: premise 2 does not parse: 'And to Sue.'
 - 165: premise 2 does not parse: 'On Friday.'
 - 166: premise 2 does not parse: 'And on Friday.'
-- 167: premise 1 parses (4 readings) but does not translate: unrecognized Sub100 numeral shape: 'pot1'
+- 167: premise 2 does not parse: 'But only one woman.'
 - 168: premise 2 does not parse: 'And forty five women.'
 - 169: premise 1 does not parse: 'John found Mary before Bill.'
 - 170: premise 1 does not parse: 'John found Mary before Bill.'
@@ -105,8 +105,8 @@ Per-problem skip reasons (first failing sentence/stage):
 - 186: premise 1 does not parse: 'Smith claimed he had costed his proposal and so did Jones.'
 - 187: premise 1 does not parse: 'Smith claimed he had costed his proposal and so did Jones.'
 - 188: premise 1 does not parse: 'Smith claimed he had costed his proposal and so did Jones.'
-- 189: premise 1 parses (4 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='ConjS'
-- 190: premise 1 parses (4 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='ConjS'
+- 189: premise 2 does not parse: 'John represents his company and so does Mary.'
+- 190: premise 2 does not parse: 'John represents his company and so does Mary.'
 - 191: premise 1 does not parse: "Bill suggested to Frank's boss that they should go to the meeting together, and Carl to Alan's wife."
 - 192: premise 1 does not parse: "Bill suggested to Frank's boss that they should go to the meeting together, and Carl to Alan's wife."
 - 193: premise 1 does not parse: "Bill suggested to Frank's boss that they should go to the meeting together, and Carl to Alan's wife."
@@ -133,15 +133,15 @@ Per-problem skip reasons (first failing sentence/stage):
 - 245: premise 1 does not parse: 'APCOM has a more important customer than ITEL.'
 - 248: premise 1 does not parse: 'The PC-6082 is faster than any ITEL computer.'
 - 251: hypothesis does not parse: 'ITEL currently has a factory in Birmingham.'
-- 252: premise 1 parses (11 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
+- 252: premise 2 does not parse: 'It is now 1996.'
 - 253: premise 2 does not parse: 'It is now 1996.'
 - 254: premise 2 does not parse: 'It is now 1996.'
-- 255: premise 1 parses (1 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
+- 255: premise 2 does not parse: 'It is now 1996.'
 - 256: premise 2 does not parse: 'It is now 1996.'
 - 257: premise 2 does not parse: 'It is now 1996.'
 - 258: premise 1 parses (1 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
 - 259: premise 1 does not parse: 'The conference started on July 4th, 1994.'
-- 260: premise 1 parses (2 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
+- 260: premise 2 does not parse: 'Today is Saturday, July 14th.'
 - 273: premise 1 does not parse: 'Smith was writing a report.'
 - 274: premise 1 does not parse: 'Smith was writing a report.'
 - 281: premise 1 does not parse: 'Smith was running a business in 1991.'
@@ -154,7 +154,7 @@ Per-problem skip reasons (first failing sentence/stage):
 - 293: premise 1 does not parse: 'Smith was running his own business in two years.'
 - 294: premise 1 does not parse: 'Smith was running his own business in two years.'
 - 295: premise 1 parses (6 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
-- 296: premise 1 parses (6 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
+- 296: hypothesis does not parse: 'Smith owned a chain of business for more than two years.'
 - 297: premise 1 parses (6 readings) but does not translate: only 'PredVP (DetCN det cn) vp' is handled so far, got head='AdvS'
 - 299: hypothesis does not parse: 'Smith lived in Birmingham for exactly a year.'
 - 301: premise 1 does not parse: 'Smith ran his own business for two years.'
@@ -195,3184 +195,3585 @@ namespace FraCaS
 namespace BlindEvalParsedClaims
 open FraCaS.Section1 FraCaS.Section2
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_001_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_001_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (Some italian becomeWorldsGreatestTenor)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_001_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_001_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (¬ (Some italian becomeWorldsGreatestTenor))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_001_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_001_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (Some italian becomeWorldsGreatestTenor)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_001_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_001_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italian becomeWorldsGreatestTenor : A → Prop) [DecidablePred italian] [DecidablePred becomeWorldsGreatestTenor], (Some italian becomeWorldsGreatestTenor) → (¬ (Some italian becomeWorldsGreatestTenor))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_002_parsed_yes : Prop :=
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_002_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_002_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_002_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_002_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_002_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_002_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_002_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_003_parsed_yes : Prop :=
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_002_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_002_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_002_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_002_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_003_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_003_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_003_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_003_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_003_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_003_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_003_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_004_parsed_yes : Prop :=
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_003_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_003_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_003_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan wantGreatTenor)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_003_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
+
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_004_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (Some italianTenor wantGreat)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_004_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_004_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (¬ (Some italianTenor wantGreat))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_004_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_004_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (Some italianTenor wantGreat)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_004_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_004_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (Some italianTenor great) → (¬ (Some italianTenor wantGreat))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_005_parsed_yes : Prop :=
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_004_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor wantGreat)
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_004_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (¬ (Some italianTenor wantGreat))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_004_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor wantGreat)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_004_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (¬ (Some italianTenor wantGreat))
+
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_005_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Some reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_005_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_005_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Some reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_005_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_005_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Some reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_005_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_005_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Some reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_006_parsed_yes : Prop :=
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_005_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_005_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_005_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_005_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_006_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (Some reallyGreatTenor modest)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_006_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_006_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (¬ (Some reallyGreatTenor modest))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_006_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_006_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (Some reallyGreatTenor modest)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_006_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_006_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reallyGreatTenor modest : A → Prop) [DecidablePred reallyGreatTenor] [DecidablePred modest], (No reallyGreatTenor modest) → (¬ (Some reallyGreatTenor modest))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_007_parsed_yes : Prop :=
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_007_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (Some greatTenor swedish)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_007_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_007_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (¬ (Some greatTenor swedish))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_007_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_007_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (Some greatTenor swedish)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_007_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_007_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (Some greatTenor swedish) → (¬ (Some greatTenor swedish))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_008_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german], (Some greatTenor german) → (Some greatTenor german)
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_007_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_008_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german], (Some greatTenor german) → (¬ (Some greatTenor german))
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_007_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (¬ (Some greatTenor swedish))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_008_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german], (Some greatTenor german) → (Some greatTenor german)
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_007_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_008_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german], (Some greatTenor german) → (¬ (Some greatTenor german))
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_007_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (¬ (Some greatTenor swedish))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_009_parsed_yes : Prop :=
+/-- Reading assignment 0 (many weak): "yes" test. -/
+def fracas_008_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some greatTenor german) → (Some greatTenor german)
+
+/-- Reading assignment 0 (many weak): "no" test. -/
+def fracas_008_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some greatTenor german) → (¬ (Some greatTenor german))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_008_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some greatTenor german) → (Some greatTenor german)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_008_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some greatTenor german) → (¬ (Some greatTenor german))
+
+/-- Reading assignment 1 (many strong): "yes" test. -/
+def fracas_008_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many greatTenor german) → (Some greatTenor german)
+
+/-- Reading assignment 1 (many strong): "no" test. -/
+def fracas_008_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many greatTenor german) → (¬ (Some greatTenor german))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_008_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many greatTenor german) → (Some greatTenor german)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_008_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor german : A → Prop) [DecidablePred greatTenor] [DecidablePred german] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many greatTenor german) → (¬ (Some greatTenor german))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_009_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (Some greatTenor british)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_009_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_009_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (¬ (Some greatTenor british))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_009_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_009_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (Some greatTenor british)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_009_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_009_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor british : A → Prop) [DecidablePred greatTenor] [DecidablePred british], (Some greatTenor british) → (¬ (Some greatTenor british))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_010_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_010_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (Some greatTenor italian)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_010_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_010_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (¬ (Some greatTenor italian))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_010_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_010_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (Some greatTenor italian)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_010_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_010_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor italian : A → Prop) [DecidablePred greatTenor] [DecidablePred italian], (Most greatTenor italian) → (¬ (Some greatTenor italian))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_011_parsed_yes : Prop :=
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_011_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_011_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_011_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_011_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_011_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_011_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_011_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_013_parsed_yes : Prop :=
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_011_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_011_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_011_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_011_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
+
+/-- Reading assignment 0 (generic weak): "yes" test. -/
+def fracas_013_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Some (fun x => leadingTenor x ∧ excellent x) indispensable) → (Both leadingTenor indispensable)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_013_parsed_no : Prop :=
+/-- Reading assignment 0 (generic weak): "no" test. -/
+def fracas_013_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Some (fun x => leadingTenor x ∧ excellent x) indispensable) → (¬ (Both leadingTenor indispensable))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_013_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_013_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Some (fun x => leadingTenor x ∧ excellent x) indispensable) → (Both leadingTenor indispensable)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_013_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_013_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Some (fun x => leadingTenor x ∧ excellent x) indispensable) → (¬ (Both leadingTenor indispensable))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_014_parsed_yes : Prop :=
+/-- Reading assignment 1 (generic strong): "yes" test. -/
+def fracas_013_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (Both leadingTenor indispensable)
+
+/-- Reading assignment 1 (generic strong): "no" test. -/
+def fracas_013_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (¬ (Both leadingTenor indispensable))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_013_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (Both leadingTenor indispensable)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_013_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (leadingTenor excellent indispensable : A → Prop) [DecidablePred leadingTenor] [DecidablePred excellent] [DecidablePred indispensable], (Both leadingTenor excellent) → (Every (fun x => leadingTenor x ∧ excellent x) indispensable) → (¬ (Both leadingTenor indispensable))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_014_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (Neither leadingTenor cheap) → (leadingTenor pavarotti) → ((fun x => leadingTenor x ∧ cheap x) pavarotti)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_014_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_014_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (Neither leadingTenor cheap) → (leadingTenor pavarotti) → (¬ ((fun x => leadingTenor x ∧ cheap x) pavarotti))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_014_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_014_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (Neither leadingTenor cheap) → (leadingTenor pavarotti) → ((fun x => leadingTenor x ∧ cheap x) pavarotti)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_014_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_014_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leadingTenor cheap : A → Prop) [DecidablePred leadingTenor] [DecidablePred cheap] (pavarotti : A), (Neither leadingTenor cheap) → (leadingTenor pavarotti) → (¬ ((fun x => leadingTenor x ∧ cheap x) pavarotti))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_015_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_015_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (Some tenor takePartInConcert)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_015_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_015_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (¬ (Some tenor takePartInConcert))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_015_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_015_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (Some tenor takePartInConcert)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_015_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_015_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor takePartInConcert : A → Prop) [DecidablePred tenor] [DecidablePred takePartInConcert], (AtLeast 3 tenor takePartInConcert) → (¬ (Some tenor takePartInConcert))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_016_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_016_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (Some tenor contributeFeeToCharity)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_016_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_016_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (¬ (Some tenor contributeFeeToCharity))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_016_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_016_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (Some tenor contributeFeeToCharity)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_016_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_016_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tenor contributeFeeToCharity : A → Prop) [DecidablePred tenor] [DecidablePred contributeFeeToCharity], (AtMost 2 tenor contributeFeeToCharity) → (¬ (Some tenor contributeFeeToCharity))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_017_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_017_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (Some irishman winNobelPrizeForLiterature) → (Some irishman winNobelPrize)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_017_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_017_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (Some irishman winNobelPrizeForLiterature) → (¬ (Some irishman winNobelPrize))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_017_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_017_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrizeForLiterature) → (Some irishman winNobelPrize)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_017_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_017_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrizeForLiterature winNobelPrize : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrizeForLiterature] [DecidablePred winNobelPrize], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrizeForLiterature) → (¬ (Some irishman winNobelPrize))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_018_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_018_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_018_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_018_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_018_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_018_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_018_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_018_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_019_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_019_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_019_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_019_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_019_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_019_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_019_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_019_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_020_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_020_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_020_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_020_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_020_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_020_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_020_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_020_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european haveRightLiveInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred haveRightLiveInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Every european haveRightLiveInEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_021_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState canTravelFreeWithinEurope)
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_021_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_021_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_021_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Some residentOfMemberState canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_021_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState canTravelFreeWithinEurope)
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_021_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_021_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_021_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Some residentOfMemberState canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_022_parsed_yes : Prop :=
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_021_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState canTravelFreeWithinEurope)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_021_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every residentOfMemberState canTravelFreeWithinEurope))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_021_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState canTravelFreeWithinEurope)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_021_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every residentOfMemberState canTravelFreeWithinEurope))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_022_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (No delegate finishReportOnTime) → (No delegate finishReport)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_022_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_022_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (No delegate finishReportOnTime) → (¬ (No delegate finishReport))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_022_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_022_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReportOnTime) → (No delegate finishReport)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_022_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_022_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime finishReport : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred finishReport], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReportOnTime) → (¬ (No delegate finishReport))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_023_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (Some delegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurvey)
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_023_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (Some delegate finishSurveyOnTime) → (Some delegate finishSurvey)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_023_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_023_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (Some delegate finishSurveyOnTime) → (¬ (Some delegate finishSurvey))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_023_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurvey)
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_023_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurveyOnTime) → (Some delegate finishSurvey)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_023_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_023_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurveyOnTime) → (¬ (Some delegate finishSurvey))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_024_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (Some delegate obtainInterestingResultFromSurvey) → (Many delegate obtainResultFromSurvey)
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_023_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (AtLeast 2 delegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurvey)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_024_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainResultFromSurvey))
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_023_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (AtLeast 2 delegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurvey))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_024_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainInterestingResultFromSurvey) → (Many delegate obtainResultFromSurvey)
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_023_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurvey)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_024_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainResultFromSurvey))
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_023_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurvey))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_025_parsed_yes : Prop :=
+/-- Reading assignment 0 (many weak): "yes" test. -/
+def fracas_024_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some delegate obtainInterestingResultFromSurvey) → (Some delegate obtainResultFromSurvey)
+
+/-- Reading assignment 0 (many weak): "no" test. -/
+def fracas_024_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainResultFromSurvey))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_024_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainInterestingResultFromSurvey) → (Some delegate obtainResultFromSurvey)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_024_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainResultFromSurvey))
+
+/-- Reading assignment 1 (many strong): "yes" test. -/
+def fracas_024_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many delegate obtainInterestingResultFromSurvey) → (Many delegate obtainResultFromSurvey)
+
+/-- Reading assignment 1 (many strong): "no" test. -/
+def fracas_024_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many delegate obtainInterestingResultFromSurvey) → (¬ (Many delegate obtainResultFromSurvey))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_024_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Many delegate obtainInterestingResultFromSurvey) → (Many delegate obtainResultFromSurvey)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_024_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey obtainResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred obtainResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Many delegate obtainInterestingResultFromSurvey) → (¬ (Many delegate obtainResultFromSurvey))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_025_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublish)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_025_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_025_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublish))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_025_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_025_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublish)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_025_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_025_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper getEveryResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred getEveryResultPublish], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublish))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_026_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_026_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_026_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_026_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_026_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_026_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_026_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_026_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope person canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred person] [DecidablePred canTravelFreeWithinEurope], (Most european residentInEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_029_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_029_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Both commissioner usedToLeadingBusinessman) → (Both commissioner usedToBusinessman)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_029_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_029_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Both commissioner usedToLeadingBusinessman) → (¬ (Both commissioner usedToBusinessman))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_029_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_029_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Both commissioner usedToLeadingBusinessman) → (Both commissioner usedToBusinessman)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_029_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_029_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToLeadingBusinessman usedToBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToLeadingBusinessman] [DecidablePred usedToBusinessman], (Both commissioner usedToLeadingBusinessman) → (¬ (Both commissioner usedToBusinessman))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_030_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_030_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (Neither commissioner spendALotOfTimeAtHome) → (Neither commissioner spendTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_030_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_030_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (Neither commissioner spendALotOfTimeAtHome) → (¬ (Neither commissioner spendTimeAtHome))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_030_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_030_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (Neither commissioner spendALotOfTimeAtHome) → (Neither commissioner spendTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_030_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_030_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (Neither commissioner spendALotOfTimeAtHome) → (¬ (Neither commissioner spendTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_031_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_031_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_031_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_031_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_031_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_031_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_031_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_031_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendALotOfTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_032_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_032_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_032_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_032_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_032_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_032_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_032_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_032_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendALotOfTimeAtHome spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendALotOfTimeAtHome] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendALotOfTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_033_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_033_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (Some irishman winNobelPrize) → (Some irishman winNobelPrizeForLiterature)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_033_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_033_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (Some irishman winNobelPrize) → (¬ (Some irishman winNobelPrizeForLiterature))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_033_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_033_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrize) → (Some irishman winNobelPrizeForLiterature)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_033_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_033_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishman winNobelPrize winNobelPrizeForLiterature : A → Prop) [DecidablePred irishman] [DecidablePred winNobelPrize] [DecidablePred winNobelPrizeForLiterature], (∀ x, winNobelPrizeForLiterature x → winNobelPrize x) → (Some irishman winNobelPrize) → (¬ (Some irishman winNobelPrizeForLiterature))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_034_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_034_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_034_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_034_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_034_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_034_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_034_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_034_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_035_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_035_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_035_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_035_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_035_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_035_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_035_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_035_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_036_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_036_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_036_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_036_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_036_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_036_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (Every european haveRightLiveInEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_036_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_036_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person haveRightLiveInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred haveRightLiveInEurope], (Every european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ (Every european haveRightLiveInEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_037_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState haveRightLiveAnywhereInEurope)
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_037_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Some residentOfMemberState haveRightLiveAnywhereInEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_037_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_037_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ (Some residentOfMemberState haveRightLiveAnywhereInEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_037_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState haveRightLiveAnywhereInEurope)
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_037_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Some residentOfMemberState haveRightLiveAnywhereInEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_037_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_037_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ (Some residentOfMemberState haveRightLiveAnywhereInEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_038_parsed_yes : Prop :=
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_037_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState haveRightLiveAnywhereInEurope)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_037_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ (Every residentOfMemberState haveRightLiveAnywhereInEurope))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_037_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (Every residentOfMemberState haveRightLiveAnywhereInEurope)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_037_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ (Every residentOfMemberState haveRightLiveAnywhereInEurope))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_038_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (No delegate finishReport) → (Some delegate finishReportOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_038_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_038_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (No delegate finishReport) → (¬ (Some delegate finishReportOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_038_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_038_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReport) → (Some delegate finishReportOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_038_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_038_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReport finishReportOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishReport] [DecidablePred finishReportOnTime], (∀ x, finishReportOnTime x → finishReport x) → (No delegate finishReport) → (¬ (Some delegate finishReportOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_039_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (Some delegate finishSurvey) → (AtLeast 2 delegate finishSurveyOnTime)
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_039_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (Some delegate finishSurvey) → (Some delegate finishSurveyOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_039_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_039_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (Some delegate finishSurvey) → (¬ (Some delegate finishSurveyOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_039_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurvey) → (AtLeast 2 delegate finishSurveyOnTime)
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_039_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurvey) → (Some delegate finishSurveyOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_039_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_039_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (Some delegate finishSurvey) → (¬ (Some delegate finishSurveyOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_040_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (Some delegate obtainResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_039_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (AtLeast 2 delegate finishSurvey) → (AtLeast 2 delegate finishSurveyOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_040_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (Some delegate obtainResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_039_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (AtLeast 2 delegate finishSurvey) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_040_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_039_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurvey) → (AtLeast 2 delegate finishSurveyOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_040_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_039_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurvey) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_041_parsed_yes : Prop :=
+/-- Reading assignment 0 (many weak): "yes" test. -/
+def fracas_040_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some delegate obtainResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
+
+/-- Reading assignment 0 (many weak): "no" test. -/
+def fracas_040_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some delegate obtainResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_040_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_040_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Some delegate obtainResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+
+/-- Reading assignment 1 (many strong): "yes" test. -/
+def fracas_040_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many delegate obtainResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+
+/-- Reading assignment 1 (many strong): "no" test. -/
+def fracas_040_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many delegate obtainResultFromSurvey) → (¬ (Many delegate obtainInterestingResultFromSurvey))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_040_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Many delegate obtainResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_040_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainResultFromSurvey obtainInterestingResultFromSurvey : A → Prop) [DecidablePred delegate] [DecidablePred obtainResultFromSurvey] [DecidablePred obtainInterestingResultFromSurvey] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, obtainInterestingResultFromSurvey x → obtainResultFromSurvey x) → (Many delegate obtainResultFromSurvey) → (¬ (Many delegate obtainInterestingResultFromSurvey))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_041_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_041_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_041_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_041_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_041_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_041_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_041_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublish getEveryResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublish] [DecidablePred getEveryResultPublishInMajorNationalNewspaper], (Some delegate getEveryResultPublish) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_042_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_042_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european residentInEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_042_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_042_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european residentInEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_042_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_042_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european residentInEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_042_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_042_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope person residentInEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred person] [DecidablePred residentInEurope], (Most european canTravelFreeWithinEurope) → (Every european person) → (Every (fun x => person x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european residentInEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_045_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_045_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (Both commissioner usedToLeadingBusinessman)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_045_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_045_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (¬ (Both commissioner usedToLeadingBusinessman))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_045_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_045_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (Both commissioner usedToLeadingBusinessman)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_045_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_045_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToBusinessman usedToLeadingBusinessman : A → Prop) [DecidablePred commissioner] [DecidablePred usedToBusinessman] [DecidablePred usedToLeadingBusinessman], (Both commissioner usedToBusinessman) → (¬ (Both commissioner usedToLeadingBusinessman))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_047_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_047_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendALotOfTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_047_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_047_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendALotOfTimeAtHome))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_047_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_047_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendALotOfTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_047_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_047_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendALotOfTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_048_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_048_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendALotOfTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_048_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_048_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendALotOfTimeAtHome))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_048_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_048_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendALotOfTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_048_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_048_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendALotOfTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_049_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_049_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (Some scandinavian winNobelPrize)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_049_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_049_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (¬ (Some scandinavian winNobelPrize))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_049_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_049_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (Some scandinavian winNobelPrize)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_049_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_049_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swedeMasc winNobelPrize scandinavian : A → Prop) [DecidablePred swedeMasc] [DecidablePred winNobelPrize] [DecidablePred scandinavian], (Some swedeMasc winNobelPrize) → (Every swedeMasc scandinavian) → (¬ (Some scandinavian winNobelPrize))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_050_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_050_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_050_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_050_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_050_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_050_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_050_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_050_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_051_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_051_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_051_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_051_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_051_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_051_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_051_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_051_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_052_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_052_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_052_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_052_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_052_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_052_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_052_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_052_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (canadianResident canTravelFreeWithinEurope residentOfNorthAmericanContinent : A → Prop) [DecidablePred canadianResident] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfNorthAmericanContinent], (Every canadianResident canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_053_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfWesternCountry haveRightLiveInEurope)
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_053_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Some residentOfWesternCountry haveRightLiveInEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_053_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_053_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Some residentOfWesternCountry haveRightLiveInEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_053_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfWesternCountry haveRightLiveInEurope)
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_053_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Some residentOfWesternCountry haveRightLiveInEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_053_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_053_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Some residentOfWesternCountry haveRightLiveInEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_054_parsed_yes : Prop :=
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_053_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfWesternCountry haveRightLiveInEurope)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_053_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Every residentOfWesternCountry haveRightLiveInEurope))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_053_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfWesternCountry haveRightLiveInEurope)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_053_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Every residentOfWesternCountry haveRightLiveInEurope))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_054_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (No scandinavianDelegate finishReportOnTime) → (Some delegate finishReportOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_054_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_054_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (No scandinavianDelegate finishReportOnTime) → (¬ (Some delegate finishReportOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_054_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_054_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (∀ x, scandinavianDelegate x → delegate x) → (No scandinavianDelegate finishReportOnTime) → (Some delegate finishReportOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_054_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_054_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavianDelegate finishReportOnTime delegate : A → Prop) [DecidablePred scandinavianDelegate] [DecidablePred finishReportOnTime] [DecidablePred delegate], (∀ x, scandinavianDelegate x → delegate x) → (No scandinavianDelegate finishReportOnTime) → (¬ (Some delegate finishReportOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_055_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (Some irishDelegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurveyOnTime)
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_055_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (Some irishDelegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_055_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_055_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (Some irishDelegate finishSurveyOnTime) → (¬ (Some delegate finishSurveyOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_055_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (Some irishDelegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurveyOnTime)
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_055_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (Some irishDelegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_055_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_055_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (Some irishDelegate finishSurveyOnTime) → (¬ (Some delegate finishSurveyOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_056_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (Some britishDelegate obtainInterestingResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_055_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (AtLeast 2 irishDelegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurveyOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_056_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (Some britishDelegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_055_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (AtLeast 2 irishDelegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_056_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, britishDelegate x → delegate x) → (Some britishDelegate obtainInterestingResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_055_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 irishDelegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurveyOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_056_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, britishDelegate x → delegate x) → (Some britishDelegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_055_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 irishDelegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_057_parsed_yes : Prop :=
+/-- Reading assignment 0 (many weak): "yes" test. -/
+def fracas_056_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some britishDelegate obtainInterestingResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
+
+/-- Reading assignment 0 (many weak): "no" test. -/
+def fracas_056_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some britishDelegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_056_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Some britishDelegate obtainInterestingResultFromSurvey) → (Some delegate obtainInterestingResultFromSurvey)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_056_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Some britishDelegate obtainInterestingResultFromSurvey) → (¬ (Some delegate obtainInterestingResultFromSurvey))
+
+/-- Reading assignment 1 (many strong): "yes" test. -/
+def fracas_056_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many britishDelegate obtainInterestingResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+
+/-- Reading assignment 1 (many strong): "no" test. -/
+def fracas_056_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many britishDelegate obtainInterestingResultFromSurvey) → (¬ (Many delegate obtainInterestingResultFromSurvey))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_056_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Many britishDelegate obtainInterestingResultFromSurvey) → (Many delegate obtainInterestingResultFromSurvey)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_056_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (britishDelegate obtainInterestingResultFromSurvey delegate : A → Prop) [DecidablePred britishDelegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred delegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Many britishDelegate obtainInterestingResultFromSurvey) → (¬ (Many delegate obtainInterestingResultFromSurvey))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_057_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_057_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_057_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_057_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_057_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (∀ x, portugueseDelegate x → delegate x) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (Some delegate getEveryResultPublishInMajorNationalNewspaper)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_057_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_057_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (portugueseDelegate getEveryResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred delegate], (∀ x, portugueseDelegate x → delegate x) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some delegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_058_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_058_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_058_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_058_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_058_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_058_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (Most european canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_058_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_058_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european residentInEurope canTravelFreeWithinEurope : A → Prop) [DecidablePred european] [DecidablePred residentInEurope] [DecidablePred canTravelFreeWithinEurope], (Most (fun x => european x ∧ residentInEurope x) canTravelFreeWithinEurope) → (¬ (Most european canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_061_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_061_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (Both femaleCommissioner usedToInBusiness) → (Both commissioner usedToInBusiness)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_061_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_061_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (Both femaleCommissioner usedToInBusiness) → (¬ (Both commissioner usedToInBusiness))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_061_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_061_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both femaleCommissioner usedToInBusiness) → (Both commissioner usedToInBusiness)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_061_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_061_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner usedToInBusiness commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred usedToInBusiness] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both femaleCommissioner usedToInBusiness) → (¬ (Both commissioner usedToInBusiness))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_063_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_063_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtLeast 3 femaleCommissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_063_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_063_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtLeast 3 femaleCommissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_063_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_063_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtLeast 3 femaleCommissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_063_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_063_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtLeast 3 femaleCommissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_064_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_064_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtMost 10 femaleCommissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_064_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_064_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (AtMost 10 femaleCommissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_064_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_064_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 femaleCommissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_064_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_064_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (femaleCommissioner spendTimeAtHome commissioner : A → Prop) [DecidablePred femaleCommissioner] [DecidablePred spendTimeAtHome] [DecidablePred commissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 femaleCommissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_065_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_065_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (Some swedeMasc winNobelPrize)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_065_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_065_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (¬ (Some swedeMasc winNobelPrize))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_065_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_065_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (Some swedeMasc winNobelPrize)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_065_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_065_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (scandinavian winNobelPrize swedeMasc : A → Prop) [DecidablePred scandinavian] [DecidablePred winNobelPrize] [DecidablePred swedeMasc], (Some scandinavian winNobelPrize) → (Every swedeMasc scandinavian) → (¬ (Some swedeMasc winNobelPrize))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_066_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_066_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_066_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_066_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_066_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_066_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_066_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_066_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_067_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_067_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_067_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_067_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_067_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_067_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_067_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_067_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_068_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_068_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_068_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_068_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_068_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_068_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (Every canadianResident canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_068_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_068_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfNorthAmericanContinent canTravelFreeWithinEurope canadianResident : A → Prop) [DecidablePred residentOfNorthAmericanContinent] [DecidablePred canTravelFreeWithinEurope] [DecidablePred canadianResident], (Every residentOfNorthAmericanContinent canTravelFreeWithinEurope) → (Every canadianResident residentOfNorthAmericanContinent) → (¬ (Every canadianResident canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_069_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfMajorWesternCountry haveRightLiveInEurope)
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_069_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Some residentOfMajorWesternCountry haveRightLiveInEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_069_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_069_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Some residentOfMajorWesternCountry haveRightLiveInEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_069_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfMajorWesternCountry haveRightLiveInEurope)
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_069_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Some residentOfMajorWesternCountry haveRightLiveInEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_069_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_069_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Some residentOfMajorWesternCountry haveRightLiveInEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_070_parsed_yes : Prop :=
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_069_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfMajorWesternCountry haveRightLiveInEurope)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_069_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Every residentOfMajorWesternCountry haveRightLiveInEurope))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_069_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (Every residentOfMajorWesternCountry haveRightLiveInEurope)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_069_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ (Every residentOfMajorWesternCountry haveRightLiveInEurope))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_070_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (No delegate finishReportOnTime) → (Some scandinavianDelegate finishReportOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_070_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_070_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (No delegate finishReportOnTime) → (¬ (Some scandinavianDelegate finishReportOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_070_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_070_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (∀ x, scandinavianDelegate x → delegate x) → (No delegate finishReportOnTime) → (Some scandinavianDelegate finishReportOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_070_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_070_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishReportOnTime scandinavianDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishReportOnTime] [DecidablePred scandinavianDelegate], (∀ x, scandinavianDelegate x → delegate x) → (No delegate finishReportOnTime) → (¬ (Some scandinavianDelegate finishReportOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_071_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (Some delegate finishSurveyOnTime) → (AtLeast 2 irishDelegate finishSurveyOnTime)
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_071_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (Some delegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_071_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_071_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (Some delegate finishSurveyOnTime) → (¬ (Some irishDelegate finishSurveyOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_071_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (Some delegate finishSurveyOnTime) → (AtLeast 2 irishDelegate finishSurveyOnTime)
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_071_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (Some delegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_071_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_071_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (Some delegate finishSurveyOnTime) → (¬ (Some irishDelegate finishSurveyOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_072_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (Some delegate obtainInterestingResultFromSurvey) → (Many britishDelegate obtainInterestingResultFromSurvey)
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_071_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (AtLeast 2 delegate finishSurveyOnTime) → (AtLeast 2 irishDelegate finishSurveyOnTime)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_072_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some britishDelegate obtainInterestingResultFromSurvey))
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_071_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (AtLeast 2 delegate finishSurveyOnTime) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_072_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, britishDelegate x → delegate x) → (Some delegate obtainInterestingResultFromSurvey) → (Many britishDelegate obtainInterestingResultFromSurvey)
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_071_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 delegate finishSurveyOnTime) → (AtLeast 2 irishDelegate finishSurveyOnTime)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_072_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ x, britishDelegate x → delegate x) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some britishDelegate obtainInterestingResultFromSurvey))
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_071_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 delegate finishSurveyOnTime) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_073_parsed_yes : Prop :=
+/-- Reading assignment 0 (many weak): "yes" test. -/
+def fracas_072_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some delegate obtainInterestingResultFromSurvey) → (Some britishDelegate obtainInterestingResultFromSurvey)
+
+/-- Reading assignment 0 (many weak): "no" test. -/
+def fracas_072_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some britishDelegate obtainInterestingResultFromSurvey))
+
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_072_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Some delegate obtainInterestingResultFromSurvey) → (Some britishDelegate obtainInterestingResultFromSurvey)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_072_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Some delegate obtainInterestingResultFromSurvey) → (¬ (Some britishDelegate obtainInterestingResultFromSurvey))
+
+/-- Reading assignment 1 (many strong): "yes" test. -/
+def fracas_072_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many delegate obtainInterestingResultFromSurvey) → (Many britishDelegate obtainInterestingResultFromSurvey)
+
+/-- Reading assignment 1 (many strong): "no" test. -/
+def fracas_072_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (Many delegate obtainInterestingResultFromSurvey) → (¬ (Many britishDelegate obtainInterestingResultFromSurvey))
+
+/-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_072_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Many delegate obtainInterestingResultFromSurvey) → (Many britishDelegate obtainInterestingResultFromSurvey)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_072_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (delegate obtainInterestingResultFromSurvey britishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred obtainInterestingResultFromSurvey] [DecidablePred britishDelegate] (Many : (A → Prop) → (A → Prop) → Prop), (∀ P Q : A → Prop, Many P Q → Some P Q) → (∀ x, britishDelegate x → delegate x) → (Many delegate obtainInterestingResultFromSurvey) → (¬ (Many britishDelegate obtainInterestingResultFromSurvey))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_073_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_073_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_073_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_073_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_073_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (∀ x, portugueseDelegate x → delegate x) → (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_073_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_073_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getEveryResultPublishInMajorNationalNewspaper portugueseDelegate : A → Prop) [DecidablePred delegate] [DecidablePred getEveryResultPublishInMajorNationalNewspaper] [DecidablePred portugueseDelegate], (∀ x, portugueseDelegate x → delegate x) → (Some delegate getEveryResultPublishInMajorNationalNewspaper) → (¬ (Some portugueseDelegate getEveryResultPublishInMajorNationalNewspaper))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_074_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_074_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_074_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_074_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (¬ (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_074_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_074_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_074_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_074_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (european canTravelFreeWithinEurope residentOutsideEurope : A → Prop) [DecidablePred european] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOutsideEurope], (Most european canTravelFreeWithinEurope) → (¬ (Most (fun x => european x ∧ residentOutsideEurope x) canTravelFreeWithinEurope))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_077_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_077_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (Both commissioner usedToInBusiness) → (Both femaleCommissioner usedToInBusiness)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_077_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_077_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (Both commissioner usedToInBusiness) → (¬ (Both femaleCommissioner usedToInBusiness))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_077_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_077_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both commissioner usedToInBusiness) → (Both femaleCommissioner usedToInBusiness)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_077_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_077_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner usedToInBusiness femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred usedToInBusiness] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Both commissioner usedToInBusiness) → (¬ (Both femaleCommissioner usedToInBusiness))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_079_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_079_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 maleCommissioner spendTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_079_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_079_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 maleCommissioner spendTimeAtHome))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_079_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_079_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (∀ x, maleCommissioner x → commissioner x) → (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 maleCommissioner spendTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_079_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_079_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome maleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred maleCommissioner], (∀ x, maleCommissioner x → commissioner x) → (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 maleCommissioner spendTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_080_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_080_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 femaleCommissioner spendTimeAtHome)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_080_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_080_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 femaleCommissioner spendTimeAtHome))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_080_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_080_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 femaleCommissioner spendTimeAtHome)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_080_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_080_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 femaleCommissioner spendTimeAtHome))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_087_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_087_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_087_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_087_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (¬ (Every representativeMasc atMeeting))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_087_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_087_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_087_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_087_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (¬ (Every representativeMasc atMeeting))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_088_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_088_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_088_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_088_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (¬ (Every representativeMasc atMeeting))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_088_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_088_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (Every representativeMasc atMeeting)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_088_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_088_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (representativeMasc client atMeeting : A → Prop) [DecidablePred representativeMasc] [DecidablePred client] [DecidablePred atMeeting], (Every (fun x => representativeMasc x ∧ client x) atMeeting) → (¬ (Every representativeMasc atMeeting))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_090_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_090_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (Every chairman read_outEveryItemOnAgenda)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_090_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_090_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (¬ (Every chairman read_outEveryItemOnAgenda))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_090_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_090_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (Every chairman read_outEveryItemOnAgenda)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_090_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_090_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (chairman read_outEveryItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outEveryItemOnAgenda], (Every chairman read_outEveryItemOnAgenda) → (¬ (Every chairman read_outEveryItemOnAgenda))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_094_parsed_yes : Prop :=
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_094_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Some inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_094_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_094_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Some inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_094_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_094_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Some inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_094_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_094_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Some inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_095_parsed_yes : Prop :=
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_094_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_094_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_094_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_094_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
+
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_095_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_095_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_095_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_095_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_095_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_095_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_095_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_096_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_095_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_096_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_095_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_096_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_095_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_096_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_095_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_098_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_096_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_096_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_096_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_096_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_098_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (blameForSystemFailure bug32985)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_098_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_098_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (¬ (blameForSystemFailure bug32985))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_098_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_098_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (∀ x, knownSoftwareFault x → softwareFault x) → (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (blameForSystemFailure bug32985)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_098_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_098_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (softwareFault blameForSystemFailure knownSoftwareFault : A → Prop) [DecidablePred softwareFault] [DecidablePred blameForSystemFailure] [DecidablePred knownSoftwareFault] (bug32985 : A), (∀ x, knownSoftwareFault x → softwareFault x) → (Some softwareFault blameForSystemFailure) → (knownSoftwareFault bug32985) → (¬ (blameForSystemFailure bug32985))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_099_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_099_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_099_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_099_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_099_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_099_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (impressBySystemPerformance smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_099_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Some clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_099_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance] (smith : A), (Every clientAtDemonstration impressBySystemPerformance) → (clientAtDemonstration smith) → (¬ (impressBySystemPerformance smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_100_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_100_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (Most clientAtDemonstration impressBySystemPerformance)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_100_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_100_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (¬ (Most clientAtDemonstration impressBySystemPerformance))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_100_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_100_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (Most clientAtDemonstration impressBySystemPerformance)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_100_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_100_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (clientAtDemonstration impressBySystemPerformance : A → Prop) [DecidablePred clientAtDemonstration] [DecidablePred impressBySystemPerformance], (Some clientAtDemonstration impressBySystemPerformance) → (¬ (Most clientAtDemonstration impressBySystemPerformance))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_102_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_102_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (makePoorStockMarketTrader smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_102_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_102_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (¬ (makePoorStockMarketTrader smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_102_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_102_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (makePoorStockMarketTrader smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_102_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_102_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (universityGraduate makePoorStockMarketTrader : A → Prop) [DecidablePred universityGraduate] [DecidablePred makePoorStockMarketTrader] (smith : A), (Some universityGraduate makePoorStockMarketTrader) → (universityGraduate smith) → (¬ (makePoorStockMarketTrader smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_103_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_103_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (haveCompanyCar jones)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_103_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_103_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (¬ (haveCompanyCar jones))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_103_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_103_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (haveCompanyCar jones)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_103_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_103_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (apcomManager haveCompanyCar : A → Prop) [DecidablePred apcomManager] [DecidablePred haveCompanyCar] (jones : A), (Every apcomManager haveCompanyCar) → (apcomManager jones) → (¬ (haveCompanyCar jones))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_105_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_105_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_105_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_105_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (No accountant attendMeeting))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_105_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_105_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_105_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_105_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (No accountant attendMeeting))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_106_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_106_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_106_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_106_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (No accountant attendMeeting))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_106_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_106_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (No accountant attendMeeting)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_106_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_106_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (No accountant attendMeeting))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_107_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
-
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_107_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
-
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_107_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
-
-/-- As `_no`, with the same background knowledge. -/
-def fracas_107_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
-
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_108_parsed_yes : Prop :=
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_107_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_108_parsed_no : Prop :=
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_107_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_108_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_107_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_108_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_107_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_109_parsed_yes : Prop :=
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_107_parsed_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_109_parsed_no : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_107_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_109_parsed_bk_yes : Prop :=
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_107_parsed_bk_yes_1 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_109_parsed_bk_no : Prop :=
-  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_107_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_110_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_108_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_110_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_108_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_110_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_108_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_110_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_108_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_132_parsed_yes : Prop :=
+/-- Reading assignment 0 (somepl weak): "yes" test. -/
+def fracas_109_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- Reading assignment 0 (somepl weak): "no" test. -/
+def fracas_109_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_109_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_109_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
+
+/-- Reading assignment 1 (somepl strong): "yes" test. -/
+def fracas_109_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
+
+/-- Reading assignment 1 (somepl strong): "no" test. -/
+def fracas_109_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_109_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (AtLeast 2 accountant attendMeeting)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_109_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (AtLeast 2 accountant attendMeeting))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_110_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_110_parsed_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_110_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (Some accountant attendMeeting)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_110_parsed_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [DecidablePred accountant] [DecidablePred attendMeeting], (Exactly 1 accountant attendMeeting) → (¬ (Some accountant attendMeeting))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_132_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (Every salesDepartment rentLineFromBt)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_132_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_132_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (¬ (Every salesDepartment rentLineFromBt))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_132_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_132_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (Every salesDepartment rentLineFromBt)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_132_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_132_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine salesDepartment rentFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred salesDepartment] [DecidablePred rentFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every salesDepartment rentFromBt) → (¬ (Every salesDepartment rentLineFromBt))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_133_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_133_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_133_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_133_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_133_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_133_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (maintainEveryComputerGfiOwn itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_133_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_133_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownSeveralComputer maintain maintainEveryComputerGfiOwn : A → Prop) [DecidablePred ownSeveralComputer] [DecidablePred maintain] [DecidablePred maintainEveryComputerGfiOwn] (gfi itel : A), (ownSeveralComputer gfi) → (maintain itel) → (¬ (maintainEveryComputerGfiOwn itel))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_134_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_134_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (haveServiceContractForComputer mfi)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_134_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_134_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_134_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_134_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (haveServiceContractForComputer mfi)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_134_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_134_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_135_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_135_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (haveServiceContractForComputer mfi)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_135_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_135_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_135_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_135_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (haveServiceContractForComputer mfi)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_135_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_135_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_138_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_138_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (signCoverPageOfR95103 smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_138_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_138_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (¬ (signCoverPageOfR95103 smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_138_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_138_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (signCoverPageOfR95103 smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_138_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_138_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (¬ (signCoverPageOfR95103 smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_142_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_142_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary : A → Prop) [DecidablePred speakToMary] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMary bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_142_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_142_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary : A → Prop) [DecidablePred speakToMary] (john bill : A), (speakToMary john) → (speakToMary bill) → (¬ (speakToMary bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_142_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_142_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary : A → Prop) [DecidablePred speakToMary] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMary bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_142_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_142_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary : A → Prop) [DecidablePred speakToMary] (john bill : A), (speakToMary john) → (speakToMary bill) → (¬ (speakToMary bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_143_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_143_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMary] [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_143_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_143_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMary] [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMaryAtFourOClock john) → (¬ (speakToMaryAtFourOClock bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_143_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_143_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMary] [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_143_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_143_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMary] [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMary john) → (speakToMary bill) → (speakToMaryAtFourOClock john) → (¬ (speakToMaryAtFourOClock bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_144_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_144_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill) → (speakToMaryAtFourOClock bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_144_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_144_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill) → (¬ (speakToMaryAtFourOClock bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_144_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_144_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill) → (speakToMaryAtFourOClock bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_144_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_144_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryAtFourOClock : A → Prop) [DecidablePred speakToMaryAtFourOClock] (john bill : A), (speakToMaryAtFourOClock john) → (speakToMaryAtFourOClock bill) → (¬ (speakToMaryAtFourOClock bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_147_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_147_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryOnMonday : A → Prop) [DecidablePred speakToMaryOnMonday] (john bill : A), (speakToMaryOnMonday john) → (¬ (speakToMaryOnMonday bill)) → (speakToMaryOnMonday bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_147_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_147_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryOnMonday : A → Prop) [DecidablePred speakToMaryOnMonday] (john bill : A), (speakToMaryOnMonday john) → (¬ (speakToMaryOnMonday bill)) → (¬ (speakToMaryOnMonday bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_147_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_147_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryOnMonday : A → Prop) [DecidablePred speakToMaryOnMonday] (john bill : A), (speakToMaryOnMonday john) → (¬ (speakToMaryOnMonday bill)) → (speakToMaryOnMonday bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_147_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_147_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMaryOnMonday : A → Prop) [DecidablePred speakToMaryOnMonday] (john bill : A), (speakToMaryOnMonday john) → (¬ (speakToMaryOnMonday bill)) → (¬ (speakToMaryOnMonday bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_149_parsed_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (Every student speakToMary)
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_149_parsed_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (Some student speakToMary)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_149_parsed_no : Prop :=
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_149_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (¬ (Some student speakToMary))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_149_parsed_bk_yes : Prop :=
-  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (Every student speakToMary)
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_149_parsed_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (Some student speakToMary)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_149_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_149_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Some student speakToMary) → (¬ (Some student speakToMary))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_150_parsed_yes : Prop :=
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_149_parsed_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Every student speakToMary)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_149_parsed_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (¬ (Every student speakToMary))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_149_parsed_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Every student speakToMary)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_149_parsed_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (¬ (Every student speakToMary))
+
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_150_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (goToParisByTrain bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_150_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_150_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (¬ (goToParisByTrain bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_150_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_150_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (goToParisByTrain bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_150_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_150_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrain goToParisByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrain] [DecidablePred goToParisByTrain] (john bill : A), (goToParisByCarBillByTrain john) → (¬ (goToParisByTrain bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_151_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_151_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (goToBerlinByTrain bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_151_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_151_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (¬ (goToBerlinByTrain bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_151_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_151_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (goToBerlinByTrain bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_151_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_151_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillByTrainToBerlin goToBerlinByTrain : A → Prop) [DecidablePred goToParisByCarBillByTrainToBerlin] [DecidablePred goToBerlinByTrain] (john bill : A), (goToParisByCarBillByTrainToBerlin john) → (¬ (goToBerlinByTrain bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_152_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_152_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (goToBerlinByCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_152_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_152_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (¬ (goToBerlinByCar bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_152_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_152_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (goToBerlinByCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_152_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_152_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (goToParisByCarBillToBerlin goToBerlinByCar : A → Prop) [DecidablePred goToParisByCarBillToBerlin] [DecidablePred goToBerlinByCar] (john bill : A), (goToParisByCarBillToBerlin john) → (¬ (goToBerlinByCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_155_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_155_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar : A → Prop) [DecidablePred ownCar] (john bill : A), (ownCar john) → (ownCar bill) → (ownCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_155_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_155_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar : A → Prop) [DecidablePred ownCar] (john bill : A), (ownCar john) → (ownCar bill) → (¬ (ownCar bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_155_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_155_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar : A → Prop) [DecidablePred ownCar] (john bill : A), (ownCar john) → (ownCar bill) → (ownCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_155_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_155_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar : A → Prop) [DecidablePred ownCar] (john bill : A), (ownCar john) → (ownCar bill) → (¬ (ownCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_156_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_156_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar carJohnBillOwn : A → Prop) [DecidablePred ownCar] [DecidablePred carJohnBillOwn] (john bill : A), (ownCar john) → (ownCar bill) → (∃ x, carJohnBillOwn x)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_156_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_156_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar carJohnBillOwn : A → Prop) [DecidablePred ownCar] [DecidablePred carJohnBillOwn] (john bill : A), (ownCar john) → (ownCar bill) → (¬ (∃ x, carJohnBillOwn x))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_156_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_156_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar carJohnBillOwn : A → Prop) [DecidablePred ownCar] [DecidablePred carJohnBillOwn] (john bill : A), (ownCar john) → (ownCar bill) → (∃ x, carJohnBillOwn x)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_156_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_156_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownCar carJohnBillOwn : A → Prop) [DecidablePred ownCar] [DecidablePred carJohnBillOwn] (john bill : A), (ownCar john) → (ownCar bill) → (¬ (∃ x, carJohnBillOwn x))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_157_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_157_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (ownBlueCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_157_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_157_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (¬ (ownBlueCar bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_157_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_157_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (ownBlueCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_157_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_157_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (¬ (ownBlueCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_158_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_158_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (ownRedCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_158_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_158_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (¬ (ownRedCar bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_158_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_158_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (ownRedCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_158_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_158_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownBlueCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownBlueCar] (john bill : A), (ownRedCar john) → (ownBlueCar bill) → (¬ (ownRedCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_159_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_159_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (ownFastCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_159_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_159_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastCar bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_159_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_159_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (ownFastCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_159_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_159_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_160_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_160_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (ownFastRedCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_160_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_160_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastRedCar bill))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_160_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_160_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (∀ x, ownFastRedCar x → ownRedCar x) → (∀ x, ownFastRedCar x → ownFastCar x) → (ownRedCar john) → (ownFastCar bill) → (ownFastRedCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_160_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_160_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (∀ x, ownFastRedCar x → ownRedCar x) → (∀ x, ownFastRedCar x → ownFastCar x) → (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastRedCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_161_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_161_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (ownFastRedCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_161_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_161_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastRedCar bill))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_161_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_161_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (∀ x, ownFastRedCar x → ownRedCar x) → (∀ x, ownFastRedCar x → ownFastCar x) → (ownRedCar john) → (ownFastCar bill) → (ownFastRedCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_161_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_161_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownRedCar ownFastCar ownFastRedCar : A → Prop) [DecidablePred ownRedCar] [DecidablePred ownFastCar] [DecidablePred ownFastRedCar] (john bill : A), (∀ x, ownFastRedCar x → ownRedCar x) → (∀ x, ownFastRedCar x → ownFastCar x) → (ownRedCar john) → (ownFastCar bill) → (¬ (ownFastRedCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_162_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_162_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownFastRedCar ownSlowRedCar : A → Prop) [DecidablePred ownFastRedCar] [DecidablePred ownSlowRedCar] (john bill : A), (ownFastRedCar john) → (ownSlowRedCar bill) → (ownSlowRedCar bill)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_162_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_162_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownFastRedCar ownSlowRedCar : A → Prop) [DecidablePred ownFastRedCar] [DecidablePred ownSlowRedCar] (john bill : A), (ownFastRedCar john) → (ownSlowRedCar bill) → (¬ (ownSlowRedCar bill))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_162_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_162_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownFastRedCar ownSlowRedCar : A → Prop) [DecidablePred ownFastRedCar] [DecidablePred ownSlowRedCar] (john bill : A), (ownFastRedCar john) → (ownSlowRedCar bill) → (ownSlowRedCar bill)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_162_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_162_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownFastRedCar ownSlowRedCar : A → Prop) [DecidablePred ownFastRedCar] [DecidablePred ownSlowRedCar] (john bill : A), (ownFastRedCar john) → (ownSlowRedCar bill) → (¬ (ownSlowRedCar bill))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_197_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_197_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (haveGenuineDiamond john) → (haveDiamond john)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_197_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_197_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (haveGenuineDiamond john) → (¬ (haveDiamond john))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_197_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_197_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (∀ x, haveGenuineDiamond x → haveDiamond x) → (haveGenuineDiamond john) → (haveDiamond john)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_197_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_197_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (haveGenuineDiamond haveDiamond : A → Prop) [DecidablePred haveGenuineDiamond] [DecidablePred haveDiamond] (john : A), (∀ x, haveGenuineDiamond x → haveDiamond x) → (haveGenuineDiamond john) → (¬ (haveDiamond john))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_198_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_198_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (universityStudent john)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_198_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_198_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (¬ (universityStudent john))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_198_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_198_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (universityStudent john)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_198_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_198_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerUniversityStudent universityStudent : A → Prop) [DecidablePred formerUniversityStudent] [DecidablePred universityStudent] (john : A), (formerUniversityStudent john) → (¬ (universityStudent john))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_199_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_199_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (successful john)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_199_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_199_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (¬ (successful john))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_199_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_199_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (successful john)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_199_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_199_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (successfulFormerUniversityStudent successful : A → Prop) [DecidablePred successfulFormerUniversityStudent] [DecidablePred successful] (john : A), (successfulFormerUniversityStudent john) → (¬ (successful john))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_200_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_200_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (successful john)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_200_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_200_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (¬ (successful john))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_200_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_200_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (successful john)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_200_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_200_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent successful : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred successful] (john : A), (formerSuccessfulUniversityStudent john) → (¬ (successful john))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_201_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_201_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (universityStudent john)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_201_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_201_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (¬ (universityStudent john))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_201_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_201_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (universityStudent john)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_201_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_201_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (formerSuccessfulUniversityStudent universityStudent : A → Prop) [DecidablePred formerSuccessfulUniversityStudent] [DecidablePred universityStudent] (john : A), (formerSuccessfulUniversityStudent john) → (¬ (universityStudent john))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_202_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_202_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (Every mammal animal) → (Every fourLeggedMammal fourLeggedAnimal)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_202_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_202_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (Every mammal animal) → (¬ (Every fourLeggedMammal fourLeggedAnimal))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_202_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_202_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (∀ x, fourLeggedMammal x → mammal x) → (∀ x, fourLeggedAnimal x → animal x) → (Every mammal animal) → (Every fourLeggedMammal fourLeggedAnimal)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_202_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_202_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mammal animal fourLeggedMammal fourLeggedAnimal : A → Prop) [DecidablePred mammal] [DecidablePred animal] [DecidablePred fourLeggedMammal] [DecidablePred fourLeggedAnimal], (∀ x, fourLeggedMammal x → mammal x) → (∀ x, fourLeggedAnimal x → animal x) → (Every mammal animal) → (¬ (Every fourLeggedMammal fourLeggedAnimal))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_203_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_203_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (fourLegged dumbo)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_203_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_203_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (¬ (fourLegged dumbo))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_203_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_203_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (fourLegged dumbo)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_203_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_203_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fourLeggedAnimal fourLegged : A → Prop) [DecidablePred fourLeggedAnimal] [DecidablePred fourLegged] (dumbo : A), (fourLeggedAnimal dumbo) → (¬ (fourLegged dumbo))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_204_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_204_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (smallAnimal mickey) → (largeAnimal mickey)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_204_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_204_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (smallAnimal mickey) → (¬ (largeAnimal mickey))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_204_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_204_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (smallAnimal mickey) → (largeAnimal mickey)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_204_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_204_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (mickey : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (smallAnimal mickey) → (¬ (largeAnimal mickey))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_205_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_205_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (largeAnimal dumbo) → (smallAnimal dumbo)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_205_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_205_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (largeAnimal dumbo) → (¬ (smallAnimal dumbo))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_205_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_205_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (largeAnimal dumbo) → (smallAnimal dumbo)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_205_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_205_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (largeAnimal dumbo) → (¬ (smallAnimal dumbo))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_206_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_206_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (fido : A), (¬ (smallAnimal fido)) → (largeAnimal fido)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_206_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_206_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (fido : A), (¬ (smallAnimal fido)) → (¬ (largeAnimal fido))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_206_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_206_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (fido : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (¬ (smallAnimal fido)) → (largeAnimal fido)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_206_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_206_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (fido : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (¬ (smallAnimal fido)) → (¬ (largeAnimal fido))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_207_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_207_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (fido : A), (¬ (largeAnimal fido)) → (smallAnimal fido)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_207_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_207_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (fido : A), (¬ (largeAnimal fido)) → (¬ (smallAnimal fido))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_207_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_207_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (fido : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (¬ (largeAnimal fido)) → (smallAnimal fido)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_207_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_207_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (largeAnimal smallAnimal : A → Prop) [DecidablePred largeAnimal] [DecidablePred smallAnimal] (fido : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (¬ (largeAnimal fido)) → (¬ (smallAnimal fido))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_208_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_208_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_208_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_208_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (smallThan mickey dumbo))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_208_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_208_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (smallThan mickey dumbo)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_208_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_208_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (smallThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, smallThan x y → ¬ smallThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (smallThan mickey dumbo))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_209_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_209_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_209_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_209_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (largeThan mickey dumbo))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_209_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_209_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (largeThan mickey dumbo)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_209_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_209_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (smallAnimal largeAnimal : A → Prop) [DecidablePred smallAnimal] [DecidablePred largeAnimal] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (smallAnimal mickey) → (largeAnimal dumbo) → (¬ (largeThan mickey dumbo))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_210_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_210_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (largeAnimal mickey)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_210_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_210_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (¬ (largeAnimal mickey))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_210_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_210_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (∀ x, largeMouse x → mouse x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every mouse smallAnimal) → (largeMouse mickey) → (largeAnimal mickey)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_210_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_210_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse largeAnimal : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred largeAnimal] (mickey : A), (∀ x, largeMouse x → mouse x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every mouse smallAnimal) → (largeMouse mickey) → (¬ (largeAnimal mickey))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_211_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_211_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (Every elephant largeAnimal) → (smallElephant dumbo) → (smallAnimal dumbo)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_211_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_211_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (Every elephant largeAnimal) → (smallElephant dumbo) → (¬ (smallAnimal dumbo))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_211_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_211_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every elephant largeAnimal) → (smallElephant dumbo) → (smallAnimal dumbo)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_211_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_211_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (elephant largeAnimal smallElephant smallAnimal : A → Prop) [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred smallElephant] [DecidablePred smallAnimal] (dumbo : A), (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (Every elephant largeAnimal) → (smallElephant dumbo) → (¬ (smallAnimal dumbo))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_212_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_212_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_212_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_212_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (¬ (largeThan dumbo mickey))
 
-/-- As `_yes`, with 4 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_212_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 4 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_212_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (largeThan dumbo mickey)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_212_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_212_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal elephant largeAnimal largeMouse smallElephant : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred elephant] [DecidablePred largeAnimal] [DecidablePred largeMouse] [DecidablePred smallElephant] (largeThan : A → A → Prop) (mickey dumbo : A), (∀ x, largeMouse x → mouse x) → (∀ x, smallElephant x → elephant x) → (∀ x, ¬ (smallAnimal x ∧ largeAnimal x)) → (∀ x y, largeThan x y → ¬ largeThan y x) → (Every mouse smallAnimal) → (Every elephant largeAnimal) → (largeMouse mickey) → (smallElephant dumbo) → (¬ (largeThan dumbo mickey))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_213_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_213_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (small mickey)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_213_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_213_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (Every mouse smallAnimal) → (largeMouse mickey) → (¬ (small mickey))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_213_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_213_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (∀ x, largeMouse x → mouse x) → (Every mouse smallAnimal) → (largeMouse mickey) → (small mickey)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_213_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_213_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (mouse smallAnimal largeMouse small : A → Prop) [DecidablePred mouse] [DecidablePred smallAnimal] [DecidablePred largeMouse] [DecidablePred small] (mickey : A), (∀ x, largeMouse x → mouse x) → (Every mouse smallAnimal) → (largeMouse mickey) → (¬ (small mickey))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_214_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_214_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every fatLegalAuthority fatLawLecturer)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_214_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_214_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (¬ (Every fatLegalAuthority fatLawLecturer))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_214_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_214_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (∀ x, fatLegalAuthority x → legalAuthority x) → (∀ x, fatLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every fatLegalAuthority fatLawLecturer)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_214_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_214_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer fatLegalAuthority fatLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred fatLegalAuthority] [DecidablePred fatLawLecturer], (∀ x, fatLegalAuthority x → legalAuthority x) → (∀ x, fatLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (¬ (Every fatLegalAuthority fatLawLecturer))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_215_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_215_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every competentLegalAuthority competentLawLecturer)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_215_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_215_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (¬ (Every competentLegalAuthority competentLawLecturer))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_215_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_215_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (∀ x, competentLegalAuthority x → legalAuthority x) → (∀ x, competentLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (Every competentLegalAuthority competentLawLecturer)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_215_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_215_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (legalAuthority lawLecturer competentLegalAuthority competentLawLecturer : A → Prop) [DecidablePred legalAuthority] [DecidablePred lawLecturer] [DecidablePred competentLegalAuthority] [DecidablePred competentLawLecturer], (∀ x, competentLegalAuthority x → legalAuthority x) → (∀ x, competentLawLecturer x → lawLecturer x) → (Every legalAuthority lawLecturer) → (Every lawLecturer legalAuthority) → (¬ (Every competentLegalAuthority competentLawLecturer))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_218_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_218_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (clever kim)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_218_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_218_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (¬ (clever kim))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_218_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_218_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (clever kim)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_218_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_218_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPerson clever : A → Prop) [DecidablePred cleverPerson] [DecidablePred clever] (kim : A), (cleverPerson kim) → (¬ (clever kim))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_219_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_219_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (clever kim)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_219_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_219_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (¬ (clever kim))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_219_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_219_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (clever kim)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_219_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_219_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (cleverPolitician clever : A → Prop) [DecidablePred cleverPolitician] [DecidablePred clever] (kim : A), (cleverPolitician kim) → (¬ (clever kim))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_220_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_220_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_220_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_220_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_220_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_220_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_220_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_220_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_221_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_221_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_221_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_221_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_221_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_221_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_221_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_221_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (¬ (fast pc6082))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_222_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_222_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_222_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_222_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_222_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_222_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_222_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_222_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_223_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_223_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_223_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_223_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastThan pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes`, with 3 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_223_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 3 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_223_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_223_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_223_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastThan x y → fast y → fast x) → (∀ x y, fastThan x y → ¬ fastThan y x) → (fastThan pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_224_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_224_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_224_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_224_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_224_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_224_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (fast pc6082)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_224_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_224_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast itelXZ) → (¬ (fast pc6082))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_225_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_225_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_225_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_225_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fast pc6082))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_225_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_225_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_225_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_225_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (¬ (fast pc6082))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_226_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_226_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_226_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_226_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_226_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_226_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (fast itelXZ)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_226_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_226_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fast : A → Prop) [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (fast pc6082) → (¬ (fast itelXZ))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_227_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_227_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_227_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_227_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_227_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_227_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (fast itelXZ)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_227_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_227_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (slow fast : A → Prop) [DecidablePred slow] [DecidablePred fast] (fastAs : A → A → Prop) (pc6082 itelXZ : A), (∀ x, ¬ (fast x ∧ slow x)) → (∀ x y, fastAs x y → fast y → fast x) → (fastAs pc6082 itelXZ) → (slow pc6082) → (¬ (fast itelXZ))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_228_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_228_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_228_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_228_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (fastThan pc6082 itelXZ))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_228_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_228_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (fastThan pc6082 itelXZ)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_228_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_228_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs fastThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (fastAs pc6082 itelXZ) → (¬ (fastThan pc6082 itelXZ))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_229_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_229_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_229_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_229_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (fastAs pc6082 itelXZ) → (¬ (slowThan pc6082 itelXZ))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_229_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_229_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (slowThan pc6082 itelXZ)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_229_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_229_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastAs slowThan : A → A → Prop) (pc6082 itelXZ : A), (∀ x y, slowThan x y → ¬ slowThan y x) → (fastAs pc6082 itelXZ) → (¬ (slowThan pc6082 itelXZ))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_246_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_246_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_246_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_246_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_246_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_246_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_246_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_246_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Every itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_247_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_247_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_247_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_247_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_247_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_247_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (fastThan pc6082 itelZX)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_247_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_247_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelComputer : A → Prop) [DecidablePred itelComputer] (fastThan : A → A → Prop) (pc6082 itelZX : A), (∀ x y, fastThan x y → ¬ fastThan y x) → (Some itelComputer (fastThan pc6082)) → (itelComputer itelZX) → (¬ (fastThan pc6082 itelZX))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_249_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_249_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_249_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_249_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_249_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_249_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_249_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_249_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∧ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_250_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_250_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_250_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_250_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_250_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_250_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (fastThan pc6082 itelZX)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_250_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_250_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (fastThan : A → A → Prop) (pc6082 itelZX itelZY : A), (∀ x y, fastThan x y → ¬ fastThan y x) → ((fastThan pc6082 itelZX ∨ fastThan pc6082 itelZY)) → (¬ (fastThan pc6082 itelZX))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_261_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_261_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_261_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_261_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_261_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_261_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_261_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_261_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_262_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_262_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_262_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_262_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_262_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_262_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_262_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_262_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_263_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_263_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (presentAndersonPresent smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_263_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_263_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (¬ (presentAndersonPresent smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_263_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_263_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (presentAndersonPresent smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_263_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_263_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (presentJonesLeave leaveAndersonPresent presentAndersonPresent : A → Prop) [DecidablePred presentJonesLeave] [DecidablePred leaveAndersonPresent] [DecidablePred presentAndersonPresent] (smith jones : A), (presentJonesLeave smith) → (leaveAndersonPresent jones) → (¬ (presentAndersonPresent smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_264_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_264_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_264_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_264_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_264_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_264_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_264_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_264_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_265_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_265_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_265_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_265_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_265_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_265_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_265_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_265_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_266_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_266_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveSmithLeave jones) → (leaveJonesLeave smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_266_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_266_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveSmithLeave jones) → (¬ (leaveJonesLeave smith))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_266_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_266_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (∀ x, leaveSmithLeave x → leave x) → (∀ x, leaveJonesLeave x → leave x) → (leave smith) → (leave jones) → (leaveSmithLeave jones) → (leaveJonesLeave smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_266_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_266_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (∀ x, leaveSmithLeave x → leave x) → (∀ x, leaveJonesLeave x → leave x) → (leave smith) → (leave jones) → (leaveSmithLeave jones) → (¬ (leaveJonesLeave smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_267_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_267_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_267_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_267_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_267_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_267_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_267_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_267_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_268_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_268_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_268_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_268_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_268_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_268_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_268_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_268_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_269_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_269_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (swim smith) → (swim jones) → (swimJonesSwim smith) → (swimSmithSwim jones)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_269_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_269_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (swim smith) → (swim jones) → (swimJonesSwim smith) → (¬ (swimSmithSwim jones))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_269_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_269_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (∀ x, swimJonesSwim x → swim x) → (∀ x, swimSmithSwim x → swim x) → (swim smith) → (swim jones) → (swimJonesSwim smith) → (swimSmithSwim jones)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_269_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_269_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swim swimJonesSwim swimSmithSwim : A → Prop) [DecidablePred swim] [DecidablePred swimJonesSwim] [DecidablePred swimSmithSwim] (smith jones : A), (∀ x, swimJonesSwim x → swim x) → (∀ x, swimSmithSwim x → swim x) → (swim smith) → (swim jones) → (swimJonesSwim smith) → (¬ (swimSmithSwim jones))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_270_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_270_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (swimToShoreSmithSwimToShore jones)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_270_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_270_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (¬ (swimToShoreSmithSwimToShore jones))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_270_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_270_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (swimToShoreSmithSwimToShore jones)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_270_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_270_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (¬ (swimToShoreSmithSwimToShore jones))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_271_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_271_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_271_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_271_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (¬ (presentSmithPresent jones))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_271_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_271_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_271_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_271_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (¬ (presentSmithPresent jones))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_272_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_272_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_272_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_272_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (present smith) → (present jones) → (presentJonesPresent smith) → (¬ (presentSmithPresent jones))
 
-/-- As `_yes`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_272_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 2 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_272_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (presentSmithPresent jones)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_272_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_272_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (present presentJonesPresent presentSmithPresent : A → Prop) [DecidablePred present] [DecidablePred presentJonesPresent] [DecidablePred presentSmithPresent] (smith jones : A), (∀ x, presentJonesPresent x → present x) → (∀ x, presentSmithPresent x → present x) → (present smith) → (present jones) → (presentJonesPresent smith) → (¬ (presentSmithPresent jones))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_275_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_275_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (loseTemper smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_275_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_275_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (¬ (loseTemper smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_275_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_275_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (loseTemper smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_275_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_275_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (leaveMeetingLoseTemper loseTemper : A → Prop) [DecidablePred leaveMeetingLoseTemper] [DecidablePred loseTemper] (smith : A), (leaveMeetingLoseTemper smith) → (¬ (loseTemper smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_277_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_277_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (liveInBirminghamIn1992 smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_277_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_277_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (¬ (liveInBirminghamIn1992 smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_277_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_277_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (liveInBirminghamIn1992 smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_277_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_277_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamIn1991 liveInBirminghamIn1992 : A → Prop) [DecidablePred liveInBirminghamIn1991] [DecidablePred liveInBirminghamIn1992] (smith : A), (liveInBirminghamIn1991 smith) → (¬ (liveInBirminghamIn1992 smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_278_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_278_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (writeFirstNovelIn1992 smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_278_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_278_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (¬ (writeFirstNovelIn1992 smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_278_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_278_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (writeFirstNovelIn1992 smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_278_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_278_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeFirstNovelIn1991 writeFirstNovelIn1992 : A → Prop) [DecidablePred writeFirstNovelIn1991] [DecidablePred writeFirstNovelIn1992] (smith : A), (writeFirstNovelIn1991 smith) → (¬ (writeFirstNovelIn1992 smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_279_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_279_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (writeIn1992 smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_279_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_279_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (¬ (writeIn1992 smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_279_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_279_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (writeIn1992 smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_279_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_279_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeIn1992] (smith : A), (writeNovelIn1991 smith) → (¬ (writeIn1992 smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_280_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_280_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (writeNovelIn1992 smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_280_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_280_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (¬ (writeNovelIn1992 smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_280_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_280_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (writeNovelIn1992 smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_280_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_280_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeNovelIn1991 writeNovelIn1992 : A → Prop) [DecidablePred writeNovelIn1991] [DecidablePred writeNovelIn1992] (smith : A), (writeNovelIn1991 smith) → (¬ (writeNovelIn1992 smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_282_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_282_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverIn1992 smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_282_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_282_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (¬ (discoverIn1992 smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_282_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_282_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverIn1992 smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_282_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_282_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (¬ (discoverIn1992 smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_283_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_283_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverNewSpeciesIn1992 smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_283_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_283_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (¬ (discoverNewSpeciesIn1992 smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_283_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_283_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (discoverNewSpeciesIn1992 smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_283_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_283_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesIn1991 discoverNewSpeciesIn1992 : A → Prop) [DecidablePred discoverNewSpeciesIn1991] [DecidablePred discoverNewSpeciesIn1992] (smith : A), (discoverNewSpeciesIn1991 smith) → (¬ (discoverNewSpeciesIn1992 smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_287_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_287_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (writeReportInOneHour smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_287_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_287_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (¬ (writeReportInOneHour smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_287_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_287_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (writeReportInOneHour smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_287_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_287_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReportInOneHour : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReportInOneHour] (smith : A), (writeReportInTwoHours smith) → (¬ (writeReportInOneHour smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_288_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_288_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (writeReportInTwoHours smith) → (writeReport smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_288_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_288_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (writeReportInTwoHours smith) → (¬ (writeReport smith))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_288_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_288_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (∀ x, writeReportInTwoHours x → writeReport x) → (writeReportInTwoHours smith) → (writeReport smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_288_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_288_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportInTwoHours writeReport : A → Prop) [DecidablePred writeReportInTwoHours] [DecidablePred writeReport] (smith : A), (∀ x, writeReportInTwoHours x → writeReport x) → (writeReportInTwoHours smith) → (¬ (writeReport smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_290_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_290_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesInTwoHours smith) → (discoverNewSpecies smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_290_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_290_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesInTwoHours smith) → (¬ (discoverNewSpecies smith))
 
-/-- As `_yes`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_290_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_290_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (∀ x, discoverNewSpeciesInTwoHours x → discoverNewSpecies x) → (discoverNewSpeciesInTwoHours smith) → (discoverNewSpecies smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_290_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_290_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesInTwoHours discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesInTwoHours] [DecidablePred discoverNewSpecies] (smith : A), (∀ x, discoverNewSpeciesInTwoHours x → discoverNewSpecies x) → (discoverNewSpeciesInTwoHours smith) → (¬ (discoverNewSpecies smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_298_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_298_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirminghamForAYear smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_298_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_298_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (¬ (liveInBirminghamForAYear smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_298_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_298_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirminghamForAYear smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_298_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_298_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirminghamForAYear : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirminghamForAYear] (smith : A), (liveInBirminghamForTwoYears smith) → (¬ (liveInBirminghamForAYear smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_300_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_300_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirmingham smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_300_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_300_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (¬ (liveInBirmingham smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_300_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_300_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (liveInBirmingham smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_300_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_300_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (liveInBirminghamForTwoYears liveInBirmingham : A → Prop) [DecidablePred liveInBirminghamForTwoYears] [DecidablePred liveInBirmingham] (smith : A), (liveInBirminghamForTwoYears smith) → (¬ (liveInBirmingham smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_303_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_303_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (writeReportForAnHour smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_303_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_303_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (¬ (writeReportForAnHour smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_303_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_303_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (writeReportForAnHour smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_303_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_303_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReportForAnHour : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReportForAnHour] (smith : A), (writeReportForTwoHours smith) → (¬ (writeReportForAnHour smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_304_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_304_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (writeReport smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_304_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_304_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (¬ (writeReport smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_304_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_304_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (writeReport smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_304_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_304_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeReportForTwoHours writeReport : A → Prop) [DecidablePred writeReportForTwoHours] [DecidablePred writeReport] (smith : A), (writeReportForTwoHours smith) → (¬ (writeReport smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_306_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_306_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_306_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_306_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (¬ (discoverNewSpecies smith))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_306_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_306_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (discoverNewSpecies smith)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_306_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_306_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (discoverNewSpeciesForTwoYears discoverNewSpecies : A → Prop) [DecidablePred discoverNewSpeciesForTwoYears] [DecidablePred discoverNewSpecies] (smith : A), (discoverNewSpeciesForTwoYears smith) → (¬ (discoverNewSpecies smith))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_308_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_308_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (∃ x, representativeMascSmithWriteToEveryWeek x)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_308_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_308_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (¬ (∃ x, representativeMascSmithWriteToEveryWeek x))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_308_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_308_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (∃ x, representativeMascSmithWriteToEveryWeek x)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_308_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_308_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (¬ (∃ x, representativeMascSmithWriteToEveryWeek x))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_326_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_326_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (finishMtalkIn1993 itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_326_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_326_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (¬ (finishMtalkIn1993 itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_326_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_326_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (finishMtalkIn1993 itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_326_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_326_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (¬ (finishMtalkIn1993 itel))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_328_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_328_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (winContractIn1993 itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_328_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_328_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (¬ (winContractIn1993 itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_328_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_328_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (winContractIn1993 itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_328_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_328_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (¬ (winContractIn1993 itel))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_330_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_330_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (ownApcomIn1990 itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_330_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_330_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (¬ (ownApcomIn1990 itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_330_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_330_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (ownApcomIn1990 itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_330_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_330_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (ownApcomFrom1988to1992 ownApcomIn1990 : A → Prop) [DecidablePred ownApcomFrom1988to1992] [DecidablePred ownApcomIn1990] (itel : A), (ownApcomFrom1988to1992 itel) → (¬ (ownApcomIn1990 itel))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_334_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_334_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_334_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_334_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_334_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_334_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_334_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_334_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (¬ (winContractIn1992 itel))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_335_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_335_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_335_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_335_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_335_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_335_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (winContractIn1992 itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_335_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_335_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (itelWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred itelWinContractIn1992] [DecidablePred winContractIn1992] (smith itel : A), (itelWinContractIn1992 smith) → (¬ (winContractIn1992 itel))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_336_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_336_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (winContractIn1992 itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_336_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_336_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_336_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_336_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (winContractIn1992 itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_336_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_336_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (manageWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred manageWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (manageWinContractIn1992 itel) → (¬ (winContractIn1992 itel))
 
-/-- "yes" test: weakest reading of the premises, strongest of the hypothesis. -/
-def fracas_337_parsed_yes : Prop :=
+/-- Reading assignment 0 (unambiguous): "yes" test. -/
+def fracas_337_parsed_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (winContractIn1992 itel)
 
-/-- "no" test: weakest readings throughout, hypothesis negated. -/
-def fracas_337_parsed_no : Prop :=
+/-- Reading assignment 0 (unambiguous): "no" test. -/
+def fracas_337_parsed_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (¬ (winContractIn1992 itel))
 
-/-- As `_yes`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
-def fracas_337_parsed_bk_yes : Prop :=
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
+def fracas_337_parsed_bk_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (winContractIn1992 itel)
 
-/-- As `_no`, with the same background knowledge. -/
-def fracas_337_parsed_bk_no : Prop :=
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_337_parsed_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (tryWinContractIn1992 winContractIn1992 : A → Prop) [DecidablePred tryWinContractIn1992] [DecidablePred winContractIn1992] (itel : A), (tryWinContractIn1992 itel) → (¬ (winContractIn1992 itel))
 
 end BlindEvalParsedClaims
 
-/-- `(problem id, gold answer, yes-claim, no-claim)` for every problem
-the pipeline carried through - read by `BlindEvalParsedScan.lean`. -/
-def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := [
-  (1, .yes, ``BlindEvalParsedClaims.fracas_001_parsed_yes, ``BlindEvalParsedClaims.fracas_001_parsed_no),
-  (2, .yes, ``BlindEvalParsedClaims.fracas_002_parsed_yes, ``BlindEvalParsedClaims.fracas_002_parsed_no),
-  (3, .yes, ``BlindEvalParsedClaims.fracas_003_parsed_yes, ``BlindEvalParsedClaims.fracas_003_parsed_no),
-  (4, .yes, ``BlindEvalParsedClaims.fracas_004_parsed_yes, ``BlindEvalParsedClaims.fracas_004_parsed_no),
-  (5, .yes, ``BlindEvalParsedClaims.fracas_005_parsed_yes, ``BlindEvalParsedClaims.fracas_005_parsed_no),
-  (6, .no, ``BlindEvalParsedClaims.fracas_006_parsed_yes, ``BlindEvalParsedClaims.fracas_006_parsed_no),
-  (7, .yes, ``BlindEvalParsedClaims.fracas_007_parsed_yes, ``BlindEvalParsedClaims.fracas_007_parsed_no),
-  (8, .yes, ``BlindEvalParsedClaims.fracas_008_parsed_yes, ``BlindEvalParsedClaims.fracas_008_parsed_no),
-  (9, .yes, ``BlindEvalParsedClaims.fracas_009_parsed_yes, ``BlindEvalParsedClaims.fracas_009_parsed_no),
-  (10, .yes, ``BlindEvalParsedClaims.fracas_010_parsed_yes, ``BlindEvalParsedClaims.fracas_010_parsed_no),
-  (11, .yes, ``BlindEvalParsedClaims.fracas_011_parsed_yes, ``BlindEvalParsedClaims.fracas_011_parsed_no),
-  (13, .yes, ``BlindEvalParsedClaims.fracas_013_parsed_yes, ``BlindEvalParsedClaims.fracas_013_parsed_no),
-  (14, .no, ``BlindEvalParsedClaims.fracas_014_parsed_yes, ``BlindEvalParsedClaims.fracas_014_parsed_no),
-  (15, .yes, ``BlindEvalParsedClaims.fracas_015_parsed_yes, ``BlindEvalParsedClaims.fracas_015_parsed_no),
-  (16, .undef, ``BlindEvalParsedClaims.fracas_016_parsed_yes, ``BlindEvalParsedClaims.fracas_016_parsed_no),
-  (17, .yes, ``BlindEvalParsedClaims.fracas_017_parsed_yes, ``BlindEvalParsedClaims.fracas_017_parsed_no),
-  (18, .yes, ``BlindEvalParsedClaims.fracas_018_parsed_yes, ``BlindEvalParsedClaims.fracas_018_parsed_no),
-  (19, .yes, ``BlindEvalParsedClaims.fracas_019_parsed_yes, ``BlindEvalParsedClaims.fracas_019_parsed_no),
-  (20, .yes, ``BlindEvalParsedClaims.fracas_020_parsed_yes, ``BlindEvalParsedClaims.fracas_020_parsed_no),
-  (21, .yes, ``BlindEvalParsedClaims.fracas_021_parsed_yes, ``BlindEvalParsedClaims.fracas_021_parsed_no),
-  (22, .unknown, ``BlindEvalParsedClaims.fracas_022_parsed_yes, ``BlindEvalParsedClaims.fracas_022_parsed_no),
-  (23, .yes, ``BlindEvalParsedClaims.fracas_023_parsed_yes, ``BlindEvalParsedClaims.fracas_023_parsed_no),
-  (24, .yes, ``BlindEvalParsedClaims.fracas_024_parsed_yes, ``BlindEvalParsedClaims.fracas_024_parsed_no),
-  (25, .yes, ``BlindEvalParsedClaims.fracas_025_parsed_yes, ``BlindEvalParsedClaims.fracas_025_parsed_no),
-  (26, .yes, ``BlindEvalParsedClaims.fracas_026_parsed_yes, ``BlindEvalParsedClaims.fracas_026_parsed_no),
-  (29, .yes, ``BlindEvalParsedClaims.fracas_029_parsed_yes, ``BlindEvalParsedClaims.fracas_029_parsed_no),
-  (30, .unknown, ``BlindEvalParsedClaims.fracas_030_parsed_yes, ``BlindEvalParsedClaims.fracas_030_parsed_no),
-  (31, .yes, ``BlindEvalParsedClaims.fracas_031_parsed_yes, ``BlindEvalParsedClaims.fracas_031_parsed_no),
-  (32, .unknown, ``BlindEvalParsedClaims.fracas_032_parsed_yes, ``BlindEvalParsedClaims.fracas_032_parsed_no),
-  (33, .unknown, ``BlindEvalParsedClaims.fracas_033_parsed_yes, ``BlindEvalParsedClaims.fracas_033_parsed_no),
-  (34, .unknown, ``BlindEvalParsedClaims.fracas_034_parsed_yes, ``BlindEvalParsedClaims.fracas_034_parsed_no),
-  (35, .unknown, ``BlindEvalParsedClaims.fracas_035_parsed_yes, ``BlindEvalParsedClaims.fracas_035_parsed_no),
-  (36, .unknown, ``BlindEvalParsedClaims.fracas_036_parsed_yes, ``BlindEvalParsedClaims.fracas_036_parsed_no),
-  (37, .unknown, ``BlindEvalParsedClaims.fracas_037_parsed_yes, ``BlindEvalParsedClaims.fracas_037_parsed_no),
-  (38, .no, ``BlindEvalParsedClaims.fracas_038_parsed_yes, ``BlindEvalParsedClaims.fracas_038_parsed_no),
-  (39, .unknown, ``BlindEvalParsedClaims.fracas_039_parsed_yes, ``BlindEvalParsedClaims.fracas_039_parsed_no),
-  (40, .unknown, ``BlindEvalParsedClaims.fracas_040_parsed_yes, ``BlindEvalParsedClaims.fracas_040_parsed_no),
-  (41, .unknown, ``BlindEvalParsedClaims.fracas_041_parsed_yes, ``BlindEvalParsedClaims.fracas_041_parsed_no),
-  (42, .unknown, ``BlindEvalParsedClaims.fracas_042_parsed_yes, ``BlindEvalParsedClaims.fracas_042_parsed_no),
-  (45, .unknown, ``BlindEvalParsedClaims.fracas_045_parsed_yes, ``BlindEvalParsedClaims.fracas_045_parsed_no),
-  (47, .unknown, ``BlindEvalParsedClaims.fracas_047_parsed_yes, ``BlindEvalParsedClaims.fracas_047_parsed_no),
-  (48, .yes, ``BlindEvalParsedClaims.fracas_048_parsed_yes, ``BlindEvalParsedClaims.fracas_048_parsed_no),
-  (49, .yes, ``BlindEvalParsedClaims.fracas_049_parsed_yes, ``BlindEvalParsedClaims.fracas_049_parsed_no),
-  (50, .unknown, ``BlindEvalParsedClaims.fracas_050_parsed_yes, ``BlindEvalParsedClaims.fracas_050_parsed_no),
-  (51, .unknown, ``BlindEvalParsedClaims.fracas_051_parsed_yes, ``BlindEvalParsedClaims.fracas_051_parsed_no),
-  (52, .unknown, ``BlindEvalParsedClaims.fracas_052_parsed_yes, ``BlindEvalParsedClaims.fracas_052_parsed_no),
-  (53, .unknown, ``BlindEvalParsedClaims.fracas_053_parsed_yes, ``BlindEvalParsedClaims.fracas_053_parsed_no),
-  (54, .unknown, ``BlindEvalParsedClaims.fracas_054_parsed_yes, ``BlindEvalParsedClaims.fracas_054_parsed_no),
-  (55, .yes, ``BlindEvalParsedClaims.fracas_055_parsed_yes, ``BlindEvalParsedClaims.fracas_055_parsed_no),
-  (56, .unknown, ``BlindEvalParsedClaims.fracas_056_parsed_yes, ``BlindEvalParsedClaims.fracas_056_parsed_no),
-  (57, .yes, ``BlindEvalParsedClaims.fracas_057_parsed_yes, ``BlindEvalParsedClaims.fracas_057_parsed_no),
-  (58, .unknown, ``BlindEvalParsedClaims.fracas_058_parsed_yes, ``BlindEvalParsedClaims.fracas_058_parsed_no),
-  (61, .undef, ``BlindEvalParsedClaims.fracas_061_parsed_yes, ``BlindEvalParsedClaims.fracas_061_parsed_no),
-  (63, .yes, ``BlindEvalParsedClaims.fracas_063_parsed_yes, ``BlindEvalParsedClaims.fracas_063_parsed_no),
-  (64, .unknown, ``BlindEvalParsedClaims.fracas_064_parsed_yes, ``BlindEvalParsedClaims.fracas_064_parsed_no),
-  (65, .unknown, ``BlindEvalParsedClaims.fracas_065_parsed_yes, ``BlindEvalParsedClaims.fracas_065_parsed_no),
-  (66, .yes, ``BlindEvalParsedClaims.fracas_066_parsed_yes, ``BlindEvalParsedClaims.fracas_066_parsed_no),
-  (67, .yes, ``BlindEvalParsedClaims.fracas_067_parsed_yes, ``BlindEvalParsedClaims.fracas_067_parsed_no),
-  (68, .yes, ``BlindEvalParsedClaims.fracas_068_parsed_yes, ``BlindEvalParsedClaims.fracas_068_parsed_no),
-  (69, .yes, ``BlindEvalParsedClaims.fracas_069_parsed_yes, ``BlindEvalParsedClaims.fracas_069_parsed_no),
-  (70, .no, ``BlindEvalParsedClaims.fracas_070_parsed_yes, ``BlindEvalParsedClaims.fracas_070_parsed_no),
-  (71, .unknown, ``BlindEvalParsedClaims.fracas_071_parsed_yes, ``BlindEvalParsedClaims.fracas_071_parsed_no),
-  (72, .unknown, ``BlindEvalParsedClaims.fracas_072_parsed_yes, ``BlindEvalParsedClaims.fracas_072_parsed_no),
-  (73, .unknown, ``BlindEvalParsedClaims.fracas_073_parsed_yes, ``BlindEvalParsedClaims.fracas_073_parsed_no),
-  (74, .unknown, ``BlindEvalParsedClaims.fracas_074_parsed_yes, ``BlindEvalParsedClaims.fracas_074_parsed_no),
-  (77, .undef, ``BlindEvalParsedClaims.fracas_077_parsed_yes, ``BlindEvalParsedClaims.fracas_077_parsed_no),
-  (79, .unknown, ``BlindEvalParsedClaims.fracas_079_parsed_yes, ``BlindEvalParsedClaims.fracas_079_parsed_no),
-  (80, .yes, ``BlindEvalParsedClaims.fracas_080_parsed_yes, ``BlindEvalParsedClaims.fracas_080_parsed_no),
-  (87, .yes, ``BlindEvalParsedClaims.fracas_087_parsed_yes, ``BlindEvalParsedClaims.fracas_087_parsed_no),
-  (88, .unknown, ``BlindEvalParsedClaims.fracas_088_parsed_yes, ``BlindEvalParsedClaims.fracas_088_parsed_no),
-  (90, .yes, ``BlindEvalParsedClaims.fracas_090_parsed_yes, ``BlindEvalParsedClaims.fracas_090_parsed_no),
-  (94, .unknown, ``BlindEvalParsedClaims.fracas_094_parsed_yes, ``BlindEvalParsedClaims.fracas_094_parsed_no),
-  (95, .unknown, ``BlindEvalParsedClaims.fracas_095_parsed_yes, ``BlindEvalParsedClaims.fracas_095_parsed_no),
-  (96, .yes, ``BlindEvalParsedClaims.fracas_096_parsed_yes, ``BlindEvalParsedClaims.fracas_096_parsed_no),
-  (98, .unknown, ``BlindEvalParsedClaims.fracas_098_parsed_yes, ``BlindEvalParsedClaims.fracas_098_parsed_no),
-  (99, .yes, ``BlindEvalParsedClaims.fracas_099_parsed_yes, ``BlindEvalParsedClaims.fracas_099_parsed_no),
-  (100, .yes, ``BlindEvalParsedClaims.fracas_100_parsed_yes, ``BlindEvalParsedClaims.fracas_100_parsed_no),
-  (102, .unknown, ``BlindEvalParsedClaims.fracas_102_parsed_yes, ``BlindEvalParsedClaims.fracas_102_parsed_no),
-  (103, .yes, ``BlindEvalParsedClaims.fracas_103_parsed_yes, ``BlindEvalParsedClaims.fracas_103_parsed_no),
-  (105, .no, ``BlindEvalParsedClaims.fracas_105_parsed_yes, ``BlindEvalParsedClaims.fracas_105_parsed_no),
-  (106, .no, ``BlindEvalParsedClaims.fracas_106_parsed_yes, ``BlindEvalParsedClaims.fracas_106_parsed_no),
-  (107, .yes, ``BlindEvalParsedClaims.fracas_107_parsed_yes, ``BlindEvalParsedClaims.fracas_107_parsed_no),
-  (108, .yes, ``BlindEvalParsedClaims.fracas_108_parsed_yes, ``BlindEvalParsedClaims.fracas_108_parsed_no),
-  (109, .no, ``BlindEvalParsedClaims.fracas_109_parsed_yes, ``BlindEvalParsedClaims.fracas_109_parsed_no),
-  (110, .yes, ``BlindEvalParsedClaims.fracas_110_parsed_yes, ``BlindEvalParsedClaims.fracas_110_parsed_no),
-  (132, .yes, ``BlindEvalParsedClaims.fracas_132_parsed_yes, ``BlindEvalParsedClaims.fracas_132_parsed_no),
-  (133, .yes, ``BlindEvalParsedClaims.fracas_133_parsed_yes, ``BlindEvalParsedClaims.fracas_133_parsed_no),
-  (134, .yes, ``BlindEvalParsedClaims.fracas_134_parsed_yes, ``BlindEvalParsedClaims.fracas_134_parsed_no),
-  (135, .yes, ``BlindEvalParsedClaims.fracas_135_parsed_yes, ``BlindEvalParsedClaims.fracas_135_parsed_no),
-  (138, .yes, ``BlindEvalParsedClaims.fracas_138_parsed_yes, ``BlindEvalParsedClaims.fracas_138_parsed_no),
-  (142, .yes, ``BlindEvalParsedClaims.fracas_142_parsed_yes, ``BlindEvalParsedClaims.fracas_142_parsed_no),
-  (143, .unknown, ``BlindEvalParsedClaims.fracas_143_parsed_yes, ``BlindEvalParsedClaims.fracas_143_parsed_no),
-  (144, .yes, ``BlindEvalParsedClaims.fracas_144_parsed_yes, ``BlindEvalParsedClaims.fracas_144_parsed_no),
-  (147, .no, ``BlindEvalParsedClaims.fracas_147_parsed_yes, ``BlindEvalParsedClaims.fracas_147_parsed_no),
-  (149, .yes, ``BlindEvalParsedClaims.fracas_149_parsed_yes, ``BlindEvalParsedClaims.fracas_149_parsed_no),
-  (150, .yes, ``BlindEvalParsedClaims.fracas_150_parsed_yes, ``BlindEvalParsedClaims.fracas_150_parsed_no),
-  (151, .yes, ``BlindEvalParsedClaims.fracas_151_parsed_yes, ``BlindEvalParsedClaims.fracas_151_parsed_no),
-  (152, .yes, ``BlindEvalParsedClaims.fracas_152_parsed_yes, ``BlindEvalParsedClaims.fracas_152_parsed_no),
-  (155, .yes, ``BlindEvalParsedClaims.fracas_155_parsed_yes, ``BlindEvalParsedClaims.fracas_155_parsed_no),
-  (156, .unknown, ``BlindEvalParsedClaims.fracas_156_parsed_yes, ``BlindEvalParsedClaims.fracas_156_parsed_no),
-  (157, .yes, ``BlindEvalParsedClaims.fracas_157_parsed_yes, ``BlindEvalParsedClaims.fracas_157_parsed_no),
-  (158, .unknown, ``BlindEvalParsedClaims.fracas_158_parsed_yes, ``BlindEvalParsedClaims.fracas_158_parsed_no),
-  (159, .yes, ``BlindEvalParsedClaims.fracas_159_parsed_yes, ``BlindEvalParsedClaims.fracas_159_parsed_no),
-  (160, .yes, ``BlindEvalParsedClaims.fracas_160_parsed_yes, ``BlindEvalParsedClaims.fracas_160_parsed_no),
-  (161, .unknown, ``BlindEvalParsedClaims.fracas_161_parsed_yes, ``BlindEvalParsedClaims.fracas_161_parsed_no),
-  (162, .yes, ``BlindEvalParsedClaims.fracas_162_parsed_yes, ``BlindEvalParsedClaims.fracas_162_parsed_no),
-  (197, .yes, ``BlindEvalParsedClaims.fracas_197_parsed_yes, ``BlindEvalParsedClaims.fracas_197_parsed_no),
-  (198, .no, ``BlindEvalParsedClaims.fracas_198_parsed_yes, ``BlindEvalParsedClaims.fracas_198_parsed_no),
-  (199, .yes, ``BlindEvalParsedClaims.fracas_199_parsed_yes, ``BlindEvalParsedClaims.fracas_199_parsed_no),
-  (200, .unknown, ``BlindEvalParsedClaims.fracas_200_parsed_yes, ``BlindEvalParsedClaims.fracas_200_parsed_no),
-  (201, .unknown, ``BlindEvalParsedClaims.fracas_201_parsed_yes, ``BlindEvalParsedClaims.fracas_201_parsed_no),
-  (202, .yes, ``BlindEvalParsedClaims.fracas_202_parsed_yes, ``BlindEvalParsedClaims.fracas_202_parsed_no),
-  (203, .yes, ``BlindEvalParsedClaims.fracas_203_parsed_yes, ``BlindEvalParsedClaims.fracas_203_parsed_no),
-  (204, .no, ``BlindEvalParsedClaims.fracas_204_parsed_yes, ``BlindEvalParsedClaims.fracas_204_parsed_no),
-  (205, .no, ``BlindEvalParsedClaims.fracas_205_parsed_yes, ``BlindEvalParsedClaims.fracas_205_parsed_no),
-  (206, .unknown, ``BlindEvalParsedClaims.fracas_206_parsed_yes, ``BlindEvalParsedClaims.fracas_206_parsed_no),
-  (207, .unknown, ``BlindEvalParsedClaims.fracas_207_parsed_yes, ``BlindEvalParsedClaims.fracas_207_parsed_no),
-  (208, .yes, ``BlindEvalParsedClaims.fracas_208_parsed_yes, ``BlindEvalParsedClaims.fracas_208_parsed_no),
-  (209, .no, ``BlindEvalParsedClaims.fracas_209_parsed_yes, ``BlindEvalParsedClaims.fracas_209_parsed_no),
-  (210, .no, ``BlindEvalParsedClaims.fracas_210_parsed_yes, ``BlindEvalParsedClaims.fracas_210_parsed_no),
-  (211, .no, ``BlindEvalParsedClaims.fracas_211_parsed_yes, ``BlindEvalParsedClaims.fracas_211_parsed_no),
-  (212, .yes, ``BlindEvalParsedClaims.fracas_212_parsed_yes, ``BlindEvalParsedClaims.fracas_212_parsed_no),
-  (213, .undef, ``BlindEvalParsedClaims.fracas_213_parsed_yes, ``BlindEvalParsedClaims.fracas_213_parsed_no),
-  (214, .yes, ``BlindEvalParsedClaims.fracas_214_parsed_yes, ``BlindEvalParsedClaims.fracas_214_parsed_no),
-  (215, .unknown, ``BlindEvalParsedClaims.fracas_215_parsed_yes, ``BlindEvalParsedClaims.fracas_215_parsed_no),
-  (218, .yes, ``BlindEvalParsedClaims.fracas_218_parsed_yes, ``BlindEvalParsedClaims.fracas_218_parsed_no),
-  (219, .unknown, ``BlindEvalParsedClaims.fracas_219_parsed_yes, ``BlindEvalParsedClaims.fracas_219_parsed_no),
-  (220, .yes, ``BlindEvalParsedClaims.fracas_220_parsed_yes, ``BlindEvalParsedClaims.fracas_220_parsed_no),
-  (221, .unknown, ``BlindEvalParsedClaims.fracas_221_parsed_yes, ``BlindEvalParsedClaims.fracas_221_parsed_no),
-  (222, .unknown, ``BlindEvalParsedClaims.fracas_222_parsed_yes, ``BlindEvalParsedClaims.fracas_222_parsed_no),
-  (223, .no, ``BlindEvalParsedClaims.fracas_223_parsed_yes, ``BlindEvalParsedClaims.fracas_223_parsed_no),
-  (224, .yes, ``BlindEvalParsedClaims.fracas_224_parsed_yes, ``BlindEvalParsedClaims.fracas_224_parsed_no),
-  (225, .unknown, ``BlindEvalParsedClaims.fracas_225_parsed_yes, ``BlindEvalParsedClaims.fracas_225_parsed_no),
-  (226, .unknown, ``BlindEvalParsedClaims.fracas_226_parsed_yes, ``BlindEvalParsedClaims.fracas_226_parsed_no),
-  (227, .no, ``BlindEvalParsedClaims.fracas_227_parsed_yes, ``BlindEvalParsedClaims.fracas_227_parsed_no),
-  (228, .unknown, ``BlindEvalParsedClaims.fracas_228_parsed_yes, ``BlindEvalParsedClaims.fracas_228_parsed_no),
-  (229, .no, ``BlindEvalParsedClaims.fracas_229_parsed_yes, ``BlindEvalParsedClaims.fracas_229_parsed_no),
-  (246, .yes, ``BlindEvalParsedClaims.fracas_246_parsed_yes, ``BlindEvalParsedClaims.fracas_246_parsed_no),
-  (247, .unknown, ``BlindEvalParsedClaims.fracas_247_parsed_yes, ``BlindEvalParsedClaims.fracas_247_parsed_no),
-  (249, .yes, ``BlindEvalParsedClaims.fracas_249_parsed_yes, ``BlindEvalParsedClaims.fracas_249_parsed_no),
-  (250, .yes, ``BlindEvalParsedClaims.fracas_250_parsed_yes, ``BlindEvalParsedClaims.fracas_250_parsed_no),
-  (261, .yes, ``BlindEvalParsedClaims.fracas_261_parsed_yes, ``BlindEvalParsedClaims.fracas_261_parsed_no),
-  (262, .yes, ``BlindEvalParsedClaims.fracas_262_parsed_yes, ``BlindEvalParsedClaims.fracas_262_parsed_no),
-  (263, .unknown, ``BlindEvalParsedClaims.fracas_263_parsed_yes, ``BlindEvalParsedClaims.fracas_263_parsed_no),
-  (264, .yes, ``BlindEvalParsedClaims.fracas_264_parsed_yes, ``BlindEvalParsedClaims.fracas_264_parsed_no),
-  (265, .yes, ``BlindEvalParsedClaims.fracas_265_parsed_yes, ``BlindEvalParsedClaims.fracas_265_parsed_no),
-  (266, .yes, ``BlindEvalParsedClaims.fracas_266_parsed_yes, ``BlindEvalParsedClaims.fracas_266_parsed_no),
-  (267, .yes, ``BlindEvalParsedClaims.fracas_267_parsed_yes, ``BlindEvalParsedClaims.fracas_267_parsed_no),
-  (268, .yes, ``BlindEvalParsedClaims.fracas_268_parsed_yes, ``BlindEvalParsedClaims.fracas_268_parsed_no),
-  (269, .unknown, ``BlindEvalParsedClaims.fracas_269_parsed_yes, ``BlindEvalParsedClaims.fracas_269_parsed_no),
-  (270, .yes, ``BlindEvalParsedClaims.fracas_270_parsed_yes, ``BlindEvalParsedClaims.fracas_270_parsed_no),
-  (271, .unknown, ``BlindEvalParsedClaims.fracas_271_parsed_yes, ``BlindEvalParsedClaims.fracas_271_parsed_no),
-  (272, .unknown, ``BlindEvalParsedClaims.fracas_272_parsed_yes, ``BlindEvalParsedClaims.fracas_272_parsed_no),
-  (275, .unknown, ``BlindEvalParsedClaims.fracas_275_parsed_yes, ``BlindEvalParsedClaims.fracas_275_parsed_no),
-  (277, .unknown, ``BlindEvalParsedClaims.fracas_277_parsed_yes, ``BlindEvalParsedClaims.fracas_277_parsed_no),
-  (278, .no, ``BlindEvalParsedClaims.fracas_278_parsed_yes, ``BlindEvalParsedClaims.fracas_278_parsed_no),
-  (279, .no, ``BlindEvalParsedClaims.fracas_279_parsed_yes, ``BlindEvalParsedClaims.fracas_279_parsed_no),
-  (280, .unknown, ``BlindEvalParsedClaims.fracas_280_parsed_yes, ``BlindEvalParsedClaims.fracas_280_parsed_no),
-  (282, .no, ``BlindEvalParsedClaims.fracas_282_parsed_yes, ``BlindEvalParsedClaims.fracas_282_parsed_no),
-  (283, .unknown, ``BlindEvalParsedClaims.fracas_283_parsed_yes, ``BlindEvalParsedClaims.fracas_283_parsed_no),
-  (287, .unknown, ``BlindEvalParsedClaims.fracas_287_parsed_yes, ``BlindEvalParsedClaims.fracas_287_parsed_no),
-  (288, .yes, ``BlindEvalParsedClaims.fracas_288_parsed_yes, ``BlindEvalParsedClaims.fracas_288_parsed_no),
-  (290, .yes, ``BlindEvalParsedClaims.fracas_290_parsed_yes, ``BlindEvalParsedClaims.fracas_290_parsed_no),
-  (298, .yes, ``BlindEvalParsedClaims.fracas_298_parsed_yes, ``BlindEvalParsedClaims.fracas_298_parsed_no),
-  (300, .yes, ``BlindEvalParsedClaims.fracas_300_parsed_yes, ``BlindEvalParsedClaims.fracas_300_parsed_no),
-  (303, .yes, ``BlindEvalParsedClaims.fracas_303_parsed_yes, ``BlindEvalParsedClaims.fracas_303_parsed_no),
-  (304, .unknown, ``BlindEvalParsedClaims.fracas_304_parsed_yes, ``BlindEvalParsedClaims.fracas_304_parsed_no),
-  (306, .yes, ``BlindEvalParsedClaims.fracas_306_parsed_yes, ``BlindEvalParsedClaims.fracas_306_parsed_no),
-  (308, .undef, ``BlindEvalParsedClaims.fracas_308_parsed_yes, ``BlindEvalParsedClaims.fracas_308_parsed_no),
-  (326, .yes, ``BlindEvalParsedClaims.fracas_326_parsed_yes, ``BlindEvalParsedClaims.fracas_326_parsed_no),
-  (328, .yes, ``BlindEvalParsedClaims.fracas_328_parsed_yes, ``BlindEvalParsedClaims.fracas_328_parsed_no),
-  (330, .yes, ``BlindEvalParsedClaims.fracas_330_parsed_yes, ``BlindEvalParsedClaims.fracas_330_parsed_no),
-  (334, .yes, ``BlindEvalParsedClaims.fracas_334_parsed_yes, ``BlindEvalParsedClaims.fracas_334_parsed_no),
-  (335, .unknown, ``BlindEvalParsedClaims.fracas_335_parsed_yes, ``BlindEvalParsedClaims.fracas_335_parsed_no),
-  (336, .yes, ``BlindEvalParsedClaims.fracas_336_parsed_yes, ``BlindEvalParsedClaims.fracas_336_parsed_no),
-  (337, .unknown, ``BlindEvalParsedClaims.fracas_337_parsed_yes, ``BlindEvalParsedClaims.fracas_337_parsed_no)
+/-- `(problem id, gold answer, yes-claims, no-claims)` - one claim per
+consistent reading assignment - for every problem the pipeline carried
+through; read by `BlindEvalParsedScan.lean`. -/
+def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
+  (1, .yes, [``BlindEvalParsedClaims.fracas_001_parsed_yes_0], [``BlindEvalParsedClaims.fracas_001_parsed_no_0]),
+  (2, .yes, [``BlindEvalParsedClaims.fracas_002_parsed_yes_0, ``BlindEvalParsedClaims.fracas_002_parsed_yes_1], [``BlindEvalParsedClaims.fracas_002_parsed_no_0, ``BlindEvalParsedClaims.fracas_002_parsed_no_1]),
+  (3, .yes, [``BlindEvalParsedClaims.fracas_003_parsed_yes_0, ``BlindEvalParsedClaims.fracas_003_parsed_yes_1], [``BlindEvalParsedClaims.fracas_003_parsed_no_0, ``BlindEvalParsedClaims.fracas_003_parsed_no_1]),
+  (4, .yes, [``BlindEvalParsedClaims.fracas_004_parsed_yes_0, ``BlindEvalParsedClaims.fracas_004_parsed_yes_1], [``BlindEvalParsedClaims.fracas_004_parsed_no_0, ``BlindEvalParsedClaims.fracas_004_parsed_no_1]),
+  (5, .yes, [``BlindEvalParsedClaims.fracas_005_parsed_yes_0, ``BlindEvalParsedClaims.fracas_005_parsed_yes_1], [``BlindEvalParsedClaims.fracas_005_parsed_no_0, ``BlindEvalParsedClaims.fracas_005_parsed_no_1]),
+  (6, .no, [``BlindEvalParsedClaims.fracas_006_parsed_yes_0], [``BlindEvalParsedClaims.fracas_006_parsed_no_0]),
+  (7, .yes, [``BlindEvalParsedClaims.fracas_007_parsed_yes_0, ``BlindEvalParsedClaims.fracas_007_parsed_yes_1], [``BlindEvalParsedClaims.fracas_007_parsed_no_0, ``BlindEvalParsedClaims.fracas_007_parsed_no_1]),
+  (8, .yes, [``BlindEvalParsedClaims.fracas_008_parsed_yes_0, ``BlindEvalParsedClaims.fracas_008_parsed_yes_1], [``BlindEvalParsedClaims.fracas_008_parsed_no_0, ``BlindEvalParsedClaims.fracas_008_parsed_no_1]),
+  (9, .yes, [``BlindEvalParsedClaims.fracas_009_parsed_yes_0], [``BlindEvalParsedClaims.fracas_009_parsed_no_0]),
+  (10, .yes, [``BlindEvalParsedClaims.fracas_010_parsed_yes_0], [``BlindEvalParsedClaims.fracas_010_parsed_no_0]),
+  (11, .yes, [``BlindEvalParsedClaims.fracas_011_parsed_yes_0, ``BlindEvalParsedClaims.fracas_011_parsed_yes_1], [``BlindEvalParsedClaims.fracas_011_parsed_no_0, ``BlindEvalParsedClaims.fracas_011_parsed_no_1]),
+  (13, .yes, [``BlindEvalParsedClaims.fracas_013_parsed_yes_0, ``BlindEvalParsedClaims.fracas_013_parsed_yes_1], [``BlindEvalParsedClaims.fracas_013_parsed_no_0, ``BlindEvalParsedClaims.fracas_013_parsed_no_1]),
+  (14, .no, [``BlindEvalParsedClaims.fracas_014_parsed_yes_0], [``BlindEvalParsedClaims.fracas_014_parsed_no_0]),
+  (15, .yes, [``BlindEvalParsedClaims.fracas_015_parsed_yes_0], [``BlindEvalParsedClaims.fracas_015_parsed_no_0]),
+  (16, .undef, [``BlindEvalParsedClaims.fracas_016_parsed_yes_0], [``BlindEvalParsedClaims.fracas_016_parsed_no_0]),
+  (17, .yes, [``BlindEvalParsedClaims.fracas_017_parsed_yes_0], [``BlindEvalParsedClaims.fracas_017_parsed_no_0]),
+  (18, .yes, [``BlindEvalParsedClaims.fracas_018_parsed_yes_0], [``BlindEvalParsedClaims.fracas_018_parsed_no_0]),
+  (19, .yes, [``BlindEvalParsedClaims.fracas_019_parsed_yes_0], [``BlindEvalParsedClaims.fracas_019_parsed_no_0]),
+  (20, .yes, [``BlindEvalParsedClaims.fracas_020_parsed_yes_0], [``BlindEvalParsedClaims.fracas_020_parsed_no_0]),
+  (21, .yes, [``BlindEvalParsedClaims.fracas_021_parsed_yes_0, ``BlindEvalParsedClaims.fracas_021_parsed_yes_1], [``BlindEvalParsedClaims.fracas_021_parsed_no_0, ``BlindEvalParsedClaims.fracas_021_parsed_no_1]),
+  (22, .unknown, [``BlindEvalParsedClaims.fracas_022_parsed_yes_0], [``BlindEvalParsedClaims.fracas_022_parsed_no_0]),
+  (23, .yes, [``BlindEvalParsedClaims.fracas_023_parsed_yes_0, ``BlindEvalParsedClaims.fracas_023_parsed_yes_1], [``BlindEvalParsedClaims.fracas_023_parsed_no_0, ``BlindEvalParsedClaims.fracas_023_parsed_no_1]),
+  (24, .yes, [``BlindEvalParsedClaims.fracas_024_parsed_yes_0, ``BlindEvalParsedClaims.fracas_024_parsed_yes_1], [``BlindEvalParsedClaims.fracas_024_parsed_no_0, ``BlindEvalParsedClaims.fracas_024_parsed_no_1]),
+  (25, .yes, [``BlindEvalParsedClaims.fracas_025_parsed_yes_0], [``BlindEvalParsedClaims.fracas_025_parsed_no_0]),
+  (26, .yes, [``BlindEvalParsedClaims.fracas_026_parsed_yes_0], [``BlindEvalParsedClaims.fracas_026_parsed_no_0]),
+  (29, .yes, [``BlindEvalParsedClaims.fracas_029_parsed_yes_0], [``BlindEvalParsedClaims.fracas_029_parsed_no_0]),
+  (30, .unknown, [``BlindEvalParsedClaims.fracas_030_parsed_yes_0], [``BlindEvalParsedClaims.fracas_030_parsed_no_0]),
+  (31, .yes, [``BlindEvalParsedClaims.fracas_031_parsed_yes_0], [``BlindEvalParsedClaims.fracas_031_parsed_no_0]),
+  (32, .unknown, [``BlindEvalParsedClaims.fracas_032_parsed_yes_0], [``BlindEvalParsedClaims.fracas_032_parsed_no_0]),
+  (33, .unknown, [``BlindEvalParsedClaims.fracas_033_parsed_yes_0], [``BlindEvalParsedClaims.fracas_033_parsed_no_0]),
+  (34, .unknown, [``BlindEvalParsedClaims.fracas_034_parsed_yes_0], [``BlindEvalParsedClaims.fracas_034_parsed_no_0]),
+  (35, .unknown, [``BlindEvalParsedClaims.fracas_035_parsed_yes_0], [``BlindEvalParsedClaims.fracas_035_parsed_no_0]),
+  (36, .unknown, [``BlindEvalParsedClaims.fracas_036_parsed_yes_0], [``BlindEvalParsedClaims.fracas_036_parsed_no_0]),
+  (37, .unknown, [``BlindEvalParsedClaims.fracas_037_parsed_yes_0, ``BlindEvalParsedClaims.fracas_037_parsed_yes_1], [``BlindEvalParsedClaims.fracas_037_parsed_no_0, ``BlindEvalParsedClaims.fracas_037_parsed_no_1]),
+  (38, .no, [``BlindEvalParsedClaims.fracas_038_parsed_yes_0], [``BlindEvalParsedClaims.fracas_038_parsed_no_0]),
+  (39, .unknown, [``BlindEvalParsedClaims.fracas_039_parsed_yes_0, ``BlindEvalParsedClaims.fracas_039_parsed_yes_1], [``BlindEvalParsedClaims.fracas_039_parsed_no_0, ``BlindEvalParsedClaims.fracas_039_parsed_no_1]),
+  (40, .unknown, [``BlindEvalParsedClaims.fracas_040_parsed_yes_0, ``BlindEvalParsedClaims.fracas_040_parsed_yes_1], [``BlindEvalParsedClaims.fracas_040_parsed_no_0, ``BlindEvalParsedClaims.fracas_040_parsed_no_1]),
+  (41, .unknown, [``BlindEvalParsedClaims.fracas_041_parsed_yes_0], [``BlindEvalParsedClaims.fracas_041_parsed_no_0]),
+  (42, .unknown, [``BlindEvalParsedClaims.fracas_042_parsed_yes_0], [``BlindEvalParsedClaims.fracas_042_parsed_no_0]),
+  (45, .unknown, [``BlindEvalParsedClaims.fracas_045_parsed_yes_0], [``BlindEvalParsedClaims.fracas_045_parsed_no_0]),
+  (47, .unknown, [``BlindEvalParsedClaims.fracas_047_parsed_yes_0], [``BlindEvalParsedClaims.fracas_047_parsed_no_0]),
+  (48, .yes, [``BlindEvalParsedClaims.fracas_048_parsed_yes_0], [``BlindEvalParsedClaims.fracas_048_parsed_no_0]),
+  (49, .yes, [``BlindEvalParsedClaims.fracas_049_parsed_yes_0], [``BlindEvalParsedClaims.fracas_049_parsed_no_0]),
+  (50, .unknown, [``BlindEvalParsedClaims.fracas_050_parsed_yes_0], [``BlindEvalParsedClaims.fracas_050_parsed_no_0]),
+  (51, .unknown, [``BlindEvalParsedClaims.fracas_051_parsed_yes_0], [``BlindEvalParsedClaims.fracas_051_parsed_no_0]),
+  (52, .unknown, [``BlindEvalParsedClaims.fracas_052_parsed_yes_0], [``BlindEvalParsedClaims.fracas_052_parsed_no_0]),
+  (53, .unknown, [``BlindEvalParsedClaims.fracas_053_parsed_yes_0, ``BlindEvalParsedClaims.fracas_053_parsed_yes_1], [``BlindEvalParsedClaims.fracas_053_parsed_no_0, ``BlindEvalParsedClaims.fracas_053_parsed_no_1]),
+  (54, .unknown, [``BlindEvalParsedClaims.fracas_054_parsed_yes_0], [``BlindEvalParsedClaims.fracas_054_parsed_no_0]),
+  (55, .yes, [``BlindEvalParsedClaims.fracas_055_parsed_yes_0, ``BlindEvalParsedClaims.fracas_055_parsed_yes_1], [``BlindEvalParsedClaims.fracas_055_parsed_no_0, ``BlindEvalParsedClaims.fracas_055_parsed_no_1]),
+  (56, .unknown, [``BlindEvalParsedClaims.fracas_056_parsed_yes_0, ``BlindEvalParsedClaims.fracas_056_parsed_yes_1], [``BlindEvalParsedClaims.fracas_056_parsed_no_0, ``BlindEvalParsedClaims.fracas_056_parsed_no_1]),
+  (57, .yes, [``BlindEvalParsedClaims.fracas_057_parsed_yes_0], [``BlindEvalParsedClaims.fracas_057_parsed_no_0]),
+  (58, .unknown, [``BlindEvalParsedClaims.fracas_058_parsed_yes_0], [``BlindEvalParsedClaims.fracas_058_parsed_no_0]),
+  (61, .undef, [``BlindEvalParsedClaims.fracas_061_parsed_yes_0], [``BlindEvalParsedClaims.fracas_061_parsed_no_0]),
+  (63, .yes, [``BlindEvalParsedClaims.fracas_063_parsed_yes_0], [``BlindEvalParsedClaims.fracas_063_parsed_no_0]),
+  (64, .unknown, [``BlindEvalParsedClaims.fracas_064_parsed_yes_0], [``BlindEvalParsedClaims.fracas_064_parsed_no_0]),
+  (65, .unknown, [``BlindEvalParsedClaims.fracas_065_parsed_yes_0], [``BlindEvalParsedClaims.fracas_065_parsed_no_0]),
+  (66, .yes, [``BlindEvalParsedClaims.fracas_066_parsed_yes_0], [``BlindEvalParsedClaims.fracas_066_parsed_no_0]),
+  (67, .yes, [``BlindEvalParsedClaims.fracas_067_parsed_yes_0], [``BlindEvalParsedClaims.fracas_067_parsed_no_0]),
+  (68, .yes, [``BlindEvalParsedClaims.fracas_068_parsed_yes_0], [``BlindEvalParsedClaims.fracas_068_parsed_no_0]),
+  (69, .yes, [``BlindEvalParsedClaims.fracas_069_parsed_yes_0, ``BlindEvalParsedClaims.fracas_069_parsed_yes_1], [``BlindEvalParsedClaims.fracas_069_parsed_no_0, ``BlindEvalParsedClaims.fracas_069_parsed_no_1]),
+  (70, .no, [``BlindEvalParsedClaims.fracas_070_parsed_yes_0], [``BlindEvalParsedClaims.fracas_070_parsed_no_0]),
+  (71, .unknown, [``BlindEvalParsedClaims.fracas_071_parsed_yes_0, ``BlindEvalParsedClaims.fracas_071_parsed_yes_1], [``BlindEvalParsedClaims.fracas_071_parsed_no_0, ``BlindEvalParsedClaims.fracas_071_parsed_no_1]),
+  (72, .unknown, [``BlindEvalParsedClaims.fracas_072_parsed_yes_0, ``BlindEvalParsedClaims.fracas_072_parsed_yes_1], [``BlindEvalParsedClaims.fracas_072_parsed_no_0, ``BlindEvalParsedClaims.fracas_072_parsed_no_1]),
+  (73, .unknown, [``BlindEvalParsedClaims.fracas_073_parsed_yes_0], [``BlindEvalParsedClaims.fracas_073_parsed_no_0]),
+  (74, .unknown, [``BlindEvalParsedClaims.fracas_074_parsed_yes_0], [``BlindEvalParsedClaims.fracas_074_parsed_no_0]),
+  (77, .undef, [``BlindEvalParsedClaims.fracas_077_parsed_yes_0], [``BlindEvalParsedClaims.fracas_077_parsed_no_0]),
+  (79, .unknown, [``BlindEvalParsedClaims.fracas_079_parsed_yes_0], [``BlindEvalParsedClaims.fracas_079_parsed_no_0]),
+  (80, .yes, [``BlindEvalParsedClaims.fracas_080_parsed_yes_0], [``BlindEvalParsedClaims.fracas_080_parsed_no_0]),
+  (87, .yes, [``BlindEvalParsedClaims.fracas_087_parsed_yes_0], [``BlindEvalParsedClaims.fracas_087_parsed_no_0]),
+  (88, .unknown, [``BlindEvalParsedClaims.fracas_088_parsed_yes_0], [``BlindEvalParsedClaims.fracas_088_parsed_no_0]),
+  (90, .yes, [``BlindEvalParsedClaims.fracas_090_parsed_yes_0], [``BlindEvalParsedClaims.fracas_090_parsed_no_0]),
+  (94, .unknown, [``BlindEvalParsedClaims.fracas_094_parsed_yes_0, ``BlindEvalParsedClaims.fracas_094_parsed_yes_1], [``BlindEvalParsedClaims.fracas_094_parsed_no_0, ``BlindEvalParsedClaims.fracas_094_parsed_no_1]),
+  (95, .unknown, [``BlindEvalParsedClaims.fracas_095_parsed_yes_0, ``BlindEvalParsedClaims.fracas_095_parsed_yes_1], [``BlindEvalParsedClaims.fracas_095_parsed_no_0, ``BlindEvalParsedClaims.fracas_095_parsed_no_1]),
+  (96, .yes, [``BlindEvalParsedClaims.fracas_096_parsed_yes_0], [``BlindEvalParsedClaims.fracas_096_parsed_no_0]),
+  (98, .unknown, [``BlindEvalParsedClaims.fracas_098_parsed_yes_0], [``BlindEvalParsedClaims.fracas_098_parsed_no_0]),
+  (99, .yes, [``BlindEvalParsedClaims.fracas_099_parsed_yes_0], [``BlindEvalParsedClaims.fracas_099_parsed_no_0]),
+  (100, .yes, [``BlindEvalParsedClaims.fracas_100_parsed_yes_0], [``BlindEvalParsedClaims.fracas_100_parsed_no_0]),
+  (102, .unknown, [``BlindEvalParsedClaims.fracas_102_parsed_yes_0], [``BlindEvalParsedClaims.fracas_102_parsed_no_0]),
+  (103, .yes, [``BlindEvalParsedClaims.fracas_103_parsed_yes_0], [``BlindEvalParsedClaims.fracas_103_parsed_no_0]),
+  (105, .no, [``BlindEvalParsedClaims.fracas_105_parsed_yes_0], [``BlindEvalParsedClaims.fracas_105_parsed_no_0]),
+  (106, .no, [``BlindEvalParsedClaims.fracas_106_parsed_yes_0], [``BlindEvalParsedClaims.fracas_106_parsed_no_0]),
+  (107, .yes, [``BlindEvalParsedClaims.fracas_107_parsed_yes_0, ``BlindEvalParsedClaims.fracas_107_parsed_yes_1], [``BlindEvalParsedClaims.fracas_107_parsed_no_0, ``BlindEvalParsedClaims.fracas_107_parsed_no_1]),
+  (108, .yes, [``BlindEvalParsedClaims.fracas_108_parsed_yes_0], [``BlindEvalParsedClaims.fracas_108_parsed_no_0]),
+  (109, .no, [``BlindEvalParsedClaims.fracas_109_parsed_yes_0, ``BlindEvalParsedClaims.fracas_109_parsed_yes_1], [``BlindEvalParsedClaims.fracas_109_parsed_no_0, ``BlindEvalParsedClaims.fracas_109_parsed_no_1]),
+  (110, .yes, [``BlindEvalParsedClaims.fracas_110_parsed_yes_0], [``BlindEvalParsedClaims.fracas_110_parsed_no_0]),
+  (132, .yes, [``BlindEvalParsedClaims.fracas_132_parsed_yes_0], [``BlindEvalParsedClaims.fracas_132_parsed_no_0]),
+  (133, .yes, [``BlindEvalParsedClaims.fracas_133_parsed_yes_0], [``BlindEvalParsedClaims.fracas_133_parsed_no_0]),
+  (134, .yes, [``BlindEvalParsedClaims.fracas_134_parsed_yes_0], [``BlindEvalParsedClaims.fracas_134_parsed_no_0]),
+  (135, .yes, [``BlindEvalParsedClaims.fracas_135_parsed_yes_0], [``BlindEvalParsedClaims.fracas_135_parsed_no_0]),
+  (138, .yes, [``BlindEvalParsedClaims.fracas_138_parsed_yes_0], [``BlindEvalParsedClaims.fracas_138_parsed_no_0]),
+  (142, .yes, [``BlindEvalParsedClaims.fracas_142_parsed_yes_0], [``BlindEvalParsedClaims.fracas_142_parsed_no_0]),
+  (143, .unknown, [``BlindEvalParsedClaims.fracas_143_parsed_yes_0], [``BlindEvalParsedClaims.fracas_143_parsed_no_0]),
+  (144, .yes, [``BlindEvalParsedClaims.fracas_144_parsed_yes_0], [``BlindEvalParsedClaims.fracas_144_parsed_no_0]),
+  (147, .no, [``BlindEvalParsedClaims.fracas_147_parsed_yes_0], [``BlindEvalParsedClaims.fracas_147_parsed_no_0]),
+  (149, .yes, [``BlindEvalParsedClaims.fracas_149_parsed_yes_0, ``BlindEvalParsedClaims.fracas_149_parsed_yes_1], [``BlindEvalParsedClaims.fracas_149_parsed_no_0, ``BlindEvalParsedClaims.fracas_149_parsed_no_1]),
+  (150, .yes, [``BlindEvalParsedClaims.fracas_150_parsed_yes_0], [``BlindEvalParsedClaims.fracas_150_parsed_no_0]),
+  (151, .yes, [``BlindEvalParsedClaims.fracas_151_parsed_yes_0], [``BlindEvalParsedClaims.fracas_151_parsed_no_0]),
+  (152, .yes, [``BlindEvalParsedClaims.fracas_152_parsed_yes_0], [``BlindEvalParsedClaims.fracas_152_parsed_no_0]),
+  (155, .yes, [``BlindEvalParsedClaims.fracas_155_parsed_yes_0], [``BlindEvalParsedClaims.fracas_155_parsed_no_0]),
+  (156, .unknown, [``BlindEvalParsedClaims.fracas_156_parsed_yes_0], [``BlindEvalParsedClaims.fracas_156_parsed_no_0]),
+  (157, .yes, [``BlindEvalParsedClaims.fracas_157_parsed_yes_0], [``BlindEvalParsedClaims.fracas_157_parsed_no_0]),
+  (158, .unknown, [``BlindEvalParsedClaims.fracas_158_parsed_yes_0], [``BlindEvalParsedClaims.fracas_158_parsed_no_0]),
+  (159, .yes, [``BlindEvalParsedClaims.fracas_159_parsed_yes_0], [``BlindEvalParsedClaims.fracas_159_parsed_no_0]),
+  (160, .yes, [``BlindEvalParsedClaims.fracas_160_parsed_yes_0], [``BlindEvalParsedClaims.fracas_160_parsed_no_0]),
+  (161, .unknown, [``BlindEvalParsedClaims.fracas_161_parsed_yes_0], [``BlindEvalParsedClaims.fracas_161_parsed_no_0]),
+  (162, .yes, [``BlindEvalParsedClaims.fracas_162_parsed_yes_0], [``BlindEvalParsedClaims.fracas_162_parsed_no_0]),
+  (197, .yes, [``BlindEvalParsedClaims.fracas_197_parsed_yes_0], [``BlindEvalParsedClaims.fracas_197_parsed_no_0]),
+  (198, .no, [``BlindEvalParsedClaims.fracas_198_parsed_yes_0], [``BlindEvalParsedClaims.fracas_198_parsed_no_0]),
+  (199, .yes, [``BlindEvalParsedClaims.fracas_199_parsed_yes_0], [``BlindEvalParsedClaims.fracas_199_parsed_no_0]),
+  (200, .unknown, [``BlindEvalParsedClaims.fracas_200_parsed_yes_0], [``BlindEvalParsedClaims.fracas_200_parsed_no_0]),
+  (201, .unknown, [``BlindEvalParsedClaims.fracas_201_parsed_yes_0], [``BlindEvalParsedClaims.fracas_201_parsed_no_0]),
+  (202, .yes, [``BlindEvalParsedClaims.fracas_202_parsed_yes_0], [``BlindEvalParsedClaims.fracas_202_parsed_no_0]),
+  (203, .yes, [``BlindEvalParsedClaims.fracas_203_parsed_yes_0], [``BlindEvalParsedClaims.fracas_203_parsed_no_0]),
+  (204, .no, [``BlindEvalParsedClaims.fracas_204_parsed_yes_0], [``BlindEvalParsedClaims.fracas_204_parsed_no_0]),
+  (205, .no, [``BlindEvalParsedClaims.fracas_205_parsed_yes_0], [``BlindEvalParsedClaims.fracas_205_parsed_no_0]),
+  (206, .unknown, [``BlindEvalParsedClaims.fracas_206_parsed_yes_0], [``BlindEvalParsedClaims.fracas_206_parsed_no_0]),
+  (207, .unknown, [``BlindEvalParsedClaims.fracas_207_parsed_yes_0], [``BlindEvalParsedClaims.fracas_207_parsed_no_0]),
+  (208, .yes, [``BlindEvalParsedClaims.fracas_208_parsed_yes_0], [``BlindEvalParsedClaims.fracas_208_parsed_no_0]),
+  (209, .no, [``BlindEvalParsedClaims.fracas_209_parsed_yes_0], [``BlindEvalParsedClaims.fracas_209_parsed_no_0]),
+  (210, .no, [``BlindEvalParsedClaims.fracas_210_parsed_yes_0], [``BlindEvalParsedClaims.fracas_210_parsed_no_0]),
+  (211, .no, [``BlindEvalParsedClaims.fracas_211_parsed_yes_0], [``BlindEvalParsedClaims.fracas_211_parsed_no_0]),
+  (212, .yes, [``BlindEvalParsedClaims.fracas_212_parsed_yes_0], [``BlindEvalParsedClaims.fracas_212_parsed_no_0]),
+  (213, .undef, [``BlindEvalParsedClaims.fracas_213_parsed_yes_0], [``BlindEvalParsedClaims.fracas_213_parsed_no_0]),
+  (214, .yes, [``BlindEvalParsedClaims.fracas_214_parsed_yes_0], [``BlindEvalParsedClaims.fracas_214_parsed_no_0]),
+  (215, .unknown, [``BlindEvalParsedClaims.fracas_215_parsed_yes_0], [``BlindEvalParsedClaims.fracas_215_parsed_no_0]),
+  (218, .yes, [``BlindEvalParsedClaims.fracas_218_parsed_yes_0], [``BlindEvalParsedClaims.fracas_218_parsed_no_0]),
+  (219, .unknown, [``BlindEvalParsedClaims.fracas_219_parsed_yes_0], [``BlindEvalParsedClaims.fracas_219_parsed_no_0]),
+  (220, .yes, [``BlindEvalParsedClaims.fracas_220_parsed_yes_0], [``BlindEvalParsedClaims.fracas_220_parsed_no_0]),
+  (221, .unknown, [``BlindEvalParsedClaims.fracas_221_parsed_yes_0], [``BlindEvalParsedClaims.fracas_221_parsed_no_0]),
+  (222, .unknown, [``BlindEvalParsedClaims.fracas_222_parsed_yes_0], [``BlindEvalParsedClaims.fracas_222_parsed_no_0]),
+  (223, .no, [``BlindEvalParsedClaims.fracas_223_parsed_yes_0], [``BlindEvalParsedClaims.fracas_223_parsed_no_0]),
+  (224, .yes, [``BlindEvalParsedClaims.fracas_224_parsed_yes_0], [``BlindEvalParsedClaims.fracas_224_parsed_no_0]),
+  (225, .unknown, [``BlindEvalParsedClaims.fracas_225_parsed_yes_0], [``BlindEvalParsedClaims.fracas_225_parsed_no_0]),
+  (226, .unknown, [``BlindEvalParsedClaims.fracas_226_parsed_yes_0], [``BlindEvalParsedClaims.fracas_226_parsed_no_0]),
+  (227, .no, [``BlindEvalParsedClaims.fracas_227_parsed_yes_0], [``BlindEvalParsedClaims.fracas_227_parsed_no_0]),
+  (228, .unknown, [``BlindEvalParsedClaims.fracas_228_parsed_yes_0], [``BlindEvalParsedClaims.fracas_228_parsed_no_0]),
+  (229, .no, [``BlindEvalParsedClaims.fracas_229_parsed_yes_0], [``BlindEvalParsedClaims.fracas_229_parsed_no_0]),
+  (246, .yes, [``BlindEvalParsedClaims.fracas_246_parsed_yes_0], [``BlindEvalParsedClaims.fracas_246_parsed_no_0]),
+  (247, .unknown, [``BlindEvalParsedClaims.fracas_247_parsed_yes_0], [``BlindEvalParsedClaims.fracas_247_parsed_no_0]),
+  (249, .yes, [``BlindEvalParsedClaims.fracas_249_parsed_yes_0], [``BlindEvalParsedClaims.fracas_249_parsed_no_0]),
+  (250, .yes, [``BlindEvalParsedClaims.fracas_250_parsed_yes_0], [``BlindEvalParsedClaims.fracas_250_parsed_no_0]),
+  (261, .yes, [``BlindEvalParsedClaims.fracas_261_parsed_yes_0], [``BlindEvalParsedClaims.fracas_261_parsed_no_0]),
+  (262, .yes, [``BlindEvalParsedClaims.fracas_262_parsed_yes_0], [``BlindEvalParsedClaims.fracas_262_parsed_no_0]),
+  (263, .unknown, [``BlindEvalParsedClaims.fracas_263_parsed_yes_0], [``BlindEvalParsedClaims.fracas_263_parsed_no_0]),
+  (264, .yes, [``BlindEvalParsedClaims.fracas_264_parsed_yes_0], [``BlindEvalParsedClaims.fracas_264_parsed_no_0]),
+  (265, .yes, [``BlindEvalParsedClaims.fracas_265_parsed_yes_0], [``BlindEvalParsedClaims.fracas_265_parsed_no_0]),
+  (266, .yes, [``BlindEvalParsedClaims.fracas_266_parsed_yes_0], [``BlindEvalParsedClaims.fracas_266_parsed_no_0]),
+  (267, .yes, [``BlindEvalParsedClaims.fracas_267_parsed_yes_0], [``BlindEvalParsedClaims.fracas_267_parsed_no_0]),
+  (268, .yes, [``BlindEvalParsedClaims.fracas_268_parsed_yes_0], [``BlindEvalParsedClaims.fracas_268_parsed_no_0]),
+  (269, .unknown, [``BlindEvalParsedClaims.fracas_269_parsed_yes_0], [``BlindEvalParsedClaims.fracas_269_parsed_no_0]),
+  (270, .yes, [``BlindEvalParsedClaims.fracas_270_parsed_yes_0], [``BlindEvalParsedClaims.fracas_270_parsed_no_0]),
+  (271, .unknown, [``BlindEvalParsedClaims.fracas_271_parsed_yes_0], [``BlindEvalParsedClaims.fracas_271_parsed_no_0]),
+  (272, .unknown, [``BlindEvalParsedClaims.fracas_272_parsed_yes_0], [``BlindEvalParsedClaims.fracas_272_parsed_no_0]),
+  (275, .unknown, [``BlindEvalParsedClaims.fracas_275_parsed_yes_0], [``BlindEvalParsedClaims.fracas_275_parsed_no_0]),
+  (277, .unknown, [``BlindEvalParsedClaims.fracas_277_parsed_yes_0], [``BlindEvalParsedClaims.fracas_277_parsed_no_0]),
+  (278, .no, [``BlindEvalParsedClaims.fracas_278_parsed_yes_0], [``BlindEvalParsedClaims.fracas_278_parsed_no_0]),
+  (279, .no, [``BlindEvalParsedClaims.fracas_279_parsed_yes_0], [``BlindEvalParsedClaims.fracas_279_parsed_no_0]),
+  (280, .unknown, [``BlindEvalParsedClaims.fracas_280_parsed_yes_0], [``BlindEvalParsedClaims.fracas_280_parsed_no_0]),
+  (282, .no, [``BlindEvalParsedClaims.fracas_282_parsed_yes_0], [``BlindEvalParsedClaims.fracas_282_parsed_no_0]),
+  (283, .unknown, [``BlindEvalParsedClaims.fracas_283_parsed_yes_0], [``BlindEvalParsedClaims.fracas_283_parsed_no_0]),
+  (287, .unknown, [``BlindEvalParsedClaims.fracas_287_parsed_yes_0], [``BlindEvalParsedClaims.fracas_287_parsed_no_0]),
+  (288, .yes, [``BlindEvalParsedClaims.fracas_288_parsed_yes_0], [``BlindEvalParsedClaims.fracas_288_parsed_no_0]),
+  (290, .yes, [``BlindEvalParsedClaims.fracas_290_parsed_yes_0], [``BlindEvalParsedClaims.fracas_290_parsed_no_0]),
+  (298, .yes, [``BlindEvalParsedClaims.fracas_298_parsed_yes_0], [``BlindEvalParsedClaims.fracas_298_parsed_no_0]),
+  (300, .yes, [``BlindEvalParsedClaims.fracas_300_parsed_yes_0], [``BlindEvalParsedClaims.fracas_300_parsed_no_0]),
+  (303, .yes, [``BlindEvalParsedClaims.fracas_303_parsed_yes_0], [``BlindEvalParsedClaims.fracas_303_parsed_no_0]),
+  (304, .unknown, [``BlindEvalParsedClaims.fracas_304_parsed_yes_0], [``BlindEvalParsedClaims.fracas_304_parsed_no_0]),
+  (306, .yes, [``BlindEvalParsedClaims.fracas_306_parsed_yes_0], [``BlindEvalParsedClaims.fracas_306_parsed_no_0]),
+  (308, .undef, [``BlindEvalParsedClaims.fracas_308_parsed_yes_0], [``BlindEvalParsedClaims.fracas_308_parsed_no_0]),
+  (326, .yes, [``BlindEvalParsedClaims.fracas_326_parsed_yes_0], [``BlindEvalParsedClaims.fracas_326_parsed_no_0]),
+  (328, .yes, [``BlindEvalParsedClaims.fracas_328_parsed_yes_0], [``BlindEvalParsedClaims.fracas_328_parsed_no_0]),
+  (330, .yes, [``BlindEvalParsedClaims.fracas_330_parsed_yes_0], [``BlindEvalParsedClaims.fracas_330_parsed_no_0]),
+  (334, .yes, [``BlindEvalParsedClaims.fracas_334_parsed_yes_0], [``BlindEvalParsedClaims.fracas_334_parsed_no_0]),
+  (335, .unknown, [``BlindEvalParsedClaims.fracas_335_parsed_yes_0], [``BlindEvalParsedClaims.fracas_335_parsed_no_0]),
+  (336, .yes, [``BlindEvalParsedClaims.fracas_336_parsed_yes_0], [``BlindEvalParsedClaims.fracas_336_parsed_no_0]),
+  (337, .unknown, [``BlindEvalParsedClaims.fracas_337_parsed_yes_0], [``BlindEvalParsedClaims.fracas_337_parsed_no_0])
 ]
 
 /-- The same problems, each claim with `gf/background.py`'s
 problem-independent background knowledge added as premises. -/
-def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := [
-  (1, .yes, ``BlindEvalParsedClaims.fracas_001_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_001_parsed_bk_no),
-  (2, .yes, ``BlindEvalParsedClaims.fracas_002_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_002_parsed_bk_no),
-  (3, .yes, ``BlindEvalParsedClaims.fracas_003_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_003_parsed_bk_no),
-  (4, .yes, ``BlindEvalParsedClaims.fracas_004_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_004_parsed_bk_no),
-  (5, .yes, ``BlindEvalParsedClaims.fracas_005_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_005_parsed_bk_no),
-  (6, .no, ``BlindEvalParsedClaims.fracas_006_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_006_parsed_bk_no),
-  (7, .yes, ``BlindEvalParsedClaims.fracas_007_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_007_parsed_bk_no),
-  (8, .yes, ``BlindEvalParsedClaims.fracas_008_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_008_parsed_bk_no),
-  (9, .yes, ``BlindEvalParsedClaims.fracas_009_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_009_parsed_bk_no),
-  (10, .yes, ``BlindEvalParsedClaims.fracas_010_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_010_parsed_bk_no),
-  (11, .yes, ``BlindEvalParsedClaims.fracas_011_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_011_parsed_bk_no),
-  (13, .yes, ``BlindEvalParsedClaims.fracas_013_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_013_parsed_bk_no),
-  (14, .no, ``BlindEvalParsedClaims.fracas_014_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_014_parsed_bk_no),
-  (15, .yes, ``BlindEvalParsedClaims.fracas_015_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_015_parsed_bk_no),
-  (16, .undef, ``BlindEvalParsedClaims.fracas_016_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_016_parsed_bk_no),
-  (17, .yes, ``BlindEvalParsedClaims.fracas_017_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_017_parsed_bk_no),
-  (18, .yes, ``BlindEvalParsedClaims.fracas_018_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_018_parsed_bk_no),
-  (19, .yes, ``BlindEvalParsedClaims.fracas_019_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_019_parsed_bk_no),
-  (20, .yes, ``BlindEvalParsedClaims.fracas_020_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_020_parsed_bk_no),
-  (21, .yes, ``BlindEvalParsedClaims.fracas_021_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_021_parsed_bk_no),
-  (22, .unknown, ``BlindEvalParsedClaims.fracas_022_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_022_parsed_bk_no),
-  (23, .yes, ``BlindEvalParsedClaims.fracas_023_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_023_parsed_bk_no),
-  (24, .yes, ``BlindEvalParsedClaims.fracas_024_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_024_parsed_bk_no),
-  (25, .yes, ``BlindEvalParsedClaims.fracas_025_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_025_parsed_bk_no),
-  (26, .yes, ``BlindEvalParsedClaims.fracas_026_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_026_parsed_bk_no),
-  (29, .yes, ``BlindEvalParsedClaims.fracas_029_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_029_parsed_bk_no),
-  (30, .unknown, ``BlindEvalParsedClaims.fracas_030_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_030_parsed_bk_no),
-  (31, .yes, ``BlindEvalParsedClaims.fracas_031_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_031_parsed_bk_no),
-  (32, .unknown, ``BlindEvalParsedClaims.fracas_032_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_032_parsed_bk_no),
-  (33, .unknown, ``BlindEvalParsedClaims.fracas_033_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_033_parsed_bk_no),
-  (34, .unknown, ``BlindEvalParsedClaims.fracas_034_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_034_parsed_bk_no),
-  (35, .unknown, ``BlindEvalParsedClaims.fracas_035_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_035_parsed_bk_no),
-  (36, .unknown, ``BlindEvalParsedClaims.fracas_036_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_036_parsed_bk_no),
-  (37, .unknown, ``BlindEvalParsedClaims.fracas_037_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_037_parsed_bk_no),
-  (38, .no, ``BlindEvalParsedClaims.fracas_038_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_038_parsed_bk_no),
-  (39, .unknown, ``BlindEvalParsedClaims.fracas_039_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_039_parsed_bk_no),
-  (40, .unknown, ``BlindEvalParsedClaims.fracas_040_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_040_parsed_bk_no),
-  (41, .unknown, ``BlindEvalParsedClaims.fracas_041_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_041_parsed_bk_no),
-  (42, .unknown, ``BlindEvalParsedClaims.fracas_042_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_042_parsed_bk_no),
-  (45, .unknown, ``BlindEvalParsedClaims.fracas_045_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_045_parsed_bk_no),
-  (47, .unknown, ``BlindEvalParsedClaims.fracas_047_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_047_parsed_bk_no),
-  (48, .yes, ``BlindEvalParsedClaims.fracas_048_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_048_parsed_bk_no),
-  (49, .yes, ``BlindEvalParsedClaims.fracas_049_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_049_parsed_bk_no),
-  (50, .unknown, ``BlindEvalParsedClaims.fracas_050_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_050_parsed_bk_no),
-  (51, .unknown, ``BlindEvalParsedClaims.fracas_051_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_051_parsed_bk_no),
-  (52, .unknown, ``BlindEvalParsedClaims.fracas_052_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_052_parsed_bk_no),
-  (53, .unknown, ``BlindEvalParsedClaims.fracas_053_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_053_parsed_bk_no),
-  (54, .unknown, ``BlindEvalParsedClaims.fracas_054_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_054_parsed_bk_no),
-  (55, .yes, ``BlindEvalParsedClaims.fracas_055_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_055_parsed_bk_no),
-  (56, .unknown, ``BlindEvalParsedClaims.fracas_056_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_056_parsed_bk_no),
-  (57, .yes, ``BlindEvalParsedClaims.fracas_057_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_057_parsed_bk_no),
-  (58, .unknown, ``BlindEvalParsedClaims.fracas_058_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_058_parsed_bk_no),
-  (61, .undef, ``BlindEvalParsedClaims.fracas_061_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_061_parsed_bk_no),
-  (63, .yes, ``BlindEvalParsedClaims.fracas_063_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_063_parsed_bk_no),
-  (64, .unknown, ``BlindEvalParsedClaims.fracas_064_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_064_parsed_bk_no),
-  (65, .unknown, ``BlindEvalParsedClaims.fracas_065_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_065_parsed_bk_no),
-  (66, .yes, ``BlindEvalParsedClaims.fracas_066_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_066_parsed_bk_no),
-  (67, .yes, ``BlindEvalParsedClaims.fracas_067_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_067_parsed_bk_no),
-  (68, .yes, ``BlindEvalParsedClaims.fracas_068_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_068_parsed_bk_no),
-  (69, .yes, ``BlindEvalParsedClaims.fracas_069_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_069_parsed_bk_no),
-  (70, .no, ``BlindEvalParsedClaims.fracas_070_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_070_parsed_bk_no),
-  (71, .unknown, ``BlindEvalParsedClaims.fracas_071_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_071_parsed_bk_no),
-  (72, .unknown, ``BlindEvalParsedClaims.fracas_072_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_072_parsed_bk_no),
-  (73, .unknown, ``BlindEvalParsedClaims.fracas_073_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_073_parsed_bk_no),
-  (74, .unknown, ``BlindEvalParsedClaims.fracas_074_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_074_parsed_bk_no),
-  (77, .undef, ``BlindEvalParsedClaims.fracas_077_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_077_parsed_bk_no),
-  (79, .unknown, ``BlindEvalParsedClaims.fracas_079_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_079_parsed_bk_no),
-  (80, .yes, ``BlindEvalParsedClaims.fracas_080_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_080_parsed_bk_no),
-  (87, .yes, ``BlindEvalParsedClaims.fracas_087_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_087_parsed_bk_no),
-  (88, .unknown, ``BlindEvalParsedClaims.fracas_088_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_088_parsed_bk_no),
-  (90, .yes, ``BlindEvalParsedClaims.fracas_090_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_090_parsed_bk_no),
-  (94, .unknown, ``BlindEvalParsedClaims.fracas_094_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_094_parsed_bk_no),
-  (95, .unknown, ``BlindEvalParsedClaims.fracas_095_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_095_parsed_bk_no),
-  (96, .yes, ``BlindEvalParsedClaims.fracas_096_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_096_parsed_bk_no),
-  (98, .unknown, ``BlindEvalParsedClaims.fracas_098_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_098_parsed_bk_no),
-  (99, .yes, ``BlindEvalParsedClaims.fracas_099_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_099_parsed_bk_no),
-  (100, .yes, ``BlindEvalParsedClaims.fracas_100_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_100_parsed_bk_no),
-  (102, .unknown, ``BlindEvalParsedClaims.fracas_102_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_102_parsed_bk_no),
-  (103, .yes, ``BlindEvalParsedClaims.fracas_103_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_103_parsed_bk_no),
-  (105, .no, ``BlindEvalParsedClaims.fracas_105_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_105_parsed_bk_no),
-  (106, .no, ``BlindEvalParsedClaims.fracas_106_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_106_parsed_bk_no),
-  (107, .yes, ``BlindEvalParsedClaims.fracas_107_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_107_parsed_bk_no),
-  (108, .yes, ``BlindEvalParsedClaims.fracas_108_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_108_parsed_bk_no),
-  (109, .no, ``BlindEvalParsedClaims.fracas_109_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_109_parsed_bk_no),
-  (110, .yes, ``BlindEvalParsedClaims.fracas_110_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_110_parsed_bk_no),
-  (132, .yes, ``BlindEvalParsedClaims.fracas_132_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_132_parsed_bk_no),
-  (133, .yes, ``BlindEvalParsedClaims.fracas_133_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_133_parsed_bk_no),
-  (134, .yes, ``BlindEvalParsedClaims.fracas_134_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_134_parsed_bk_no),
-  (135, .yes, ``BlindEvalParsedClaims.fracas_135_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_135_parsed_bk_no),
-  (138, .yes, ``BlindEvalParsedClaims.fracas_138_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_138_parsed_bk_no),
-  (142, .yes, ``BlindEvalParsedClaims.fracas_142_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_142_parsed_bk_no),
-  (143, .unknown, ``BlindEvalParsedClaims.fracas_143_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_143_parsed_bk_no),
-  (144, .yes, ``BlindEvalParsedClaims.fracas_144_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_144_parsed_bk_no),
-  (147, .no, ``BlindEvalParsedClaims.fracas_147_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_147_parsed_bk_no),
-  (149, .yes, ``BlindEvalParsedClaims.fracas_149_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_149_parsed_bk_no),
-  (150, .yes, ``BlindEvalParsedClaims.fracas_150_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_150_parsed_bk_no),
-  (151, .yes, ``BlindEvalParsedClaims.fracas_151_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_151_parsed_bk_no),
-  (152, .yes, ``BlindEvalParsedClaims.fracas_152_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_152_parsed_bk_no),
-  (155, .yes, ``BlindEvalParsedClaims.fracas_155_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_155_parsed_bk_no),
-  (156, .unknown, ``BlindEvalParsedClaims.fracas_156_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_156_parsed_bk_no),
-  (157, .yes, ``BlindEvalParsedClaims.fracas_157_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_157_parsed_bk_no),
-  (158, .unknown, ``BlindEvalParsedClaims.fracas_158_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_158_parsed_bk_no),
-  (159, .yes, ``BlindEvalParsedClaims.fracas_159_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_159_parsed_bk_no),
-  (160, .yes, ``BlindEvalParsedClaims.fracas_160_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_160_parsed_bk_no),
-  (161, .unknown, ``BlindEvalParsedClaims.fracas_161_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_161_parsed_bk_no),
-  (162, .yes, ``BlindEvalParsedClaims.fracas_162_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_162_parsed_bk_no),
-  (197, .yes, ``BlindEvalParsedClaims.fracas_197_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_197_parsed_bk_no),
-  (198, .no, ``BlindEvalParsedClaims.fracas_198_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_198_parsed_bk_no),
-  (199, .yes, ``BlindEvalParsedClaims.fracas_199_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_199_parsed_bk_no),
-  (200, .unknown, ``BlindEvalParsedClaims.fracas_200_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_200_parsed_bk_no),
-  (201, .unknown, ``BlindEvalParsedClaims.fracas_201_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_201_parsed_bk_no),
-  (202, .yes, ``BlindEvalParsedClaims.fracas_202_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_202_parsed_bk_no),
-  (203, .yes, ``BlindEvalParsedClaims.fracas_203_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_203_parsed_bk_no),
-  (204, .no, ``BlindEvalParsedClaims.fracas_204_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_204_parsed_bk_no),
-  (205, .no, ``BlindEvalParsedClaims.fracas_205_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_205_parsed_bk_no),
-  (206, .unknown, ``BlindEvalParsedClaims.fracas_206_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_206_parsed_bk_no),
-  (207, .unknown, ``BlindEvalParsedClaims.fracas_207_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_207_parsed_bk_no),
-  (208, .yes, ``BlindEvalParsedClaims.fracas_208_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_208_parsed_bk_no),
-  (209, .no, ``BlindEvalParsedClaims.fracas_209_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_209_parsed_bk_no),
-  (210, .no, ``BlindEvalParsedClaims.fracas_210_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_210_parsed_bk_no),
-  (211, .no, ``BlindEvalParsedClaims.fracas_211_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_211_parsed_bk_no),
-  (212, .yes, ``BlindEvalParsedClaims.fracas_212_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_212_parsed_bk_no),
-  (213, .undef, ``BlindEvalParsedClaims.fracas_213_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_213_parsed_bk_no),
-  (214, .yes, ``BlindEvalParsedClaims.fracas_214_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_214_parsed_bk_no),
-  (215, .unknown, ``BlindEvalParsedClaims.fracas_215_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_215_parsed_bk_no),
-  (218, .yes, ``BlindEvalParsedClaims.fracas_218_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_218_parsed_bk_no),
-  (219, .unknown, ``BlindEvalParsedClaims.fracas_219_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_219_parsed_bk_no),
-  (220, .yes, ``BlindEvalParsedClaims.fracas_220_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_220_parsed_bk_no),
-  (221, .unknown, ``BlindEvalParsedClaims.fracas_221_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_221_parsed_bk_no),
-  (222, .unknown, ``BlindEvalParsedClaims.fracas_222_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_222_parsed_bk_no),
-  (223, .no, ``BlindEvalParsedClaims.fracas_223_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_223_parsed_bk_no),
-  (224, .yes, ``BlindEvalParsedClaims.fracas_224_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_224_parsed_bk_no),
-  (225, .unknown, ``BlindEvalParsedClaims.fracas_225_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_225_parsed_bk_no),
-  (226, .unknown, ``BlindEvalParsedClaims.fracas_226_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_226_parsed_bk_no),
-  (227, .no, ``BlindEvalParsedClaims.fracas_227_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_227_parsed_bk_no),
-  (228, .unknown, ``BlindEvalParsedClaims.fracas_228_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_228_parsed_bk_no),
-  (229, .no, ``BlindEvalParsedClaims.fracas_229_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_229_parsed_bk_no),
-  (246, .yes, ``BlindEvalParsedClaims.fracas_246_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_246_parsed_bk_no),
-  (247, .unknown, ``BlindEvalParsedClaims.fracas_247_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_247_parsed_bk_no),
-  (249, .yes, ``BlindEvalParsedClaims.fracas_249_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_249_parsed_bk_no),
-  (250, .yes, ``BlindEvalParsedClaims.fracas_250_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_250_parsed_bk_no),
-  (261, .yes, ``BlindEvalParsedClaims.fracas_261_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_261_parsed_bk_no),
-  (262, .yes, ``BlindEvalParsedClaims.fracas_262_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_262_parsed_bk_no),
-  (263, .unknown, ``BlindEvalParsedClaims.fracas_263_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_263_parsed_bk_no),
-  (264, .yes, ``BlindEvalParsedClaims.fracas_264_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_264_parsed_bk_no),
-  (265, .yes, ``BlindEvalParsedClaims.fracas_265_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_265_parsed_bk_no),
-  (266, .yes, ``BlindEvalParsedClaims.fracas_266_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_266_parsed_bk_no),
-  (267, .yes, ``BlindEvalParsedClaims.fracas_267_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_267_parsed_bk_no),
-  (268, .yes, ``BlindEvalParsedClaims.fracas_268_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_268_parsed_bk_no),
-  (269, .unknown, ``BlindEvalParsedClaims.fracas_269_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_269_parsed_bk_no),
-  (270, .yes, ``BlindEvalParsedClaims.fracas_270_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_270_parsed_bk_no),
-  (271, .unknown, ``BlindEvalParsedClaims.fracas_271_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_271_parsed_bk_no),
-  (272, .unknown, ``BlindEvalParsedClaims.fracas_272_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_272_parsed_bk_no),
-  (275, .unknown, ``BlindEvalParsedClaims.fracas_275_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_275_parsed_bk_no),
-  (277, .unknown, ``BlindEvalParsedClaims.fracas_277_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_277_parsed_bk_no),
-  (278, .no, ``BlindEvalParsedClaims.fracas_278_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_278_parsed_bk_no),
-  (279, .no, ``BlindEvalParsedClaims.fracas_279_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_279_parsed_bk_no),
-  (280, .unknown, ``BlindEvalParsedClaims.fracas_280_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_280_parsed_bk_no),
-  (282, .no, ``BlindEvalParsedClaims.fracas_282_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_282_parsed_bk_no),
-  (283, .unknown, ``BlindEvalParsedClaims.fracas_283_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_283_parsed_bk_no),
-  (287, .unknown, ``BlindEvalParsedClaims.fracas_287_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_287_parsed_bk_no),
-  (288, .yes, ``BlindEvalParsedClaims.fracas_288_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_288_parsed_bk_no),
-  (290, .yes, ``BlindEvalParsedClaims.fracas_290_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_290_parsed_bk_no),
-  (298, .yes, ``BlindEvalParsedClaims.fracas_298_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_298_parsed_bk_no),
-  (300, .yes, ``BlindEvalParsedClaims.fracas_300_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_300_parsed_bk_no),
-  (303, .yes, ``BlindEvalParsedClaims.fracas_303_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_303_parsed_bk_no),
-  (304, .unknown, ``BlindEvalParsedClaims.fracas_304_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_304_parsed_bk_no),
-  (306, .yes, ``BlindEvalParsedClaims.fracas_306_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_306_parsed_bk_no),
-  (308, .undef, ``BlindEvalParsedClaims.fracas_308_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_308_parsed_bk_no),
-  (326, .yes, ``BlindEvalParsedClaims.fracas_326_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_326_parsed_bk_no),
-  (328, .yes, ``BlindEvalParsedClaims.fracas_328_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_328_parsed_bk_no),
-  (330, .yes, ``BlindEvalParsedClaims.fracas_330_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_330_parsed_bk_no),
-  (334, .yes, ``BlindEvalParsedClaims.fracas_334_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_334_parsed_bk_no),
-  (335, .unknown, ``BlindEvalParsedClaims.fracas_335_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_335_parsed_bk_no),
-  (336, .yes, ``BlindEvalParsedClaims.fracas_336_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_336_parsed_bk_no),
-  (337, .unknown, ``BlindEvalParsedClaims.fracas_337_parsed_bk_yes, ``BlindEvalParsedClaims.fracas_337_parsed_bk_no)
+def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
+  (1, .yes, [``BlindEvalParsedClaims.fracas_001_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_001_parsed_bk_no_0]),
+  (2, .yes, [``BlindEvalParsedClaims.fracas_002_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_002_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_002_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_002_parsed_bk_no_1]),
+  (3, .yes, [``BlindEvalParsedClaims.fracas_003_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_003_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_003_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_003_parsed_bk_no_1]),
+  (4, .yes, [``BlindEvalParsedClaims.fracas_004_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_004_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_004_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_004_parsed_bk_no_1]),
+  (5, .yes, [``BlindEvalParsedClaims.fracas_005_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_005_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_005_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_005_parsed_bk_no_1]),
+  (6, .no, [``BlindEvalParsedClaims.fracas_006_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_006_parsed_bk_no_0]),
+  (7, .yes, [``BlindEvalParsedClaims.fracas_007_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_007_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_007_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_007_parsed_bk_no_1]),
+  (8, .yes, [``BlindEvalParsedClaims.fracas_008_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_008_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_008_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_008_parsed_bk_no_1]),
+  (9, .yes, [``BlindEvalParsedClaims.fracas_009_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_009_parsed_bk_no_0]),
+  (10, .yes, [``BlindEvalParsedClaims.fracas_010_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_010_parsed_bk_no_0]),
+  (11, .yes, [``BlindEvalParsedClaims.fracas_011_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_011_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_011_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_011_parsed_bk_no_1]),
+  (13, .yes, [``BlindEvalParsedClaims.fracas_013_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_013_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_013_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_013_parsed_bk_no_1]),
+  (14, .no, [``BlindEvalParsedClaims.fracas_014_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_014_parsed_bk_no_0]),
+  (15, .yes, [``BlindEvalParsedClaims.fracas_015_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_015_parsed_bk_no_0]),
+  (16, .undef, [``BlindEvalParsedClaims.fracas_016_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_016_parsed_bk_no_0]),
+  (17, .yes, [``BlindEvalParsedClaims.fracas_017_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_017_parsed_bk_no_0]),
+  (18, .yes, [``BlindEvalParsedClaims.fracas_018_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_018_parsed_bk_no_0]),
+  (19, .yes, [``BlindEvalParsedClaims.fracas_019_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_019_parsed_bk_no_0]),
+  (20, .yes, [``BlindEvalParsedClaims.fracas_020_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_020_parsed_bk_no_0]),
+  (21, .yes, [``BlindEvalParsedClaims.fracas_021_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_021_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_021_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_021_parsed_bk_no_1]),
+  (22, .unknown, [``BlindEvalParsedClaims.fracas_022_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_022_parsed_bk_no_0]),
+  (23, .yes, [``BlindEvalParsedClaims.fracas_023_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_023_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_023_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_023_parsed_bk_no_1]),
+  (24, .yes, [``BlindEvalParsedClaims.fracas_024_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_024_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_024_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_024_parsed_bk_no_1]),
+  (25, .yes, [``BlindEvalParsedClaims.fracas_025_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_025_parsed_bk_no_0]),
+  (26, .yes, [``BlindEvalParsedClaims.fracas_026_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_026_parsed_bk_no_0]),
+  (29, .yes, [``BlindEvalParsedClaims.fracas_029_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_029_parsed_bk_no_0]),
+  (30, .unknown, [``BlindEvalParsedClaims.fracas_030_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_030_parsed_bk_no_0]),
+  (31, .yes, [``BlindEvalParsedClaims.fracas_031_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_031_parsed_bk_no_0]),
+  (32, .unknown, [``BlindEvalParsedClaims.fracas_032_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_032_parsed_bk_no_0]),
+  (33, .unknown, [``BlindEvalParsedClaims.fracas_033_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_033_parsed_bk_no_0]),
+  (34, .unknown, [``BlindEvalParsedClaims.fracas_034_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_034_parsed_bk_no_0]),
+  (35, .unknown, [``BlindEvalParsedClaims.fracas_035_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_035_parsed_bk_no_0]),
+  (36, .unknown, [``BlindEvalParsedClaims.fracas_036_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_036_parsed_bk_no_0]),
+  (37, .unknown, [``BlindEvalParsedClaims.fracas_037_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_037_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_037_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_037_parsed_bk_no_1]),
+  (38, .no, [``BlindEvalParsedClaims.fracas_038_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_038_parsed_bk_no_0]),
+  (39, .unknown, [``BlindEvalParsedClaims.fracas_039_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_039_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_039_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_039_parsed_bk_no_1]),
+  (40, .unknown, [``BlindEvalParsedClaims.fracas_040_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_040_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_040_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_040_parsed_bk_no_1]),
+  (41, .unknown, [``BlindEvalParsedClaims.fracas_041_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_041_parsed_bk_no_0]),
+  (42, .unknown, [``BlindEvalParsedClaims.fracas_042_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_042_parsed_bk_no_0]),
+  (45, .unknown, [``BlindEvalParsedClaims.fracas_045_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_045_parsed_bk_no_0]),
+  (47, .unknown, [``BlindEvalParsedClaims.fracas_047_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_047_parsed_bk_no_0]),
+  (48, .yes, [``BlindEvalParsedClaims.fracas_048_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_048_parsed_bk_no_0]),
+  (49, .yes, [``BlindEvalParsedClaims.fracas_049_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_049_parsed_bk_no_0]),
+  (50, .unknown, [``BlindEvalParsedClaims.fracas_050_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_050_parsed_bk_no_0]),
+  (51, .unknown, [``BlindEvalParsedClaims.fracas_051_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_051_parsed_bk_no_0]),
+  (52, .unknown, [``BlindEvalParsedClaims.fracas_052_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_052_parsed_bk_no_0]),
+  (53, .unknown, [``BlindEvalParsedClaims.fracas_053_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_053_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_053_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_053_parsed_bk_no_1]),
+  (54, .unknown, [``BlindEvalParsedClaims.fracas_054_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_054_parsed_bk_no_0]),
+  (55, .yes, [``BlindEvalParsedClaims.fracas_055_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_055_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_055_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_055_parsed_bk_no_1]),
+  (56, .unknown, [``BlindEvalParsedClaims.fracas_056_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_056_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_056_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_056_parsed_bk_no_1]),
+  (57, .yes, [``BlindEvalParsedClaims.fracas_057_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_057_parsed_bk_no_0]),
+  (58, .unknown, [``BlindEvalParsedClaims.fracas_058_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_058_parsed_bk_no_0]),
+  (61, .undef, [``BlindEvalParsedClaims.fracas_061_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_061_parsed_bk_no_0]),
+  (63, .yes, [``BlindEvalParsedClaims.fracas_063_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_063_parsed_bk_no_0]),
+  (64, .unknown, [``BlindEvalParsedClaims.fracas_064_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_064_parsed_bk_no_0]),
+  (65, .unknown, [``BlindEvalParsedClaims.fracas_065_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_065_parsed_bk_no_0]),
+  (66, .yes, [``BlindEvalParsedClaims.fracas_066_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_066_parsed_bk_no_0]),
+  (67, .yes, [``BlindEvalParsedClaims.fracas_067_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_067_parsed_bk_no_0]),
+  (68, .yes, [``BlindEvalParsedClaims.fracas_068_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_068_parsed_bk_no_0]),
+  (69, .yes, [``BlindEvalParsedClaims.fracas_069_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_069_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_069_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_069_parsed_bk_no_1]),
+  (70, .no, [``BlindEvalParsedClaims.fracas_070_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_070_parsed_bk_no_0]),
+  (71, .unknown, [``BlindEvalParsedClaims.fracas_071_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_071_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_071_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_071_parsed_bk_no_1]),
+  (72, .unknown, [``BlindEvalParsedClaims.fracas_072_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_072_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_072_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_072_parsed_bk_no_1]),
+  (73, .unknown, [``BlindEvalParsedClaims.fracas_073_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_073_parsed_bk_no_0]),
+  (74, .unknown, [``BlindEvalParsedClaims.fracas_074_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_074_parsed_bk_no_0]),
+  (77, .undef, [``BlindEvalParsedClaims.fracas_077_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_077_parsed_bk_no_0]),
+  (79, .unknown, [``BlindEvalParsedClaims.fracas_079_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_079_parsed_bk_no_0]),
+  (80, .yes, [``BlindEvalParsedClaims.fracas_080_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_080_parsed_bk_no_0]),
+  (87, .yes, [``BlindEvalParsedClaims.fracas_087_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_087_parsed_bk_no_0]),
+  (88, .unknown, [``BlindEvalParsedClaims.fracas_088_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_088_parsed_bk_no_0]),
+  (90, .yes, [``BlindEvalParsedClaims.fracas_090_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_090_parsed_bk_no_0]),
+  (94, .unknown, [``BlindEvalParsedClaims.fracas_094_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_094_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_094_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_094_parsed_bk_no_1]),
+  (95, .unknown, [``BlindEvalParsedClaims.fracas_095_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_095_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_095_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_095_parsed_bk_no_1]),
+  (96, .yes, [``BlindEvalParsedClaims.fracas_096_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_096_parsed_bk_no_0]),
+  (98, .unknown, [``BlindEvalParsedClaims.fracas_098_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_098_parsed_bk_no_0]),
+  (99, .yes, [``BlindEvalParsedClaims.fracas_099_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_099_parsed_bk_no_0]),
+  (100, .yes, [``BlindEvalParsedClaims.fracas_100_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_100_parsed_bk_no_0]),
+  (102, .unknown, [``BlindEvalParsedClaims.fracas_102_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_102_parsed_bk_no_0]),
+  (103, .yes, [``BlindEvalParsedClaims.fracas_103_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_103_parsed_bk_no_0]),
+  (105, .no, [``BlindEvalParsedClaims.fracas_105_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_105_parsed_bk_no_0]),
+  (106, .no, [``BlindEvalParsedClaims.fracas_106_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_106_parsed_bk_no_0]),
+  (107, .yes, [``BlindEvalParsedClaims.fracas_107_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_107_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_107_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_107_parsed_bk_no_1]),
+  (108, .yes, [``BlindEvalParsedClaims.fracas_108_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_108_parsed_bk_no_0]),
+  (109, .no, [``BlindEvalParsedClaims.fracas_109_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_109_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_109_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_109_parsed_bk_no_1]),
+  (110, .yes, [``BlindEvalParsedClaims.fracas_110_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_110_parsed_bk_no_0]),
+  (132, .yes, [``BlindEvalParsedClaims.fracas_132_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_132_parsed_bk_no_0]),
+  (133, .yes, [``BlindEvalParsedClaims.fracas_133_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_133_parsed_bk_no_0]),
+  (134, .yes, [``BlindEvalParsedClaims.fracas_134_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_134_parsed_bk_no_0]),
+  (135, .yes, [``BlindEvalParsedClaims.fracas_135_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_135_parsed_bk_no_0]),
+  (138, .yes, [``BlindEvalParsedClaims.fracas_138_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_138_parsed_bk_no_0]),
+  (142, .yes, [``BlindEvalParsedClaims.fracas_142_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_142_parsed_bk_no_0]),
+  (143, .unknown, [``BlindEvalParsedClaims.fracas_143_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_143_parsed_bk_no_0]),
+  (144, .yes, [``BlindEvalParsedClaims.fracas_144_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_144_parsed_bk_no_0]),
+  (147, .no, [``BlindEvalParsedClaims.fracas_147_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_147_parsed_bk_no_0]),
+  (149, .yes, [``BlindEvalParsedClaims.fracas_149_parsed_bk_yes_0, ``BlindEvalParsedClaims.fracas_149_parsed_bk_yes_1], [``BlindEvalParsedClaims.fracas_149_parsed_bk_no_0, ``BlindEvalParsedClaims.fracas_149_parsed_bk_no_1]),
+  (150, .yes, [``BlindEvalParsedClaims.fracas_150_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_150_parsed_bk_no_0]),
+  (151, .yes, [``BlindEvalParsedClaims.fracas_151_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_151_parsed_bk_no_0]),
+  (152, .yes, [``BlindEvalParsedClaims.fracas_152_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_152_parsed_bk_no_0]),
+  (155, .yes, [``BlindEvalParsedClaims.fracas_155_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_155_parsed_bk_no_0]),
+  (156, .unknown, [``BlindEvalParsedClaims.fracas_156_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_156_parsed_bk_no_0]),
+  (157, .yes, [``BlindEvalParsedClaims.fracas_157_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_157_parsed_bk_no_0]),
+  (158, .unknown, [``BlindEvalParsedClaims.fracas_158_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_158_parsed_bk_no_0]),
+  (159, .yes, [``BlindEvalParsedClaims.fracas_159_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_159_parsed_bk_no_0]),
+  (160, .yes, [``BlindEvalParsedClaims.fracas_160_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_160_parsed_bk_no_0]),
+  (161, .unknown, [``BlindEvalParsedClaims.fracas_161_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_161_parsed_bk_no_0]),
+  (162, .yes, [``BlindEvalParsedClaims.fracas_162_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_162_parsed_bk_no_0]),
+  (197, .yes, [``BlindEvalParsedClaims.fracas_197_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_197_parsed_bk_no_0]),
+  (198, .no, [``BlindEvalParsedClaims.fracas_198_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_198_parsed_bk_no_0]),
+  (199, .yes, [``BlindEvalParsedClaims.fracas_199_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_199_parsed_bk_no_0]),
+  (200, .unknown, [``BlindEvalParsedClaims.fracas_200_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_200_parsed_bk_no_0]),
+  (201, .unknown, [``BlindEvalParsedClaims.fracas_201_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_201_parsed_bk_no_0]),
+  (202, .yes, [``BlindEvalParsedClaims.fracas_202_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_202_parsed_bk_no_0]),
+  (203, .yes, [``BlindEvalParsedClaims.fracas_203_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_203_parsed_bk_no_0]),
+  (204, .no, [``BlindEvalParsedClaims.fracas_204_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_204_parsed_bk_no_0]),
+  (205, .no, [``BlindEvalParsedClaims.fracas_205_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_205_parsed_bk_no_0]),
+  (206, .unknown, [``BlindEvalParsedClaims.fracas_206_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_206_parsed_bk_no_0]),
+  (207, .unknown, [``BlindEvalParsedClaims.fracas_207_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_207_parsed_bk_no_0]),
+  (208, .yes, [``BlindEvalParsedClaims.fracas_208_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_208_parsed_bk_no_0]),
+  (209, .no, [``BlindEvalParsedClaims.fracas_209_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_209_parsed_bk_no_0]),
+  (210, .no, [``BlindEvalParsedClaims.fracas_210_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_210_parsed_bk_no_0]),
+  (211, .no, [``BlindEvalParsedClaims.fracas_211_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_211_parsed_bk_no_0]),
+  (212, .yes, [``BlindEvalParsedClaims.fracas_212_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_212_parsed_bk_no_0]),
+  (213, .undef, [``BlindEvalParsedClaims.fracas_213_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_213_parsed_bk_no_0]),
+  (214, .yes, [``BlindEvalParsedClaims.fracas_214_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_214_parsed_bk_no_0]),
+  (215, .unknown, [``BlindEvalParsedClaims.fracas_215_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_215_parsed_bk_no_0]),
+  (218, .yes, [``BlindEvalParsedClaims.fracas_218_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_218_parsed_bk_no_0]),
+  (219, .unknown, [``BlindEvalParsedClaims.fracas_219_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_219_parsed_bk_no_0]),
+  (220, .yes, [``BlindEvalParsedClaims.fracas_220_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_220_parsed_bk_no_0]),
+  (221, .unknown, [``BlindEvalParsedClaims.fracas_221_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_221_parsed_bk_no_0]),
+  (222, .unknown, [``BlindEvalParsedClaims.fracas_222_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_222_parsed_bk_no_0]),
+  (223, .no, [``BlindEvalParsedClaims.fracas_223_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_223_parsed_bk_no_0]),
+  (224, .yes, [``BlindEvalParsedClaims.fracas_224_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_224_parsed_bk_no_0]),
+  (225, .unknown, [``BlindEvalParsedClaims.fracas_225_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_225_parsed_bk_no_0]),
+  (226, .unknown, [``BlindEvalParsedClaims.fracas_226_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_226_parsed_bk_no_0]),
+  (227, .no, [``BlindEvalParsedClaims.fracas_227_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_227_parsed_bk_no_0]),
+  (228, .unknown, [``BlindEvalParsedClaims.fracas_228_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_228_parsed_bk_no_0]),
+  (229, .no, [``BlindEvalParsedClaims.fracas_229_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_229_parsed_bk_no_0]),
+  (246, .yes, [``BlindEvalParsedClaims.fracas_246_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_246_parsed_bk_no_0]),
+  (247, .unknown, [``BlindEvalParsedClaims.fracas_247_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_247_parsed_bk_no_0]),
+  (249, .yes, [``BlindEvalParsedClaims.fracas_249_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_249_parsed_bk_no_0]),
+  (250, .yes, [``BlindEvalParsedClaims.fracas_250_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_250_parsed_bk_no_0]),
+  (261, .yes, [``BlindEvalParsedClaims.fracas_261_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_261_parsed_bk_no_0]),
+  (262, .yes, [``BlindEvalParsedClaims.fracas_262_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_262_parsed_bk_no_0]),
+  (263, .unknown, [``BlindEvalParsedClaims.fracas_263_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_263_parsed_bk_no_0]),
+  (264, .yes, [``BlindEvalParsedClaims.fracas_264_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_264_parsed_bk_no_0]),
+  (265, .yes, [``BlindEvalParsedClaims.fracas_265_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_265_parsed_bk_no_0]),
+  (266, .yes, [``BlindEvalParsedClaims.fracas_266_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_266_parsed_bk_no_0]),
+  (267, .yes, [``BlindEvalParsedClaims.fracas_267_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_267_parsed_bk_no_0]),
+  (268, .yes, [``BlindEvalParsedClaims.fracas_268_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_268_parsed_bk_no_0]),
+  (269, .unknown, [``BlindEvalParsedClaims.fracas_269_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_269_parsed_bk_no_0]),
+  (270, .yes, [``BlindEvalParsedClaims.fracas_270_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_270_parsed_bk_no_0]),
+  (271, .unknown, [``BlindEvalParsedClaims.fracas_271_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_271_parsed_bk_no_0]),
+  (272, .unknown, [``BlindEvalParsedClaims.fracas_272_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_272_parsed_bk_no_0]),
+  (275, .unknown, [``BlindEvalParsedClaims.fracas_275_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_275_parsed_bk_no_0]),
+  (277, .unknown, [``BlindEvalParsedClaims.fracas_277_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_277_parsed_bk_no_0]),
+  (278, .no, [``BlindEvalParsedClaims.fracas_278_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_278_parsed_bk_no_0]),
+  (279, .no, [``BlindEvalParsedClaims.fracas_279_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_279_parsed_bk_no_0]),
+  (280, .unknown, [``BlindEvalParsedClaims.fracas_280_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_280_parsed_bk_no_0]),
+  (282, .no, [``BlindEvalParsedClaims.fracas_282_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_282_parsed_bk_no_0]),
+  (283, .unknown, [``BlindEvalParsedClaims.fracas_283_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_283_parsed_bk_no_0]),
+  (287, .unknown, [``BlindEvalParsedClaims.fracas_287_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_287_parsed_bk_no_0]),
+  (288, .yes, [``BlindEvalParsedClaims.fracas_288_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_288_parsed_bk_no_0]),
+  (290, .yes, [``BlindEvalParsedClaims.fracas_290_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_290_parsed_bk_no_0]),
+  (298, .yes, [``BlindEvalParsedClaims.fracas_298_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_298_parsed_bk_no_0]),
+  (300, .yes, [``BlindEvalParsedClaims.fracas_300_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_300_parsed_bk_no_0]),
+  (303, .yes, [``BlindEvalParsedClaims.fracas_303_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_303_parsed_bk_no_0]),
+  (304, .unknown, [``BlindEvalParsedClaims.fracas_304_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_304_parsed_bk_no_0]),
+  (306, .yes, [``BlindEvalParsedClaims.fracas_306_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_306_parsed_bk_no_0]),
+  (308, .undef, [``BlindEvalParsedClaims.fracas_308_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_308_parsed_bk_no_0]),
+  (326, .yes, [``BlindEvalParsedClaims.fracas_326_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_326_parsed_bk_no_0]),
+  (328, .yes, [``BlindEvalParsedClaims.fracas_328_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_328_parsed_bk_no_0]),
+  (330, .yes, [``BlindEvalParsedClaims.fracas_330_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_330_parsed_bk_no_0]),
+  (334, .yes, [``BlindEvalParsedClaims.fracas_334_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_334_parsed_bk_no_0]),
+  (335, .unknown, [``BlindEvalParsedClaims.fracas_335_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_335_parsed_bk_no_0]),
+  (336, .yes, [``BlindEvalParsedClaims.fracas_336_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_336_parsed_bk_no_0]),
+  (337, .unknown, [``BlindEvalParsedClaims.fracas_337_parsed_bk_yes_0], [``BlindEvalParsedClaims.fracas_337_parsed_bk_no_0])
 ]
 
 end FraCaS

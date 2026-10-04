@@ -33,19 +33,22 @@ step too, for every problem the pipeline can carry all the way through:
    two are scored separately.
 
 **Yes/no claims.** Some English is genuinely ambiguous ("the inhabitants
-voted" - distributive or collective; "many" - cardinal or proportional;
-"some accountants" - one or more, or at least two), and committing to one
+voted" - distributive or collective; a bare plural with a relative clause
+- generic or existential; "many" - cardinal or proportional; "some
+accountants" - number-neutral or at least two), and committing to one
 reading lets the pipeline give a confident answer FraCaS marks wrong. So
-`gf/translate.py` is asked for two readings (`translate_cl_reading`): the
-**weak** one, entailed by every reading, and the **strong** one, entailing
-every reading. Each problem then becomes two claims - **yes**: weak
-premises → strong hypothesis; **no**: weak premises → ¬ weak hypothesis -
-and the scan answers "yes"/"no" only when the matching claim is proved,
-which makes every such answer hold under every reading. Ellipsis ("so
-did Bill", "Bill didn't") and one-anaphora ("a blue one") are resolved
-here (`resolve`) by copying the antecedent clause's VP / noun, the
-standard copy treatment; negation is translated only with a proper-name
-subject, where its scope is unambiguous.
+`gf/translate.py` produces each kind of ambiguity in a "weak" and a
+"strong" reading (`translate_cl_reading`), and every problem is translated
+under every *consistent* assignment of readings to the kinds of ambiguity
+it actually contains - the same word read the same way in each of its
+sentences, as a reader would. Each assignment gives a **yes** claim
+(premises → hypothesis) and a **no** claim (premises → ¬ hypothesis); the
+scan answers "yes"/"no" only when the claim is proved under **every**
+assignment, so no such answer depends on picking one reading. Ellipsis
+("so did Bill", "Bill didn't") and one-anaphora ("a blue one") are
+resolved here (`resolve`) by copying the antecedent clause's VP / noun,
+the standard copy treatment; negation is translated only with a proper-
+name subject, where its scope is unambiguous.
 
 A problem is skipped, with its reason reported, if any sentence fails to
 parse, any top-ranked reading fails to translate, or a translation needs
@@ -59,6 +62,7 @@ hand-edit the output.
 from __future__ import annotations
 
 import collections
+import itertools
 import re
 import sys
 from pathlib import Path
@@ -70,7 +74,7 @@ PROBLEMS = ROOT / "LeanNLSemantics" / "FraCaS" / "Data" / "Problems.lean"
 
 sys.path.insert(0, str(GF_DIR))
 from parse_rank import parse_readings, ranked, tokenize  # noqa: E402
-from translate import App, parse_tree, translate_cl_reading  # noqa: E402
+from translate import AMBIGUITY_KINDS, App, parse_tree, translate_cl_reading  # noqa: E402
 from background import postulates  # noqa: E402
 
 # Identifiers a generated predicate/individual name must not collide with.
@@ -193,66 +197,71 @@ def ranked_readings(sentence: str) -> list[str]:
 
 
 def assemble(idn, sentences):
-    """(claims, None) or (None, reason), where claims is a dict of the four
-    Lean propositions for this problem - see the header's "yes/no claims"
-    paragraph - plus the number of background facts."""
-    weak_props, trees, all_trs = [], [], []
-    hyp_weak = hyp_strong = None
+    """(claims, None) or (None, reason). claims["assignments"] is one entry
+    per consistent assignment of readings (see the header's "Yes/no
+    claims"), each with its yes/no claims with and without background
+    knowledge."""
+    clauses = []  # (clause tree, negated)
     antecedent_vp = antecedent_cn = None
-    for idx, (role, s) in enumerate(sentences):
-        is_hyp = idx == len(sentences) - 1
+    for role, s in sentences:
         candidates = ranked_readings(s)
         n = len(candidates)
         if not candidates:
             return None, f"{role} does not parse: {s!r}"
-        # The top-ranked reading that is well formed and resolves: an
-        # anaphoric/elliptical reading with nothing earlier to resolve
-        # against falls through to the next-ranked one.
+        # The top-ranked reading that resolves: an anaphoric/elliptical
+        # reading with nothing earlier to resolve against falls through to
+        # the next-ranked one (ill-formed anaphora readings are already
+        # filtered out by parse_rank.ranked).
         clause = err = None
         for tree in candidates:
-            # (ill-formed anaphora readings are already filtered out by
-            # parse_rank.ranked)
             clause, negated, err = resolve(parse_tree(tree), antecedent_vp, antecedent_cn)
             if clause is not None:
                 break
         if clause is None:
             return None, f"{role} parses ({n} readings) but does not translate: {err or 'no reading resolves'}"
-        try:
-            trees.append(clause)
-            readings = ("weak", "strong") if is_hyp else ("weak",)
-            trs = {r: translate_cl_reading(clause, r) for r in readings}
-        except Exception as e:  # translate.py signals unsupported shapes this way
-            return None, f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}"
-        for tr in trs.values():
-            if tr.conjuncts or tr.free_functions or tr.template:
-                return None, f"{role} needs non-generic assembly (conjuncts/Skolem/bundle)"
-            all_trs.append(tr)
-
-        def prop(tr):
-            return f"¬ ({tr.lean_prop})" if negated else tr.lean_prop
-
-        if is_hyp:
-            hyp_weak, hyp_strong = prop(trs["weak"]), prop(trs["strong"])
-        else:
-            weak_props.append(prop(trs["weak"]))
+        clauses.append((role, clause, negated, n))
         if clause.head == "PredVP" and len(clause.args) == 2:
             antecedent_vp = clause.args[1]
             antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
 
+    def translate_all(reading):
+        out = []
+        for role, clause, negated, n in clauses:
+            try:
+                tr = translate_cl_reading(clause, reading)
+            except Exception as e:  # translate.py signals unsupported shapes this way
+                raise ValueError(f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}")
+            if tr.conjuncts or tr.free_functions or tr.template:
+                raise ValueError(f"{role} needs non-generic assembly (conjuncts/Skolem/bundle)")
+            out.append((tr, f"¬ ({tr.lean_prop})" if negated else tr.lean_prop))
+        return out
+
+    try:
+        base = translate_all({})
+        present = [
+            k for k in AMBIGUITY_KINDS
+            if [p for _, p in translate_all({k: "strong"})] != [p for _, p in base]
+        ]
+        assignments = [dict(zip(present, combo)) for combo in itertools.product(("weak", "strong"), repeat=len(present))]
+        translated = [(a, translate_all(a)) for a in assignments]
+    except ValueError as e:
+        return None, str(e)
+
     kinds: dict[str, str] = {}
     order: list[str] = []
-    for tr in all_trs:
-        for name in tr.free_predicates:
-            kind = "binary" if name in tr.binary_predicates else "unary"
-            if kinds.setdefault(name, kind) != kind:
-                return None, f"name {name} used at two arities"
-            if name not in order:
-                order.append(name)
-        for name in tr.free_individuals:
-            if kinds.setdefault(name, "individual") != "individual":
-                return None, f"name {name} used as both predicate and individual"
-            if name not in order:
-                order.append(name)
+    for _a, trs in translated:
+        for tr, _p in trs:
+            for name in tr.free_predicates:
+                kind = "binary" if name in tr.binary_predicates else "unary"
+                if kinds.setdefault(name, kind) != kind:
+                    return None, f"name {name} used at two arities"
+                if name not in order:
+                    order.append(name)
+            for name in tr.free_individuals:
+                if kinds.setdefault(name, "individual") != "individual":
+                    return None, f"name {name} used as both predicate and individual"
+                if name not in order:
+                    order.append(name)
     bad = [n for n in order if n in LEAN_RESERVED or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", n)]
     if bad:
         return None, f"generated names unusable as Lean binders: {bad}"
@@ -268,23 +277,33 @@ def assemble(idn, sentences):
         binders.append(f"({' '.join(binary)} : A → A → Prop)")
     if inds:
         binders.append(f"({' '.join(inds)} : A)")
-    # The strong reading of "many" is an opaque relation with no
-    # properties: provable only from a premise asserting the same.
-    if re.search(r"\bMany\b", hyp_strong):
+    # The proportional reading of "many" is an opaque relation; its one
+    # property - every reading of "many" entails "some" - is part of what
+    # the word means, so it is stated in every claim that mentions it.
+    meaning = []
+    if any(re.search(r"\bMany\b", p) for _a, trs in translated for _tr, p in trs):
         binders.append("(Many : (A → Prop) → (A → Prop) → Prop)")
-    knowledge = postulates(trees, set(unary), set(binary))
+        meaning.append("(∀ P Q : A → Prop, Many P Q → Some P Q)")
+    knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary))
     head = f"∀ {' '.join(binders)}, "
 
-    def chain(facts, conclusion):
-        return head + " → ".join([*facts, *(f"({p})" for p in weak_props), f"({conclusion})"])
+    out = []
+    for a, trs in translated:
+        premises = [f"({p})" for _tr, p in trs[:-1]]
+        hyp = trs[-1][1]
 
-    return {
-        "yes": chain([], hyp_strong),
-        "no": chain([], f"¬ ({hyp_weak})"),
-        "bk_yes": chain(knowledge, hyp_strong),
-        "bk_no": chain(knowledge, f"¬ ({hyp_weak})"),
-        "n_facts": len(knowledge),
-    }, None
+        def chain(facts, conclusion):
+            return head + " → ".join([*meaning, *facts, *premises, f"({conclusion})"])
+
+        desc = ", ".join(f"{k} {v}" for k, v in a.items()) or "unambiguous"
+        out.append({
+            "desc": desc,
+            "yes": chain([], hyp),
+            "no": chain([], f"¬ ({hyp})"),
+            "bk_yes": chain(knowledge, hyp),
+            "bk_no": chain(knowledge, f"¬ ({hyp})"),
+        })
+    return {"assignments": out, "n_facts": len(knowledge)}, None
 
 
 def main() -> None:
@@ -352,30 +371,34 @@ def main() -> None:
         "open FraCaS.Section1 FraCaS.Section2",
         "",
     ]
+    def names(idn, c, kind):
+        return [f"``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_{kind}_{i}" for i in range(len(c["assignments"]))]
+
     for idn, _answer, c in emitted:
-        lines.append(f"/-- \"yes\" test: weakest reading of the premises, strongest of the hypothesis. -/")
-        lines.append(f"def fracas_{idn:03d}_parsed_yes : Prop :=\n  {c['yes']}")
-        lines.append("")
-        lines.append(f"/-- \"no\" test: weakest readings throughout, hypothesis negated. -/")
-        lines.append(f"def fracas_{idn:03d}_parsed_no : Prop :=\n  {c['no']}")
-        lines.append("")
-        lines.append(f"/-- As `_yes`, with {c['n_facts']} background-knowledge premise(s) from `gf/background.py`. -/")
-        lines.append(f"def fracas_{idn:03d}_parsed_bk_yes : Prop :=\n  {c['bk_yes']}")
-        lines.append("")
-        lines.append(f"/-- As `_no`, with the same background knowledge. -/")
-        lines.append(f"def fracas_{idn:03d}_parsed_bk_no : Prop :=\n  {c['bk_no']}")
-        lines.append("")
+        for i, asg in enumerate(c["assignments"]):
+            lines.append(f"/-- Reading assignment {i} ({asg['desc']}): \"yes\" test. -/")
+            lines.append(f"def fracas_{idn:03d}_parsed_yes_{i} : Prop :=\n  {asg['yes']}")
+            lines.append("")
+            lines.append(f"/-- Reading assignment {i} ({asg['desc']}): \"no\" test. -/")
+            lines.append(f"def fracas_{idn:03d}_parsed_no_{i} : Prop :=\n  {asg['no']}")
+            lines.append("")
+            lines.append(f"/-- As `_yes_{i}`, with {c['n_facts']} background-knowledge premise(s) from `gf/background.py`. -/")
+            lines.append(f"def fracas_{idn:03d}_parsed_bk_yes_{i} : Prop :=\n  {asg['bk_yes']}")
+            lines.append("")
+            lines.append(f"/-- As `_no_{i}`, with the same background knowledge. -/")
+            lines.append(f"def fracas_{idn:03d}_parsed_bk_no_{i} : Prop :=\n  {asg['bk_no']}")
+            lines.append("")
     lines += [
         "end BlindEvalParsedClaims",
         "",
-        "/-- `(problem id, gold answer, yes-claim, no-claim)` for every problem",
-        "the pipeline carried through - read by `BlindEvalParsedScan.lean`. -/",
-        "def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := [",
+        "/-- `(problem id, gold answer, yes-claims, no-claims)` - one claim per",
+        "consistent reading assignment - for every problem the pipeline carried",
+        "through; read by `BlindEvalParsedScan.lean`. -/",
+        "def blindEvalParsedRegistry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [",
     ]
     rows = [
-        f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_yes, "
-        f"``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_no)"
-        for idn, answer, _ in emitted
+        f"  ({idn}, .{answer}, [{', '.join(names(idn, c, 'yes'))}], [{', '.join(names(idn, c, 'no'))}])"
+        for idn, answer, c in emitted
     ]
     lines.append(",\n".join(rows))
     lines += [
@@ -383,12 +406,11 @@ def main() -> None:
         "",
         "/-- The same problems, each claim with `gf/background.py`'s",
         "problem-independent background knowledge added as premises. -/",
-        "def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := [",
+        "def blindEvalParsedBkRegistry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [",
     ]
     rows = [
-        f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_bk_yes, "
-        f"``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_bk_no)"
-        for idn, answer, _ in emitted
+        f"  ({idn}, .{answer}, [{', '.join(names(idn, c, 'bk_yes'))}], [{', '.join(names(idn, c, 'bk_no'))}])"
+        for idn, answer, c in emitted
     ]
     lines.append(",\n".join(rows))
     lines += ["]", "", "end FraCaS", ""]

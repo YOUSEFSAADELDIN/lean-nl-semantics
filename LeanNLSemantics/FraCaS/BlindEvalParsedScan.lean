@@ -22,8 +22,8 @@ namespace FraCaS.BlindEvalParsedScan
 
 /-- One pass over a registry of end-to-end claims; `label` prefixes the
 log lines so the two variants' results are reported separately. -/
-def runParsed (registry : List (Nat × FraCaS.Answer × Lean.Name × Lean.Name)) (label : String) :
-    TermElabM Unit := do
+def runParsed (registry : List (Nat × FraCaS.Answer × List Lean.Name × List Lean.Name))
+    (label : String) : TermElabM Unit := do
   let env ← getEnv
   let mut matched : Array (Nat × String) := #[]
   let mut mismatches : Array (Nat × String × String) := #[]
@@ -31,24 +31,27 @@ def runParsed (registry : List (Nat × FraCaS.Answer × Lean.Name × Lean.Name))
   let mut missing : Array Nat := #[]
   let mut errored : Array (Nat × String) := #[]
 
-  for (idn, gold, yesName, noName) in registry do
-    let some yesTy := (env.find? yesName).bind (·.value?)
-      | do
-        missing := missing.push idn
-        continue
-    let some noTy := (env.find? noName).bind (·.value?)
-      | do
-        missing := missing.push idn
-        continue
+  for (idn, gold, yesNames, noNames) in registry do
+    let yesTys := yesNames.filterMap fun n => (env.find? n).bind (·.value?)
+    let noTys := noNames.filterMap fun n => (env.find? n).bind (·.value?)
+    if yesTys.length != yesNames.length || noTys.length != noNames.length || yesTys.isEmpty then
+      missing := missing.push idn
+      continue
     logInfo m!"{label}: attempting fracas_{idn}"
-    -- Each problem comes as two claims (see the generator's header): the
-    -- "yes" claim pairs the weakest reading of the premises with the
-    -- strongest of the hypothesis, the "no" claim the weakest of each with
-    -- the hypothesis negated - so a verdict holds under every reading.
+    -- One yes/no claim pair per consistent assignment of readings (see
+    -- the generator's header): "yes" only if every yes-claim is proved,
+    -- "no" only if every no-claim is - so no verdict depends on choosing
+    -- one reading of ambiguous English.
     let result ← withFreshBudget
       (do
-        let hypClose ← attemptClose yesTy
-        let notHypClose ← attemptClose noTy
+        let mut hypClose := true
+        for ty in yesTys do
+          if hypClose then
+            hypClose ← attemptClose ty
+        let mut notHypClose := true
+        for ty in noTys do
+          if notHypClose then
+            notHypClose ← attemptClose ty
         pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool)))
       (fun e => do
         let msg ← try e.toMessageData.toString catch _ => pure "<error message could not be rendered>"
