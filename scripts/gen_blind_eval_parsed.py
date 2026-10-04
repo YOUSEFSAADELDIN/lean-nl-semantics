@@ -16,7 +16,8 @@ step too, for every problem the pipeline can carry all the way through:
 2. **Parse**: `gf/parse_rank.py`'s `parse_readings` against the restricted
    FraCaSParse grammar (see `gf/gen_parse_grammar.py` for what that
    restriction is and isn't), then its generic ranking picks one reading.
-3. **Translate**: `gf/translate.py`'s `translate_cl`, unchanged.
+3. **Translate**: `gf/translate.py`'s `translate_cl_reading` (see "Yes/no
+   claims" below).
 4. **Assemble**, by one generic rule with no per-problem cases: bind every
    free predicate/individual the sentences mention universally, over one
    domain `A`, and chain `premise₁ → ... → premiseₙ → hypothesis`.
@@ -30,6 +31,21 @@ step too, for every problem the pipeline can carry all the way through:
    independent background knowledge `gf/background.py` derives (tree-
    structural entailments and a small degree-semantics lexicon), and the
    two are scored separately.
+
+**Yes/no claims.** Some English is genuinely ambiguous ("the inhabitants
+voted" - distributive or collective; "many" - cardinal or proportional;
+"some accountants" - one or more, or at least two), and committing to one
+reading lets the pipeline give a confident answer FraCaS marks wrong. So
+`gf/translate.py` is asked for two readings (`translate_cl_reading`): the
+**weak** one, entailed by every reading, and the **strong** one, entailing
+every reading. Each problem then becomes two claims - **yes**: weak
+premises → strong hypothesis; **no**: weak premises → ¬ weak hypothesis -
+and the scan answers "yes"/"no" only when the matching claim is proved,
+which makes every such answer hold under every reading. Ellipsis ("so
+did Bill", "Bill didn't") and one-anaphora ("a blue one") are resolved
+here (`resolve`) by copying the antecedent clause's VP / noun, the
+standard copy treatment; negation is translated only with a proper-name
+subject, where its scope is unambiguous.
 
 A problem is skipped, with its reason reported, if any sentence fails to
 parse, any top-ranked reading fails to translate, or a translation needs
@@ -54,7 +70,7 @@ PROBLEMS = ROOT / "LeanNLSemantics" / "FraCaS" / "Data" / "Problems.lean"
 
 sys.path.insert(0, str(GF_DIR))
 from parse_rank import parse_readings, ranked, tokenize  # noqa: E402
-from translate import parse_tree, translate_cl  # noqa: E402
+from translate import App, parse_tree, translate_cl_reading  # noqa: E402
 from background import postulates  # noqa: E402
 
 # Identifiers a generated predicate/individual name must not collide with.
@@ -85,40 +101,161 @@ def to_clause(t):
     return t
 
 
+_NEGATIVE_POLARITIES = ("PNeg", "UncNeg")
+
+
+def _strip_outer_adjective(cn):
+    """One-anaphora with its own modifier ("a BLUE one") contrasts with the
+    antecedent's outermost adjective: after "a red car", "a blue one" is a
+    blue CAR, and after "a fast red car", "a slow one" is a slow RED CAR."""
+    if cn.head == "AdjCN" and len(cn.args) == 2:
+        return cn.args[1]
+    return cn
+
+
+def _object_cn(vp):
+    """The noun phrase content one-anaphora can pick up from a clause: the
+    CN of the first common-noun NP inside its VP."""
+    if vp.head in ("DetCN", "MassNP") and vp.args:
+        return vp.args[-1]
+    for a in vp.args:
+        found = _object_cn(a)
+        if found is not None:
+            return found
+    return None
+
+
+def _replace_one(t, antecedent_cn):
+    """Substitute anaphoric `one` (anaphOne_N / anaphOne_NP) by the
+    antecedent's CN; (tree, used_anaphor)."""
+    if t.head == "AdjCN" and len(t.args) == 2 and t.args[1].head == "UseN" \
+            and t.args[1].args and t.args[1].args[0].head == "anaphOne_N":
+        return App("AdjCN", [t.args[0], _strip_outer_adjective(antecedent_cn)]), True
+    if t.head == "UseN" and t.args and t.args[0].head == "anaphOne_N":
+        return antecedent_cn, True
+    if t.head == "anaphOne_NP" and not t.args:
+        return App("DetCN", [App("DetQuant", [App("IndefArt", []), App("NumSg", [])]), antecedent_cn]), True
+    used = False
+    args = []
+    for a in t.args:
+        na, u = _replace_one(a, antecedent_cn)
+        args.append(na)
+        used = used or u
+    return App(t.head, args), used
+
+
+def _mentions(t, head):
+    return t.head == head or any(_mentions(a, head) for a in t.args)
+
+
+def resolve(t, antecedent_vp, antecedent_cn):
+    """A parsed sentence -> (clause, negated, error). Resolves VP ellipsis
+    ("so did Bill", "Bill didn't", "the students have too") by copying the
+    antecedent clause's VP - the standard copy treatment - and one-anaphora
+    by the antecedent's noun. Sentential negation is translated only with a
+    proper-name subject: with a quantified subject ("every tenor is not
+    modest") its scope is ambiguous, and no reading is guessed."""
+    if t.head == "UttS" and len(t.args) == 1:
+        t = t.args[0]
+    if t.head == "TooS" and len(t.args) == 1:
+        t = t.args[0]
+    negated = False
+    if t.head in ("ElliptS", "SoS") and len(t.args) == 2:
+        np, aux = (t.args if t.head == "ElliptS" else (t.args[1], t.args[0]))
+        if antecedent_vp is None:
+            return None, False, "VP ellipsis with no antecedent clause"
+        clause = App("PredVP", [np, antecedent_vp])
+        negated = aux.head == "ellDidnt"
+    elif t.head == "UseCl" and len(t.args) == 3:
+        negated = t.args[1].head in _NEGATIVE_POLARITIES
+        clause = t.args[2]
+    else:
+        clause = t
+    if negated:
+        if not (clause.head == "PredVP" and clause.args and clause.args[0].head == "UsePN"):
+            return None, False, "negation with a non-proper-name subject (scope ambiguous)"
+    if _mentions(clause, "anaphOne_N") or _mentions(clause, "anaphOne_NP"):
+        if antecedent_cn is None:
+            return None, False, "one-anaphora with no antecedent noun"
+        clause, _ = _replace_one(clause, antecedent_cn)
+    return clause, negated, None
+
+
 _parse_cache: dict = {}
 
 
-def best_reading(sentence: str):
+def ranked_readings(sentence: str) -> list[str]:
     tokens = tokenize(sentence)
     if tokens not in _parse_cache:
         _parse_cache[tokens] = parse_readings(tokens)
     _cat, trees = _parse_cache[tokens]
-    if trees:
-        return ranked(trees)[0], len(trees)
-    return None, 0
+    return ranked(trees)
+
+
+def _anaphora_well_formed(t) -> bool:
+    """Anaphoric "one" (anaphOne_N / anaphOne_NP) can only HEAD a noun
+    phrase - "a blue one", "owns one". A reading using it as a compound-
+    noun modifier ("[one] accountant") or a possessor ("[one]'s accountant")
+    is not a reading of English at all; this filter discards it, so the
+    numeral reading of "just one accountant" is the one used."""
+    if t.head == "CompoundCN" and t.args and _mentions(t.args[0], "anaphOne_N"):
+        return False
+    if t.head == "GenNP" and t.args and _mentions(t.args[0], "anaphOne_NP"):
+        return False
+    return all(_anaphora_well_formed(a) for a in t.args)
 
 
 def assemble(idn, sentences):
-    """((claim, claim_with_background_knowledge), None) or (None, reason)."""
-    translations = []
-    trees = []
-    for role, s in sentences:
-        tree, n = best_reading(s)
-        if tree is None:
+    """(claims, None) or (None, reason), where claims is a dict of the four
+    Lean propositions for this problem - see the header's "yes/no claims"
+    paragraph - plus the number of background facts."""
+    weak_props, trees, all_trs = [], [], []
+    hyp_weak = hyp_strong = None
+    antecedent_vp = antecedent_cn = None
+    for idx, (role, s) in enumerate(sentences):
+        is_hyp = idx == len(sentences) - 1
+        candidates = ranked_readings(s)
+        n = len(candidates)
+        if not candidates:
             return None, f"{role} does not parse: {s!r}"
+        # The top-ranked reading that is well formed and resolves: an
+        # anaphoric/elliptical reading with nothing earlier to resolve
+        # against falls through to the next-ranked one.
+        clause = err = None
+        for tree in candidates:
+            t = parse_tree(tree)
+            if not _anaphora_well_formed(t):
+                continue
+            clause, negated, err = resolve(t, antecedent_vp, antecedent_cn)
+            if clause is not None:
+                break
+        if clause is None:
+            return None, f"{role} parses ({n} readings) but does not translate: {err or 'no well-formed reading'}"
         try:
-            clause = to_clause(parse_tree(tree))
             trees.append(clause)
-            tr = translate_cl(clause)
+            readings = ("weak", "strong") if is_hyp else ("weak",)
+            trs = {r: translate_cl_reading(clause, r) for r in readings}
         except Exception as e:  # translate.py signals unsupported shapes this way
             return None, f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}"
-        if tr.conjuncts or tr.free_functions or tr.template:
-            return None, f"{role} needs non-generic assembly (conjuncts/Skolem/bundle)"
-        translations.append(tr)
+        for tr in trs.values():
+            if tr.conjuncts or tr.free_functions or tr.template:
+                return None, f"{role} needs non-generic assembly (conjuncts/Skolem/bundle)"
+            all_trs.append(tr)
+
+        def prop(tr):
+            return f"¬ ({tr.lean_prop})" if negated else tr.lean_prop
+
+        if is_hyp:
+            hyp_weak, hyp_strong = prop(trs["weak"]), prop(trs["strong"])
+        else:
+            weak_props.append(prop(trs["weak"]))
+        if clause.head == "PredVP" and len(clause.args) == 2:
+            antecedent_vp = clause.args[1]
+            antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
 
     kinds: dict[str, str] = {}
     order: list[str] = []
-    for tr in translations:
+    for tr in all_trs:
         for name in tr.free_predicates:
             kind = "binary" if name in tr.binary_predicates else "unary"
             if kinds.setdefault(name, kind) != kind:
@@ -145,11 +282,23 @@ def assemble(idn, sentences):
         binders.append(f"({' '.join(binary)} : A → A → Prop)")
     if inds:
         binders.append(f"({' '.join(inds)} : A)")
-    chain = " → ".join(f"({tr.lean_prop})" for tr in translations)
+    # The strong reading of "many" is an opaque relation with no
+    # properties: provable only from a premise asserting the same.
+    if re.search(r"\bMany\b", hyp_strong):
+        binders.append("(Many : (A → Prop) → (A → Prop) → Prop)")
     knowledge = postulates(trees, set(unary), set(binary))
-    claim = f"∀ {' '.join(binders)}, {chain}"
-    claim_bk = f"∀ {' '.join(binders)}, {' → '.join([*knowledge, chain])}"
-    return (claim, claim_bk, len(knowledge)), None
+    head = f"∀ {' '.join(binders)}, "
+
+    def chain(facts, conclusion):
+        return head + " → ".join([*facts, *(f"({p})" for p in weak_props), f"({conclusion})"])
+
+    return {
+        "yes": chain([], hyp_strong),
+        "no": chain([], f"¬ ({hyp_weak})"),
+        "bk_yes": chain(knowledge, hyp_strong),
+        "bk_no": chain(knowledge, f"¬ ({hyp_weak})"),
+        "n_facts": len(knowledge),
+    }, None
 
 
 def main() -> None:
@@ -188,7 +337,7 @@ def main() -> None:
         "/-!",
         "# End-to-end blind evaluation: claims translated from FraCaS's English",
         "",
-        "Each `fracas_NNN_parsed` below was produced with no human in the",
+        "Each `fracas_NNN_parsed_*` below was produced with no human in the",
         "translation step: FraCaS's own English, parsed by the restricted GF",
         "grammar, the top-ranked reading translated by `gf/translate.py`, and",
         "assembled by one generic rule. See `scripts/gen_blind_eval_parsed.py`",
@@ -217,23 +366,29 @@ def main() -> None:
         "open FraCaS.Section1 FraCaS.Section2",
         "",
     ]
-    for idn, _answer, (claim, claim_bk, n_facts) in emitted:
-        lines.append(f"def fracas_{idn:03d}_parsed : Prop :=")
-        lines.append(f"  {claim}")
+    for idn, _answer, c in emitted:
+        lines.append(f"/-- \"yes\" test: weakest reading of the premises, strongest of the hypothesis. -/")
+        lines.append(f"def fracas_{idn:03d}_parsed_yes : Prop :=\n  {c['yes']}")
         lines.append("")
-        lines.append(f"/-- With {n_facts} background-knowledge premise(s) from `gf/background.py`. -/")
-        lines.append(f"def fracas_{idn:03d}_parsed_bk : Prop :=")
-        lines.append(f"  {claim_bk}")
+        lines.append(f"/-- \"no\" test: weakest readings throughout, hypothesis negated. -/")
+        lines.append(f"def fracas_{idn:03d}_parsed_no : Prop :=\n  {c['no']}")
+        lines.append("")
+        lines.append(f"/-- As `_yes`, with {c['n_facts']} background-knowledge premise(s) from `gf/background.py`. -/")
+        lines.append(f"def fracas_{idn:03d}_parsed_bk_yes : Prop :=\n  {c['bk_yes']}")
+        lines.append("")
+        lines.append(f"/-- As `_no`, with the same background knowledge. -/")
+        lines.append(f"def fracas_{idn:03d}_parsed_bk_no : Prop :=\n  {c['bk_no']}")
         lines.append("")
     lines += [
         "end BlindEvalParsedClaims",
         "",
-        "/-- `(problem id, gold answer, claim constant)` for every problem the",
-        "pipeline carried through - read by `BlindEvalParsedScan.lean`. -/",
-        "def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name) := [",
+        "/-- `(problem id, gold answer, yes-claim, no-claim)` for every problem",
+        "the pipeline carried through - read by `BlindEvalParsedScan.lean`. -/",
+        "def blindEvalParsedRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := [",
     ]
     rows = [
-        f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed)"
+        f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_yes, "
+        f"``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_no)"
         for idn, answer, _ in emitted
     ]
     lines.append(",\n".join(rows))
@@ -242,10 +397,11 @@ def main() -> None:
         "",
         "/-- The same problems, each claim with `gf/background.py`'s",
         "problem-independent background knowledge added as premises. -/",
-        "def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name) := [",
+        "def blindEvalParsedBkRegistry : List (Nat × Answer × Lean.Name × Lean.Name) := [",
     ]
     rows = [
-        f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_bk)"
+        f"  ({idn}, .{answer}, ``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_bk_yes, "
+        f"``BlindEvalParsedClaims.fracas_{idn:03d}_parsed_bk_no)"
         for idn, answer, _ in emitted
     ]
     lines.append(",\n".join(rows))

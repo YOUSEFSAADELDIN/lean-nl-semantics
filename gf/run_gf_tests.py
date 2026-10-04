@@ -3805,7 +3805,9 @@ _FRACAS_084_HYPOTHESIS_CHECK = [
 # project's rewordings ("leading tenors THAT are excellent", "SOME Italian
 # men want ..."): the `who` relative pronoun, the "there are/was NP"
 # existential (FraCaS Section 1's usual hypothesis shape), the frozen
-# "used to", and "just one". One confirmed tree per construction is
+# "used to", "just one", and - for Section 4 - VP ellipsis ("so did Bill",
+# "Bill didn't", "the students have too"), one-anaphora ("a blue one",
+# "owns one too") and uncontracted negation ("is not"). One confirmed tree per construction is
 # enough - the restricted parse grammar (gen_parse_grammar.py) inherits
 # every function a confirmed tree uses, and the parser then has to find
 # trees for all other sentences on its own. Labelled `english_...`, not
@@ -3842,6 +3844,36 @@ _FRACAS_ENGLISH_CHECKS = [
         'english_105_premise1',
         'linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP just_Predet (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))',
         'just one accountant attended the meeting',
+    ),
+    (
+        'english_142_premise2',
+        'linearize SoS ellDid (UsePN bill_PN)',
+        'so did Bill',
+    ),
+    (
+        'english_147_premise2',
+        'linearize ElliptS (UsePN bill_PN) ellDidnt',
+        "Bill didn't",
+    ),
+    (
+        'english_149_premise2',
+        'linearize TooS (ElliptS (DetCN (DetQuant DefArt NumPl) (UseN student_N)) ellHas)',
+        'the students have too',
+    ),
+    (
+        'english_155_premise2',
+        'linearize TooS (UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) anaphOne_NP)))',
+        'Bill owns one too',
+    ),
+    (
+        'english_157_premise2',
+        'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA blue_A) (UseN anaphOne_N)))))',
+        'Bill owns a blue one',
+    ),
+    (
+        'english_206_premise1',
+        'linearize UseCl (TTAnt TPres ASimul) UncNeg (PredVP (UsePN fido_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N))))))',
+        'Fido is not a small animal',
     ),
 ]
 

@@ -242,6 +242,8 @@ abstract FraCaSLogic =
     with_Prep, without_Prep, youPl_Pron, youSg_Pron
   ]
   ** {
+  cat
+    EllAux ;  -- the auxiliary left behind by VP ellipsis ("did", "didn't", "has", ...)
   fun
     several_Det, aFew_Det : Det ;
     -- worlds_Det : Det ("the world's", problem 1's "the world's greatest
@@ -495,4 +497,20 @@ abstract FraCaSLogic =
     who_RP : RP ;
     ExistNP : NP -> Cl ;
     usedTo_VV : VV ;
+    -- Ellipsis and anaphora, FraCaS's own wording (Section 4):
+    -- UncNeg: uncontracted negation ("Fido is NOT a small animal"); the
+    --   grammar's own PNeg realizes the contracted "isn't".
+    -- EllAux / ElliptS / SoS / TooS: VP ellipsis - "Bill didn't",
+    --   "the students have [too]", "so did Bill". The elided VP is NOT
+    --   represented here; scripts/gen_blind_eval_parsed.py resolves it to
+    --   the antecedent clause's VP, the standard copy treatment.
+    -- anaphOne_N / anaphOne_NP: one-anaphora - "a blue one", "owns one
+    --   too"; likewise resolved to the antecedent's noun by the generator.
+    UncNeg : Pol ;
+    ElliptS : NP -> EllAux -> S ;
+    SoS : EllAux -> NP -> S ;
+    TooS : S -> S ;
+    ellDid, ellDidnt, ellDoes, ellHas : EllAux ;
+    anaphOne_N : N ;
+    anaphOne_NP : NP ;
 }

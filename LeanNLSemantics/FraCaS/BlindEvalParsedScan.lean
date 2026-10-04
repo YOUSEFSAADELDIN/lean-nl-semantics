@@ -4,8 +4,7 @@ import LeanNLSemantics.FraCaS.BlindEvalParsed
 /-!
 # End-to-end blind evaluation scan
 
-Runs the same `attemptClose` chain, with the same polarity-aware
-`flipConclusion`/`isNegHead` logic as `runBlindEvalGeneric`, over the
+Runs the same `attemptClose` chain as `runBlindEvalGeneric` over the
 claims in `BlindEvalParsed.lean` - FraCaS problems translated from their
 original English with no human in the translation step (see
 `scripts/gen_blind_eval_parsed.py`). So unlike every other scan, a
@@ -16,15 +15,14 @@ deliberately never supplies - not only from the inference step.
 Deliberately not imported by anything - run directly, as its own CI step.
 -/
 open Lean Lean.Meta Lean.Elab Lean.Elab.Term Lean.Elab.Command
-open FraCaS.Section1.Monotonicity (goalHeadConst)
 open FraCaS.Section1.Monotonicity.BlindEval
-  (attemptClose flipConclusion isNegHead answerMatches answerToString withFreshBudget)
+  (attemptClose answerMatches answerToString withFreshBudget)
 
 namespace FraCaS.BlindEvalParsedScan
 
 /-- One pass over a registry of end-to-end claims; `label` prefixes the
 log lines so the two variants' results are reported separately. -/
-def runParsed (registry : List (Nat × FraCaS.Answer × Lean.Name)) (label : String) :
+def runParsed (registry : List (Nat × FraCaS.Answer × Lean.Name × Lean.Name)) (label : String) :
     TermElabM Unit := do
   let env ← getEnv
   let mut matched : Array (Nat × String) := #[]
@@ -33,19 +31,24 @@ def runParsed (registry : List (Nat × FraCaS.Answer × Lean.Name)) (label : Str
   let mut missing : Array Nat := #[]
   let mut errored : Array (Nat × String) := #[]
 
-  for (idn, gold, claimName) in registry do
-    let some ty := (env.find? claimName).bind (·.value?)
+  for (idn, gold, yesName, noName) in registry do
+    let some yesTy := (env.find? yesName).bind (·.value?)
+      | do
+        missing := missing.push idn
+        continue
+    let some noTy := (env.find? noName).bind (·.value?)
       | do
         missing := missing.push idn
         continue
     logInfo m!"{label}: attempting fracas_{idn}"
+    -- Each problem comes as two claims (see the generator's header): the
+    -- "yes" claim pairs the weakest reading of the premises with the
+    -- strongest of the hypothesis, the "no" claim the weakest of each with
+    -- the hypothesis negated - so a verdict holds under every reading.
     let result ← withFreshBudget
       (do
-        let isNeg := isNegHead (← withCurrHeartbeats (goalHeadConst ty))
-        let closesAsWritten ← attemptClose ty
-        let closesFlipped ← attemptClose (← withCurrHeartbeats (flipConclusion ty))
-        let hypClose := if isNeg then closesFlipped else closesAsWritten
-        let notHypClose := if isNeg then closesAsWritten else closesFlipped
+        let hypClose ← attemptClose yesTy
+        let notHypClose ← attemptClose noTy
         pure (.ok (hypClose, notHypClose) : Except String (Bool × Bool)))
       (fun e => do
         let msg ← try e.toMessageData.toString catch _ => pure "<error message could not be rendered>"

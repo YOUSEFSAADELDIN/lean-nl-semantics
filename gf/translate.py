@@ -361,8 +361,49 @@ def _decode_card(card):
     raise NotImplementedError(f"unrecognized Card shape: {card.head!r}")
 
 
+# Which reading to produce for constructions with more than one. "default"
+# is this module's long-standing behaviour, which the cross-check theorems
+# (scripts/gen_gf_cross_check.py) are proved against and which therefore
+# never changes. The end-to-end blind evaluation (scripts/gen_blind_eval_
+# parsed.py) instead asks for the "weak" reading (entailed by every reading
+# - used for premises, and for the hypothesis in the "no" test) and the
+# "strong" one (entailing every reading - the hypothesis in the "yes"
+# test), so no yes/no it reports depends on picking one reading:
+#   - definite plural subject ("the inhabitants voted ..."): distributive
+#     `Every` vs collective/generic - weak `Some`, strong `Every`;
+#   - bare plural + relative clause ("leading tenors who are excellent
+#     are ..."): generic vs existential - weak `Some`, strong `Every`;
+#   - "many": cardinal vs proportional - weak `Some`; strong is an opaque
+#     `Many` relation with no properties (no GQ here entails both);
+#   - plural "some Xs": number-neutral vs at-least-two - weak `Some`,
+#     strong `AtLeast 2`;
+#   - "both"/"neither": not ambiguous, just previously simplified to
+#     `Every`/`No` (see the CAUTION below) - both modes use GQ.lean's own
+#     `Both`/`Neither`, which keep the exactly-two presupposition.
+_READING = "default"
+
+
+def translate_cl_reading(t, reading: str):
+    """`translate_cl` under a given reading ("default"/"weak"/"strong")."""
+    global _READING
+    previous, _READING = _READING, reading
+    try:
+        return translate_cl(t)
+    finally:
+        _READING = previous
+
+
 def _resolve_quantifier(det) -> str:
     if det.head in _QUANTIFIER_BY_DET and not det.args:
+        if _READING != "default":
+            if det.head == "many_Det":
+                return "Many" if _READING == "strong" else "Some"
+            if det.head == "somePl_Det" and _READING == "strong":
+                return "AtLeast 2"
+            if det.head == "both_Det":
+                return "Both"
+            if det.head == "neither_Det":
+                return "Neither"
         return _QUANTIFIER_BY_DET[det.head]
     if det.head == "DetQuant" and len(det.args) == 2:
         quant, num = det.args
@@ -382,6 +423,12 @@ def _resolve_quantifier(det) -> str:
             # hypotheses "Six lawyers/accountants signed the contract"),
             # not guessed from the English alone.
             return f"Exactly {count}"
+        if (
+            _READING == "weak"
+            and quant.head == "DefArt"
+            and num.head == "NumPl"
+        ):
+            return "Some"
         if quant.head in _QUANTIFIER_BY_QUANT:
             return _QUANTIFIER_BY_QUANT[quant.head]
         raise NotImplementedError(
@@ -1162,7 +1209,7 @@ def translate_cl(t) -> Translation:
     # which would be wrong for a genuine existential bare plural) for
     # exactly the shape that's actually confirmed to need it: a
     # RelCN-restricted bare plural.
-    if quant == "Some" and cn.head == "RelCN":
+    if quant == "Some" and cn.head == "RelCN" and _READING != "weak":
         quant = "Every"
 
     restrictor_expr, restrictor_preds = _restrictor_expr(cn)

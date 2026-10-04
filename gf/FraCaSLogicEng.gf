@@ -23,6 +23,8 @@ concrete FraCaSLogicEng of FraCaSLogic =
     with_Prep, without_Prep, youPl_Pron, youSg_Pron
   ]
   ** open ParadigmsEng, MorphoEng, ResEng, Prelude in {
+  lincat
+    EllAux = {s : Number => Str} ;
   lin
     -- PPos/PNeg excluded from TenseX above (real conflict: TenseX's own
     -- CAdv/CommonX shape doesn't unify with CatEng's) - GrammarEng.gf
@@ -132,6 +134,16 @@ concrete FraCaSLogicEng of FraCaSLogic =
       mkClause "there" (agrP3 (fromAgr np.a).n)
         (insertObj (\\_ => np.s ! NPAcc) (predAux auxBe)) ;
     usedTo_VV = mkVV (mkV "used" "used" "used" "used" "using") ;
+    UncNeg = {s = [] ; p = CNeg False} ;
+    ElliptS np aux = {s = np.s ! npNom ++ aux.s ! (fromAgr np.a).n} ;
+    SoS aux np = {s = "so" ++ aux.s ! (fromAgr np.a).n ++ np.s ! npNom} ;
+    TooS s = {s = s.s ++ "too"} ;
+    ellDid = {s = \\_ => "did"} ;
+    ellDidnt = {s = \\_ => "didn't"} ;
+    ellDoes = {s = table {Sg => "does" ; Pl => "do"}} ;
+    ellHas = {s = table {Sg => "has" ; Pl => "have"}} ;
+    anaphOne_N = mkN "one" "ones" ;
+    anaphOne_NP = {s = \\_ => "one" ; a = agrP3 Sg} ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

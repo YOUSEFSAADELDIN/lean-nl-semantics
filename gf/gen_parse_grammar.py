@@ -38,6 +38,7 @@ EXTRA_CATS = [
     "ListCN", "ListNP", "ListS", "ListAP", "ListAdv", "ListRS",
     "Digit", "Sub10", "Sub100", "Sub1000", "Sub1000000",
     "Sub1000000000", "Sub1000000000000",
+    "EllAux",  # FraCaSLogic.gf's own, for VP ellipsis
 ]
 
 
