@@ -7,6 +7,22 @@ includes a full mechanization of the FraCaS test suite for natural
 language inference, and a bridge to `linglib`, a Montagovian (predicate
 semantics) library, for comparing the two approaches.
 
+It has four parts, each self-contained, with its own code, checks and
+results:
+
+1. **MTT core** (`LeanNLSemantics/MTT/`): the semantics itself.
+2. **The FraCaS corpus** (`LeanNLSemantics/FraCaS/`): all 342 problems as
+   hand-written Lean theorems, with a certified monotonicity reasoner, a
+   GF cross-check of their English, and an evaluation of whether a fixed
+   prover recovers each gold answer (`BLIND_EVAL.md`).
+3. **The linglib bridge** (`bridge/`): MTT's nouns-as-types against
+   linglib's nouns-as-predicates, as a separate Lake package.
+4. **The end-to-end pipeline** (`EndToEnd/`): FraCaS translated
+   automatically from its original English and scored by its own prover
+   (`EndToEnd/README.md`).
+
+The browser lab (below) is meant to end up demoing all four.
+
 **[Try the Semantics Lab](https://yousefsaadeldin.github.io/lean-nl-semantics/lab.html)**
 — build a controlled-English sentence, watch its real GF syntax tree,
 and check whether a conclusion is licensed by a Lean-verified rule, all
@@ -42,12 +58,15 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   `Exactly`) against linglib's own `Quantifier.GQ` theory, confirming the
   two agree and that this project's hand-proved monotonicity lemmas are
   literal instances of linglib's general, already-proven ones.
-- **GF integration** (`gf/`, scope intentionally bounded — see below): a
-  Grammatical Framework grammar and a Python translator producing Lean
-  terms from a hand-built (not freely parsed) English sentence tree,
-  used to cross-check the FraCaS formalizations above against real
-  English via `linearize`. Every one of the 342 problems' sentences
-  that this grammar can build at all now has a real, independently-
+- **GF cross-check** (part of the FraCaS corpus; `gf/`, scope
+  intentionally bounded — see below): a Grammatical Framework grammar
+  and a Python translator producing Lean terms from a hand-built (not
+  freely parsed) English sentence tree, used to cross-check the FraCaS
+  formalizations above against real English via `linearize`. (The
+  end-to-end pipeline, part 4, reuses this grammar for *parsing*, with
+  its own restricted parse grammar; that is its own scope, below.)
+  Every one of the 342 problems' sentences that this grammar can build
+  at all now has a real, independently-
   confirmed GF tree — 803 `linearize` checks across all nine FraCaS
   sections (`gf/run_gf_tests.py`), validated against a real local
   GF/RGL toolchain (not just parsed as text) before ever being pushed.
@@ -58,7 +77,7 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   (`LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean` wires one such
   tree, problem 2's first premise, directly into its real proved
   theorem). Later sections (5 onward) deliberately don't extend
-  `translate.py` — each one's whole point is a distinction (privative
+  `translate.py`'s default mode, which this cross-check uses — each one's whole point is a distinction (privative
   adjectives, assumed comparative relations, factivity) that
   `translate.py`'s own generic predicate-fusion would silently collapse
   rather than translate faithfully — but still get real GF sentences.
@@ -67,6 +86,16 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   e.g. embedded questions, or specific calendar-date arithmetic) — see
   `gf/FraCaSLogicEng.gf`'s own per-section comments and `gf/NOTES.md`
   for the full setup and every gotcha hit along the way.
+
+- **End-to-end pipeline** (`EndToEnd/`, part 4): FraCaS's original
+  English parsed with a restricted GF grammar, the top reading chosen by
+  a generic ranker and translated by `gf/translate.py`'s reading modes,
+  scored by its own prover. It reaches 195 of 342 problems and matches
+  gold on 118 of them as translated (139 with problem-independent
+  background knowledge), with no wrong answers. These are
+  **development-set** figures: the pipeline was extended by looking at
+  which of these same problems failed. Full write-up:
+  `EndToEnd/README.md`.
 
   This is deliberately not aimed at general English coverage — FraCaS
   is a small, closed vocabulary and sentence set, and covering it was
@@ -97,7 +126,9 @@ LeanNLSemantics/
 bridge/                      -- the linglib bridge, a separate Lake package
   lakefile.toml
   LinglibBridge.lean
-gf/                           -- Grammatical Framework grammar + cross-checks
+EndToEnd/                    -- part 4: the end-to-end pipeline (its own Lake library)
+gf/                           -- Grammatical Framework grammar + cross-checks (and
+                                 the end-to-end pipeline's parsing tools)
 scripts/                      -- generators for the files gf/ and FraCaS/ commit
 viz/                          -- data exports + the three live visualizer pages
 lake-manifest.json            -- pinned Mathlib commit
@@ -186,9 +217,11 @@ consistency check, not a blind-prediction accuracy score.
   against GF's own full English grammar turned out not to be usable for
   this — it's built to be maximally permissive and produces an
   effectively unbounded number of alternate readings for even a simple
-  sentence — so sentences are hand-built as GF abstract trees and
-  checked against the target English via `linearize`, the same way
-  FraCoq's own FraCaS-treebank was built. This phase's scope was always
+  sentence — so for this cross-check sentences are hand-built as GF
+  abstract trees and checked against the target English via
+  `linearize`, the same way FraCoq's own FraCaS-treebank was built. (The
+  end-to-end pipeline later made parsing usable with a grammar
+  restricted to FraCaS's vocabulary; see `EndToEnd/README.md`.) This phase's scope was always
   FraCaS's own closed sentence/vocabulary set, not general English —
   see the GF integration note above for why. GF's resource grammar
   library covers many languages under one abstract syntax, so the
@@ -232,23 +265,12 @@ consistency check, not a blind-prediction accuracy score.
   was silently failing on every goal — see `BLIND_EVAL.md`.) That score
   covers inference over *hand-translated* `Prop`s, so it is not
   comparable to FraCoq's 83%/81%, whose pipeline translates English
-  automatically. `BlindEvalParsedScan.lean` is the comparable
-  measurement: FraCaS's original English parsed with a restricted GF
-  grammar (`gf/gen_parse_grammar.py`), the top reading chosen by a
-  generic ranker and translated by `gf/translate.py`, with no human
-  anywhere in the translation step, ambiguous English handled by
-  answering only when every consistent reading agrees. It reaches 195 of
-  342 problems and scores **118/195 (60.5%)** on them as translated and
-  **139/195 (71.3%)** with problem-independent background knowledge
-  (`gf/background.py`), with **no wrong answers** — every miss is an
-  "unknown" — against a 37.9% always-"unknown" baseline on the same
-  problems; counting unreached problems as "unknown", 150/342 (43.9%)
-  corpus-wide as translated and 171/342 (50.0%) with background
-  knowledge. The gap between the two evaluations sits mostly in
-  translation coverage, not inference. **`BLIND_EVAL.md`** is the full
-  writeup:
-  methodology, exact per-scan results, every remaining miss and why, and
-  the limitations of both numbers.
+  automatically. The end-to-end pipeline (part 4, `EndToEnd/README.md`)
+  is the comparable kind of measurement. **`BLIND_EVAL.md`** is the full
+  writeup of this one: methodology, exact per-scan results, every
+  remaining miss and why, and its limitations. Its prover is frozen, so
+  work on the end-to-end pipeline cannot move this number.
+- **End-to-end pipeline** (part 4) — ongoing; see `EndToEnd/README.md`.
 - **General natural-language inference** — a substantially larger,
   separate undertaking (open-vocabulary parsing, world/taxonomic
   knowledge, automated entailment over arbitrary sentences, more
