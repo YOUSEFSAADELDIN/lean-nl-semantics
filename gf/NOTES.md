@@ -310,8 +310,41 @@ is, not a bug to route around. **For controlled/known input, don't
 parse — hand-build the tree directly** (as above) and use `linearize`
 to confirm it round-trips to the exact right English string. Free
 parsing only becomes viable with either a much more restricted grammar
-or serious ambiguity-ranking/pruning, neither of which this project has
-built.
+or serious ambiguity-ranking/pruning.
+
+**Update — both now exist, and parsing works.** Measured first against
+this project's own FraCaSLogic grammar (smaller than `AllEng`, but still
+all of the RGL's Noun/Verb/Sentence/... modules plus DictEng): 69,115
+readings for "every Italian man wants to be a great tenor" before a
+5-minute timeout, none free of `ProDrop`/`ApposCN`/`GenNP` junk.
+`gen_parse_grammar.py` builds `FraCaSParse.gf`/`FraCaSParseEng.gf` by GF
+*restricted inheritance* (`FraCaSLogic [f, g, ...]`), keeping only the
+functions and words the CI-confirmed trees in `run_gf_tests.py` use (plus
+the non-`Cat` categories - `ListCN`/`ListNP`/numeral sub-categories -
+that linking otherwise reports missing). The same sentence then has 4
+readings in well under a second. `parse_rank.py` ranks readings
+generically (fewest nodes, ties broken by right association), and
+`parse_eval.py` (run by the `build-gf` CI job) measures it over all 437
+distinct confirmed sentences: all parse, the hand tree is among the
+readings for every one, and the top reading translates like the hand tree
+for 371/373 of those `translate.py` covers. This restricted grammar is
+fit to FraCaS's own vocabulary and constructions - a controlled-language
+grammar, not open-domain parsing - and `scripts/gen_blind_eval_parsed.py`
+uses it to translate FraCaS's original English end to end; see
+`BLIND_EVAL.md` for what that achieves (and doesn't).
+
+Building that pipeline exposed three `translate.py` bugs, now fixed:
+prepositions were dropped from predicate names (FraCaS 74's "resident
+**in** Europe" and "resident **outside** Europe" both became
+`residentEurope`), GF word-sense tags leaked into names (`by8agent` vs
+`by8means` for the same "by"), and a relative clause translated to a
+conjunction under `CompNP (DetCN ...)` but to one fused name under the
+equivalent `CompCN` derivation. One known collision remains: object
+determiners are still dropped ("spend **a lot of** time at home" and
+"spend time at home" share a name). Keeping all determiners was tried
+and reverted - it leaks subject determiners into the cross-check
+generator's restrictor names (`everyCommittee`) and breaks the
+`fracas_090` cross-check - so it needs a targeted fix, not a blanket one.
 
 ## SOLVED: `UseCl`/tense support - the missing piece was `TenseX`, not a real RGL bug
 
