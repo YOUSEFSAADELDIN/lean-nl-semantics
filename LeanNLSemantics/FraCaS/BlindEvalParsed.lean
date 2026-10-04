@@ -229,19 +229,19 @@ def fracas_002_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_002_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (Some italianMan wantGreatTenor)
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_002_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (¬ (Some italianMan wantGreatTenor))
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_002_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (Some italianMan wantGreatTenor)
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_002_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (¬ (Some italianMan wantGreatTenor))
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
 /-- Reading assignment 0 (somepl weak): "yes" test. -/
 def fracas_003_parsed_yes_0 : Prop :=
@@ -261,19 +261,19 @@ def fracas_003_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_003_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (Some italianMan wantGreatTenor)
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_003_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (¬ (Some italianMan wantGreatTenor))
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_003_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (Some italianMan wantGreatTenor)
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (Some italianMan wantGreatTenor)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_003_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → ((AtLeast 2 italianMan greatTenor ∧ Some italianMan greatTenor)) → (¬ (Some italianMan wantGreatTenor))
+  ∀ {A : Type} [Fintype A] (italianMan wantGreatTenor greatTenor : A → Prop) [DecidablePred italianMan] [DecidablePred wantGreatTenor] [DecidablePred greatTenor], (Every italianMan wantGreatTenor) → (AtLeast 2 italianMan greatTenor) → (Some italianMan greatTenor) → (¬ (Some italianMan wantGreatTenor))
 
 /-- Reading assignment 0 (somepl weak): "yes" test. -/
 def fracas_004_parsed_yes_0 : Prop :=
@@ -293,19 +293,19 @@ def fracas_004_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_004_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → ((AtLeast 2 italianTenor great ∧ Some italianTenor great)) → (Some italianTenor wantGreat)
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor great) → (Some italianTenor wantGreat)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_004_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → ((AtLeast 2 italianTenor great ∧ Some italianTenor great)) → (¬ (Some italianTenor wantGreat))
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor great) → (¬ (Some italianTenor wantGreat))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_004_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → ((AtLeast 2 italianTenor great ∧ Some italianTenor great)) → (Some italianTenor wantGreat)
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor great) → (Some italianTenor wantGreat)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_004_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → ((AtLeast 2 italianTenor great ∧ Some italianTenor great)) → (¬ (Some italianTenor wantGreat))
+  ∀ {A : Type} [Fintype A] (italianTenor wantGreat great : A → Prop) [DecidablePred italianTenor] [DecidablePred wantGreat] [DecidablePred great], (Every italianTenor wantGreat) → (AtLeast 2 italianTenor great) → (Some italianTenor great) → (¬ (Some italianTenor wantGreat))
 
 /-- Reading assignment 0 (defpl weak): "yes" test. -/
 def fracas_005_parsed_yes_0 : Prop :=
@@ -325,19 +325,19 @@ def fracas_005_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_005_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], ((Every reallyAmbitiousTenor italian ∧ Some reallyAmbitiousTenor italian)) → (Some reallyAmbitiousTenor italian)
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_005_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], ((Every reallyAmbitiousTenor italian ∧ Some reallyAmbitiousTenor italian)) → (¬ (Some reallyAmbitiousTenor italian))
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_005_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], ((Every reallyAmbitiousTenor italian ∧ Some reallyAmbitiousTenor italian)) → (Some reallyAmbitiousTenor italian)
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_005_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], ((Every reallyAmbitiousTenor italian ∧ Some reallyAmbitiousTenor italian)) → (¬ (Some reallyAmbitiousTenor italian))
+  ∀ {A : Type} [Fintype A] (reallyAmbitiousTenor italian : A → Prop) [DecidablePred reallyAmbitiousTenor] [DecidablePred italian], (Every reallyAmbitiousTenor italian) → (Some reallyAmbitiousTenor italian) → (¬ (Some reallyAmbitiousTenor italian))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_006_parsed_yes_0 : Prop :=
@@ -373,19 +373,19 @@ def fracas_007_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_007_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], ((AtLeast 2 greatTenor swedish ∧ Some greatTenor swedish)) → (Some greatTenor swedish)
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish) → (Some greatTenor swedish)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_007_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], ((AtLeast 2 greatTenor swedish ∧ Some greatTenor swedish)) → (¬ (Some greatTenor swedish))
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish) → (¬ (Some greatTenor swedish))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_007_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], ((AtLeast 2 greatTenor swedish ∧ Some greatTenor swedish)) → (Some greatTenor swedish)
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish) → (Some greatTenor swedish)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_007_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], ((AtLeast 2 greatTenor swedish ∧ Some greatTenor swedish)) → (¬ (Some greatTenor swedish))
+  ∀ {A : Type} [Fintype A] (greatTenor swedish : A → Prop) [DecidablePred greatTenor] [DecidablePred swedish], (AtLeast 2 greatTenor swedish) → (Some greatTenor swedish) → (¬ (Some greatTenor swedish))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_008_parsed_yes_0 : Prop :=
@@ -469,19 +469,19 @@ def fracas_011_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_011_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → ((AtLeast 2 greatTenor likePopularMusic ∧ Some greatTenor likePopularMusic)) → (Some greatTenor singPopularMusic)
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_011_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → ((AtLeast 2 greatTenor likePopularMusic ∧ Some greatTenor likePopularMusic)) → (¬ (Some greatTenor singPopularMusic))
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_011_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → ((AtLeast 2 greatTenor likePopularMusic ∧ Some greatTenor likePopularMusic)) → (Some greatTenor singPopularMusic)
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (Some greatTenor singPopularMusic)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_011_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → ((AtLeast 2 greatTenor likePopularMusic ∧ Some greatTenor likePopularMusic)) → (¬ (Some greatTenor singPopularMusic))
+  ∀ {A : Type} [Fintype A] (greatTenor singPopularMusic likePopularMusic : A → Prop) [DecidablePred greatTenor] [DecidablePred singPopularMusic] [DecidablePred likePopularMusic], (Some greatTenor singPopularMusic) → (AtLeast 2 greatTenor likePopularMusic) → (Some greatTenor likePopularMusic) → (¬ (Some greatTenor singPopularMusic))
 
 /-- Reading assignment 0 (generic weak): "yes" test. -/
 def fracas_013_parsed_yes_0 : Prop :=
@@ -645,19 +645,19 @@ def fracas_021_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_021_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], ((Every residentOfMemberState haveRightLiveInEurope ∧ Some residentOfMemberState haveRightLiveInEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope))
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_021_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], ((Every residentOfMemberState haveRightLiveInEurope ∧ Some residentOfMemberState haveRightLiveInEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_021_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], ((Every residentOfMemberState haveRightLiveInEurope ∧ Some residentOfMemberState haveRightLiveInEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope))
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_021_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], ((Every residentOfMemberState haveRightLiveInEurope ∧ Some residentOfMemberState haveRightLiveInEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState haveRightLiveInEurope individual canTravelFreeWithinEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred haveRightLiveInEurope] [DecidablePred individual] [DecidablePred canTravelFreeWithinEurope], (Every residentOfMemberState haveRightLiveInEurope) → (Some residentOfMemberState haveRightLiveInEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_022_parsed_yes_0 : Prop :=
@@ -693,19 +693,19 @@ def fracas_023_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_023_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurvey)
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurvey)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_023_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurvey))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurvey))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_023_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurvey)
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurvey)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_023_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurvey))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime finishSurvey : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred finishSurvey], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurvey))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_024_parsed_yes_0 : Prop :=
@@ -917,19 +917,19 @@ def fracas_037_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_037_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope))
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_037_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope)))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_037_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope))
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_037_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], ((Every residentOfMemberState canTravelFreeWithinEurope ∧ Some residentOfMemberState canTravelFreeWithinEurope)) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfMemberState canTravelFreeWithinEurope individual haveRightLiveAnywhereInEurope : A → Prop) [DecidablePred residentOfMemberState] [DecidablePred canTravelFreeWithinEurope] [DecidablePred individual] [DecidablePred haveRightLiveAnywhereInEurope], (Every residentOfMemberState canTravelFreeWithinEurope) → (Some residentOfMemberState canTravelFreeWithinEurope) → (Every residentOfMemberState individual) → (Every (fun x => individual x ∧ haveRightLiveAnywhereInEurope x) canTravelFreeWithinEurope) → (¬ ((Every residentOfMemberState haveRightLiveAnywhereInEurope ∧ Some residentOfMemberState haveRightLiveAnywhereInEurope)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_038_parsed_yes_0 : Prop :=
@@ -965,19 +965,19 @@ def fracas_039_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_039_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (AtLeast 2 delegate finishSurveyOnTime)
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (AtLeast 2 delegate finishSurvey) → (Some delegate finishSurvey) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_039_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (AtLeast 2 delegate finishSurvey) → (Some delegate finishSurvey) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_039_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (AtLeast 2 delegate finishSurveyOnTime)
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurvey) → (Some delegate finishSurvey) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_039_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → ((AtLeast 2 delegate finishSurvey ∧ Some delegate finishSurvey)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurvey finishSurveyOnTime : A → Prop) [DecidablePred delegate] [DecidablePred finishSurvey] [DecidablePred finishSurveyOnTime], (∀ x, finishSurveyOnTime x → finishSurvey x) → (AtLeast 2 delegate finishSurvey) → (Some delegate finishSurvey) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_040_parsed_yes_0 : Prop :=
@@ -1173,19 +1173,19 @@ def fracas_053_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_053_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfMajorWesternCountry canTravelFreeWithinEurope ∧ Some residentOfMajorWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope))
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope))
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_053_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfMajorWesternCountry canTravelFreeWithinEurope ∧ Some residentOfMajorWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope)))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_053_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfMajorWesternCountry canTravelFreeWithinEurope ∧ Some residentOfMajorWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope))
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope))
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_053_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfMajorWesternCountry canTravelFreeWithinEurope ∧ Some residentOfMajorWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfMajorWesternCountry canTravelFreeWithinEurope residentOfWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfMajorWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Some residentOfMajorWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfWesternCountry haveRightLiveInEurope ∧ Some residentOfWesternCountry haveRightLiveInEurope)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_054_parsed_yes_0 : Prop :=
@@ -1221,19 +1221,19 @@ def fracas_055_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_055_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurveyOnTime)
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (AtLeast 2 irishDelegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_055_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (AtLeast 2 irishDelegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_055_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (AtLeast 2 delegate finishSurveyOnTime)
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 irishDelegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime) → (AtLeast 2 delegate finishSurveyOnTime)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_055_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 irishDelegate finishSurveyOnTime ∧ Some irishDelegate finishSurveyOnTime)) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (irishDelegate finishSurveyOnTime delegate : A → Prop) [DecidablePred irishDelegate] [DecidablePred finishSurveyOnTime] [DecidablePred delegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 irishDelegate finishSurveyOnTime) → (Some irishDelegate finishSurveyOnTime) → (¬ (AtLeast 2 delegate finishSurveyOnTime))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_056_parsed_yes_0 : Prop :=
@@ -1429,19 +1429,19 @@ def fracas_069_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_069_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfWesternCountry canTravelFreeWithinEurope ∧ Some residentOfWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope))
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope))
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_069_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfWesternCountry canTravelFreeWithinEurope ∧ Some residentOfWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope)))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_069_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfWesternCountry canTravelFreeWithinEurope ∧ Some residentOfWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope))
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope))
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_069_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], ((Every residentOfWesternCountry canTravelFreeWithinEurope ∧ Some residentOfWesternCountry canTravelFreeWithinEurope)) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope)))
+  ∀ {A : Type} [Fintype A] (residentOfWesternCountry canTravelFreeWithinEurope residentOfMajorWesternCountry haveRightLiveInEurope : A → Prop) [DecidablePred residentOfWesternCountry] [DecidablePred canTravelFreeWithinEurope] [DecidablePred residentOfMajorWesternCountry] [DecidablePred haveRightLiveInEurope], (Every residentOfWesternCountry canTravelFreeWithinEurope) → (Some residentOfWesternCountry canTravelFreeWithinEurope) → (Every residentOfMajorWesternCountry residentOfWesternCountry) → (¬ ((Every residentOfMajorWesternCountry haveRightLiveInEurope ∧ Some residentOfMajorWesternCountry haveRightLiveInEurope)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_070_parsed_yes_0 : Prop :=
@@ -1477,19 +1477,19 @@ def fracas_071_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (somepl strong): "yes" test. -/
 def fracas_071_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 irishDelegate finishSurveyOnTime)
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (AtLeast 2 irishDelegate finishSurveyOnTime)
 
 /-- Reading assignment 1 (somepl strong): "no" test. -/
 def fracas_071_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
 
 /-- As `_yes_1`, with 1 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_071_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (AtLeast 2 irishDelegate finishSurveyOnTime)
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (AtLeast 2 irishDelegate finishSurveyOnTime)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_071_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → ((AtLeast 2 delegate finishSurveyOnTime ∧ Some delegate finishSurveyOnTime)) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
+  ∀ {A : Type} [Fintype A] (delegate finishSurveyOnTime irishDelegate : A → Prop) [DecidablePred delegate] [DecidablePred finishSurveyOnTime] [DecidablePred irishDelegate], (∀ x, irishDelegate x → delegate x) → (AtLeast 2 delegate finishSurveyOnTime) → (Some delegate finishSurveyOnTime) → (¬ (AtLeast 2 irishDelegate finishSurveyOnTime))
 
 /-- Reading assignment 0 (many weak): "yes" test. -/
 def fracas_072_parsed_yes_0 : Prop :=
@@ -1669,19 +1669,19 @@ def fracas_094_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_094_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], ((Every inhabitantOfCambridge voteForLabourMp ∧ Some inhabitantOfCambridge voteForLabourMp)) → (Every inhabitantOfCambridge voteForLabourMp)
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Some inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_094_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], ((Every inhabitantOfCambridge voteForLabourMp ∧ Some inhabitantOfCambridge voteForLabourMp)) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Some inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_094_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], ((Every inhabitantOfCambridge voteForLabourMp ∧ Some inhabitantOfCambridge voteForLabourMp)) → (Every inhabitantOfCambridge voteForLabourMp)
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Some inhabitantOfCambridge voteForLabourMp) → (Every inhabitantOfCambridge voteForLabourMp)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_094_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], ((Every inhabitantOfCambridge voteForLabourMp ∧ Some inhabitantOfCambridge voteForLabourMp)) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
+  ∀ {A : Type} [Fintype A] (inhabitantOfCambridge voteForLabourMp : A → Prop) [DecidablePred inhabitantOfCambridge] [DecidablePred voteForLabourMp], (Every inhabitantOfCambridge voteForLabourMp) → (Some inhabitantOfCambridge voteForLabourMp) → (¬ (Every inhabitantOfCambridge voteForLabourMp))
 
 /-- Reading assignment 0 (defpl weak): "yes" test. -/
 def fracas_095_parsed_yes_0 : Prop :=
@@ -1701,19 +1701,19 @@ def fracas_095_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_095_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], ((Every ancientGreek notedPhilosopher ∧ Some ancientGreek notedPhilosopher)) → (Every ancientGreek notedPhilosopher)
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_095_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], ((Every ancientGreek notedPhilosopher ∧ Some ancientGreek notedPhilosopher)) → (¬ (Every ancientGreek notedPhilosopher))
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_095_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], ((Every ancientGreek notedPhilosopher ∧ Some ancientGreek notedPhilosopher)) → (Every ancientGreek notedPhilosopher)
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (Every ancientGreek notedPhilosopher)
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_095_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], ((Every ancientGreek notedPhilosopher ∧ Some ancientGreek notedPhilosopher)) → (¬ (Every ancientGreek notedPhilosopher))
+  ∀ {A : Type} [Fintype A] (ancientGreek notedPhilosopher : A → Prop) [DecidablePred ancientGreek] [DecidablePred notedPhilosopher], (Every ancientGreek notedPhilosopher) → (Some ancientGreek notedPhilosopher) → (¬ (Every ancientGreek notedPhilosopher))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_096_parsed_yes_0 : Prop :=
@@ -2101,19 +2101,19 @@ def fracas_149_parsed_bk_no_0 : Prop :=
 
 /-- Reading assignment 1 (defpl strong): "yes" test. -/
 def fracas_149_parsed_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → ((Every student speakToMary ∧ Some student speakToMary)) → ((Every student speakToMary ∧ Some student speakToMary))
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Some student speakToMary) → ((Every student speakToMary ∧ Some student speakToMary))
 
 /-- Reading assignment 1 (defpl strong): "no" test. -/
 def fracas_149_parsed_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → ((Every student speakToMary ∧ Some student speakToMary)) → (¬ ((Every student speakToMary ∧ Some student speakToMary)))
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Some student speakToMary) → (¬ ((Every student speakToMary ∧ Some student speakToMary)))
 
 /-- As `_yes_1`, with 0 background-knowledge premise(s) from `gf/background.py`. -/
 def fracas_149_parsed_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → ((Every student speakToMary ∧ Some student speakToMary)) → ((Every student speakToMary ∧ Some student speakToMary))
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Some student speakToMary) → ((Every student speakToMary ∧ Some student speakToMary))
 
 /-- As `_no_1`, with the same background knowledge. -/
 def fracas_149_parsed_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → ((Every student speakToMary ∧ Some student speakToMary)) → (¬ ((Every student speakToMary ∧ Some student speakToMary)))
+  ∀ {A : Type} [Fintype A] (speakToMary student : A → Prop) [DecidablePred speakToMary] [DecidablePred student] (john : A), (speakToMary john) → (Every student speakToMary) → (Some student speakToMary) → (¬ ((Every student speakToMary ∧ Some student speakToMary)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_150_parsed_yes_0 : Prop :=

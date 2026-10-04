@@ -392,6 +392,7 @@ _READING = "default"
 
 
 _POSITION = "premise"
+_SIDE_PREMISES: list = []
 
 
 def translate_cl_reading(t, reading, position: str = "premise"):
@@ -399,14 +400,18 @@ def translate_cl_reading(t, reading, position: str = "premise"):
     or a dict {kind: "weak"|"strong"} over AMBIGUITY_KINDS. `position`
     ("premise"/"hypothesis") only chooses between equivalent renderings
     (see _quantified)."""
-    global _READING, _POSITION
+    global _READING, _POSITION, _SIDE_PREMISES
     previous, _READING = _READING, reading
     previous_pos, _POSITION = _POSITION, position
+    previous_side, _SIDE_PREMISES = _SIDE_PREMISES, []
     try:
-        return translate_cl(t)
+        tr = translate_cl(t)
+        tr.side_premises = list(_SIDE_PREMISES)
+        return tr
     finally:
         _READING = previous
         _POSITION = previous_pos
+        _SIDE_PREMISES = previous_side
 
 
 def _mode(kind: str) -> str:
@@ -668,6 +673,10 @@ class Translation:
     # assumed it uniformly; this field lets them keep doing that for
     # every OTHER predicate while declaring these few correctly.
     binary_predicates: list = field(default_factory=list)
+    # Extra premises a strong reading entails, stated as separate
+    # hypotheses rather than conjoined into `lean_prop` (see _quantified) -
+    # only ever set in premise position.
+    side_premises: list = field(default_factory=list)
     # Free SKOLEM FUNCTIONS (`A -> A`, as opposed to every other free
     # variable this translator produces, which is either a predicate
     # or a bare individual) - set only by
@@ -1258,21 +1267,25 @@ def translate_cl(t) -> Translation:
 
 
 def _quantified(quant: str, restrictor: str, scope: str) -> str:
-    """Render `quant restrictor scope`. Two strong readings carry an
-    explicit existence conjunct: a definite plural presupposes that its
-    referents exist ("Every+": `Every` alone is vacuously true of no
-    tenors at all), and "at least two" entails "some" ("AtLeast 2+": the
-    conjunct only states that consequence outright, so the prover need not
-    rediscover it - the two forms are equivalent, and the conjunct is only
-    added in premise position)."""
-    if quant == "Every+":
-        return f"(Every {restrictor} {scope} ∧ Some {restrictor} {scope})"
-    if quant == "AtLeast 2+":
-        # Equivalent forms; the explicit "some" conjunct helps only as a
-        # premise - as a hypothesis it just adds a goal to prove.
-        if _POSITION == "hypothesis":
-            return f"AtLeast 2 {restrictor} {scope}"
-        return f"(AtLeast 2 {restrictor} {scope} ∧ Some {restrictor} {scope})"
+    """Render `quant restrictor scope`. Two strong readings entail an
+    existence fact: a definite plural presupposes its referents exist
+    ("Every+": `Every` alone is vacuously true of no tenors at all), and
+    "at least two" entails "some" ("AtLeast 2+"). In premise position that
+    fact becomes a SEPARATE premise (`_SIDE_PREMISES`) - logically the same
+    as conjoining it, but a conjunction hides the plain `Every`/`AtLeast`
+    premise from shape-directed tactics like `mono_nl` (CI run
+    37185572606: FraCaS 23/55 were provable with `AtLeast 2 P Q` as a
+    premise but not with `AtLeast 2 P Q ∧ Some P Q`). As a hypothesis, a
+    definite plural must establish existence too, so it stays a
+    conjunction; "at least two" needs no extra conjunct there."""
+    if quant in ("Every+", "AtLeast 2+"):
+        base = "Every" if quant == "Every+" else "AtLeast 2"
+        if _POSITION == "premise":
+            _SIDE_PREMISES.append(f"Some {restrictor} {scope}")
+            return f"{base} {restrictor} {scope}"
+        if quant == "Every+":
+            return f"(Every {restrictor} {scope} ∧ Some {restrictor} {scope})"
+        return f"AtLeast 2 {restrictor} {scope}"
     return f"{quant} {restrictor} {scope}"
 
 

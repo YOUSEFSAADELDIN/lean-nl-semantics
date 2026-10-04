@@ -237,6 +237,15 @@ def assemble(idn, sentences):
             out.append((tr, f"¬ ({tr.lean_prop})" if negated else tr.lean_prop))
         return out
 
+    def premise_props(trs):
+        # A premise's side premises (see translate.py's _quantified) follow
+        # it as separate hypotheses.
+        props = []
+        for tr, p in trs:
+            props.append(f"({p})")
+            props += [f"({sp})" for sp in tr.side_premises]
+        return props
+
     try:
         base = translate_all({})
         present = [
@@ -295,7 +304,7 @@ def assemble(idn, sentences):
 
     out = []
     for a, trs in translated:
-        premises = [f"({p})" for _tr, p in trs[:-1]]
+        premises = premise_props(trs[:-1])
         hyp = trs[-1][1]
 
         def chain(facts, conclusion):
