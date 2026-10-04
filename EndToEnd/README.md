@@ -85,6 +85,17 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    (`GQ.lean`), with an elided verb resolved to the main clause's. Fused
    names keep an object's numeral: they used to drop it, which made "won
    ten orders" and "won eleven orders" the same predicate.
+   A coordinated subject ("Smith, Jones and Anderson signed the
+   contract", "either Smith, Jones or Anderson …") distributes over its
+   conjuncts or disjuncts, except where its collective reading is live:
+   with a collective verb ("Smith, Anderson and Jones met") or a counted
+   object ("Smith and Jones signed two contracts", whose cumulative
+   reading 111–113 test) it is left untranslated. "It is true/false that
+   S" is S / ¬S; "everyone (at the meeting)" is every person (at the
+   meeting); "one of the Ns" is a counted partitive, ambiguous like a
+   bare numeral; and a fronted adverbial ("In 1993 ITEL won …") modifies
+   the VP, with a proper-name subject and no negation, where its scope
+   is the same as in final position.
 5. **Never commit to one reading of ambiguous English.** Six kinds of
    ambiguity are translated in a weak and a strong reading: a definite
    plural subject ("the inhabitants voted" — collective/generic `Some`,
@@ -100,7 +111,8 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    its scope within its restrictor preserves it). "A few"/"at least a
    few" are vague rather than ambiguous: `AtLeast` an unknown threshold
    of at least one, not plain `Some` (which would make "some X are Y"
-   entail "a few X are Y"). "Both"/"neither" use the
+   entail "a few X are Y"); "several" likewise, with a threshold of at
+   least two. "Both"/"neither" use the
    corpus's own `Both`/`Neither`, which keep the exactly-two
    presupposition. Each problem is translated under every *consistent*
    assignment of readings — the same word read the same way in each of
