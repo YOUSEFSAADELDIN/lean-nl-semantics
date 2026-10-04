@@ -417,6 +417,19 @@ Free-choice "any" (DictEng's `anySg_Det`, FraCaS 248: "faster than any
 ITEL computer") is read universally, but only as a comparative's
 standard; everywhere else "any" still does not translate.
 
+**"Few", "a few", "at least a few".** No grammar change: these
+already parsed, and `translate.py` had no rule for `few_Det`/
+`atLeastAFew_Det`. "Few" is a sixth ambiguity kind, read as cardinal
+(`AtMost fewCount`, unknown threshold) or proportional (an opaque `Few`,
+bound by the generator with one meaning postulate). "A few"/"at least a
+few" are `AtLeast aFewCount` with `aFewCount ≥ 1`. A counting existential
+("there are few committee members from southern Europe") takes the NP's
+PP or relative clause as its scope. The parse puts the PP inside the
+compound ("committee [members from ...]"), so the translator re-brackets
+it first. FraCaS 27 then needed the `(AtLeast, scope)` counterpart of
+`mono_nl`'s Phase-5 conditioned narrowing (`atLeast_mono_scope_
+conditioned`); aesop did not find the equivalent `atLeast_trans`.
+
 **Measured and rejected: a corpus-vocabulary lexicon.** Giving the parse
 grammar DictEng's entries for every word FraCaS uses (404 lexical
 functions for 94 missing words) let only 25 more of the 230 failing

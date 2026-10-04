@@ -237,13 +237,13 @@ consistency check, not a blind-prediction accuracy score.
   grammar (`gf/gen_parse_grammar.py`), the top reading chosen by a
   generic ranker and translated by `gf/translate.py`, with no human
   anywhere in the translation step, ambiguous English handled by
-  answering only when every consistent reading agrees. It reaches 186 of
-  342 problems and scores **111/186 (59.7%)** on them as translated and
-  **131/186 (70.4%)** with problem-independent background knowledge
+  answering only when every consistent reading agrees. It reaches 195 of
+  342 problems and scores **118/195 (60.5%)** on them as translated and
+  **139/195 (71.3%)** with problem-independent background knowledge
   (`gf/background.py`), with **no wrong answers** — every miss is an
-  "unknown" — against a 37.1% always-"unknown" baseline on the same
-  problems; counting unreached problems as "unknown", 148/342 (43.3%)
-  corpus-wide as translated and 168/342 (49.1%) with background
+  "unknown" — against a 37.9% always-"unknown" baseline on the same
+  problems; counting unreached problems as "unknown", 150/342 (43.9%)
+  corpus-wide as translated and 171/342 (50.0%) with background
   knowledge. The gap between the two evaluations sits mostly in
   translation coverage, not inference. **`BLIND_EVAL.md`** is the full
   writeup:

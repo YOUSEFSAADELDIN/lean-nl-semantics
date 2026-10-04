@@ -225,7 +225,7 @@ problem the automated pipeline can carry all the way through
    (`GQ.lean`), with an elided verb resolved to the main clause's. Fused
    names keep an object's numeral: they used to drop it, which made "won
    ten orders" and "won eleven orders" the same predicate.
-5. **Never commit to one reading of ambiguous English.** Five kinds of
+5. **Never commit to one reading of ambiguous English.** Six kinds of
    ambiguity are translated in a weak and a strong reading: a definite
    plural subject ("the inhabitants voted" — collective/generic `Some`,
    or distributive `Every` plus the definite's existence presupposition);
@@ -233,8 +233,14 @@ problem the automated pipeline can carry all the way through
    (cardinal, read as `Some`, or proportional — an opaque relation stated
    only with properties every reading shares: it entails "some" and is
    upward monotone in its scope, but not in its restrictor); plural
-   "some Xs" (number-neutral, or at least two); and a bare numeral ("ten
-   orders": at least ten, or exactly ten). "Both"/"neither" use the
+   "some Xs" (number-neutral, or at least two); a bare numeral ("ten
+   orders": at least ten, or exactly ten); and "few" (a small number —
+   `AtMost` an unknown threshold — or a small proportion, an opaque
+   relation stated only with the property both readings share: narrowing
+   its scope within its restrictor preserves it). "A few"/"at least a
+   few" are vague rather than ambiguous: `AtLeast` an unknown threshold
+   of at least one, not plain `Some` (which would make "some X are Y"
+   entail "a few X are Y"). "Both"/"neither" use the
    corpus's own `Both`/`Neither`, which keep the exactly-two
    presupposition. Each problem is translated under every *consistent*
    assignment of readings — the same word read the same way in each of
@@ -268,9 +274,9 @@ correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 186 of 342 problems go all
-the way through (54.4%). 111 stop at a sentence the restricted grammar
-doesn't parse, 32 at a reading `translate.py` doesn't cover, 13 at a
+**Coverage, on FraCaS's original English**: 195 of 342 problems go all
+the way through (57.0%). 111 stop at a sentence the restricted grammar
+doesn't parse, 23 at a reading `translate.py` doesn't cover, 13 at a
 translation needing non-generic assembly. A census of every failing
 sentence found the remaining parse failures are mostly hard phenomena
 rather than missing glue: more ellipsis forms, aspect and duration,
@@ -281,16 +287,16 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 37191610696), on those 186 problems:
+**Result** (CI run 37195314343), on those 195 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 69/186 (37.1%) | — |
-| as translated | **111/186 (59.7%)** | **0** |
-| with background knowledge | **131/186 (70.4%)** | **0** |
+| always "unknown" (baseline) | 74/195 (37.9%) | — |
+| as translated | **118/195 (60.5%)** | **0** |
+| with background knowledge | **139/195 (71.3%)** | **0** |
 
-Counting the 156 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 148/342 (43.3%) as translated and 168/342 (49.1%)
+Counting the 147 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 150/342 (43.9%) as translated and 171/342 (50.0%)
 with background knowledge, against a 31.0% baseline. (The previous
 version of this file gave one corpus-wide figure, 164/342; that was the
 with-background-knowledge number, and it was not labelled as such.) 0
@@ -315,6 +321,13 @@ problem cases. Its cost is that a genuinely ambiguous problem now gets
   of "some orders" but not on the at-least-two reading, the same
   ambiguity as 107/109, so the pipeline says "unknown". The other six
   problems in the group (231, 232, 234, 235, 240, 241) match.
+- **76** ("Few committee members are from southern Europe" ⇒ "Few
+  female committee members are", gold yes) holds on the small-number
+  reading of "few" but not the proportional one (if the only southern
+  European member is one of two female members, few members but half the
+  female members are from southern Europe), so the pipeline says
+  "unknown". The rest of the "few"/"a few" group matches: 11, 12, 27, 28,
+  43, 44, 60 and 75, and 59 with background knowledge.
 - **13** ("Leading tenors who are excellent are indispensable" read
   generically) and **160** ("a fast one" after "a red car" read as "a
   fast red car") are FraCaS committing to one reading of a genuinely
@@ -369,9 +382,9 @@ mistakes, while the 336/342 premises/hypotheses were translated by hand.
 It isolates and scores the inference step only.
 
 The end-to-end scan above is the comparable kind of measurement. It
-reaches 54.4% of the corpus and scores 59.7% as translated (70.4% with
+reaches 57.0% of the corpus and scores 60.5% as translated (71.3% with
 background knowledge) on what it reaches, with no wrong answers at all —
-43.3% (49.1%) corpus-wide if every unreached problem counts as "unknown".
+43.9% (50.0%) corpus-wide if every unreached problem counts as "unknown".
 Most of the remaining gap is translation coverage (111 problems stop at a
 sentence the grammar can't parse, mostly ellipsis, aspect and attitude
 reports) rather than inference.
@@ -408,7 +421,7 @@ reports) rather than inference.
 - A 98.2% match is partly a statement about how much of each problem's
   difficulty the hand translation already absorbed (an explicit
   background-knowledge premise, a pre-resolved ellipsis, a literal `Nat`
-  comparison). The end-to-end scan's 59.7%/70.4% (on the 54.4% of the corpus it
+  comparison). The end-to-end scan's 60.5%/71.3% (on the 57.0% of the corpus it
   reaches) is the counterweight to read next to it.
 - The end-to-end numbers inherit every caveat above plus three of their
   own: the parse grammar's vocabulary and constructions are read off
