@@ -128,7 +128,13 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    durative "for two hours"), plus a small closed degree-semantics
    lexicon (antonym contraries such as small/large over the *same* noun,
    a comparative's standard transferring upward, comparative asymmetry,
-   antonym converses). Nothing in it is keyed by problem or gold answer,
+   antonym converses), plus three adjective classes: intersective ("a
+   four-legged animal" is four-legged and an animal), privative ("a
+   former student" is not a student), and dimensional (a threshold set by
+   the comparison class's members, a comparative independent of the
+   noun, and contraries ordered within one class); every other adjective
+   ("competent", "clever") is plainly subsective and licenses nothing
+   beyond the noun. Nothing in it is keyed by problem or gold answer,
    but the lists were written with this corpus in view, so it is not a
    held-out resource.
 
@@ -167,18 +173,38 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38028878624), on those 219 problems:
+**Result** (CI run 38036552953), on those 219 problems:
 
 | | matched | wrong answers |
 |---|---|---|
 | always "unknown" (baseline) | 80/219 (36.5%) | — |
-| as translated | **144/219 (65.8%)** | **0** |
-| with background knowledge | **166/219 (75.8%)** | **0** |
+| as translated | **146/219 (66.7%)** | **0** |
+| with background knowledge | **176/219 (80.4%)** | **0** |
 
 Counting the 123 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 170/342 (49.7%) as translated and 192/342 (56.1%)
+corpus-wide that is 172/342 (50.3%) as translated and 202/342 (59.1%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
+
+**Adjectives and attitudes** (CI run 38036552953) gained 198, 202, 203,
+208, 209, 212, 214 and 216 with background knowledge, and 334 and 336 in
+both variants, and lost nothing. Background knowledge now sorts
+adjectives into the classes of Kamp & Partee (1995) (step 6): 216's
+"a fatter politician than Bill" ⇒ "fatter than Bill" follows for a
+dimensional adjective like "fat" and not for "clever" (217, still
+correctly unknown), and 214's "all fat legal authorities are fat law
+lecturers" follows from the two nouns having the same members, which
+does not carry over to "competent" (215, still correctly unknown).
+Readings now commit to the complement of a factive ("Smith knew that
+S" ⇒ S, 334) and of a positive implicative ("ITEL managed to win" ⇒
+ITEL won, 336), and not of "believe" or "try" (335, 337, correctly
+unknown). Left as they are: 199 ("a successful former university
+student" ⇒ "successful") would need "successful" to be intersective,
+which it is not in general (successful as what?), and 218 ("a clever
+person" ⇒ "clever") needs a default comparison class. The adjective
+lists were written with Section 5 in view, so this round's gains are
+development-set gains like every other. Before this round, CI run
+38028878624 gave 144/219 and 166/219.
 
 **Temporal order** (CI run 38028878624) gained 261, 262, 264-268 and
 270 and lost nothing: "Smith left before/after Jones left" now places
@@ -200,7 +226,7 @@ matched problem and gained 84, 89, 93, 217 and 342; 216 ("John is a
 fatter politician than Bill" ⇒ "John is fatter than Bill", gold yes) is
 "unknown" by design, since "fatter as a politician" coincides with
 "fatter" only for some adjectives (not "clever", 217), which the
-pipeline has no lexicon for. Before that, CI run 37205860267 gave
+pipeline then had no lexicon for (it does now, see above). Before that, CI run 37205860267 gave
 131/213 and 153/213.
 
 Before the round before that (coordinated subjects, "several", "it is
@@ -251,8 +277,8 @@ problem cases. Its cost is that a genuinely ambiguous problem now gets
   ambiguous sentence; the pipeline says "unknown".
 
 How the remaining "unknown"s split: most need knowledge neither the
-translation nor `EndToEnd/background.py` supplies (comparisons across noun
-classes, 208; former-student inferences, 198-199), counting arguments the
+translation nor `EndToEnd/background.py` supplies (199's "successful"
+and 218's default comparison class, both above), counting arguments the
 generic prover doesn't find (105, 106), or temporal reasoning that the
 fused predicate names cannot express (Section 7, 261-306).
 
@@ -289,18 +315,18 @@ uses the C&C CCG parser and Coq "fully automated" with a 30-second
 timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
 problems that lack a well-defined answer": exactly this project's `undef`
 problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
-the same labels. With CI run 38028878624's verdicts
+the same labels. With CI run 38036552953's verdicts
 (`compare_fracoq.py`):
 
 | section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
 |---|---|---|---|
 | quantifiers (74) | .76 | **.89** | .77 |
 | plurals (33) | .64 | .64 | .67 |
-| adjectives (22) | .32 | .55 | .68 |
+| adjectives (22) | .32 | **.91** | .68 |
 | comparatives (31) | .48 | **.61** | .48 |
 | verbs (8) | .50 | .50 | .62 |
-| attitudes (13) | .54 | .54 | .77 |
-| **total (181)** | **.608** | **.713** | **.69** |
+| attitudes (13) | .69 | .69 | .77 |
+| **total (181)** | **.619** | **.768** | **.69** |
 
 No wrong answers in either variant. Haruta, Mineshima & Bekki (ACL SRW
 2020), ccg2lambda's successor for these phenomena (two CCG parsers,
@@ -362,17 +388,17 @@ do so" (2021).
 from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
 paper's 259 problems exactly) and scores this pipeline's verdicts by
 FraCoq's own rules (only clearly labelled problems; an `Undef` label
-accepts any answer). With the verdicts of CI run 38028878624:
+accepts any answer). With the verdicts of CI run 38036552953:
 
 | FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
 |---|---|---|---|---|
-| 2017: sections 1, 2, 5, 6, 9 | 171 | 60.2% | 71.3% | 0.83 (on 174) |
-| 2019: all but section 7 | 259 | 49.4% | 56.8% | 0.89 |
-| 2021: all sections | 326 | 47.9% | 54.6% | 0.81 (on 329) |
+| 2017: sections 1, 2, 5, 6, 9 | 171 | 61.4% | 76.6% | 0.83 (on 174) |
+| 2019: all but section 7 | 259 | 50.2% | 60.2% | 0.89 |
+| 2021: all sections | 326 | 48.5% | 57.4% | 0.81 (on 329) |
 
 On the 2017 sections, per section with background knowledge: quantifiers
-65/74 (FraCoq .96), plurals 20/33 (.76), adjectives 12/20 (.95),
-comparatives 18/31 (.56), attitudes 7/13 (.85). Under FraCoq's labels one
+65/74 (FraCoq .96), plurals 20/33 (.76), adjectives 19/20 (.95),
+comparatives 18/31 (.56), attitudes 9/13 (.85). Under FraCoq's labels one
 answer counts as wrong: 5, whose label FraCoq overrules from yes to
 unknown ("missing hypothesis: there are italian tenors"); under the
 original labels it is correct. The 2017 subset comes out at 171 problems
