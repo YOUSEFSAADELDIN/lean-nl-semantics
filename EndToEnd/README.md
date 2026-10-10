@@ -167,18 +167,33 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 37240689801), on those 219 problems:
+**Result** (CI run 38028878624), on those 219 problems:
 
 | | matched | wrong answers |
 |---|---|---|
 | always "unknown" (baseline) | 80/219 (36.5%) | — |
-| as translated | **136/219 (62.1%)** | **0** |
-| with background knowledge | **158/219 (72.1%)** | **0** |
+| as translated | **144/219 (65.8%)** | **0** |
+| with background knowledge | **166/219 (75.8%)** | **0** |
 
 Counting the 123 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 162/342 (47.4%) as translated and 184/342 (53.8%)
+corpus-wide that is 170/342 (49.7%) as translated and 192/342 (56.1%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
+
+**Temporal order** (CI run 38028878624) gained 261, 262, 264-268 and
+270 and lost nothing: "Smith left before/after Jones left" now places
+each named individual's culminating event at one time (`leaveTime :
+A → ℕ`). "After" is factive in its clause and "before" is not (275,
+"left the meeting before he lost his temper", stays unknown). Only
+between two culminating (telic) events, judged by the standard telicity
+tests: for states and activities ("was present", "swam") "before" and
+"after" are not converses, and FraCaS's gold answers differ exactly
+there (264/270 yes vs 269/272 unknown, same logical shape), so those
+keep an opaque translation and stay correctly unknown. A first version
+assumed every event has one time regardless of aspect; checking the
+whole group before building it showed that would have answered 269 and
+272 wrongly. Before this round, CI run 37240689801 gave 136/219 and
+158/219.
 
 The cheap-construction round (CI run 37240689801) lost no previously
 matched problem and gained 84, 89, 93, 217 and 342; 216 ("John is a
