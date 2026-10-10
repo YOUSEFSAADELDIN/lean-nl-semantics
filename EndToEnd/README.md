@@ -182,9 +182,9 @@ correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 237 of 342 problems go all
-the way through (69.3%). 87 stop at a sentence the restricted grammar
-doesn't parse, 17 at a reading the translation doesn't cover, and 1
+**Coverage, on FraCaS's original English**: 240 of 342 problems go all
+the way through (70.2%). 87 stop at a sentence the restricted grammar
+doesn't parse, 14 at a reading the translation doesn't cover, and 1
 (104) at a predicate named after a Lean keyword (`have`). The remaining parse failures are
 mostly hard phenomena rather than missing glue: tense and aspect
 (Section 7), embedded questions, antecedent-contained and parallel-scope
@@ -201,16 +201,16 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38087617550), on those 237 problems:
+**Result** (CI run 38089191811), on those 240 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 80/237 (33.8%) | — |
-| as translated | **166/237 (70.0%)** | **0** |
-| with background knowledge | **211/237 (89.0%)** | **0** |
+| always "unknown" (baseline) | 81/240 (33.8%) | — |
+| as translated | **169/240 (70.4%)** | **0** |
+| with background knowledge | **214/240 (89.2%)** | **0** |
 
-Counting the 105 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 192/342 (56.1%) as translated and 237/342 (69.3%)
+Counting the 102 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 194/342 (56.7%) as translated and 239/342 (69.9%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
 
@@ -236,6 +236,23 @@ machines" settled; 129 and 130 are the same problem with opposite gold
 answers; and 127, 128, 134-138 need plural or donkey anaphora over
 conjunctions and relative clauses. Before this round, CI run
 38041260727 gave 160/229 and 203/229.
+
+A follow-up (CI run 38089191811) matched 128, 130 and 138, reached 129,
+and lost nothing. **Bridging**: "every report has a cover page" makes
+each report's cover page a function of the report, stated as such
+(`coverPageOf`) when a later definite depends on it; "the cover page of
+R-95-103" is then `coverPageOf r95103`, and in a premise a bare "the
+cover page" is the cover page of the one report the discourse names
+(138). **Plural "they" after a coordination**: "John and his colleagues
+went to a meeting. They hated it" - "they" may be all of them or just
+the colleagues, so only what holds on both is used: the colleagues
+hated the meeting (128). Whether John did depends on that reading, and
+FraCaS's 129 (yes) and 130 (unknown) are the same problem with both
+answers; the pipeline says "unknown" to both. 134/135 (donkey
+sentences) are not attempted: "MFI has a service contract for all its
+computers" needs "its" read as ownership and a uniqueness argument from
+"exactly one computer", and 135 holds only on the strong donkey reading.
+Before, CI run 38087617550 gave 166/237 and 211/237.
 
 **Ellipsis** (CI run 38041260727) reached 145, 146, 154, 164-167, 178
 and 179 and matched all of them, matched 150-152 (reached before, but
@@ -391,7 +408,7 @@ uses the C&C CCG parser and Coq "fully automated" with a 30-second
 timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
 problems that lack a well-defined answer": exactly this project's `undef`
 problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
-the same labels. With CI run 38087617550's verdicts
+the same labels. With CI run 38089191811's verdicts
 (`compare_fracoq.py`):
 
 | section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
@@ -464,13 +481,13 @@ do so" (2021).
 from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
 paper's 259 problems exactly) and scores this pipeline's verdicts by
 FraCoq's own rules (only clearly labelled problems; an `Undef` label
-accepts any answer). With the verdicts of CI run 38087617550:
+accepts any answer). With the verdicts of CI run 38089191811:
 
 | FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
 |---|---|---|---|---|
 | 2017: sections 1, 2, 5, 6, 9 | 171 | 62.6% | 80.7% | 0.83 (on 174) |
-| 2019: all but section 7 | 259 | 57.9% | 71.8% | 0.89 |
-| 2021: all sections | 326 | 54.6% | 68.1% | 0.81 (on 329) |
+| 2019: all but section 7 | 259 | 58.7% | 72.6% | 0.89 |
+| 2021: all sections | 326 | 55.2% | 68.7% | 0.81 (on 329) |
 
 On the 2017 sections, per section with background knowledge: quantifiers
 69/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
