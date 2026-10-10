@@ -147,11 +147,25 @@ def _contains(t, head: str) -> bool:
     return t.head == head or any(_contains(a, head) for a in t.args)
 
 
+def _clause_modifiers_well_formed(t) -> bool:
+    """A subordinate clause ("before Jones left", "if he came") modifies a
+    clause or a verb phrase, never a noun or noun phrase: "[the shore
+    before Jones swam to the shore]" is not a reading of English. Right association would
+    otherwise prefer it, as the lowest attachment (FraCaS 270)."""
+    if t.head in ("AdvCN", "AdvNP") and len(t.args) == 2 and t.args[1].head == "SubjS":
+        return False
+    return all(_clause_modifiers_well_formed(a) for a in t.args)
+
+
 def ranked(trees: list[str]) -> list[str]:
-    """Readings in preference order, ill-formed anaphora readings removed."""
+    """Readings in preference order, ill-formed readings removed."""
     from translate import parse_tree  # local import: translate.py does not import this module
 
-    kept = [t for t in trees if _anaphora_well_formed(parse_tree(t))]
+    kept = []
+    for t in trees:
+        tree = parse_tree(t)
+        if _anaphora_well_formed(tree) and _clause_modifiers_well_formed(tree):
+            kept.append(t)
     return sorted(kept, key=rank_key)
 
 

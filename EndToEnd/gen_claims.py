@@ -241,12 +241,15 @@ def assemble(idn, sentences):
             antecedent_vp = clause.args[1]
             antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
 
+    time_functions: list[str] = []  # event times, see readings.py's `_ordered`
+
     def translate_all(reading):
         out = []
         for idx, (role, clause, negated, n) in enumerate(clauses):
             position = "hypothesis" if idx == len(clauses) - 1 else "premise"
             try:
-                tr, side = translate_cl_reading(clause, reading, position)
+                tr, side, times = translate_cl_reading(clause, reading, position)
+                time_functions.extend(t for t in times if t not in time_functions)
             except Exception as e:  # translate.py signals unsupported shapes this way
                 raise ValueError(f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}")
             if tr.conjuncts or tr.free_functions or tr.template:
@@ -289,6 +292,11 @@ def assemble(idn, sentences):
                     return None, f"name {name} used as both predicate and individual"
                 if name not in order:
                     order.append(name)
+    for name in time_functions:
+        if kinds.setdefault(name, "time") != "time":
+            return None, f"name {name} used as both a time and something else"
+        if name not in order:
+            order.append(name)
     bad = [n for n in order if n in LEAN_RESERVED or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", n)]
     if bad:
         return None, f"generated names unusable as Lean binders: {bad}"
@@ -296,6 +304,7 @@ def assemble(idn, sentences):
     unary = [n for n in order if kinds[n] == "unary"]
     binary = [n for n in order if kinds[n] == "binary"]
     inds = [n for n in order if kinds[n] == "individual"]
+    times = [n for n in order if kinds[n] == "time"]
     binders = ["{A : Type}", "[Fintype A]"]
     if unary:
         binders.append(f"({' '.join(unary)} : A → Prop)")
@@ -308,6 +317,11 @@ def assemble(idn, sentences):
         binders += [f"[DecidableRel {n}]" for n in binary]
     if inds:
         binders.append(f"({' '.join(inds)} : A)")
+    if times:
+        # When each individual's culminating event of that kind happens
+        # (or would): "Smith left before Jones left" is `leave smith ∧
+        # leaveTime smith < leaveTime jones`.
+        binders.append(f"({' '.join(times)} : A → ℕ)")
     # The proportional reading of "many" is an opaque relation, stated
     # with the two properties every reading of "many" (cardinal or
     # proportional) has, as part of what the word means: it entails

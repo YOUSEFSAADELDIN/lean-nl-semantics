@@ -108,6 +108,17 @@ example {A : Type} [Fintype A] (n : Nat) (committee sweden person scandinavia : 
       FraCaS.Section1.Every (fun x => person x ∧ sweden x) scandinavia →
         FraCaS.Section1.AtLeast n committee scandinavia := by mono_nl_upward
 
+-- Event order (`EndToEnd/readings.py`'s `_ordered`): FraCaS 261's chain
+-- of "before"s and 264's "before" ⇒ "after", in the exact shape the
+-- generator emits; `grind` (already in the chain) must close both.
+example {A : Type} (leave : A → Prop) (leaveTime : A → ℕ) (smith jones anderson : A) :
+    (leave smith ∧ leaveTime smith < leaveTime jones) →
+    (leave jones ∧ leaveTime jones < leaveTime anderson) →
+    (leave smith ∧ leaveTime smith < leaveTime anderson) := by grind
+example {A : Type} (leave : A → Prop) (leaveTime : A → ℕ) (smith jones : A) :
+    leave smith → leave jones → (leave smith ∧ leaveTime smith < leaveTime jones) →
+    (leave jones ∧ leave smith ∧ leaveTime jones > leaveTime smith) := by grind
+
 open FraCaS.Section1.Monotonicity in
 /-- The end-to-end chain: the steps of `attemptClose`, in the same order,
 with `mono_nl_upward` for `mono_nl` and `blind_aesop_e2e` for

@@ -3723,35 +3723,35 @@ def fracas_258_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_261_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → ((leave smith ∧ leaveTime smith < leaveTime anderson))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_261_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → (¬ ((leave smith ∧ leaveTime smith < leaveTime anderson)))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_261_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → ((leave smith ∧ leaveTime smith < leaveTime anderson))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_261_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → (¬ ((leave smith ∧ leaveTime smith < leaveTime anderson)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_262_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → ((leave jones ∧ leave anderson ∧ leaveTime jones > leaveTime anderson)) → ((leave smith ∧ leave anderson ∧ leaveTime smith > leaveTime anderson))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_262_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → ((leave jones ∧ leave anderson ∧ leaveTime jones > leaveTime anderson)) → (¬ ((leave smith ∧ leave anderson ∧ leaveTime smith > leaveTime anderson)))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_262_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (leaveAndersonLeave smith)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → ((leave jones ∧ leave anderson ∧ leaveTime jones > leaveTime anderson)) → ((leave smith ∧ leave anderson ∧ leaveTime smith > leaveTime anderson))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_262_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveJonesLeave leaveAndersonLeave : A → Prop) [DecidablePred leaveJonesLeave] [DecidablePred leaveAndersonLeave] (smith jones : A), (leaveJonesLeave smith) → (leaveAndersonLeave jones) → (¬ (leaveAndersonLeave smith))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → ((leave jones ∧ leave anderson ∧ leaveTime jones > leaveTime anderson)) → (¬ ((leave smith ∧ leave anderson ∧ leaveTime smith > leaveTime anderson)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_263_yes_0 : Prop :=
@@ -3771,83 +3771,83 @@ def fracas_263_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_264_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leave smith ∧ leaveTime jones > leaveTime smith))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_264_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leaveTime smith < leaveTime jones)) → (¬ ((leave jones ∧ leave smith ∧ leaveTime jones > leaveTime smith)))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_264_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leave smith ∧ leaveTime jones > leaveTime smith))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_264_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leaveTime smith < leaveTime jones)) → (¬ ((leave jones ∧ leave smith ∧ leaveTime jones > leaveTime smith)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_265_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime smith))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_265_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → (¬ ((leave jones ∧ leaveTime jones < leaveTime smith)))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_265_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (leaveSmithLeave jones)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime smith))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_265_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveJonesLeave leaveSmithLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveJonesLeave] [DecidablePred leaveSmithLeave] (smith jones : A), (∀ x, leaveJonesLeave x → leave x) → (∀ x, leaveSmithLeave x → leave x) → (leave smith) → (leave jones) → (leaveJonesLeave smith) → (¬ (leaveSmithLeave jones))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)) → (¬ ((leave jones ∧ leaveTime jones < leaveTime smith)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_266_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveSmithLeave jones) → (leaveJonesLeave smith)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave jones ∧ leaveTime jones < leaveTime smith)) → ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_266_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (leave smith) → (leave jones) → (leaveSmithLeave jones) → (¬ (leaveJonesLeave smith))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave jones ∧ leaveTime jones < leaveTime smith)) → (¬ ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_266_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (∀ x, leaveSmithLeave x → leave x) → (∀ x, leaveJonesLeave x → leave x) → (leave smith) → (leave jones) → (leaveSmithLeave jones) → (leaveJonesLeave smith)
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave jones ∧ leaveTime jones < leaveTime smith)) → ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_266_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave leaveSmithLeave leaveJonesLeave : A → Prop) [DecidablePred leave] [DecidablePred leaveSmithLeave] [DecidablePred leaveJonesLeave] (smith jones : A), (∀ x, leaveSmithLeave x → leave x) → (∀ x, leaveJonesLeave x → leave x) → (leave smith) → (leave jones) → (leaveSmithLeave jones) → (¬ (leaveJonesLeave smith))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), (leave smith) → (leave jones) → ((leave jones ∧ leaveTime jones < leaveTime smith)) → (¬ ((leave smith ∧ leave jones ∧ leaveTime smith > leaveTime jones)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_267_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContractTime jones < reviseContractTime smith)) → ((reviseContract smith ∧ reviseContract jones ∧ reviseContractTime smith > reviseContractTime jones))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_267_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContractTime jones < reviseContractTime smith)) → (¬ ((reviseContract smith ∧ reviseContract jones ∧ reviseContractTime smith > reviseContractTime jones)))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_267_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContractTime jones < reviseContractTime smith)) → ((reviseContract smith ∧ reviseContract jones ∧ reviseContractTime smith > reviseContractTime jones))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_267_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContractTime jones < reviseContractTime smith)) → (¬ ((reviseContract smith ∧ reviseContract jones ∧ reviseContractTime smith > reviseContractTime jones)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_268_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContract smith ∧ reviseContractTime jones > reviseContractTime smith)) → ((reviseContract smith ∧ reviseContractTime smith < reviseContractTime jones))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_268_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContract smith ∧ reviseContractTime jones > reviseContractTime smith)) → (¬ ((reviseContract smith ∧ reviseContractTime smith < reviseContractTime jones)))
 
-/-- As `_yes_0`, with 2 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_268_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (reviseContractJones smith)
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContract smith ∧ reviseContractTime jones > reviseContractTime smith)) → ((reviseContract smith ∧ reviseContractTime smith < reviseContractTime jones))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_268_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (reviseContract reviseContractSmith reviseContractJones : A → Prop) [DecidablePred reviseContract] [DecidablePred reviseContractSmith] [DecidablePred reviseContractJones] (jones smith : A), (∀ x, reviseContractSmith x → reviseContract x) → (∀ x, reviseContractJones x → reviseContract x) → (reviseContract jones) → (reviseContract smith) → (reviseContractSmith jones) → (¬ (reviseContractJones smith))
+  ∀ {A : Type} [Fintype A] (reviseContract : A → Prop) [DecidablePred reviseContract] (jones smith : A) (reviseContractTime : A → ℕ), (reviseContract jones) → (reviseContract smith) → ((reviseContract jones ∧ reviseContract smith ∧ reviseContractTime jones > reviseContractTime smith)) → (¬ ((reviseContract smith ∧ reviseContractTime smith < reviseContractTime jones)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_269_yes_0 : Prop :=
@@ -3867,19 +3867,19 @@ def fracas_269_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_270_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (swimToShoreSmithSwimToShore jones)
+  ∀ {A : Type} [Fintype A] (swimToShore : A → Prop) [DecidablePred swimToShore] (smith jones : A) (swimToShoreTime : A → ℕ), (swimToShore smith) → (swimToShore jones) → ((swimToShore smith ∧ swimToShoreTime smith < swimToShoreTime jones)) → ((swimToShore jones ∧ swimToShore smith ∧ swimToShoreTime jones > swimToShoreTime smith))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_270_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (¬ (swimToShoreSmithSwimToShore jones))
+  ∀ {A : Type} [Fintype A] (swimToShore : A → Prop) [DecidablePred swimToShore] (smith jones : A) (swimToShoreTime : A → ℕ), (swimToShore smith) → (swimToShore jones) → ((swimToShore smith ∧ swimToShoreTime smith < swimToShoreTime jones)) → (¬ ((swimToShore jones ∧ swimToShore smith ∧ swimToShoreTime jones > swimToShoreTime smith)))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_270_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (swimToShoreSmithSwimToShore jones)
+  ∀ {A : Type} [Fintype A] (swimToShore : A → Prop) [DecidablePred swimToShore] (smith jones : A) (swimToShoreTime : A → ℕ), (swimToShore smith) → (swimToShore jones) → ((swimToShore smith ∧ swimToShoreTime smith < swimToShoreTime jones)) → ((swimToShore jones ∧ swimToShore smith ∧ swimToShoreTime jones > swimToShoreTime smith))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_270_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (swimToShore swimToShoreJonesSwimToShore swimToShoreSmithSwimToShore : A → Prop) [DecidablePred swimToShore] [DecidablePred swimToShoreJonesSwimToShore] [DecidablePred swimToShoreSmithSwimToShore] (smith jones : A), (swimToShore smith) → (swimToShore jones) → (swimToShoreJonesSwimToShore smith) → (¬ (swimToShoreSmithSwimToShore jones))
+  ∀ {A : Type} [Fintype A] (swimToShore : A → Prop) [DecidablePred swimToShore] (smith jones : A) (swimToShoreTime : A → ℕ), (swimToShore smith) → (swimToShore jones) → ((swimToShore smith ∧ swimToShoreTime smith < swimToShoreTime jones)) → (¬ ((swimToShore jones ∧ swimToShore smith ∧ swimToShoreTime jones > swimToShoreTime smith)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_271_yes_0 : Prop :=

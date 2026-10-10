@@ -54,6 +54,8 @@ than the default does:
     Ns", perception reports ("Smith saw Jones sign the contract"),
     comparatives inside a noun phrase ("a fatter politician than Bill"),
     and conditionals ("if S, S");
+  - temporal order between two completed events ("Smith left before
+    Jones left"), see `_ordered`;
   - "more than n" is `AtLeast (n+1)`, and a floated "all" before the
     verb ("the people who were at the meeting all voted") makes a plural
     subject universal.
@@ -155,10 +157,44 @@ def _combine(parts, op: str) -> Translation:
     )
 
 
+# Telicity (Verkuyl; Krifka): whether a VP describes an event that
+# culminates, which "before"/"after" can place at a single time. A copula
+# is a state; a VP with a quantized object ("revised the contract") or a
+# goal ("swam to the shore") culminates unless its verb is stative ("owned
+# a business"); an intransitive verb culminates only if it is lexically an
+# achievement ("left", not "swam"). The two word lists are textbook
+# examples of each class, not drawn from FraCaS's answers.
+_TELIC_INTRANSITIVE = ("leave_V", "arrive_V", "die_V", "depart_V", "fall_V", "win_V")
+_STATIVE_TRANSITIVE = ("own_V2", "have_V2", "know_V2", "like_V2", "love_V2", "need_V2",
+                       "want_V2", "contain_V2", "believe_V2", "hate_V2")
+_ORDER = {"before_Subj": "<", "after_Subj": ">"}
+
+
+def _quantized(np) -> bool:
+    if np.head == "UsePN":
+        return True
+    if np.head == "DetCN" and np.args[0].head == "DetQuant" and len(np.args[0].args) == 2:
+        num = np.args[0].args[1]
+        return num.head == "NumSg" or num.head == "NumCard"
+    return False
+
+
+def _telic(vp) -> bool:
+    if vp.head == "UseV":
+        return vp.args[0].head in _TELIC_INTRANSITIVE
+    if vp.head == "ComplSlash" and vp.args[0].head == "SlashV2a":
+        return vp.args[0].args[0].head not in _STATIVE_TRANSITIVE and _quantized(vp.args[1])
+    if vp.head == "AdvVP" and vp.args[1].head == "PrepNP" and vp.args[1].args[0].head == "to_Prep":
+        return vp.args[0].head == "UseV" and _quantized(vp.args[1].args[1])
+    return False
+
+
 class EndToEndReadings(Readings):
     def __init__(self, reading, position: str):
         self.reading = reading
         self.position = position
+        # Event-time functions (`A → ℕ`) the translation uses, see `_ordered`.
+        self.time_functions: list[str] = []
         # Existence facts a strong reading entails, stated as separate
         # premises (see `quantified`).
         self.side_premises: list[str] = []
@@ -174,6 +210,10 @@ class EndToEndReadings(Readings):
         if t.head != "PredVP" or len(t.args) != 2:
             return None
         subject, vp = t.args
+        if subject.head == "UsePN" and vp.head == "AdvVP" and vp.args[1].head == "SubjS":
+            ordered = self._ordered(subject, vp.args[0], vp.args[1])
+            if ordered is not None:
+                return ordered
         if subject.head == "AndEveryNP" and len(subject.args) == 2:
             every = [App("DetCN", [App("every_Det", []), cn]) for cn in subject.args]
             return self._distribute(every, vp, "∧")
@@ -250,6 +290,46 @@ class EndToEndReadings(Readings):
         if not all(_plain(tr) for tr in parts):
             raise NotImplementedError("a conjunct of a coordinated subject needs non-generic assembly")
         return _combine(parts, op)
+
+    def _ordered(self, subject, vp, sub):
+        """"Smith left before/after Jones left", "Jones revised the
+        contract before Smith did": each culminating event of a named
+        individual has one time, `leaveTime smith : ℕ` - FraCaS's own
+        assumption for these problems (each person leaves once), and the
+        hand-written corpus's encoding of them. "A after B" is factive in
+        B: `A ∧ B ∧ t(A) > t(B)`. "A before B" is not ("Smith left the
+        meeting before he lost his temper" leaves open whether he did,
+        FraCaS 275): `A ∧ t(A) < t(B)`, where t(B) is when B happens or
+        would have. Only between two culminating events (`_telic`): for a
+        state or activity ("was present", "swam") an event has no single
+        time, "before" and "after" are not converses (FraCaS 269, 271,
+        272), and the clause keeps translate.py's opaque translation."""
+        conj, s = sub.args
+        if conj.head not in _ORDER:
+            return None
+        if s.head == "UseCl" and len(s.args) == 3 and s.args[1].head == "PPos":
+            other = s.args[2]
+        elif s.head == "ElliptS" and len(s.args) == 2 and s.args[1].head == "ellDid":
+            other = App("PredVP", [s.args[0], vp])  # "before Smith did"
+        else:
+            return None
+        if other.head != "PredVP" or other.args[0].head != "UsePN":
+            return None
+        if not (_telic(vp) and _telic(other.args[1])):
+            return None
+        main = translate_cl(App("PredVP", [subject, vp]))
+        then = translate_cl(other)
+        if not (_plain(main) and _plain(then)):
+            return None
+        times = []
+        for tr, v, who in ((main, vp, subject), (then, other.args[1], other.args[0])):
+            name = _scope_name(v) + "Time"
+            if name not in self.time_functions:
+                self.time_functions.append(name)
+            times.append(f"{name} {camel_name(_leaf_words(who))}")
+        order = Translation(lean_prop=f"{times[0]} {_ORDER[conj.head]} {times[1]}", free_predicates=[])
+        parts = [main, then, order] if conj.head == "after_Subj" else [main, order]
+        return _combine(parts, "∧")
 
     def _perception(self, subject, vp):
         """"Smith saw Jones sign the contract": a perception report with a
@@ -575,8 +655,8 @@ def translate_cl_reading(t, reading, position: str = "premise"):
     """Translate clause `t` under `reading` ("weak", "strong", or a dict
     {kind: "weak"|"strong"} over AMBIGUITY_KINDS). `position`
     ("premise"/"hypothesis") only chooses between equivalent renderings
-    (see `EndToEndReadings.quantified`). Returns the translation and the
-    side premises it entails."""
+    (see `EndToEndReadings.quantified`). Returns the translation, the
+    side premises it entails, and the event-time functions it uses."""
     readings = EndToEndReadings(reading, position)
     tr = translate_cl_with(t, readings)
-    return tr, list(readings.side_premises)
+    return tr, list(readings.side_premises), list(readings.time_functions)
