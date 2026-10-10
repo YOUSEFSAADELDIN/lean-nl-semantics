@@ -36,6 +36,18 @@ log), and the function the corpus stipulates is *derived*
 (`lineOf_derived`): type theory's axiom of choice is a theorem
 (`type_theoretic_choice`).
 
+**Prior art.** This is Dependent Type Semantics (Bekki, "Representing
+Anaphora with Dependent Types", LACL 2014) and Ranta's Type-Theoretical
+Grammar, applied by hand. In DTS a pronoun is an underspecified
+`@`-operator, and "anaphora resolution involves proof search": a resolved
+pronoun becomes a projection term such as `π1 π1 π2 (c)`, the shape of
+`(p d).1` here. This file picks each projection by hand; it does not search
+for it. What it adds is the comparison: the same FraCaS problems stated in
+this repo's corpus with stipulated choice functions, and here with none and
+no axioms. FraCoq (Bernardy & Chatzikyriakidis, NoDaLiDa 2019) handles
+these sections with a monadic dynamic semantics instead (0.86 on
+anaphora), the model-theoretic counterpart.
+
 Two honest limits, both proved rather than asserted:
 
 - **133 is not obtained.** A projection gives "them" = the computers that
