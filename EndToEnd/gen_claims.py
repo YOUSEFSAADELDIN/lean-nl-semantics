@@ -219,16 +219,16 @@ def _it_antecedent(clause):
     return None
 
 
-def _replace_it_object(vp, cn):
+def _replace_it_object(vp, cn, pronoun="it_Pron"):
     """A transitive VP's object "it" (possibly with an adverbial: "rents
     it from BT") -> "a CN"; (vp, replaced)."""
     if vp.head != "ComplSlash" or len(vp.args) != 2:
         return vp, False
     np = vp.args[1]
     indefinite = App("DetCN", [App("DetQuant", [App("IndefArt", []), App("NumSg", [])]), cn])
-    if np.head == "UsePron" and np.args[0].head == "it_Pron":
+    if np.head == "UsePron" and np.args[0].head == pronoun:
         return App("ComplSlash", [vp.args[0], indefinite]), True
-    if np.head == "AdvNP" and np.args[0].head == "UsePron" and np.args[0].args[0].head == "it_Pron":
+    if np.head == "AdvNP" and np.args[0].head == "UsePron" and np.args[0].args[0].head == pronoun:
         return App("ComplSlash", [vp.args[0], App("AdvNP", [indefinite, np.args[1]])]), True
     return vp, False
 
@@ -433,9 +433,67 @@ def _sentence_parts(t):
     return [t]
 
 
+_PLURAL_INDEFINITE_DETS = ("several_Det", "somePl_Det", "aFew_Det", "many_Det")
+
+
+def _etype_antecedent(clause):
+    """(name, verb, CN, number) for a clause "NAME V-ed a/several CN",
+    whose object a later pronoun can stand for."""
+    if clause.head != "PredVP" or len(clause.args) != 2 or clause.args[0].head != "UsePN":
+        return None
+    vp = clause.args[1]
+    if not (vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[0].head == "SlashV2a"
+            and vp.args[1].head == "DetCN" and len(vp.args[1].args) == 2):
+        return None
+    det, cn = vp.args[1].args
+    if det.head == "DetQuant" and len(det.args) == 2 and det.args[0].head == "IndefArt":
+        number = {"NumSg": "sg", "NumPl": "pl", "NumCard": "pl"}.get(det.args[1].head)
+    elif det.head in _PLURAL_INDEFINITE_DETS:
+        number = "pl"
+    else:
+        number = None
+    return None if number is None else (clause.args[0], vp.args[0], cn, number)
+
+
+def _etype_description(antecedent):
+    """An E-type pronoun's description (Evans 1977; Cooper 1979; Heim
+    1990): "Smith attended a meeting. She chaired IT" - the meeting that
+    Smith attended; "GFI owns several computers. ITEL maintains THEM" -
+    all the computers that GFI owns (FraCaS 133: maximality)."""
+    name, verb, cn, number = antecedent
+    relative = App("UseRCl", [App("TTAnt", [App("TPast", []), App("ASimul", [])]), App("PPos", []),
+                              App("StrandRelSlash", [App("IdRP", []), App("SlashVP", [name, verb])])])
+    cn = App("RelCN", [cn, relative])
+    if number == "sg":
+        return App("DetCN", [App("DetQuant", [App("DefArt", []), App("NumSg", [])]), cn])
+    return App("PredetNP", [App("all_Predet", []), App("DetCN", [App("DetQuant", [App("DefArt", []), App("NumPl", [])]), cn])])
+
+
+_PRONOUN_NUMBER = {"it_Pron": "sg", "they_Pron": "pl"}
+
+
+def _replace_etype_object(vp, antecedent):
+    """A transitive VP's object pronoun matching the antecedent's number
+    (possibly with an adverbial) -> the antecedent's E-type description."""
+    if vp.head != "ComplSlash" or len(vp.args) != 2:
+        return vp, False
+    np = vp.args[1]
+    pron, wrap = None, None
+    if np.head == "UsePron":
+        pron = np.args[0].head
+    elif np.head == "AdvNP" and np.args[0].head == "UsePron":
+        pron, wrap = np.args[0].args[0].head, np.args[1]
+    if _PRONOUN_NUMBER.get(pron) != antecedent[3]:
+        return vp, False
+    description = _etype_description(antecedent)
+    if wrap is not None:
+        description = App("AdvNP", [description, wrap])
+    return App("ComplSlash", [vp.args[0], description]), True
+
+
 def _resolve_sentence(tree, role, state):
     """([(clause, negated), ...], new state, error) for one sentence."""
-    antecedent_vp, antecedent_cn, antecedent_subject, it_cn = state
+    antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype = state
     parts = _sentence_parts(tree)
     if role == "hypothesis" and len(parts) != 1:
         return None, state, "a coordinated hypothesis"
@@ -452,13 +510,33 @@ def _resolve_sentence(tree, role, state):
             vp, replaced = _replace_it_object(clause.args[1], it_cn)
             if replaced:
                 clause = App("PredVP", [clause.args[0], vp])
+            # Distributive "they" after "each department has a dedicated
+            # line" ranges over the departments, and "them" is each one's
+            # own line ("They rent them from BT", FraCaS 131): read as
+            # "each department rents a dedicated line from BT", which the
+            # dependent reading (Π d. Σ l. ...) entails.
+            elif clause.args[0].head == "UsePron" and clause.args[0].args[0].head == "they_Pron" \
+                    and antecedent_subject is not None:
+                vp, replaced = _replace_it_object(clause.args[1], it_cn, "they_Pron")
+                if replaced:
+                    clause = App("PredVP", [antecedent_subject, vp])
+        # Pronouns after "NAME V-ed a/several CN", in a positive premise: a
+        # "he"/"she" subject is that name, and an object "it"/"them" is the
+        # antecedent's E-type description (`_etype_description`).
+        if etype is not None and role != "hypothesis" and not negated and clause.head == "PredVP":
+            subject, vp = clause.args
+            if subject.head == "UsePron" and subject.args[0].head in ("she_Pron", "he_Pron"):
+                subject = etype[0]
+            vp, _ = _replace_etype_object(vp, etype)
+            clause = App("PredVP", [subject, vp])
         out.append((clause, negated))
         it_cn = _it_antecedent(clause)
+        etype = _etype_antecedent(clause) if not negated else None
         if clause.head == "PredVP" and len(clause.args) == 2:
             antecedent_vp = clause.args[1]
             antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
             antecedent_subject = clause.args[0]
-    return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn), None
+    return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype), None
 
 
 _parse_cache: dict = {}
@@ -478,7 +556,7 @@ def assemble(idn, sentences):
     claims"), each with its yes/no claims with and without background
     knowledge."""
     clauses = []  # (clause tree, negated)
-    state = (None, None, None, None)  # antecedent VP, CN, subject; "it"'s CN
+    state = (None, None, None, None, None)  # antecedent VP, CN, subject; "it"'s CN; E-type antecedent
     for role, s in sentences:
         candidates = ranked_readings(s)
         n = len(candidates)
@@ -499,14 +577,18 @@ def assemble(idn, sentences):
         clauses.extend((role, clause, negated, n) for clause, negated in resolved)
 
     time_functions: list[str] = []  # event times, see readings.py's `_ordered`
+    functions: list[str] = []  # possession functions, see readings.py's `_possessive`
+    encodings: list[tuple[str, str, str]] = []
 
     def translate_all(reading):
         out = []
         for idx, (role, clause, negated, n) in enumerate(clauses):
             position = "hypothesis" if idx == len(clauses) - 1 else "premise"
             try:
-                tr, side, times = translate_cl_reading(clause, reading, position)
+                tr, side, times, extras = translate_cl_reading(clause, reading, position)
                 time_functions.extend(t for t in times if t not in time_functions)
+                functions.extend(f for f in extras["functions"] if f not in functions)
+                encodings.extend(e for e in extras["encodings"] if e not in encodings)
             except Exception as e:  # translate.py signals unsupported shapes this way
                 raise ValueError(f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}")
             if tr.conjuncts or tr.free_functions or tr.template:
@@ -554,6 +636,11 @@ def assemble(idn, sentences):
             return None, f"name {name} used as both a time and something else"
         if name not in order:
             order.append(name)
+    for name in functions:
+        if kinds.setdefault(name, "function") != "function":
+            return None, f"name {name} used as both a function and something else"
+        if name not in order:
+            order.append(name)
     bad = [n for n in order if n in LEAN_RESERVED or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", n)]
     if bad:
         return None, f"generated names unusable as Lean binders: {bad}"
@@ -562,6 +649,7 @@ def assemble(idn, sentences):
     binary = [n for n in order if kinds[n] == "binary"]
     inds = [n for n in order if kinds[n] == "individual"]
     times = [n for n in order if kinds[n] == "time"]
+    fns = [n for n in order if kinds[n] == "function"]
     binders = ["{A : Type}", "[Fintype A]"]
     if unary:
         binders.append(f"({' '.join(unary)} : A → Prop)")
@@ -579,6 +667,10 @@ def assemble(idn, sentences):
         # (or would): "Smith left before Jones left" is `leave smith ∧
         # leaveTime smith < leaveTime jones`.
         binders.append(f"({' '.join(times)} : A → ℕ)")
+    if fns:
+        # Each possessor's possessed thing ("her workstation"), see
+        # readings.py's `_possessive`.
+        binders.append(f"({' '.join(fns)} : A → A)")
     # The proportional reading of "many" is an opaque relation, stated
     # with the two properties every reading of "many" (cardinal or
     # proportional) has, as part of what the word means: it entails
@@ -610,6 +702,13 @@ def assemble(idn, sentences):
     if any(re.search(r"\bseveralCount\b", p) for _a, trs in translated for *_, p in trs):
         binders.append("(severalCount : Nat)")
         meaning.append("(severalCount ≥ 2)")
+    # A relation and the fused name of "V a CN" (`use x y`, `useWorkstation
+    # x`) say the same thing in two encodings: `useWorkstation x` is "x
+    # uses some workstation". Stated wherever a problem uses both, as part
+    # of what the names mean, not as background knowledge.
+    for relation, noun, fused in encodings:
+        if relation in binary and noun in unary and fused in unary:
+            meaning.append(f"(∀ x, {fused} x ↔ ∃ y, {noun} y ∧ {relation} x y)")
     knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary))
     head = f"∀ {' '.join(binders)}, "
 

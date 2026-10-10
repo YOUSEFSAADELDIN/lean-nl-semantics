@@ -54,6 +54,8 @@ than the default does:
     Ns", perception reports ("Smith saw Jones sign the contract"),
     comparatives inside a noun phrase ("a fatter politician than Bill"),
     and conditionals ("if S, S");
+  - possessives bound to the subject ("every student used her
+    workstation") as a function of the possessor (see `_possessive`);
   - attitude reports ("Bill said Peter wrote a report"), with factive
     "know that S" committing to S, and implicative "manage to VP",
     which commits to the VP (see `_attitude`, `_implicative`);
@@ -182,6 +184,30 @@ _FACTIVE = ("know_VS", "realize_VS", "regret_VS")
 _IMPLICATIVE = ("manage_VV",)
 
 
+_PRONOUN_GENDER = {"she_Pron": "female", "he_Pron": "male"}
+
+
+def _possessive_object(vp):
+    """(verb, pronoun, CN) for "V POSS CN" ("used her workstation")."""
+    if vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[0].head == "SlashV2a" \
+            and vp.args[1].head == "DetCN" and len(vp.args[1].args) == 2:
+        det, cn = vp.args[1].args
+        if det.head == "DetQuant" and len(det.args) == 2 and det.args[0].head == "PossPron" \
+                and det.args[1].head == "NumSg":
+            return vp.args[0].args[0], det.args[0].args[0].head, cn
+    return None
+
+
+def _genitive_subject(np):
+    """(owner, CN) for "NAME's CN"."""
+    if np.head == "DetCN" and len(np.args) == 2:
+        det, cn = np.args
+        if det.head == "DetQuant" and len(det.args) == 2 and det.args[0].head == "GenNP" \
+                and det.args[0].args[0].head == "UsePN" and det.args[1].head == "NumSg":
+            return det.args[0].args[0], cn
+    return None
+
+
 def _quantized(np) -> bool:
     if np.head == "UsePN":
         return True
@@ -210,6 +236,10 @@ class EndToEndReadings(Readings):
         # Existence facts a strong reading entails, stated as separate
         # premises (see `quantified`).
         self.side_premises: list[str] = []
+        # Possession functions (`A → A`, see `_possessive`), and the
+        # relational/fused name pairs they need related (gen_claims.py).
+        self.functions: list[str] = []
+        self.encodings: list[tuple[str, str, str]] = []
 
     def mode(self, kind: str) -> str:
         if isinstance(self.reading, dict):
@@ -231,6 +261,11 @@ class EndToEndReadings(Readings):
             return self._distribute(every, vp, "∧")
         if subject.head == "UsePN" and vp.head == "ComplSlash" and vp.args[0].head == "SlashV2V":
             return self._perception(subject, vp)
+        possessed = _possessive_object(vp)
+        if possessed is not None and possessed[1] in _PRONOUN_GENDER:
+            return self._possessive(subject, *possessed)
+        if vp.head == "PassV2" and _genitive_subject(subject) is not None:
+            return self._genitive_passive(subject, vp)
         if subject.head == "UsePN" and vp.head in ("ComplVS", "ComplVSBare") and len(vp.args) == 2:
             attitude = self._attitude(subject, vp)
             if attitude is not None:
@@ -434,6 +469,80 @@ class EndToEndReadings(Readings):
             free_individuals=[who],
         )
         return _combine([attempt, done], "∧")
+
+    def _possession(self, cn):
+        """The function picking out each possessor's CN ("her
+        workstation": `workstationOf x`), its noun predicate, and the
+        fused names "have a CN" and "V a CN" are related to (see
+        gen_claims.py's encoding facts)."""
+        noun = camel_name(_leaf_words(cn))
+        function = noun + "Of"
+        if function not in self.functions:
+            self.functions.append(function)
+        a_cn = App("DetCN", [App("DetQuant", [App("IndefArt", []), App("NumSg", [])]), cn])
+        have = _scope_name(App("ComplSlash", [App("SlashV2a", [App("have_V2", [])]), a_cn]))
+        self.encodings.append(("has", noun, have))
+        return noun, function, a_cn
+
+    def _possessive(self, subject, verb, pronoun, cn):
+        """"Mary used her workstation", "every student used her
+        workstation": a possessive bound to the subject denotes a value of
+        a function of its possessor, `workstationOf x` - the first
+        projection of "every student has a workstation" read as a
+        dependent pair type, Π x : student. Σ w : workstation. has x w,
+        which is how dependent type semantics reads possessives and
+        donkey anaphora (Sundholm; Ranta 1994; Bekki 2014), and what
+        LeanNLSemantics/MTT/DependentAnaphora.lean (on the
+        mtt-intensional-adjectives branch) proves for FraCaS 114-120,
+        there with Σ itself, from which the function is derivable; a
+        function variable here is the same thing after Skolemization,
+        sound because the claim quantifies over it. The possessive's presuppositions - the
+        possessor has it, it is a CN, and the pronoun's gender - are
+        separate premises for every possessor the subject ranges over,
+        and project out of the hypothesis (as all side premises do).
+        `verb` relates possessor and possessed: `use x (workstationOf x)`.
+        Only "every"/"each"/"no"/"a"/"some" subjects and proper names."""
+        noun, function, a_cn = self._possession(cn)
+        relation = camel_name(_leaf_words(verb))
+        self.encodings.append((relation, noun, _scope_name(App("ComplSlash", [App("SlashV2a", [verb]), a_cn]))))
+        gender = _PRONOUN_GENDER[pronoun]
+        noun_expr, noun_preds = _restrictor_expr(_normalize_cn(cn))
+        preds = [relation, "has", gender, *noun_preds]
+        presupposed = lambda x: f"{gender} {x} ∧ has {x} ({function} {x}) ∧ {noun_expr} ({function} {x})"
+        if subject.head == "UsePN":
+            x = camel_name(_leaf_words(subject))
+            self.side_premises.append(presupposed(x))
+            return Translation(
+                lean_prop=f"{relation} {x} ({function} {x})",
+                free_predicates=preds, free_individuals=[x], binary_predicates=[relation, "has"],
+            )
+        if subject.head != "DetCN" or len(subject.args) != 2:
+            raise NotImplementedError("possessive bound to a subject that is neither a name nor determiner + noun")
+        quant = _resolve_quantifier(subject.args[0])
+        if quant not in ("Every", "No", "Some"):
+            raise NotImplementedError(f"possessive bound to a {quant!r} subject")
+        restrictor, restrictor_preds = _restrictor_expr(_normalize_cn(subject.args[1]))
+        self.side_premises.append(f"∀ x, {restrictor} x → {presupposed('x')}")
+        return Translation(
+            lean_prop=f"{quant} {restrictor} (fun x => {relation} x ({function} x))",
+            free_predicates=[*restrictor_preds, *preds], binary_predicates=[relation, "has"],
+        )
+
+    def _genitive_passive(self, subject, vp):
+        """"Mary's workstation was used": someone used `workstationOf
+        mary`, with the possessive's presuppositions as premises (see
+        `_possessive`)."""
+        owner, cn = _genitive_subject(subject)
+        noun, function, _a_cn = self._possession(cn)
+        relation = camel_name(_leaf_words(vp.args[0]))
+        noun_expr, noun_preds = _restrictor_expr(_normalize_cn(cn))
+        x = camel_name(_leaf_words(owner))
+        self.side_premises.append(f"has {x} ({function} {x}) ∧ {noun_expr} ({function} {x})")
+        return Translation(
+            lean_prop=f"∃ z, {relation} z ({function} {x})",
+            free_predicates=[relation, "has", *noun_preds], free_individuals=[x],
+            binary_predicates=[relation, "has"],
+        )
 
     @staticmethod
     def _compared_cn(comp):
@@ -735,7 +844,9 @@ def translate_cl_reading(t, reading, position: str = "premise"):
     {kind: "weak"|"strong"} over AMBIGUITY_KINDS). `position`
     ("premise"/"hypothesis") only chooses between equivalent renderings
     (see `EndToEndReadings.quantified`). Returns the translation, the
-    side premises it entails, and the event-time functions it uses."""
+    side premises it entails, the event-time functions it uses, and the
+    possession functions and encoding pairs it uses (see `_possessive`)."""
     readings = EndToEndReadings(reading, position)
     tr = translate_cl_with(t, readings)
-    return tr, list(readings.side_premises), list(readings.time_functions)
+    extras = {"functions": list(readings.functions), "encodings": list(readings.encodings)}
+    return tr, list(readings.side_premises), list(readings.time_functions), extras
