@@ -54,8 +54,9 @@ than the default does:
     Ns", perception reports ("Smith saw Jones sign the contract"),
     comparatives inside a noun phrase ("a fatter politician than Bill"),
     and conditionals ("if S, S");
-  - factive "know that S" and implicative "manage to VP", which
-    commit to S and to the VP (see `_factive`, `_implicative`);
+  - attitude reports ("Bill said Peter wrote a report"), with factive
+    "know that S" committing to S, and implicative "manage to VP",
+    which commits to the VP (see `_attitude`, `_implicative`);
   - temporal order between two completed events ("Smith left before
     Jones left"), see `_ordered`;
   - "more than n" is `AtLeast (n+1)`, and a floated "all" before the
@@ -230,8 +231,10 @@ class EndToEndReadings(Readings):
             return self._distribute(every, vp, "∧")
         if subject.head == "UsePN" and vp.head == "ComplSlash" and vp.args[0].head == "SlashV2V":
             return self._perception(subject, vp)
-        if subject.head == "UsePN" and vp.head == "ComplVS" and vp.args[0].head in _FACTIVE:
-            return self._factive(subject, vp)
+        if subject.head == "UsePN" and vp.head in ("ComplVS", "ComplVSBare") and len(vp.args) == 2:
+            attitude = self._attitude(subject, vp)
+            if attitude is not None:
+                return attitude
         if subject.head == "UsePN" and vp.head == "ComplVV" and vp.args[0].head in _IMPLICATIVE:
             return self._implicative(subject, vp)
         if subject.head == "UsePN" and vp.head == "UseComp" and len(vp.args) == 1:
@@ -378,12 +381,14 @@ class EndToEndReadings(Readings):
         )
         return _combine([report, seen], "∧")
 
-    def _factive(self, subject, vp):
+    def _attitude(self, subject, vp):
         """"Smith knew that ITEL had won the contract": the attitude, as a
-        relation between the knower and the complement's subject named by
-        the complement's verb phrase (`knowWinContract smith itel`), and
-        the complement itself (`winContract itel`), which a factive
-        commits to (FraCaS 334). Only a positive complement clause with a
+        relation between the holder and the complement's subject named by
+        the verb and the complement's verb phrase (`knowWinContract smith
+        itel`) - so "said", "believed" and "knew" never share a predicate -
+        and, for a factive only, the complement itself (`winContract
+        itel`), which it commits to (FraCaS 334); "believe"/"say" commit to
+        nothing (335). Only a positive complement clause with a
         proper-name subject; anything else keeps the default."""
         verb, s = vp.args
         if not (s.head == "UseCl" and len(s.args) == 3 and s.args[1].head == "PPos"):
@@ -394,7 +399,14 @@ class EndToEndReadings(Readings):
         said = translate_cl(cl)
         if not _plain(said):
             return None
-        relation = camel_name([verb.head.rsplit("_", 1)[0], *_leaf_words(cl.args[1], keep_det=True)])
+        words = _leaf_words(cl.args[1], keep_det=True)
+        # the name keeps the voice: "said Bill hurt himself" and "said Bill
+        # had been hurt" are different reports
+        if cl.args[1].head == "PassV2":
+            words = ["be", *words]
+        elif cl.args[1].head == "ReflVP":
+            words = [*words, "self"]
+        relation = camel_name([verb.head.rsplit("_", 1)[0], *words])
         knower, agent = camel_name(_leaf_words(subject)), camel_name(_leaf_words(cl.args[0]))
         attitude = Translation(
             lean_prop=f"{relation} {knower} {agent}",
@@ -402,6 +414,8 @@ class EndToEndReadings(Readings):
             free_individuals=[knower, agent],
             binary_predicates=[relation],
         )
+        if verb.head not in _FACTIVE:
+            return attitude
         return _combine([attitude, said], "∧")
 
     def _implicative(self, subject, vp):

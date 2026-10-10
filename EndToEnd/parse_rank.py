@@ -143,6 +143,40 @@ def _anaphora_well_formed(t, parent: str = "") -> bool:
     return all(_anaphora_well_formed(a, t.head) for a in t.args)
 
 
+# Elliptical sentences (FraCaSLogic.gf's gapping and fragments) and where
+# they may stand: as a whole sentence, after "and"/"but", or as a conjunct.
+_FRAGMENTS = {"GapS", "GapS2", "ElliptAdvS", "FragAdvS", "FragNPS"}
+_SENTENCE_LEVEL = {"", "UttS", "AndS", "ButS", "CommaAndS", "TooS"}
+
+
+def _remnant_ok(adv) -> bool:
+    """A gapping or fragment remnant is a prepositional phrase or a
+    one-word adverbial ("by train", "on Friday"), not a clause."""
+    return adv.head == "PrepNP" or (not adv.args and adv.head.endswith("_Adv"))
+
+
+def _fragments_well_formed(t, parent: str = "") -> bool:
+    """A fragment is a sentence on its own ("Bill by train.", "On
+    Friday."), never part of one: readings that put one inside a clause
+    ("before [Bill]" as a fragment sentence) or use a noun phrase like
+    "Smith left" (participle) as a gapped subject are not readings of
+    English and are discarded before ranking."""
+    if t.head in _FRAGMENTS:
+        if parent not in _SENTENCE_LEVEL:
+            return False
+        if t.head in ("GapS", "GapS2") and (t.args[0].head == "PPartNP" or not all(_remnant_ok(a) for a in t.args[1:])):
+            return False
+        # a bare noun phrase is a fragment only after "and"/"but" ("But
+        # only one woman."): alone, "Smith left." would also be one
+        if t.head == "FragNPS" and (parent not in ("AndS", "ButS") or t.args[0].head == "PPartNP"):
+            return False
+        if t.head == "FragAdvS" and not _remnant_ok(t.args[0]):
+            return False
+        if t.head == "ElliptAdvS" and not _remnant_ok(t.args[2]):
+            return False
+    return all(_fragments_well_formed(a, t.head) for a in t.args)
+
+
 def _contains(t, head: str) -> bool:
     return t.head == head or any(_contains(a, head) for a in t.args)
 
@@ -164,7 +198,8 @@ def ranked(trees: list[str]) -> list[str]:
     kept = []
     for t in trees:
         tree = parse_tree(t)
-        if _anaphora_well_formed(tree) and _clause_modifiers_well_formed(tree):
+        if _anaphora_well_formed(tree) and _clause_modifiers_well_formed(tree) \
+                and _fragments_well_formed(tree):
             kept.append(t)
     return sorted(kept, key=rank_key)
 

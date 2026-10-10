@@ -169,7 +169,7 @@ fracas_160_hypothesis	ownFastRedCar bill
 fracas_160_premise1	ownRedCar john
 fracas_162_premise1	ownFastRedCar john
 fracas_162_hypothesis	ownSlowRedCar bill
-fracas_167_premise1	-
+fracas_167_premise1	Exactly 20 man workInSalesDepartment
 fracas_167_premise2	Exactly 1 woman workInSalesDepartment
 fracas_167_hypothesis	Exactly 2 woman workInSalesDepartment
 fracas_168_premise1	Exactly 5 man workPartTime
@@ -459,7 +459,7 @@ fracas_160_hypothesis_tense_reconfirm	ownFastRedCar bill
 fracas_160_premise1_tense_reconfirm	ownRedCar john
 fracas_162_premise1_tense_reconfirm	ownFastRedCar john
 fracas_162_hypothesis_tense_reconfirm	ownSlowRedCar bill
-fracas_167_premise1_tense_reconfirm	-
+fracas_167_premise1_tense_reconfirm	Exactly 20 man workInSalesDepartment
 fracas_167_premise2_tense_reconfirm	Exactly 1 woman workInSalesDepartment
 fracas_167_hypothesis_tense_reconfirm	Exactly 2 woman workInSalesDepartment
 fracas_168_premise1_tense_reconfirm	Exactly 5 man workPartTime
@@ -686,7 +686,7 @@ fracas_230_hypothesis	winSomePlOrder itel
 fracas_232_premise2	win10Order apcom
 fracas_232_hypothesis	winAtLeast11Order itel
 fracas_234_hypothesis	winSomePlOrder apcom
-fracas_238_hypothesis	winOrder itel
+fracas_238_hypothesis	win20Order itel
 fracas_240_hypothesis	loseSomePlOrder apcom
 fracas_241_premise2	lose10Order apcom
 fracas_243_premise2	sellComputer apcom
@@ -832,3 +832,12 @@ english_093_premise1	Every (fun x => person x ∧ atMeeting x) voteForNewChairma
 english_104_hypothesis	haveCompanyCar jones
 english_216_premise1	fatPoliticianBill john
 english_084_hypothesis	-
+english_150_premise1	-
+english_151_premise1	-
+english_145_premise2	-
+english_146_premise2	-
+english_164_premise2	-
+english_165_premise2	-
+english_167_premise2	-
+english_178_premise1	-
+english_179_premise1	-

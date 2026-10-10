@@ -326,6 +326,15 @@ def _decode_sub100(t) -> int:
         return 10
     if t.head == "pot111" and not t.args:
         return 11
+    # tens: "twenty" (pot1 n2), "twelve" (pot1to19 n2), "forty-five"
+    # (pot1plus n4 (pot0 n5)) - the end-to-end pipeline's "twenty men"
+    # (FraCaS 167)
+    if t.head == "pot1" and len(t.args) == 1 and t.args[0].head in _DIGIT_BY_CONST:
+        return 10 * _DIGIT_BY_CONST[t.args[0].head]
+    if t.head == "pot1to19" and len(t.args) == 1 and t.args[0].head in _DIGIT_BY_CONST:
+        return 10 + _DIGIT_BY_CONST[t.args[0].head]
+    if t.head == "pot1plus" and len(t.args) == 2 and t.args[0].head in _DIGIT_BY_CONST:
+        return 10 * _DIGIT_BY_CONST[t.args[0].head] + _decode_sub10(t.args[1])
     raise NotImplementedError(f"unrecognized Sub100 numeral shape: {t.head!r}")
 
 

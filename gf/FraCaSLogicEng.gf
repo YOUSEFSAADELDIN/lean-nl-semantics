@@ -162,6 +162,17 @@ concrete FraCaSLogicEng of FraCaSLogic =
     ComparCN a cn np =
       {s = \\n,c => a.s ! AAdj Compar Nom ++ cn.s ! n ! Nom ++ "than" ++ np.s ! npNom ;
        g = cn.g} ;
+    GapS np adv = {s = np.s ! npNom ++ adv.s} ;
+    GapS2 np adv1 adv2 = {s = np.s ! npNom ++ adv1.s ++ adv2.s} ;
+    ElliptAdvS np aux adv = {s = np.s ! npNom ++ aux.s ! (fromAgr np.a).n ++ adv.s} ;
+    FragAdvS adv = {s = adv.s} ;
+    FragNPS np = {s = np.s ! npNom} ;
+    AndS s = {s = "and" ++ s.s} ;
+    ButS s = {s = "but" ++ s.s} ;
+    CommaAndS s1 s2 = {s = s1.s ++ "," ++ "and" ++ s2.s} ;
+    ThenS s = {s = "then" ++ s.s} ;
+    ellGoingTo = {s = table {Sg => "is going to" ; Pl => "are going to"}} ;
+    ComplVSBare v s = insertExtra s.s (predV v) ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

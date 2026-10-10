@@ -3965,6 +3965,51 @@ _FRACAS_ENGLISH_CHECKS = [
         'linearize ExtAdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) UncNeg (PredVP (ConjNP and_Conj (BaseNP (UsePN smith_PN) (UsePN anderson_PN))) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN jones_PN) (ComplSlash (SlashV2a sign_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N)))))',
         'if Smith and Anderson did not sign the contract , Jones signed the contract',
     ),
+    (
+        'english_150_premise1',
+        'linearize CommaAndS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8agent_Prep (MassNP (UseN car_N)))))) (GapS (UsePN bill_PN) (PrepNP by8agent_Prep (MassNP (UseN train_N))))',
+        'John went to Paris by car , and Bill by train',
+    ),
+    (
+        'english_151_premise1',
+        'linearize CommaAndS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (AdvVP (AdvVP (UseV go_V) (PrepNP to_Prep (UsePN paris_PN))) (PrepNP by8agent_Prep (MassNP (UseN car_N)))))) (GapS2 (UsePN bill_PN) (PrepNP by8agent_Prep (MassNP (UseN train_N))) (PrepNP to_Prep (UsePN berlin_PN)))',
+        'John went to Paris by car , and Bill by train to Berlin',
+    ),
+    (
+        'english_145_premise2',
+        'linearize AndS (ElliptAdvS (UsePN bill_PN) ellDid atFiveOClock_Adv)',
+        "and Bill did at five o'clock",
+    ),
+    (
+        'english_146_premise2',
+        'linearize ElliptS (UsePN bill_PN) ellGoingTo',
+        'Bill is going to',
+    ),
+    (
+        'english_164_premise2',
+        'linearize AndS (FragAdvS (PrepNP to_Prep (UsePN sue_PN)))',
+        'and to Sue',
+    ),
+    (
+        'english_165_premise2',
+        'linearize FragAdvS onFriday_Adv',
+        'on Friday',
+    ),
+    (
+        'english_167_premise2',
+        'linearize ButS (FragNPS (PredetNP only_Predet (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN woman_N))))',
+        'but only one woman',
+    ),
+    (
+        'english_178_premise1',
+        'linearize CommaAndS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N))))) (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN bill_PN) (ComplVSBare say_VS (TooS (ElliptS (UsePN peter_PN) ellDid)))))',
+        'John wrote a report , and Bill said Peter did too',
+    ),
+    (
+        'english_179_premise1',
+        'linearize ExtAdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))) (ThenS (TooS (ElliptS (UsePN bill_PN) ellDid)))',
+        'if John wrote a report , then Bill did too',
+    ),
 ]
 
 CHECKS = (

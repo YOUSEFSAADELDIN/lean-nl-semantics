@@ -544,4 +544,32 @@ abstract FraCaSLogic =
     floatAll_AdV : AdV ;
     moreThan_AdN : AdN ;
     ComparCN : A -> CN -> NP -> CN ;
+    -- Ellipsis beyond a bare auxiliary, FraCaS's own wording (Section 4).
+    -- The missing material is NOT represented; EndToEnd/gen_claims.py
+    -- copies it from the antecedent clause, as for ElliptS.
+    -- GapS / GapS2: gapping - a subject and one or two remnant adverbials,
+    --   the verb left out ("[John went to Paris by car], and Bill by
+    --   train [to Berlin]", 150-154).
+    -- ElliptAdvS: VP ellipsis with a new adverbial ("Bill did at five
+    --   o'clock", 145).
+    -- FragAdvS / FragNPS: a fragment - an adverbial or a noun phrase
+    --   standing alone as a sentence ("On Friday.", 165; "only one
+    --   woman", 167).
+    -- AndS / ButS: a sentence opened by "and"/"but" ("And to Sue.", 164).
+    -- CommaAndS: "S, and S" (150-153, 178).
+    -- ThenS: "then S" after an "if" clause (179).
+    -- ellGoingTo: "is/are going to" as an ellipsis auxiliary (146).
+    -- ComplVSBare: a clausal complement without "that" ("Bill said
+    --   Peter did too", 175-178); the RGL's ComplVS always adds it.
+    GapS : NP -> Adv -> S ;
+    GapS2 : NP -> Adv -> Adv -> S ;
+    ElliptAdvS : NP -> EllAux -> Adv -> S ;
+    FragAdvS : Adv -> S ;
+    FragNPS : NP -> S ;
+    AndS : S -> S ;
+    ButS : S -> S ;
+    CommaAndS : S -> S -> S ;
+    ThenS : S -> S ;
+    ellGoingTo : EllAux ;
+    ComplVSBare : VS -> S -> VP ;
 }

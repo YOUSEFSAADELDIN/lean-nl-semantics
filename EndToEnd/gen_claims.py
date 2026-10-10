@@ -239,7 +239,7 @@ def _mentions(t, head):
     return t.head == head or any(_mentions(a, head) for a in t.args)
 
 
-def resolve(t, antecedent_vp, antecedent_cn):
+def resolve(t, antecedent_vp, antecedent_cn, antecedent_subject=None):
     """A parsed sentence -> (clause, negated, error). Resolves VP ellipsis
     ("so did Bill", "Bill didn't", "the students have too") by copying the
     antecedent clause's VP - the standard copy treatment - and one-anaphora
@@ -248,8 +248,46 @@ def resolve(t, antecedent_vp, antecedent_cn):
     modest") its scope is ambiguous, and no reading is guessed."""
     if t.head == "UttS" and len(t.args) == 1:
         t = t.args[0]
-    if t.head == "TooS" and len(t.args) == 1:
-        t = t.args[0]
+    t = _strip_too(t)
+    if antecedent_vp is not None and t.head in _ELLIPTICAL and _ambiguous_antecedent(antecedent_vp):
+        return None, False, "ellipsis whose antecedent embeds another verb phrase (which one is elided is ambiguous)"
+    if t.head == "ExtAdvS" and len(t.args) == 2:
+        # "If S1, then S2": "then" adds nothing; an elliptical S2 ("then
+        # Bill did too") takes S1's verb phrase
+        adv, main = t.args
+        if main.head == "ThenS" and len(main.args) == 1:
+            main = main.args[0]
+        if adv.head == "SubjS" and len(adv.args) == 2 and main.head in ("ElliptS", "SoS"):
+            antecedent = to_clause(adv.args[1])
+            if antecedent.head != "PredVP" or _ambiguous_antecedent(antecedent.args[1]):
+                return None, False, "elliptical consequent without a plain antecedent clause"
+            np, aux = main.args if main.head == "ElliptS" else (main.args[1], main.args[0])
+            pol = App("PNeg" if aux.head == "ellDidnt" else "PPos", [])
+            main = App("UseCl", [App("TTAnt", [App("TPast", []), App("ASimul", [])]), pol,
+                                 App("PredVP", [np, antecedent.args[1]])])
+        return App("ExtAdvS", [adv, main]), False, None
+    if t.head in ("GapS", "GapS2", "ElliptAdvS", "FragAdvS", "FragNPS"):
+        # gapping and fragments: the antecedent clause with its parallel
+        # constituent(s) replaced (see `_replace_modifiers`)
+        if antecedent_vp is None:
+            return None, False, "fragment with no antecedent clause"
+        negated = False
+        if t.head == "GapS":
+            clause = App("PredVP", [t.args[0], _replace_modifiers(antecedent_vp, [t.args[1]])])
+        elif t.head == "GapS2":
+            clause = App("PredVP", [t.args[0], _replace_modifiers(antecedent_vp, list(t.args[1:]))])
+        elif t.head == "ElliptAdvS":
+            clause = App("PredVP", [t.args[0], _replace_modifiers(antecedent_vp, [t.args[2]])])
+            negated = t.args[1].head == "ellDidnt"
+        elif t.head == "FragAdvS":
+            if antecedent_subject is None:
+                return None, False, "fragment adverbial with no antecedent subject"
+            clause = App("PredVP", [antecedent_subject, _replace_modifiers(antecedent_vp, [t.args[0]])])
+        else:
+            clause = App("PredVP", [t.args[0], antecedent_vp])
+        if negated and clause.args[0].head != "UsePN":
+            return None, False, "negation with a non-proper-name subject (scope ambiguous)"
+        return _lift_time_adverbs(clause), negated, None
     if t.head == "AdvS" and len(t.args) == 2:
         # A fronted adverbial ("In 1993 ITEL won the contract") modifies
         # the clause's VP, as it would in final position ("ITEL won the
@@ -282,7 +320,145 @@ def resolve(t, antecedent_vp, antecedent_cn):
         if antecedent_cn is None:
             return None, False, "one-anaphora with no antecedent noun"
         clause, _ = _replace_one(clause, antecedent_cn)
+    if _complement_ellipsis(clause):
+        # ellipsis as a clausal complement ("Bill said Peter did too");
+        # "before Smith did" is readings.py's `_ordered`'s, copying the
+        # main clause's own VP
+        if antecedent_vp is None:
+            return None, False, "embedded VP ellipsis with no antecedent clause"
+        clause = _resolve_embedded_ellipsis(clause, antecedent_vp)
     return _lift_time_adverbs(clause), negated, None
+
+
+# Sentence heads whose verb phrase is copied from the antecedent clause.
+_ELLIPTICAL = ("ElliptS", "SoS", "ElliptAdvS", "GapS", "GapS2", "FragAdvS", "FragNPS")
+
+
+def _strip_too(t):
+    """"too" adds nothing to truth conditions, wherever it attaches."""
+    if t.head == "TooS" and len(t.args) == 1:
+        return _strip_too(t.args[0])
+    return App(t.head, [_strip_too(a) for a in t.args])
+
+
+def _ambiguous_antecedent(vp) -> bool:
+    """Whether an elided VP could copy this VP or one embedded in it ("John
+    said Mary wrote a report, and Bill did too": Bill said so, or John
+    said Bill wrote one - FraCaS 175/176; "John wanted to buy a car, and
+    he did", 180). No reading is guessed."""
+    return _mentions(vp, ("ComplVS", "ComplVSBare", "ComplVV", "EmbedVP", "EmbedS"))
+
+
+_CLAUSAL_COMPLEMENT = ("ComplVS", "ComplVSBare")
+
+
+def _complement_ellipsis(t) -> bool:
+    if t.head in _CLAUSAL_COMPLEMENT and len(t.args) == 2 and t.args[1].head in ("ElliptS", "SoS"):
+        return True
+    return any(_complement_ellipsis(a) for a in t.args)
+
+
+def _resolve_embedded_ellipsis(t, antecedent_vp):
+    if t.head in _CLAUSAL_COMPLEMENT and len(t.args) == 2 and t.args[1].head in ("ElliptS", "SoS"):
+        return App(t.head, [t.args[0], _resolve_embedded_ellipsis(t.args[1], antecedent_vp)])
+    if t.head in ("ElliptS", "SoS") and len(t.args) == 2:
+        np, aux = t.args if t.head == "ElliptS" else (t.args[1], t.args[0])
+        pol = App("PNeg" if aux.head == "ellDidnt" else "PPos", [])
+        return App("UseCl", [App("TTAnt", [App("TPast", []), App("ASimul", [])]), pol,
+                             App("PredVP", [np, antecedent_vp])])
+    if t.head in ("ElliptS", "SoS", "SubjS"):
+        return t
+    return App(t.head, [_resolve_embedded_ellipsis(a, antecedent_vp) for a in t.args])
+
+
+def _adv_items(adv):
+    """A VP adverbial as a list of adverbials: the parser attaches a
+    second one to the first one's noun phrase ("to [Paris by car]")."""
+    if adv.head == "PrepNP" and len(adv.args) == 2 and adv.args[1].head == "AdvNP" \
+            and len(adv.args[1].args) == 2:
+        np, inner = adv.args[1].args
+        return [App("PrepNP", [adv.args[0], np]), *_adv_items(inner)]
+    return [adv]
+
+
+def _vp_frame(vp):
+    """(VP without its adverbials, [its adverbials in order])."""
+    if vp.head == "AdvVP" and len(vp.args) == 2:
+        core, mods = _vp_frame(vp.args[0])
+        return core, mods + _adv_items(vp.args[1])
+    return vp, []
+
+
+def _parallel(remnant, mod) -> bool:
+    """Whether a remnant adverbial stands in for an antecedent one: the same
+    preposition ("by train" for "by car"), or a time adverbial of the same
+    kind ("at five o'clock" for "at four o'clock", "on Friday" for "on
+    Thursday")."""
+    if remnant.head == "PrepNP" and mod.head == "PrepNP":
+        return remnant.args[0].head == mod.args[0].head
+    if _is_time_adverb(remnant) and _is_time_adverb(mod):
+        return re.match(r"[a-z]+", remnant.head).group() == re.match(r"[a-z]+", mod.head).group()
+    return False
+
+
+def _replace_modifiers(vp, remnants):
+    """The antecedent VP with each remnant replacing its parallel adverbial,
+    or added if it has none - gapping ("John went to Paris by car, and
+    Bill to Berlin": Bill went to Berlin by car, FraCaS 152) and fragments
+    ("John spoke to Mary on Thursday. And on Friday.")."""
+    core, mods = _vp_frame(vp)
+    mods = list(mods)
+    for r in remnants:
+        for i, m in enumerate(mods):
+            if _parallel(r, m):
+                mods[i] = r
+                break
+        else:
+            mods.append(r)
+    for m in mods:
+        core = App("AdvVP", [core, m])
+    return core
+
+
+def _sentence_parts(t):
+    """A sentence as the clauses it asserts in order: "S1, and S2" is S1
+    then S2, and a sentence-initial "and"/"but" adds nothing to truth
+    conditions."""
+    if t.head == "UttS" and len(t.args) == 1:
+        t = t.args[0]
+    if t.head in ("AndS", "ButS") and len(t.args) == 1:
+        return _sentence_parts(t.args[0])
+    if t.head == "CommaAndS" and len(t.args) == 2:
+        return _sentence_parts(t.args[0]) + _sentence_parts(t.args[1])
+    return [t]
+
+
+def _resolve_sentence(tree, role, state):
+    """([(clause, negated), ...], new state, error) for one sentence."""
+    antecedent_vp, antecedent_cn, antecedent_subject, it_cn = state
+    parts = _sentence_parts(tree)
+    if role == "hypothesis" and len(parts) != 1:
+        return None, state, "a coordinated hypothesis"
+    out = []
+    for part in parts:
+        clause, negated, err = resolve(part, antecedent_vp, antecedent_cn, antecedent_subject)
+        if clause is None:
+            return None, state, err
+        # Object "it" in a premise, with an antecedent `_it_antecedent`
+        # allows, reads as "a CN": what "it" picks out is one, so the
+        # premise only gets weaker (never in the hypothesis, where that
+        # would be stronger, and never under negation).
+        if it_cn is not None and role != "hypothesis" and not negated and clause.head == "PredVP":
+            vp, replaced = _replace_it_object(clause.args[1], it_cn)
+            if replaced:
+                clause = App("PredVP", [clause.args[0], vp])
+        out.append((clause, negated))
+        it_cn = _it_antecedent(clause)
+        if clause.head == "PredVP" and len(clause.args) == 2:
+            antecedent_vp = clause.args[1]
+            antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
+            antecedent_subject = clause.args[0]
+    return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn), None
 
 
 _parse_cache: dict = {}
@@ -302,7 +478,7 @@ def assemble(idn, sentences):
     claims"), each with its yes/no claims with and without background
     knowledge."""
     clauses = []  # (clause tree, negated)
-    antecedent_vp = antecedent_cn = it_cn = None
+    state = (None, None, None, None)  # antecedent VP, CN, subject; "it"'s CN
     for role, s in sentences:
         candidates = ranked_readings(s)
         n = len(candidates)
@@ -312,26 +488,15 @@ def assemble(idn, sentences):
         # reading with nothing earlier to resolve against falls through to
         # the next-ranked one (ill-formed anaphora readings are already
         # filtered out by parse_rank.ranked).
-        clause = err = None
+        resolved = err = None
         for tree in candidates:
-            clause, negated, err = resolve(parse_tree(tree), antecedent_vp, antecedent_cn)
-            if clause is not None:
+            resolved, new_state, err = _resolve_sentence(parse_tree(tree), role, state)
+            if resolved is not None:
                 break
-        if clause is None:
+        if resolved is None:
             return None, f"{role} parses ({n} readings) but does not translate: {err or 'no reading resolves'}"
-        # Object "it" in a premise, with an antecedent `_it_antecedent`
-        # allows, reads as "a CN": what "it" picks out is one, so the
-        # premise only gets weaker (never in the hypothesis, where that
-        # would be stronger, and never under negation).
-        if it_cn is not None and role != "hypothesis" and not negated and clause.head == "PredVP":
-            vp, replaced = _replace_it_object(clause.args[1], it_cn)
-            if replaced:
-                clause = App("PredVP", [clause.args[0], vp])
-        clauses.append((role, clause, negated, n))
-        it_cn = _it_antecedent(clause)
-        if clause.head == "PredVP" and len(clause.args) == 2:
-            antecedent_vp = clause.args[1]
-            antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
+        state = new_state
+        clauses.extend((role, clause, negated, n) for clause, negated in resolved)
 
     time_functions: list[str] = []  # event times, see readings.py's `_ordered`
 
