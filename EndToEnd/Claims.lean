@@ -3723,19 +3723,19 @@ def fracas_258_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_261_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → ((leave smith ∧ leaveTime smith < leaveTime anderson))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → ((leave smith ∧ leaveTime smith < leaveTime anderson))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_261_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → (¬ ((leave smith ∧ leaveTime smith < leaveTime anderson)))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → (¬ ((leave smith ∧ leaveTime smith < leaveTime anderson)))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_261_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → ((leave smith ∧ leaveTime smith < leaveTime anderson))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → ((leave smith ∧ leaveTime smith < leaveTime anderson))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_261_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → (¬ ((leave smith ∧ leaveTime smith < leaveTime anderson)))
+  ∀ {A : Type} [Fintype A] (leave : A → Prop) [DecidablePred leave] (smith jones anderson : A) (leaveTime : A → ℕ), ((leave smith ∧ leaveTime smith < leaveTime jones)) → ((leave jones ∧ leaveTime jones < leaveTime anderson)) → (¬ ((leave smith ∧ leaveTime smith < leaveTime anderson)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_262_yes_0 : Prop :=

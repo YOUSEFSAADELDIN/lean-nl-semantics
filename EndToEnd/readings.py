@@ -321,13 +321,20 @@ class EndToEndReadings(Readings):
         then = translate_cl(other)
         if not (_plain(main) and _plain(then)):
             return None
-        times = []
-        for tr, v, who in ((main, vp, subject), (then, other.args[1], other.args[0])):
+        times, who = [], []
+        for v, np in ((vp, subject), (other.args[1], other.args[0])):
             name = _scope_name(v) + "Time"
             if name not in self.time_functions:
                 self.time_functions.append(name)
-            times.append(f"{name} {camel_name(_leaf_words(who))}")
-        order = Translation(lean_prop=f"{times[0]} {_ORDER[conj.head]} {times[1]}", free_predicates=[])
+            who.append(camel_name(_leaf_words(np)))
+            times.append(f"{name} {who[-1]}")
+        # The order mentions both individuals even when B's clause is not
+        # asserted ("before"), so it declares them itself.
+        order = Translation(
+            lean_prop=f"{times[0]} {_ORDER[conj.head]} {times[1]}",
+            free_predicates=[],
+            free_individuals=list(dict.fromkeys(who)),
+        )
         parts = [main, then, order] if conj.head == "after_Subj" else [main, order]
         return _combine(parts, "∧")
 
