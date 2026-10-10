@@ -280,6 +280,55 @@ translates the two attachments of an adjective-plus-relative-clause noun
 phrase identically. Its default reading — the one the cross-check
 theorems are proved against — is unchanged throughout.
 
+## Comparison with FraCoq
+
+FraCoq (Bernardy & Chatzikyriakidis: IWCS 2017, 0.83 on five sections;
+NoDaLiDa 2019, 0.89 on all but section 7; IWCS 2021, 0.81 on all
+sections) is the strongest published logic-based FraCaS system. Its
+setting differs from this pipeline's in three ways, each stated in its
+papers:
+
+- **Input.** FraCoq "skip[s] the parsing phase and use[s] the parse trees
+  constructed by Ljunglöf and Siverbo (2011)": one tree per sentence from
+  a treebank, with ellipsis marked explicitly in the trees. This pipeline
+  parses FraCaS's English and ranks the readings automatically.
+- **Proofs.** FraCoq's proofs were not automated in 2017, and in 2021
+  "the construction of such proofs has demanded human intervention"; an
+  "unknown" there means no proof was found with reasonable effort. Here a
+  fixed prover runs unattended, and "unknown" means it failed.
+- **Labels.** FraCoq scores an amended FraCaS (its `AnswerTypes.hs`): six
+  labels overruled, ambiguous problems counted "yes" if *one* reading
+  entails the hypothesis, and problems without a plain label dropped. This
+  pipeline uses the original labels and answers "yes" only if *every*
+  reading entails it.
+
+The papers themselves warn against reading the number alone: "(At the
+limit, one can construct a tool with 100% success rate by simply using a
+lookup table.)" (2017); "the value of the present work lies not in the bare
+accuracy numbers which we are able to achieve, but in the details of how we
+do so" (2021).
+
+`compare_fracoq.py` aligns problems and labels: it reads FraCoq's labels
+from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
+paper's 259 problems exactly) and scores this pipeline's verdicts by
+FraCoq's own rules (only clearly labelled problems; an `Undef` label
+accepts any answer). With the verdicts of CI run 38028878624:
+
+| FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
+|---|---|---|---|---|
+| 2017: sections 1, 2, 5, 6, 9 | 171 | 60.2% | 71.3% | 0.83 (on 174) |
+| 2019: all but section 7 | 259 | 49.4% | 56.8% | 0.89 |
+| 2021: all sections | 326 | 47.9% | 54.6% | 0.81 (on 329) |
+
+On the 2017 sections, per section with background knowledge: quantifiers
+65/74 (FraCoq .96), plurals 20/33 (.76), adjectives 12/20 (.95),
+comparatives 18/31 (.56), attitudes 7/13 (.85). Under FraCoq's labels one
+answer counts as wrong: 5, whose label FraCoq overrules from yes to
+unknown ("missing hypothesis: there are italian tenors"); under the
+original labels it is correct. The 2017 subset comes out at 171 problems
+rather than 174 with the current label file, which has since marked
+further problems (such as 199) as unclear.
+
 ## Limitations
 
 - Everything in `BLIND_EVAL.md`'s limitations about the prover applies
