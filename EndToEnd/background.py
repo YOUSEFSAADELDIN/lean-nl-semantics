@@ -7,7 +7,7 @@ translate.py names a predicate after the words of its whole CN/VP subtree
 which loses the compositional fact that it entails "win a Nobel prize".
 Every hand-written FraCaS theorem supplies facts like that as explicit
 premises; this module derives the same *kinds* of facts mechanically, and
-nothing else. Three sources, all stated here in full:
+nothing else. Four sources, all stated here in full:
 
 1. **Structural entailments, read off the parse trees.** For each
    predicate-defining subtree in a problem's sentences, every tree obtained
@@ -19,14 +19,20 @@ nothing else. Three sources, all stated here in full:
      thereby a student);
    - an adverbial/PP on a noun (`AdvCN`) or verb phrase (`AdvVP`), unless
      the adverb is listed in `NON_VERIDICAL`, or the PP is a durative
-     measure ("for two hours" - `_is_aspectual`), wherever it attaches;
+     measure ("for two hours" - `_is_aspectual`) on a noun or on a verb
+     phrase that culminates (readings.py's `_telic`);
+   - an adverbial on a non-quantified object ("got the results published
+     in major newspapers");
+   - a counting determiner on an object ("a lot of time" ⊑ "time",
+     `COUNTING_TO_BARE`);
    - a relative clause on a noun (`RelCN`);
    - a degree word on an adjective (`AdAP`: "really great" -> "great");
    - recursively inside a verb's object or a copula complement, but only
      when that NP is existential or definite-singular ("a/some/several/
      the X") - never under `every`/`no`/`few` (downward or non-monotone)
      and never under a verb taking a verb phrase (`want`, `can`, ...),
-     whose complements are not monotone in general.
+     whose complements are not monotone in general - except the
+     upward-monotone `UPWARD_VV` ("can", "must", "used to").
 2. **A small, closed degree-semantics lexicon.** `ANTONYMS` pairs gradable
    adjectives with their contraries. When a problem mentions the relevant
    predicates: contraries are exclusive (`¬ (small x ∧ large x)`, and the
@@ -47,6 +53,13 @@ nothing else. Three sources, all stated here in full:
    ⇒ "fatter than" - not so for "cleverer", 217), and over one comparison
    class a contrary pair's thresholds are ordered ("a small animal" is
    smaller than "a large animal").
+4. **Time adverbials** on the same verb phrase (gen_claims.py moves them
+   to the verb phrase first): "for two years" ⊑ "for a year"; a state or
+   activity "from 1988 to 1992" ⊑ "in 1990"; "in July 1994" ⊑ "in 1994";
+   and a culminating event on one particular object ("wrote his first
+   novel") in one year excludes it in another - the one-time-per-event
+   assumption readings.py's `_ordered` already makes. Also in part 2:
+   "as fast as" excludes "slower than".
 
 Nothing here is keyed by problem number or gold answer. The lexicon lists
 were written with this corpus in view, so they are not a held-out
@@ -56,11 +69,13 @@ with and without this module.
 from __future__ import annotations
 
 import itertools
+import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gf"))
 from translate import App, _leaf_words, _scope_name, camel_name  # noqa: E402
+from readings import _telic  # noqa: E402
 
 NON_SUBSECTIVE = {"former", "fake", "alleged", "false", "imaginary", "would-be", "fictional", "potential"}
 NON_VERIDICAL = {"allegedly", "apparently", "likely", "possibly", "nearly", "almost"}
@@ -112,6 +127,15 @@ EXTENSIONAL_SUBSECTIVE = {"small", "large", "big", "fat", "thin", "fast", "slow"
 #   privative: an A N is not an N ("a former student").
 PRIVATIVE = {"former", "fake", "counterfeit", "imaginary", "fictional"}
 
+# Verbs whose verb-phrase complement is upward monotone: what one can or
+# must do, or used to do, one can/must/used to do any weakening of (a modal
+# is a quantifier over possibilities; "used to" one over past times).
+# Not "want" and other preference verbs, which are not monotone.
+UPWARD_VV = {"usedTo_VV", "can_VV", "must_VV"}
+# Counting determiners whose noun phrase entails the bare noun ("a lot of
+# time" ⊑ "time", "several hours" ⊑ "hours") in an upward position.
+COUNTING_TO_BARE = {"aLotOf_Det", "many_Det", "several_Det", "aFew_Det", "somePl_Det"}
+
 CN_HEADS = {"UseN", "AdjCN", "AdvCN", "RelCN", "CompoundCN", "SentCN", "ApposCN"}
 VP_HEADS = {"UseComp", "ComplSlash", "AdvVP", "ComplVV", "UseV", "PassV2", "AdVVP", "ComplVS", "ComplVQ"}
 UPWARD_DETS = {"IndefArt", "someSg_Det", "somePl_Det", "several_Det", "aFew_Det", "aLotOf_Det", "many_Det"}
@@ -155,7 +179,11 @@ def weakenings(t):
         out += [App(h, [w, a[1]]) for w in weakenings(a[0])]
     elif h == "AdvVP" and len(a) == 2:
         adv_words = {_lemma(x) for x in _leaf_heads(a[1])}
-        if not (adv_words & NON_VERIDICAL) and not _is_aspectual(a[1]):
+        # a durative "for two hours" deletes only from a VP that does not
+        # culminate (a state or activity: "lived in Birmingham for two
+        # years" ⊑ "lived in Birmingham"); "wrote a report for two hours"
+        # need not have finished it (the imperfective paradox, FraCaS 304)
+        if not (adv_words & NON_VERIDICAL) and not (_is_aspectual(a[1]) and _telic(a[0])):
             out.append(a[0])
         out += [App("AdvVP", [w, a[1]]) for w in weakenings(a[0])]
     elif h == "AdAP" and len(a) == 2:
@@ -164,6 +192,21 @@ def weakenings(t):
         np = a[1]
         if _np_allows_weakening(np):
             out += [App("ComplSlash", [a[0], w]) for w in _np_weakenings(np)]
+        # an adverbial on a non-quantified object ("got [the results
+        # published] in major newspapers")
+        if np.head == "AdvNP" and len(np.args) == 2:
+            inner, adv = np.args
+            adv_words = {_lemma(x) for x in _leaf_heads(adv)}
+            if (inner.head in ("PPartNP", "UsePN") or _np_allows_weakening(inner)) \
+                    and not (adv_words & NON_VERIDICAL) and not _is_aspectual(adv):
+                out.append(App("ComplSlash", [a[0], inner]))
+                # the same words with the adverbial on the noun ("rents [a
+                # dedicated line] from BT" = "rents a dedicated line from
+                # BT"), whose own modifiers then delete as usual
+                if inner.head == "DetCN" and _np_allows_weakening(inner):
+                    out.append(App("ComplSlash", [a[0], App("DetCN", [inner.args[0], App("AdvCN", [inner.args[1], adv])])]))
+    elif h == "ComplVV" and len(a) == 2 and a[0].head in UPWARD_VV:
+        out += [App("ComplVV", [a[0], w]) for w in weakenings(a[1])]
     elif h == "UseComp" and len(a) == 1:
         comp = a[0]
         if comp.head == "CompCN":
@@ -188,7 +231,11 @@ def _np_weakenings(np):
     if np.head == "MassNP":
         return [App("MassNP", [w]) for w in weakenings(np.args[0])]
     if np.head == "DetCN":
-        return [App("DetCN", [np.args[0], w]) for w in weakenings(np.args[1])]
+        out = [App("DetCN", [np.args[0], w]) for w in weakenings(np.args[1])]
+        if np.args[0].head in COUNTING_TO_BARE:
+            bare = App("MassNP", [np.args[1]])
+            out += [bare, *_np_weakenings(bare)]
+        return out
     return []
 
 
@@ -270,6 +317,15 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
                 if suffix == "Than":
                     add(f"(∀ x y, {rel} x y → ¬ {rel} y x)")
 
+    for a, b in ANTONYMS:
+        # "x is as fast as y": x's degree is at least y's - so x is not
+        # slower than y, and y is not faster than x
+        if a + "As" in binary:
+            if b + "Than" in binary:
+                add(f"(∀ x y, {a}As x y → ¬ {b}Than x y)")
+            if a + "Than" in binary:
+                add(f"(∀ x y, {a}As x y → ¬ {a}Than y x)")
+
     # 3. adjective classes
     for (adj, noun), name in adj_cn.items():
         a = adj_name.get(adj)
@@ -308,4 +364,73 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
     for (adj, _noun), rel in compar_cn.items():
         if adj in EXTENSIONAL_SUBSECTIVE and adj + "Than" in binary:
             add(f"(∀ x y, {rel} x y → {adj}Than x y)")
+
+    # 4. time adverbials on the same verb phrase
+    timed = []
+    for tree in trees:
+        for st in _subtrees(tree):
+            if st.head == "AdvVP" and len(st.args) == 2:
+                when = _time_value(st.args[1])
+                name = _name(st)
+                if when is not None and name in unary:
+                    timed.append((repr(st.args[0]), st.args[0], when, name))
+    for (k1, v, w1, p1), (k2, _v, w2, p2) in itertools.permutations(timed, 2):
+        if k1 != k2 or p1 == p2:
+            continue
+        if w1[0] == w2[0] == "for" and w1[2] == w2[2] and w1[1] >= w2[1]:
+            # "for two years" ⊑ "for a year"
+            add(f"(∀ x, {p1} x → {p2} x)")
+        elif w1[0] == "span" and w2[0] == "year" and w1[1] <= w2[1] <= w1[2] and not _telic(v):
+            # a state or activity holds at every time within its span
+            # ("owned APCOM from 1988 to 1992" ⊑ "owned APCOM in 1990")
+            add(f"(∀ x, {p1} x → {p2} x)")
+        elif w1[0] == "month" and w2[0] == "year" and w1[1] == w2[1]:
+            add(f"(∀ x, {p1} x → {p2} x)")
+        elif w1[0] == w2[0] == "year" and w1[1] < w2[1] and _telic(v) and _unique_object(v):
+            # one culminating event on one particular object ("wrote his
+            # first novel") happens at one time - the same assumption
+            # readings.py's `_ordered` makes
+            add(f"(∀ x, {p1} x → ¬ {p2} x)")
     return facts
+
+
+_NUMBERS = {"A": 1, "An": 1, "One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5, "Six": 6,
+            "Seven": 7, "Eight": 8, "Nine": 9, "Ten": 10}
+_MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August",
+           "September", "October", "November", "December")
+
+
+def _time_value(adv):
+    """A lexicalized time adverbial's meaning: ("for", n, unit) for a
+    duration of at least n units, ("year", y), ("month", y) for a month of
+    year y, ("span", y1, y2) for "from y1 to y2"; None for anything else."""
+    if adv.args or not adv.head.endswith("_Adv"):
+        return None
+    w = adv.head.rsplit("_", 1)[0]
+    m = re.fullmatch(r"for(MoreThan)?([A-Z][a-z]*)(Hour|Year|Day|Week|Month|Minute)s?", w)
+    if m and m.group(2) in _NUMBERS:
+        return ("for", _NUMBERS[m.group(2)] + (1 if m.group(1) else 0), m.group(3))
+    m = re.fullmatch(r"in(\d{4})", w)
+    if m:
+        return ("year", int(m.group(1)))
+    m = re.fullmatch(r"in([A-Z][a-z]+)(\d{4})", w)
+    if m and m.group(1) in _MONTHS:
+        return ("month", int(m.group(2)))
+    m = re.fullmatch(r"from(\d{4})to(\d{4})", w)
+    if m:
+        return ("span", int(m.group(1)), int(m.group(2)))
+    return None
+
+
+def _unique_object(vp) -> bool:
+    """A transitive VP whose object is one particular thing: a name, or a
+    definite or possessive singular ("the contract", "his first novel")."""
+    if vp.head != "ComplSlash" or len(vp.args) != 2:
+        return False
+    np = vp.args[1]
+    if np.head == "UsePN":
+        return True
+    if np.head == "DetCN" and np.args[0].head == "DetQuant" and len(np.args[0].args) == 2:
+        quant, num = np.args[0].args
+        return num.head == "NumSg" and (quant.head == "DefArt" or quant.head == "PossPron")
+    return False

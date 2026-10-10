@@ -111,6 +111,52 @@ def to_clause(t):
 
 _NEGATIVE_POLARITIES = ("PNeg", "UncNeg")
 
+# Time adverbials the grammar lexicalizes as one word ("in 1993", "for two
+# years", "from 1988 to 1992", "in July 1994", "on Friday").
+_TIME_ADVERB = re.compile(
+    r"(in|for|from|since|on|at)[A-Z0-9][A-Za-z0-9]*"
+    r"(\d|Year|Hour|Month|Week|Day|OClock|day|January|February|March|April|May|June|July|August|"
+    r"September|October|November|December)[A-Za-z0-9]*_Adv"
+)
+# Where a time adverbial is not lifted out of: embedded clauses and the
+# complements of verbs taking a clause or a verb phrase, whose own event
+# it may modify ("managed to win the contract in 1992").
+_TIME_OPAQUE = ("UseCl", "EmbedS", "EmbedVP", "RelCN", "SentCN", "SubjS", "ComplVS", "ComplVV", "SlashV2V")
+
+
+def _is_time_adverb(t) -> bool:
+    return not t.args and bool(_TIME_ADVERB.fullmatch(t.head))
+
+
+def _lift_time_adverbs(clause):
+    """The parser attaches a time adverbial wherever the string allows,
+    usually to a noun phrase ("won [the contract in 1993]", "lived in
+    [Birmingham for two years]"); it locates the event, so it is moved to
+    the verb phrase ("[won the contract] in 1993"), the attachment
+    `background.py`'s temporal rules read. Only inside the main clause's
+    verb phrase, inside any "before/after" clause."""
+    if clause.head != "PredVP" or len(clause.args) != 2:
+        return clause
+    found = []
+
+    def strip(t):
+        if t.head in ("AdvNP", "AdvCN") and len(t.args) == 2 and _is_time_adverb(t.args[1]):
+            found.append(t.args[1])
+            return strip(t.args[0])
+        if t.head in _TIME_OPAQUE:
+            return t
+        return App(t.head, [strip(a) for a in t.args])
+
+    def wrap(vp):
+        if vp.head == "AdvVP" and len(vp.args) == 2 and vp.args[1].head == "SubjS":
+            return App("AdvVP", [wrap(vp.args[0]), vp.args[1]])
+        for adv in found:
+            vp = App("AdvVP", [vp, adv])
+        return vp
+
+    vp = strip(clause.args[1])
+    return App("PredVP", [clause.args[0], wrap(vp)]) if found else clause
+
 
 def _strip_outer_adjective(cn):
     """One-anaphora with its own modifier ("a BLUE one") contrasts with the
@@ -152,7 +198,44 @@ def _replace_one(t, antecedent_cn):
     return App(t.head, args), used
 
 
+_QUANTIFIED_DETS = ("every_Det", "each_Det", "no_Det", "all_Predet")
+
+
+def _it_antecedent(clause):
+    """The noun "it" in the next sentence can be resolved to: the CN of an
+    indefinite singular object ("each department has [a dedicated
+    line]"), only when the subject is quantified, so "it" cannot be the
+    subject instead."""
+    if clause.head != "PredVP" or len(clause.args) != 2:
+        return None
+    subject, vp = clause.args
+    if not _mentions(subject, _QUANTIFIED_DETS):
+        return None
+    if vp.head == "ComplSlash" and len(vp.args) == 2:
+        np = vp.args[1]
+        if np.head == "DetCN" and np.args[0].head == "DetQuant" and len(np.args[0].args) == 2 \
+                and np.args[0].args[0].head == "IndefArt" and np.args[0].args[1].head == "NumSg":
+            return np.args[1]
+    return None
+
+
+def _replace_it_object(vp, cn):
+    """A transitive VP's object "it" (possibly with an adverbial: "rents
+    it from BT") -> "a CN"; (vp, replaced)."""
+    if vp.head != "ComplSlash" or len(vp.args) != 2:
+        return vp, False
+    np = vp.args[1]
+    indefinite = App("DetCN", [App("DetQuant", [App("IndefArt", []), App("NumSg", [])]), cn])
+    if np.head == "UsePron" and np.args[0].head == "it_Pron":
+        return App("ComplSlash", [vp.args[0], indefinite]), True
+    if np.head == "AdvNP" and np.args[0].head == "UsePron" and np.args[0].args[0].head == "it_Pron":
+        return App("ComplSlash", [vp.args[0], App("AdvNP", [indefinite, np.args[1]])]), True
+    return vp, False
+
+
 def _mentions(t, head):
+    if isinstance(head, tuple):
+        return t.head in head or any(_mentions(a, head) for a in t.args)
     return t.head == head or any(_mentions(a, head) for a in t.args)
 
 
@@ -199,7 +282,7 @@ def resolve(t, antecedent_vp, antecedent_cn):
         if antecedent_cn is None:
             return None, False, "one-anaphora with no antecedent noun"
         clause, _ = _replace_one(clause, antecedent_cn)
-    return clause, negated, None
+    return _lift_time_adverbs(clause), negated, None
 
 
 _parse_cache: dict = {}
@@ -219,7 +302,7 @@ def assemble(idn, sentences):
     claims"), each with its yes/no claims with and without background
     knowledge."""
     clauses = []  # (clause tree, negated)
-    antecedent_vp = antecedent_cn = None
+    antecedent_vp = antecedent_cn = it_cn = None
     for role, s in sentences:
         candidates = ranked_readings(s)
         n = len(candidates)
@@ -236,7 +319,16 @@ def assemble(idn, sentences):
                 break
         if clause is None:
             return None, f"{role} parses ({n} readings) but does not translate: {err or 'no reading resolves'}"
+        # Object "it" in a premise, with an antecedent `_it_antecedent`
+        # allows, reads as "a CN": what "it" picks out is one, so the
+        # premise only gets weaker (never in the hypothesis, where that
+        # would be stronger, and never under negation).
+        if it_cn is not None and role != "hypothesis" and not negated and clause.head == "PredVP":
+            vp, replaced = _replace_it_object(clause.args[1], it_cn)
+            if replaced:
+                clause = App("PredVP", [clause.args[0], vp])
         clauses.append((role, clause, negated, n))
+        it_cn = _it_antecedent(clause)
         if clause.head == "PredVP" and len(clause.args) == 2:
             antecedent_vp = clause.args[1]
             antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
