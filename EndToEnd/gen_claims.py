@@ -320,6 +320,7 @@ def resolve(t, antecedent_vp, antecedent_cn, antecedent_subject=None):
         if antecedent_cn is None:
             return None, False, "one-anaphora with no antecedent noun"
         clause, _ = _replace_one(clause, antecedent_cn)
+    clause = _possessor_in_coordination(clause)
     if _complement_ellipsis(clause):
         # ellipsis as a clausal complement ("Bill said Peter did too");
         # "before Smith did" is readings.py's `_ordered`'s, copying the
@@ -491,9 +492,106 @@ def _replace_etype_object(vp, antecedent):
     return App("ComplSlash", [vp.args[0], description]), True
 
 
+def _dependent_have(clause):
+    """(M, N) for "every/each M has a N" - a dependency of each M's N on
+    the M, which a later bridging definite can use (`_bridge`)."""
+    if not (clause.head == "PredVP" and len(clause.args) == 2):
+        return None
+    subject, vp = clause.args
+    if not (subject.head == "DetCN" and len(subject.args) == 2 and subject.args[0].head in ("every_Det", "each_Det")):
+        return None
+    if vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[0].head == "SlashV2a" \
+            and vp.args[0].args[0].head == "have_V2" and vp.args[1].head == "DetCN":
+        det, n = vp.args[1].args
+        if det.head == "DetQuant" and det.args[0].head == "IndefArt" and det.args[1].head == "NumSg":
+            return subject.args[1], n
+    return None
+
+
+def _sort_of(clause):
+    """(name, M) for "NAME is a M"."""
+    if not (clause.head == "PredVP" and len(clause.args) == 2 and clause.args[0].head == "UsePN"):
+        return None
+    vp = clause.args[1]
+    if vp.head == "UseComp" and vp.args[0].head == "CompCN":
+        return clause.args[0], vp.args[0].args[0]
+    if vp.head == "UseComp" and vp.args[0].head == "CompNP" and vp.args[0].args[0].head == "DetCN":
+        det, cn = vp.args[0].args[0].args
+        if det.head == "DetQuant" and det.args[0].head == "IndefArt" and det.args[1].head == "NumSg":
+            return clause.args[0], cn
+    return None
+
+
+def _of_name(cn):
+    """(N, name) for "N of NAME", either attachment of the PP ("cover [page
+    of R-95-103]" or "[cover page] of R-95-103")."""
+    if cn.head == "AdvCN" and len(cn.args) == 2 and cn.args[1].head == "PrepNP" \
+            and cn.args[1].args[0].head == "of_Prep" and cn.args[1].args[1].head == "UsePN":
+        return cn.args[0], cn.args[1].args[1]
+    if cn.head == "CompoundCN" and len(cn.args) == 2:
+        inner = _of_name(cn.args[1])
+        if inner is not None:
+            return App("CompoundCN", [cn.args[0], inner[0]]), inner[1]
+    return None
+
+
+def _bridge(vp, bridging, named, premise):
+    """A transitive VP's definite object as a value of a dependency
+    `_dependent_have` recorded ("every report has a cover page"): "the
+    cover page of R-95-103" is `coverPageOf r95103` (`FunTermNP`), and in a
+    premise a bare "the cover page" is the cover page of the one report
+    the discourse has named (Clark's bridging; FraCaS 138) - only when
+    exactly one is named."""
+    if not (vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[1].head == "DetCN"):
+        return vp
+    det, cn = vp.args[1].args
+    if not (det.head == "DetQuant" and det.args[0].head == "DefArt" and det.args[1].head == "NumSg"):
+        return vp
+    of = _of_name(cn)
+    if of is not None and repr(of[0]) in bridging:
+        return App("ComplSlash", [vp.args[0], App("FunTermNP", [of[0], of[1]])])
+    if premise and repr(cn) in bridging:
+        sort = bridging[repr(cn)]
+        owners = [n for n, m in named if m == sort]
+        if len(owners) == 1:
+            return App("ComplSlash", [vp.args[0], App("FunTermNP", [cn, owners[0]])])
+    return vp
+
+
+def _possessor_in_coordination(t):
+    """"John and his colleagues": in a coordination with exactly one name,
+    "his"/"her" is that name's ("John's colleagues")."""
+    if t.head == "ConjNP" and len(t.args) == 2:
+        items = _np_items(t.args[1])
+        names = [i for i in items if i.head == "UsePN"]
+        if len(names) == 1:
+            def fix(np):
+                if np.head == "DetCN" and np.args[0].head == "DetQuant" and np.args[0].args[0].head == "PossPron" \
+                        and np.args[0].args[0].args[0].head in ("he_Pron", "she_Pron"):
+                    return App("DetCN", [App("DetQuant", [App("GenNP", [names[0]]), np.args[0].args[1]]), np.args[1]])
+                return np
+            return App("ConjNP", [t.args[0], _map_items(t.args[1], fix)])
+    return App(t.head, [_possessor_in_coordination(a) for a in t.args])
+
+
+def _np_items(t):
+    if t.head in ("BaseNP", "ConsNP") and len(t.args) == 2:
+        return [t.args[0], *_np_items(t.args[1])] if t.head == "ConsNP" else list(t.args)
+    return [t]
+
+
+def _map_items(t, f):
+    if t.head == "BaseNP":
+        return App("BaseNP", [f(t.args[0]), f(t.args[1])])
+    if t.head == "ConsNP":
+        return App("ConsNP", [f(t.args[0]), _map_items(t.args[1], f)])
+    return f(t)
+
+
 def _resolve_sentence(tree, role, state):
     """([(clause, negated), ...], new state, error) for one sentence."""
-    antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype = state
+    antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype, bridging, named = state
+    bridging, named = dict(bridging), list(named)
     parts = _sentence_parts(tree)
     if role == "hypothesis" and len(parts) != 1:
         return None, state, "a coordinated hypothesis"
@@ -529,6 +627,29 @@ def _resolve_sentence(tree, role, state):
                 subject = etype[0]
             vp, _ = _replace_etype_object(vp, etype)
             clause = App("PredVP", [subject, vp])
+        # "John and his colleagues went to a meeting. They hated it": on
+        # either reading of "they" (all of them, or the colleagues), the
+        # colleagues hated it - the plural conjunct; and "it" is the
+        # meeting (FraCaS 128).
+        if role != "hypothesis" and not negated and clause.head == "PredVP" and antecedent_subject is not None \
+                and antecedent_subject.head == "ConjNP" and clause.args[0].head == "UsePron" \
+                and clause.args[0].args[0].head == "they_Pron":
+            plural = [i for i in _np_items(antecedent_subject.args[1]) if i.head != "UsePN"]
+            if len(plural) == 1:
+                vp = clause.args[1]
+                if antecedent_cn is not None and vp.head == "ComplSlash" and vp.args[1].head == "UsePron" \
+                        and vp.args[1].args[0].head == "it_Pron":
+                    the = App("DetCN", [App("DetQuant", [App("DefArt", []), App("NumSg", [])]), antecedent_cn])
+                    vp = App("ComplSlash", [vp.args[0], the])
+                clause = App("PredVP", [plural[0], vp])
+        if clause.head == "PredVP" and len(clause.args) == 2:
+            clause = App("PredVP", [clause.args[0], _bridge(clause.args[1], bridging, named, role != "hypothesis")])
+        dependent = _dependent_have(clause)
+        if dependent is not None and not negated:
+            bridging[repr(dependent[1])] = repr(dependent[0])
+        sort = _sort_of(clause)
+        if sort is not None and not negated:
+            named.append((sort[0], repr(sort[1])))
         out.append((clause, negated))
         it_cn = _it_antecedent(clause)
         etype = _etype_antecedent(clause) if not negated else None
@@ -536,7 +657,13 @@ def _resolve_sentence(tree, role, state):
             antecedent_vp = clause.args[1]
             antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
             antecedent_subject = clause.args[0]
-    return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype), None
+    return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype, tuple(bridging.items()), tuple(named)), None
+
+
+def _subtrees_of(t):
+    yield t
+    for a in t.args:
+        yield from _subtrees_of(a)
 
 
 _parse_cache: dict = {}
@@ -556,7 +683,9 @@ def assemble(idn, sentences):
     claims"), each with its yes/no claims with and without background
     knowledge."""
     clauses = []  # (clause tree, negated)
-    state = (None, None, None, None, None)  # antecedent VP, CN, subject; "it"'s CN; E-type antecedent
+    # antecedent VP, CN, subject; "it"'s CN; E-type antecedent; bridging
+    # dependencies and named individuals' sorts (see `_bridge`)
+    state = (None, None, None, None, None, (), ())
     for role, s in sentences:
         candidates = ranked_readings(s)
         n = len(candidates)
@@ -575,6 +704,13 @@ def assemble(idn, sentences):
             return None, f"{role} parses ({n} readings) but does not translate: {err or 'no reading resolves'}"
         state = new_state
         clauses.extend((role, clause, negated, n) for clause, negated in resolved)
+    # A dependency a bridging definite used is stated with its function
+    # (readings.py's `DependentHave`).
+    used = {repr(c.args[0]) for _r, cl, _n, _k in clauses for c in _subtrees_of(cl) if c.head == "FunTermNP"}
+    clauses = [
+        (role, App("DependentHave", [cl]) if (d := _dependent_have(cl)) is not None and repr(d[1]) in used else cl, neg, n)
+        for role, cl, neg, n in clauses
+    ]
 
     time_functions: list[str] = []  # event times, see readings.py's `_ordered`
     functions: list[str] = []  # possession functions, see readings.py's `_possessive`

@@ -15,10 +15,10 @@ assembled by one generic rule. See `EndToEnd/gen_claims.py` for the
 exact pipeline and what it deliberately does not supply. Evaluated by
 `EndToEnd/Scan.lean`.
 
-237 of 342 problems carried all the way through;
+240 of 342 problems carried all the way through;
 the rest, by first failing stage:
 - a sentence does not parse: 87
-- a sentence parses but translate.py does not cover its reading: 17
+- a sentence parses but translate.py does not cover its reading: 14
 - a generated name is not a usable Lean binder: 1
 
 Per-problem skip reasons (first failing sentence/stage):
@@ -36,9 +36,6 @@ Per-problem skip reasons (first failing sentence/stage):
 - 125: premise 1 parses (4 readings) but does not translate: AdvNP's own wrapped NP is only handled as a bare DetCN so far, got head='DetNP'
 - 126: premise 1 parses (4 readings) but does not translate: AdvNP's own wrapped NP is only handled as a bare DetCN so far, got head='DetNP'
 - 127: premise 2 parses (4 readings) but does not translate: only a determiner-quantified subject (DetCN det cn), a PP-modified one (AdvNP (DetCN det cn) pp), or either wrapped in a
-- 128: premise 1 parses (3 readings) but does not translate: quantifier 'PossPron' has no known Lean mapping yet (see _QUANTIFIER_BY_QUANT)
-- 129: premise 1 parses (3 readings) but does not translate: quantifier 'PossPron' has no known Lean mapping yet (see _QUANTIFIER_BY_QUANT)
-- 130: premise 1 parses (3 readings) but does not translate: quantifier 'PossPron' has no known Lean mapping yet (see _QUANTIFIER_BY_QUANT)
 - 136: premise 1 does not parse: 'Every executive who had a laptop computer brought it to take notes at the meeting.'
 - 137: premise 1 does not parse: 'There are 100 companies.'
 - 139: premise 1 does not parse: 'A company director awarded himself a large payrise.'
@@ -2550,6 +2547,102 @@ def fracas_120_bk_yes_0 : Prop :=
 def fracas_120_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (attendMeeting chairMeetingSmithAttend chairMeeting : A → Prop) [DecidablePred attendMeeting] [DecidablePred chairMeetingSmithAttend] [DecidablePred chairMeeting] (smith : A), (∀ x, chairMeetingSmithAttend x → chairMeeting x) → (attendMeeting smith) → (chairMeetingSmithAttend smith) → (¬ (chairMeeting smith))
 
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_128_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting)
+
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_128_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (Some (fun y => colleague y ∧ has john y) hateMeeting))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_128_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_128_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (Some (fun y => colleague y ∧ has john y) hateMeeting))
+
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_128_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → ((Every (fun y => colleague y ∧ has john y) hateMeeting ∧ Some (fun y => colleague y ∧ has john y) hateMeeting))
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_128_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ ((Every (fun y => colleague y ∧ has john y) hateMeeting ∧ Some (fun y => colleague y ∧ has john y) hateMeeting)))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_128_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → ((Every (fun y => colleague y ∧ has john y) hateMeeting ∧ Some (fun y => colleague y ∧ has john y) hateMeeting))
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_128_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ ((Every (fun y => colleague y ∧ has john y) hateMeeting ∧ Some (fun y => colleague y ∧ has john y) hateMeeting)))
+
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_129_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_129_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_129_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_129_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_129_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_129_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_129_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_129_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
+/-- Reading assignment 0 (defpl weak): "yes" test. -/
+def fracas_130_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- Reading assignment 0 (defpl weak): "no" test. -/
+def fracas_130_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
+/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_130_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- As `_no_0`, with the same background knowledge. -/
+def fracas_130_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Some (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
+/-- Reading assignment 1 (defpl strong): "yes" test. -/
+def fracas_130_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- Reading assignment 1 (defpl strong): "no" test. -/
+def fracas_130_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
+/-- As `_yes_1`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
+def fracas_130_bk_yes_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (hateMeeting john)
+
+/-- As `_no_1`, with the same background knowledge. -/
+def fracas_130_bk_no_1 : Prop :=
+  ∀ {A : Type} [Fintype A] (goToMeeting colleague hateMeeting : A → Prop) [DecidablePred goToMeeting] [DecidablePred colleague] [DecidablePred hateMeeting] (has : A → A → Prop) [DecidableRel has] (john : A), ((goToMeeting john ∧ Every (fun y => colleague y ∧ has john y) goToMeeting)) → (Some (fun y => colleague y ∧ has john y) goToMeeting) → (Every (fun y => colleague y ∧ has john y) hateMeeting) → (Some (fun y => colleague y ∧ has john y) hateMeeting) → (¬ (hateMeeting john))
+
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_131_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (department haveDedicatedLine rentDedicatedLineFromBt rentLineFromBt : A → Prop) [DecidablePred department] [DecidablePred haveDedicatedLine] [DecidablePred rentDedicatedLineFromBt] [DecidablePred rentLineFromBt], (Every department haveDedicatedLine) → (Every department rentDedicatedLineFromBt) → (Every department rentLineFromBt)
@@ -2632,19 +2725,19 @@ def fracas_135_bk_no_0 : Prop :=
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_138_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (signCoverPageOfR95103 smith)
+  ∀ {A : Type} [Fintype A] (report haveCoverPage coverPage : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred coverPage] (has sign : A → A → Prop) [DecidableRel has] [DecidableRel sign] (r95103 smith : A) (coverPageOf : A → A), (∀ x, haveCoverPage x ↔ ∃ y, coverPage y ∧ has x y) → (Every report haveCoverPage) → (∀ x, report x → coverPage (coverPageOf x) ∧ has x (coverPageOf x)) → (report r95103) → (sign smith (coverPageOf r95103)) → (sign smith (coverPageOf r95103))
 
 /-- Reading assignment 0 (unambiguous): "no" test. -/
 def fracas_138_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (¬ (signCoverPageOfR95103 smith))
+  ∀ {A : Type} [Fintype A] (report haveCoverPage coverPage : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred coverPage] (has sign : A → A → Prop) [DecidableRel has] [DecidableRel sign] (r95103 smith : A) (coverPageOf : A → A), (∀ x, haveCoverPage x ↔ ∃ y, coverPage y ∧ has x y) → (Every report haveCoverPage) → (∀ x, report x → coverPage (coverPageOf x) ∧ has x (coverPageOf x)) → (report r95103) → (sign smith (coverPageOf r95103)) → (¬ (sign smith (coverPageOf r95103)))
 
 /-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
 def fracas_138_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (signCoverPageOfR95103 smith)
+  ∀ {A : Type} [Fintype A] (report haveCoverPage coverPage : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred coverPage] (has sign : A → A → Prop) [DecidableRel has] [DecidableRel sign] (r95103 smith : A) (coverPageOf : A → A), (∀ x, haveCoverPage x ↔ ∃ y, coverPage y ∧ has x y) → (Every report haveCoverPage) → (∀ x, report x → coverPage (coverPageOf x) ∧ has x (coverPageOf x)) → (report r95103) → (sign smith (coverPageOf r95103)) → (sign smith (coverPageOf r95103))
 
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_138_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (report haveCoverPage signCoverPage signCoverPageOfR95103 : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred signCoverPage] [DecidablePred signCoverPageOfR95103] (r95103 smith : A), (Every report haveCoverPage) → (report r95103) → (signCoverPage smith) → (¬ (signCoverPageOfR95103 smith))
+  ∀ {A : Type} [Fintype A] (report haveCoverPage coverPage : A → Prop) [DecidablePred report] [DecidablePred haveCoverPage] [DecidablePred coverPage] (has sign : A → A → Prop) [DecidableRel has] [DecidableRel sign] (r95103 smith : A) (coverPageOf : A → A), (∀ x, haveCoverPage x ↔ ∃ y, coverPage y ∧ has x y) → (Every report haveCoverPage) → (∀ x, report x → coverPage (coverPageOf x) ∧ has x (coverPageOf x)) → (report r95103) → (sign smith (coverPageOf r95103)) → (¬ (sign smith (coverPageOf r95103)))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_140_yes_0 : Prop :=
@@ -4814,6 +4907,9 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (118, .yes, [``Claims.fracas_118_yes_0], [``Claims.fracas_118_no_0]),
   (119, .no, [``Claims.fracas_119_yes_0], [``Claims.fracas_119_no_0]),
   (120, .yes, [``Claims.fracas_120_yes_0], [``Claims.fracas_120_no_0]),
+  (128, .yes, [``Claims.fracas_128_yes_0, ``Claims.fracas_128_yes_1], [``Claims.fracas_128_no_0, ``Claims.fracas_128_no_1]),
+  (129, .yes, [``Claims.fracas_129_yes_0, ``Claims.fracas_129_yes_1], [``Claims.fracas_129_no_0, ``Claims.fracas_129_no_1]),
+  (130, .unknown, [``Claims.fracas_130_yes_0, ``Claims.fracas_130_yes_1], [``Claims.fracas_130_no_0, ``Claims.fracas_130_no_1]),
   (131, .yes, [``Claims.fracas_131_yes_0], [``Claims.fracas_131_no_0]),
   (132, .yes, [``Claims.fracas_132_yes_0], [``Claims.fracas_132_no_0]),
   (133, .yes, [``Claims.fracas_133_yes_0], [``Claims.fracas_133_no_0]),
@@ -5056,6 +5152,9 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (118, .yes, [``Claims.fracas_118_bk_yes_0], [``Claims.fracas_118_bk_no_0]),
   (119, .no, [``Claims.fracas_119_bk_yes_0], [``Claims.fracas_119_bk_no_0]),
   (120, .yes, [``Claims.fracas_120_bk_yes_0], [``Claims.fracas_120_bk_no_0]),
+  (128, .yes, [``Claims.fracas_128_bk_yes_0, ``Claims.fracas_128_bk_yes_1], [``Claims.fracas_128_bk_no_0, ``Claims.fracas_128_bk_no_1]),
+  (129, .yes, [``Claims.fracas_129_bk_yes_0, ``Claims.fracas_129_bk_yes_1], [``Claims.fracas_129_bk_no_0, ``Claims.fracas_129_bk_no_1]),
+  (130, .unknown, [``Claims.fracas_130_bk_yes_0, ``Claims.fracas_130_bk_yes_1], [``Claims.fracas_130_bk_no_0, ``Claims.fracas_130_bk_no_1]),
   (131, .yes, [``Claims.fracas_131_bk_yes_0], [``Claims.fracas_131_bk_no_0]),
   (132, .yes, [``Claims.fracas_132_bk_yes_0], [``Claims.fracas_132_bk_no_0]),
   (133, .yes, [``Claims.fracas_133_bk_yes_0], [``Claims.fracas_133_bk_no_0]),

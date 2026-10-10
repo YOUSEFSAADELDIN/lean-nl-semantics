@@ -198,12 +198,12 @@ def _possessive_object(vp):
     return None
 
 
-def _genitive_subject(np):
-    """(owner, CN) for "NAME's CN"."""
+def _genitive_subject(np, number="NumSg"):
+    """(owner, CN) for "NAME's CN(s)"."""
     if np.head == "DetCN" and len(np.args) == 2:
         det, cn = np.args
         if det.head == "DetQuant" and len(det.args) == 2 and det.args[0].head == "GenNP" \
-                and det.args[0].args[0].head == "UsePN" and det.args[1].head == "NumSg":
+                and det.args[0].args[0].head == "UsePN" and det.args[1].head == number:
             return det.args[0].args[0], cn
     return None
 
@@ -247,6 +247,8 @@ class EndToEndReadings(Readings):
         return self.reading
 
     def sentence(self, t):
+        if t.head == "DependentHave" and len(t.args) == 1:
+            return self._dependent_have(t.args[0])
         if t.head == "ExtAdvS" and len(t.args) == 2:
             return self._conditional(*t.args)
         if t.head != "PredVP" or len(t.args) != 2:
@@ -261,6 +263,11 @@ class EndToEndReadings(Readings):
             return self._distribute(every, vp, "∧")
         if subject.head == "UsePN" and vp.head == "ComplSlash" and vp.args[0].head == "SlashV2V":
             return self._perception(subject, vp)
+        if subject.head == "UsePN" and vp.head == "ComplSlash" and len(vp.args) == 2 \
+                and vp.args[0].head == "SlashV2a" and vp.args[1].head == "FunTermNP":
+            return self._function_object(subject, vp.args[0].args[0], *vp.args[1].args)
+        if _genitive_subject(subject, "NumPl") is not None:
+            return self._genitive_plural(subject, vp)
         possessed = _possessive_object(vp)
         if possessed is not None and possessed[1] in _PRONOUN_GENDER:
             return self._possessive(subject, *possessed)
@@ -526,6 +533,52 @@ class EndToEndReadings(Readings):
         return Translation(
             lean_prop=f"{quant} {restrictor} (fun x => {relation} x ({function} x))",
             free_predicates=[*restrictor_preds, *preds], binary_predicates=[relation, "has"],
+        )
+
+    def _dependent_have(self, clause):
+        """"Every report has a cover page", where a later definite depends
+        on it (gen_claims.py's `_bridge`): the sentence as usual, plus its
+        dependent reading as a function - Π x : report. Σ y : cover page.
+        has x y, projected (`coverPageOf`, see `_possessive`)."""
+        tr = translate_cl(clause)
+        if not _plain(tr):
+            raise NotImplementedError("dependency sentence needs non-generic assembly")
+        m, n = clause.args[0].args[1], clause.args[1].args[1].args[1]
+        _noun, function, _a_cn = self._possession(n)
+        m_expr, m_preds = _restrictor_expr(_normalize_cn(m))
+        n_expr, n_preds = _restrictor_expr(_normalize_cn(n))
+        self.side_premises.append(f"∀ x, {m_expr} x → {n_expr} ({function} x) ∧ has x ({function} x)")
+        return Translation(
+            lean_prop=tr.lean_prop,
+            free_predicates=[*tr.free_predicates, *m_preds, *n_preds, "has"],
+            free_individuals=tr.free_individuals,
+            binary_predicates=[*tr.binary_predicates, "has"],
+        )
+
+    def _function_object(self, subject, verb, cn, owner):
+        """"Smith signed the cover page of R-95-103": `sign smith
+        (coverPageOf r95103)` (see `_dependent_have`)."""
+        _noun, function, _a_cn = self._possession(cn)
+        relation = camel_name(_leaf_words(verb))
+        x, o = camel_name(_leaf_words(subject)), camel_name(_leaf_words(owner))
+        return Translation(
+            lean_prop=f"{relation} {x} ({function} {o})",
+            free_predicates=[relation], free_individuals=[x, o], binary_predicates=[relation],
+        )
+
+    def _genitive_plural(self, subject, vp):
+        """"John's colleagues hated the meeting": the colleagues John has,
+        read like any definite plural ("defpl": `Some` weak, `Every` with
+        existence strong)."""
+        owner, cn = _genitive_subject(subject, "NumPl")
+        cn_expr, cn_preds = _restrictor_expr(_normalize_cn(cn))
+        o = camel_name(_leaf_words(owner))
+        restrictor = f"(fun y => {cn_expr} y ∧ has {o} y)"
+        scope = _scope_name(vp)
+        quant = "Some" if self.mode("defpl") == "weak" else "Every+"
+        return Translation(
+            lean_prop=self.quantified(quant, restrictor, scope),
+            free_predicates=[*cn_preds, "has", scope], free_individuals=[o], binary_predicates=["has"],
         )
 
     def _genitive_passive(self, subject, vp):
