@@ -65,14 +65,29 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    ellipsis ("so did Bill", "Bill didn't", "the students have too"),
    one-anaphora ("a blue one", "owns one too") and uncontracted negation
    ("is not") the same way; readings that use anaphoric "one" as anything
-   but the head of a noun phrase are discarded as ill-formed.
+   but the head of a noun phrase are discarded as ill-formed. The
+   ellipsis round added gapping ("John went to Paris by car, and Bill by
+   train"), fragments ("On Friday.", "And to Sue.", "But only one
+   woman."), VP ellipsis with a new adverbial ("And Bill did at five
+   o'clock"), "S, and S", "if S, then S", "is going to" as an elided
+   auxiliary, and "said S" without "that"; readings that put a fragment
+   anywhere but at sentence level are discarded.
 3. **Rank** the readings generically (`EndToEnd/parse_rank.py`): fewest nodes,
    ties broken by right association (attach adverbials as low as
    possible).
 4. **Resolve** ellipsis and one-anaphora by copying the antecedent
    clause's verb phrase or noun (the standard copy treatment; "a blue
    one" after "a red car" contrasts with the antecedent's outermost
-   adjective), then **translate** with `gf/translate.py` and **assemble**
+   adjective). A coordinated premise asserts each conjunct in turn; a
+   gapped clause or fragment copies the antecedent clause with each
+   remnant replacing its parallel adverbial (the same preposition, or a
+   time adverbial of the same kind) or added to it ("John went to Paris
+   by car, and Bill to Berlin": Bill went to Berlin by car). Ellipsis
+   whose antecedent embeds another verb phrase ("John said Mary wrote a
+   report, and Bill did too": Bill said so, or John said Bill wrote one)
+   is ambiguous and left untranslated. Time adverbials the parser
+   attached to a noun phrase ("won [the contract in 1993]") are moved to
+   the verb phrase. Then **translate** with `gf/translate.py` and **assemble**
    by one generic rule — bind every free predicate/individual, chain
    premises into the hypothesis — with no per-problem cases. Sentential
    negation is translated only with a proper-name subject, where its
@@ -95,7 +110,14 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    meeting); "one of the Ns" is a counted partitive, ambiguous like a
    bare numeral; and a fronted adverbial ("In 1993 ITEL won …") modifies
    the VP, with a proper-name subject and no negation, where its scope
-   is the same as in final position.
+   is the same as in final position. An attitude report with a named
+   complement subject ("Bill said Peter wrote a report") is a relation
+   named after the verb and the complement's verb phrase, voice included
+   (`sayWriteReport bill peter`), so "said", "believed" and "knew" never
+   share a predicate; a factive ("knew that S") also asserts S. Object
+   "it" in a premise, after a sentence with a quantified subject ("each
+   department has a dedicated line"), is read as "a [dedicated line]",
+   which only weakens the premise.
 5. **Never commit to one reading of ambiguous English.** Six kinds of
    ambiguity are translated in a weak and a strong reading: a definite
    plural subject ("the inhabitants voted" — collective/generic `Some`,
@@ -134,7 +156,13 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    the comparison class's members, a comparative independent of the
    noun, and contraries ordered within one class); every other adjective
    ("competent", "clever") is plainly subsective and licenses nothing
-   beyond the noun. Nothing in it is keyed by problem or gold answer,
+   beyond the noun. It also relates time adverbials on the same verb
+   phrase ("for two years" ⇒ "for a year"; a state "from 1988 to 1992"
+   ⇒ "in 1990"; "in July 1994" ⇒ "in 1994"; one culminating event on one
+   object per year), deletes a durative only from a verb phrase that does
+   not culminate, deletes "a lot of" and a PP on a non-quantified object,
+   weakens the complements of "can", "must" and "used to", and makes "as
+   fast as" exclude "slower than". Nothing in it is keyed by problem or gold answer,
    but the lists were written with this corpus in view, so it is not a
    held-out resource.
 
@@ -142,26 +170,27 @@ The `build-gf` CI job regenerates the claims file from the English and
 fails if it differs from the committed copy, so the scored claims are
 reproducible.
 
-**Parser quality, on the 456 distinct CI-confirmed sentences**
-(`EndToEnd/parse_eval.py`; 449 before `main`'s anaphora and degree-
-adjective work was merged in): all 456 parse; the hand-built tree is
-among the readings for all 456; median 4 readings (max 3,600); and the
-top-ranked reading translates to the same `Prop` as the hand tree for 388
-of the 389 sentences `translate.py` covers. The one exception (136) is a garden-path
+**Parser quality, on the 471 distinct CI-confirmed sentences**
+(`EndToEnd/parse_eval.py`; 456 before the ellipsis round's checks, 449
+before `main`'s anaphora and degree-adjective work was merged in): all
+471 parse; the hand-built tree is among the readings for all 471; median
+4 readings (max 3,600); and the top-ranked reading translates to the same
+`Prop` as the hand tree for 393 of the 394 sentences `translate.py`
+covers. The one exception (136) is a garden-path
 compound ("[executive that had a laptop] computer") tied in size with the
 correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 219 of 342 problems go all
-the way through (64.0%). 103 stop at a sentence the restricted grammar
-doesn't parse, 13 at a reading the translation doesn't cover, 6 at a
+**Coverage, on FraCaS's original English**: 229 of 342 problems go all
+the way through (67.0%). 87 stop at a sentence the restricted grammar
+doesn't parse, 19 at a reading the translation doesn't cover, 6 at a
 translation needing non-generic assembly, and 1 (104) at a predicate
-named after a Lean keyword (`have`). Of the 103, the remaining parse
-failures are mostly hard phenomena rather than missing glue: tense and
-aspect (41 problems, Section 7), ellipsis forms such as gapping and
-fragments ("Bill by train.", 39, Section 4), cross-sentence anaphora,
-attitude reports, and numbers written as digits. The last cheap round
+named after a Lean keyword (`have`). The remaining parse failures are
+mostly hard phenomena rather than missing glue: tense and aspect
+(Section 7), embedded questions, antecedent-contained and parallel-scope
+ellipsis (Section 4's 163, 171-173, 191-196), cross-sentence anaphora,
+and numbers written as digits. The last cheap round
 added the remaining small constructions: perception reports ("Smith saw
 Jones sign the contract"), "every X and every Y was", a floated "all"
 before the verb, "if S, S", "more than n", and comparatives inside a
@@ -173,18 +202,45 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38036552953), on those 219 problems:
+**Result** (CI run 38041260727), on those 229 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 80/219 (36.5%) | — |
-| as translated | **146/219 (66.7%)** | **0** |
-| with background knowledge | **176/219 (80.4%)** | **0** |
+| always "unknown" (baseline) | 80/229 (34.9%) | — |
+| as translated | **160/229 (69.9%)** | **0** |
+| with background knowledge | **203/229 (88.6%)** | **0** |
 
-Counting the 123 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 172/342 (50.3%) as translated and 202/342 (59.1%)
+Counting the 113 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 186/342 (54.4%) as translated and 229/342 (67.0%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
+
+**Ellipsis** (CI run 38041260727) reached 145, 146, 154, 164-167, 178
+and 179 and matched all of them, matched 150-152 (reached before, but
+parsed into one fused predicate), and lost nothing. 140 is newly
+reached and "unknown": "John said Bill had hurt himself" ⇒ "John said
+Bill had been hurt" needs reflexive-to-passive inside a report, and the
+two reports are kept distinct. Left untranslated on purpose: 175, 176
+and 180, whose ellipsis has two antecedents (above), and 169/170 ("John
+found Mary before Bill"), where FraCaS reads the same sentence both ways.
+The strict/sloppy problems (182-190: "Smith represents his company and
+so does Jones" ⇒ both "Jones' company" and "Smith's company", gold yes)
+would also need committing to one reading; they do not parse yet.
+Before this round, CI run 38040036163 gave 148/219 and 191/219.
+
+**Fixing reached problems** (CI run 38040036163) took 15 problems the
+pipeline already reached from "unknown" to gold, losing none: 105 and
+106 (the prover now uses that a nonzero exact count refutes "no"); 298,
+300, 303, 306, 328, 330 and 278 (time adverbials, step 6); 25, 29, 31 and
+48 (weakenings, step 6); 229 ("as fast as"); and 132 (object "it").
+Of the problems still "unknown" against a yes/no gold label, most are
+FraCaS picking one reading of ambiguous English (13, 76, 86, 87, 100,
+107, 109, 160, 230, 233, 239, 250); 69 is a slip in FraCaS itself (its
+premise says "can travel freely", its hypothesis asks about "the right
+to live"); and the rest need anaphora with identity (133-135, 138, 279,
+282), calendar or lexical knowledge (258, 307, 326), or adjective
+knowledge the lexicon deliberately lacks (199, 218). Before this round,
+CI run 38036552953 gave 146/219 and 176/219.
 
 **Adjectives and attitudes** (CI run 38036552953) gained 198, 202, 203,
 208, 209, 212, 214 and 216 with background knowledge, and 334 and 336 in
@@ -276,21 +332,19 @@ problem cases. Its cost is that a genuinely ambiguous problem now gets
   fast red car") are FraCaS committing to one reading of a genuinely
   ambiguous sentence; the pipeline says "unknown".
 
-How the remaining "unknown"s split: most need knowledge neither the
-translation nor `EndToEnd/background.py` supplies (199's "successful"
-and 218's default comparison class, both above), counting arguments the
-generic prover doesn't find (105, 106), or temporal reasoning that the
-fused predicate names cannot express (Section 7, 261-306).
+How the remaining "unknown"s split: see "Fixing reached problems"
+above.
 
 One background-knowledge rule *was* unsound and has been fixed, a fix
 found from its observed failure: the first version deleted durative
 "for two hours" like any other modifier, so "Smith wrote a report for
 two hours" ⇒ "Smith wrote a report" (304, gold unknown — an
-accomplishment need not culminate). Durative "for"-phrases are no longer
-deletable. That also removes the fact for 306 ("discovered a new species
-for two years" ⇒ "discovered a new species", gold yes, valid for an
-iterated achievement); telling those apart needs lexical aspect classes,
-which this pipeline does not have, so it takes the conservative side.
+accomplishment need not culminate). Durative "for"-phrases were then
+made non-deletable everywhere, which also lost 306 ("discovered new
+species for two years" ⇒ "discovered new species", gold yes, valid for
+an iterated achievement). They now delete only from a verb phrase that
+does not culminate, by the same telicity test `readings.py` uses for
+"before"/"after": 304 stays unknown and 306 is matched again.
 
 How the translator was improved for this, beyond the grammar additions:
 `translate.py` keeps prepositions and determiners in verb-phrase
@@ -315,18 +369,18 @@ uses the C&C CCG parser and Coq "fully automated" with a 30-second
 timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
 problems that lack a well-defined answer": exactly this project's `undef`
 problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
-the same labels. With CI run 38036552953's verdicts
+the same labels. With CI run 38041260727's verdicts
 (`compare_fracoq.py`):
 
 | section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
 |---|---|---|---|
-| quantifiers (74) | .76 | **.89** | .77 |
-| plurals (33) | .64 | .64 | .67 |
+| quantifiers (74) | .76 | **.95** | .77 |
+| plurals (33) | .70 | **.70** | .67 |
 | adjectives (22) | .32 | **.91** | .68 |
-| comparatives (31) | .48 | **.61** | .48 |
-| verbs (8) | .50 | .50 | .62 |
+| comparatives (31) | .48 | **.65** | .48 |
+| verbs (8) | .50 | **.75** | .62 |
 | attitudes (13) | .69 | .69 | .77 |
-| **total (181)** | **.619** | **.768** | **.69** |
+| **total (181)** | **.630** | **.818** | **.69** |
 
 No wrong answers in either variant. Haruta, Mineshima & Bekki (ACL SRW
 2020), ccg2lambda's successor for these phenomena (two CCG parsers,
@@ -388,17 +442,17 @@ do so" (2021).
 from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
 paper's 259 problems exactly) and scores this pipeline's verdicts by
 FraCoq's own rules (only clearly labelled problems; an `Undef` label
-accepts any answer). With the verdicts of CI run 38036552953:
+accepts any answer). With the verdicts of CI run 38041260727:
 
 | FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
 |---|---|---|---|---|
-| 2017: sections 1, 2, 5, 6, 9 | 171 | 61.4% | 76.6% | 0.83 (on 174) |
-| 2019: all but section 7 | 259 | 50.2% | 60.2% | 0.89 |
-| 2021: all sections | 326 | 48.5% | 57.4% | 0.81 (on 329) |
+| 2017: sections 1, 2, 5, 6, 9 | 171 | 62.6% | 80.7% | 0.83 (on 174) |
+| 2019: all but section 7 | 259 | 55.6% | 68.7% | 0.89 |
+| 2021: all sections | 326 | 52.8% | 65.6% | 0.81 (on 329) |
 
 On the 2017 sections, per section with background knowledge: quantifiers
-65/74 (FraCoq .96), plurals 20/33 (.76), adjectives 19/20 (.95),
-comparatives 18/31 (.56), attitudes 9/13 (.85). Under FraCoq's labels one
+69/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
+comparatives 19/31 (.56), attitudes 9/13 (.85). Under FraCoq's labels one
 answer counts as wrong: 5, whose label FraCoq overrules from yes to
 unknown ("missing hypothesis: there are italian tenors"); under the
 original labels it is correct. The 2017 subset comes out at 171 problems
@@ -420,6 +474,6 @@ further problems (such as 199) as unclear.
   contribution can be read off directly.
 - Comparing with FraCoq: this is the comparable *kind* of measurement
   (automatic translation from English), but it reaches only part of the
-  corpus and is not competitive with FraCoq's reported 83%/81% on what it
+  corpus and is still below FraCoq's reported 83%/81% on what it
   does reach. Its distinguishing property is that it gives no wrong
   answers on what it reaches, with every verdict machine-checked.
