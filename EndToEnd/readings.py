@@ -54,6 +54,8 @@ than the default does:
     Ns", perception reports ("Smith saw Jones sign the contract"),
     comparatives inside a noun phrase ("a fatter politician than Bill"),
     and conditionals ("if S, S");
+  - factive "know that S" and implicative "manage to VP", which
+    commit to S and to the VP (see `_factive`, `_implicative`);
   - temporal order between two completed events ("Smith left before
     Jones left"), see `_ordered`;
   - "more than n" is `AtLeast (n+1)`, and a floated "all" before the
@@ -169,6 +171,15 @@ _STATIVE_TRANSITIVE = ("own_V2", "have_V2", "know_V2", "like_V2", "love_V2", "ne
                        "want_V2", "contain_V2", "believe_V2", "hate_V2")
 _ORDER = {"before_Subj": "<", "after_Subj": ">"}
 
+# Karttunen's (1971) verbs that commit the speaker to their complement:
+# factives presuppose a "that"-clause ("Smith knew that S" ⇒ S), and a
+# (two-way) implicative's positive use entails its infinitive ("ITEL
+# managed to win" ⇒ ITEL won). Non-factive "believe" and non-implicative
+# "try"/"want" are not listed, so nothing follows from them (FraCaS 335,
+# 337). Textbook members of each class, not drawn from FraCaS's answers.
+_FACTIVE = ("know_VS", "realize_VS", "regret_VS")
+_IMPLICATIVE = ("manage_VV",)
+
 
 def _quantized(np) -> bool:
     if np.head == "UsePN":
@@ -219,6 +230,10 @@ class EndToEndReadings(Readings):
             return self._distribute(every, vp, "∧")
         if subject.head == "UsePN" and vp.head == "ComplSlash" and vp.args[0].head == "SlashV2V":
             return self._perception(subject, vp)
+        if subject.head == "UsePN" and vp.head == "ComplVS" and vp.args[0].head in _FACTIVE:
+            return self._factive(subject, vp)
+        if subject.head == "UsePN" and vp.head == "ComplVV" and vp.args[0].head in _IMPLICATIVE:
+            return self._implicative(subject, vp)
         if subject.head == "UsePN" and vp.head == "UseComp" and len(vp.args) == 1:
             compared = self._compared_cn(vp.args[0])
             if compared is not None:
@@ -362,6 +377,49 @@ class EndToEndReadings(Readings):
             binary_predicates=[relation],
         )
         return _combine([report, seen], "∧")
+
+    def _factive(self, subject, vp):
+        """"Smith knew that ITEL had won the contract": the attitude, as a
+        relation between the knower and the complement's subject named by
+        the complement's verb phrase (`knowWinContract smith itel`), and
+        the complement itself (`winContract itel`), which a factive
+        commits to (FraCaS 334). Only a positive complement clause with a
+        proper-name subject; anything else keeps the default."""
+        verb, s = vp.args
+        if not (s.head == "UseCl" and len(s.args) == 3 and s.args[1].head == "PPos"):
+            return None
+        cl = s.args[2]
+        if not (cl.head == "PredVP" and cl.args[0].head == "UsePN"):
+            return None
+        said = translate_cl(cl)
+        if not _plain(said):
+            return None
+        relation = camel_name([verb.head.rsplit("_", 1)[0], *_leaf_words(cl.args[1], keep_det=True)])
+        knower, agent = camel_name(_leaf_words(subject)), camel_name(_leaf_words(cl.args[0]))
+        attitude = Translation(
+            lean_prop=f"{relation} {knower} {agent}",
+            free_predicates=[relation],
+            free_individuals=[knower, agent],
+            binary_predicates=[relation],
+        )
+        return _combine([attitude, said], "∧")
+
+    def _implicative(self, subject, vp):
+        """"ITEL managed to win the contract": the managing, as the
+        default's opaque predicate of the whole verb phrase
+        (`manageWinContract itel`), and the infinitive's own claim
+        (`winContract itel`), which an implicative verb's positive use
+        entails (FraCaS 336)."""
+        done = translate_cl(App("PredVP", [subject, vp.args[1]]))
+        if not _plain(done):
+            return None
+        who, managed = camel_name(_leaf_words(subject)), _scope_name(vp)
+        attempt = Translation(
+            lean_prop=f"{managed} {who}",
+            free_predicates=[managed],
+            free_individuals=[who],
+        )
+        return _combine([attempt, done], "∧")
 
     @staticmethod
     def _compared_cn(comp):

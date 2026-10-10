@@ -7,7 +7,7 @@ translate.py names a predicate after the words of its whole CN/VP subtree
 which loses the compositional fact that it entails "win a Nobel prize".
 Every hand-written FraCaS theorem supplies facts like that as explicit
 premises; this module derives the same *kinds* of facts mechanically, and
-nothing else. Two sources, both stated here in full:
+nothing else. Three sources, all stated here in full:
 
 1. **Structural entailments, read off the parse trees.** For each
    predicate-defining subtree in a problem's sentences, every tree obtained
@@ -35,6 +35,18 @@ nothing else. Two sources, both stated here in full:
    y → a x`, `aAs x y → a y → a x`); comparatives are asymmetric (`aThan
    x y → ¬ aThan y x`); antonym comparatives are converses (`aThan x y ↔
    bThan y x`).
+3. **Adjective classes** (`INTERSECTIVE`, `EXTENSIONAL_SUBSECTIVE`,
+   `PRIVATIVE`; any other adjective is plainly subsective and gets only
+   part 1's weakening). An intersective "A N" is A and N, so it follows
+   the noun's entailments ("every mammal is an animal" ⊢ "every
+   four-legged mammal is a four-legged animal") and drops to "A". A
+   privative "A N" is not an N. A dimensional adjective's threshold
+   depends only on the comparison class's members (coextensive nouns give
+   coextensive "A N"s - not so for "competent", FraCaS 215), its
+   comparative is the same whatever the noun ("a fatter politician than"
+   ⇒ "fatter than" - not so for "cleverer", 217), and over one comparison
+   class a contrary pair's thresholds are ordered ("a small animal" is
+   smaller than "a large animal").
 
 Nothing here is keyed by problem number or gold answer. The lexicon lists
 were written with this corpus in view, so they are not a held-out
@@ -77,6 +89,28 @@ def _is_aspectual(pp) -> bool:
         return False
     return any(_lemma(h) in TIME_UNITS for h in _leaf_heads(pp.args[1]))
 ANTONYMS = [("small", "large"), ("fast", "slow"), ("fat", "thin"), ("old", "new"), ("cheap", "expensive")]
+# Adjective classes (Kamp & Partee 1995; Partee 2010; the classes
+# Chatzikyriakidis & Luo 2017 and Bernardy & Chatzikyriakidis's FraCoq
+# also use). An adjective in none of them is read as plainly subsective -
+# "a competent N" is an N and nothing more follows - which is the safe
+# default: it licenses only the weakening of part 1.
+#   intersective: an A N is something A that is an N ("a four-legged
+#   animal" is four-legged and an animal) - colours, sex, nationality,
+#   shape;
+INTERSECTIVE = {
+    "red", "blue", "green", "black", "white", "yellow", "brown",
+    "male", "female", "fourLegged",
+    "british", "canadian", "irish", "italian", "portuguese", "scandinavian", "northAmerican",
+    "swedish", "german", "french", "european", "american",
+}
+#   extensional subsective: dimensional gradable adjectives, true of an N
+#   whose degree on one scale (size, girth, speed, ...) exceeds a threshold
+#   set by the comparison class - so what counts depends only on the
+#   class's members, the comparative does not depend on the class at all,
+#   and a contrary pair's thresholds are ordered (Kennedy 2007);
+EXTENSIONAL_SUBSECTIVE = {"small", "large", "big", "fat", "thin", "fast", "slow", "tall", "short", "heavy", "light"}
+#   privative: an A N is not an N ("a former student").
+PRIVATIVE = {"former", "fake", "counterfeit", "imaginary", "fictional"}
 
 CN_HEADS = {"UseN", "AdjCN", "AdvCN", "RelCN", "CompoundCN", "SentCN", "ApposCN"}
 VP_HEADS = {"UseComp", "ComplSlash", "AdvVP", "ComplVV", "UseV", "PassV2", "AdVVP", "ComplVS", "ComplVQ"}
@@ -204,12 +238,20 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
 
     # 2. degree-semantics lexicon
     adj_cn = {}  # (adjective lemma, noun-phrase name) -> predicate name
+    adj_name = {}  # adjective lemma -> its predicate name ("four-legged" -> fourLegged)
+    compar_cn = {}  # (adjective lemma, noun-phrase name) -> "ADJer N than" relation name
     for tree in trees:
         for st in _subtrees(tree):
             if st.head == "AdjCN" and len(st.args) == 2 and st.args[0].head == "PositA":
                 name = _name(st)
                 if name in unary:
                     adj_cn[(_lemma(st.args[0].args[0].head), _name(st.args[1]))] = name
+                    adj_name[_lemma(st.args[0].args[0].head)] = _name(st.args[0])
+            if st.head == "ComparCN" and len(st.args) == 3:
+                adj, cn = st.args[0], st.args[1]
+                rel = camel_name([*_leaf_words(adj), *_leaf_words(cn)]) + "Than"
+                if rel in binary:
+                    compar_cn[(_lemma(adj.head), _name(cn))] = rel
     for a, b in ANTONYMS:
         if a in unary and b in unary:
             add(f"(∀ x, ¬ ({a} x ∧ {b} x))")
@@ -227,4 +269,43 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
                     add(f"(∀ x y, {rel} x y → {adj} y → {adj} x)")
                 if suffix == "Than":
                     add(f"(∀ x y, {rel} x y → ¬ {rel} y x)")
+
+    # 3. adjective classes
+    for (adj, noun), name in adj_cn.items():
+        a = adj_name.get(adj)
+        if adj in INTERSECTIVE:
+            if a in unary:
+                add(f"(∀ x, {name} x → {a} x)")
+                if noun in unary:
+                    add(f"(∀ x, {a} x → {noun} x → {name} x)")
+            # "every mammal is an animal" ⊢ "every four-legged mammal is a
+            # four-legged animal", without the bare adjective in the problem
+            for (adj2, noun2), name2 in adj_cn.items():
+                if adj2 == adj and noun2 != noun and noun2 in unary:
+                    add(f"(∀ x, {name} x → {noun2} x → {name2} x)")
+        if adj in PRIVATIVE and noun in unary:
+            add(f"(∀ x, {name} x → ¬ {noun} x)")
+        if adj in EXTENSIONAL_SUBSECTIVE:
+            # the threshold depends only on the comparison class's members:
+            # coextensive nouns give coextensive "A N"s
+            for (adj2, noun2), name2 in adj_cn.items():
+                if adj2 == adj and noun2 != noun and noun in unary and noun2 in unary:
+                    add(f"(∀ x, (∀ y, {noun} y → {noun2} y) → (∀ y, {noun2} y → {noun} y) → {name} x → {name2} x)")
+    for a, b in ANTONYMS:
+        if a not in EXTENSIONAL_SUBSECTIVE or b not in EXTENSIONAL_SUBSECTIVE:
+            continue
+        # contraries over one comparison class: an a-N is below every b-N
+        # on the shared scale ("a small animal is smaller than a large one")
+        for (adj, noun), name in adj_cn.items():
+            if adj == a and (b, noun) in adj_cn:
+                other = adj_cn[(b, noun)]
+                if a + "Than" in binary:
+                    add(f"(∀ x y, {name} x → {other} y → {a}Than x y)")
+                if b + "Than" in binary:
+                    add(f"(∀ x y, {name} x → {other} y → {b}Than y x)")
+    # "ADJer N than" is "ADJer than" for a dimensional adjective: the scale
+    # is the same whatever the noun (not so for "cleverer politician")
+    for (adj, _noun), rel in compar_cn.items():
+        if adj in EXTENSIONAL_SUBSECTIVE and adj + "Than" in binary:
+            add(f"(∀ x y, {rel} x y → {adj}Than x y)")
     return facts
