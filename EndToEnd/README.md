@@ -182,11 +182,10 @@ correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 229 of 342 problems go all
-the way through (67.0%). 87 stop at a sentence the restricted grammar
-doesn't parse, 19 at a reading the translation doesn't cover, 6 at a
-translation needing non-generic assembly, and 1 (104) at a predicate
-named after a Lean keyword (`have`). The remaining parse failures are
+**Coverage, on FraCaS's original English**: 237 of 342 problems go all
+the way through (69.3%). 87 stop at a sentence the restricted grammar
+doesn't parse, 17 at a reading the translation doesn't cover, and 1
+(104) at a predicate named after a Lean keyword (`have`). The remaining parse failures are
 mostly hard phenomena rather than missing glue: tense and aspect
 (Section 7), embedded questions, antecedent-contained and parallel-scope
 ellipsis (Section 4's 163, 171-173, 191-196), cross-sentence anaphora,
@@ -202,18 +201,41 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38041260727), on those 229 problems:
+**Result** (CI run 38087617550), on those 237 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 80/229 (34.9%) | — |
-| as translated | **160/229 (69.9%)** | **0** |
-| with background knowledge | **203/229 (88.6%)** | **0** |
+| always "unknown" (baseline) | 80/237 (33.8%) | — |
+| as translated | **166/237 (70.0%)** | **0** |
+| with background knowledge | **211/237 (89.0%)** | **0** |
 
-Counting the 113 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 186/342 (54.4%) as translated and 229/342 (67.0%)
+Counting the 105 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 192/342 (56.1%) as translated and 237/342 (69.3%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
+
+**Anaphora** (CI run 38087617550) reached 114-120, matched 114-118 in
+both variants and 120 with background knowledge, matched 131 and 133
+(reached before), and lost nothing. A possessive bound to the subject
+("every student used her workstation") is a function of its possessor,
+`workstationOf x` - the first projection of the dependent pair reading
+Π x : student. Σ w : workstation. has x w that dependent type semantics
+gives possessives and donkey sentences (Ranta 1994; Bekki 2014), and
+that `LeanNLSemantics/MTT/DependentAnaphora.lean` on the
+`mtt-intensional-adjectives` branch states with Σ itself. Its
+presuppositions are premises for every possessor and project out of the
+hypothesis. A pronoun after "NAME V-ed a/several N" is the E-type
+description of its antecedent (Evans; Cooper; Heim): "GFI owns several
+computers. ITEL maintains them" is "ITEL maintains all the computers
+that GFI owns" (133, maximality), and "Smith attended a meeting. She
+chaired it" is "Smith chaired the meeting that Smith attended" (120).
+Still "unknown": 119 ("no student used her workstation" ⇒ not "Mary
+used a workstation", gold no) does not follow - she may have used
+someone else's; 124-126 would need the exactly-two reading of "two
+machines" settled; 129 and 130 are the same problem with opposite gold
+answers; and 127, 128, 134-138 need plural or donkey anaphora over
+conjunctions and relative clauses. Before this round, CI run
+38041260727 gave 160/229 and 203/229.
 
 **Ellipsis** (CI run 38041260727) reached 145, 146, 154, 164-167, 178
 and 179 and matched all of them, matched 150-152 (reached before, but
@@ -369,7 +391,7 @@ uses the C&C CCG parser and Coq "fully automated" with a 30-second
 timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
 problems that lack a well-defined answer": exactly this project's `undef`
 problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
-the same labels. With CI run 38041260727's verdicts
+the same labels. With CI run 38087617550's verdicts
 (`compare_fracoq.py`):
 
 | section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
@@ -442,13 +464,13 @@ do so" (2021).
 from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
 paper's 259 problems exactly) and scores this pipeline's verdicts by
 FraCoq's own rules (only clearly labelled problems; an `Undef` label
-accepts any answer). With the verdicts of CI run 38041260727:
+accepts any answer). With the verdicts of CI run 38087617550:
 
 | FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
 |---|---|---|---|---|
 | 2017: sections 1, 2, 5, 6, 9 | 171 | 62.6% | 80.7% | 0.83 (on 174) |
-| 2019: all but section 7 | 259 | 55.6% | 68.7% | 0.89 |
-| 2021: all sections | 326 | 52.8% | 65.6% | 0.81 (on 329) |
+| 2019: all but section 7 | 259 | 57.9% | 71.8% | 0.89 |
+| 2021: all sections | 326 | 54.6% | 68.1% | 0.81 (on 329) |
 
 On the 2017 sections, per section with background knowledge: quantifiers
 69/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
