@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
-"""Score the end-to-end scan on FraCoq's problem sets, under FraCoq's labels.
+"""Score the end-to-end scan on other systems' problem sets and labels.
+
+Two comparisons:
+
+1. **ccg2lambda** (Mineshima et al., EMNLP 2015), which, like this
+   pipeline, parses FraCaS's English automatically (the C&C CCG parser)
+   and proves automatically: FraCaS sections 1, 2, 5, 6, 8, 9, "excluding
+   seven problems that lack a well-defined answer" - exactly this
+   project's `undef` problems in those sections (12, 16, 61, 62, 77, 78,
+   213), leaving 181 - under the original labels, which this project uses
+   too.
+2. **FraCoq**, below.
 
 FraCoq (Bernardy & Chatzikyriakidis: IWCS 2017, NoDaLiDa 2019, IWCS 2021)
-reports accuracy on an amended FraCaS: its `AnswerTypes.hs` overrules six
+works from treebank trees with hand-assisted proofs, and reports accuracy on an amended FraCaS: its `AnswerTypes.hs` overrules six
 gold labels, turns several ambiguous problems into "yes" ("because usually
 in FraCaS, if one reading entails, then problem marked as Yes"), and drops
 every problem whose label is not a plain answer (`Unclear`). Its
@@ -35,6 +46,10 @@ import json
 import re
 import sys
 from pathlib import Path
+
+PROBLEMS = Path(__file__).resolve().parents[1] / "LeanNLSemantics" / "FraCaS" / "Data" / "Problems.lean"
+# ccg2lambda's per-section accuracy (Mineshima et al. 2015, Table 3).
+CCG2LAMBDA = {1: 0.77, 2: 0.67, 5: 0.68, 6: 0.48, 8: 0.62, 9: 0.77}
 
 SECTIONS = {1: (1, 80), 2: (81, 113), 3: (114, 141), 4: (142, 196), 5: (197, 219),
             6: (220, 250), 7: (251, 325), 8: (326, 333), 9: (334, 346)}
@@ -94,6 +109,26 @@ def compatible(label: str, answer: str) -> bool:
     return label == "Undef" or label.lower() == answer
 
 
+def original_labels() -> dict[int, str]:
+    src = PROBLEMS.read_text()
+    return {int(m.group(1)): m.group(2) for m in re.finditer(
+        r'\{ id := (\d+), premises := \[.*?\],\s*hypothesis := ".*?", answer := \.(\w+)', src, re.S)}
+
+
+def compare_ccg2lambda(runs: dict[str, dict[int, str]]) -> None:
+    labels = original_labels()
+    sections = list(CCG2LAMBDA)
+    ids = sorted(i for i, a in labels.items() if section(i) in sections and a != "undef")
+    print(f"ccg2lambda (Mineshima et al. 2015): {len(ids)} problems, original labels, ccg2lambda 0.69")
+    for run, v in runs.items():
+        ok = [i for i in ids if v.get(i, "unknown") == labels[i]]
+        wrong = [i for i in ids if v.get(i, "unknown") not in ("unknown", labels[i])]
+        print(f"  {run}: {len(ok)}/{len(ids)} = {100 * len(ok) / len(ids):.1f}%  (wrong answers: {wrong or 'none'})")
+        per = {k: f"{sum(1 for i in ok if section(i) == k)}/{sum(1 for i in ids if section(i) == k)}"
+                  f" (ccg2lambda {CCG2LAMBDA[k]})" for k in sections}
+        print(f"    per section: {per}")
+
+
 def main() -> int:
     checkout, log = Path(sys.argv[1]), Path(sys.argv[2])
     labels = fracoq_labels(checkout)
@@ -103,6 +138,7 @@ def main() -> int:
         return 1
     runs = {"as translated": verdicts(lists[0], lists[1]),
             "with background knowledge": verdicts(lists[2], lists[3])}
+    compare_ccg2lambda(runs)
     for name, sections in SUBSETS:
         ids = sorted(i for i, a in labels.items() if a != "Unclear" and section(i) in sections)
         print(f"{name}: {len(ids)} problems with a clear FraCoq label")

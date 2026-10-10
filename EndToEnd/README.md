@@ -280,6 +280,56 @@ translates the two attachments of an adjective-plus-relative-clause noun
 phrase identically. Its default reading — the one the cross-check
 theorems are proved against — is unchanged throughout.
 
+## Comparison with systems that parse FraCaS's English
+
+The like-for-like comparison is with systems that, like this pipeline,
+parse FraCaS's English automatically and prove automatically.
+**ccg2lambda** (Mineshima, Martínez-Gómez, Miyao & Bekki, EMNLP 2015)
+uses the C&C CCG parser and Coq "fully automated" with a 30-second
+timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
+problems that lack a well-defined answer": exactly this project's `undef`
+problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
+the same labels. With CI run 38028878624's verdicts
+(`compare_fracoq.py`):
+
+| section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
+|---|---|---|---|
+| quantifiers (74) | .76 | **.89** | .77 |
+| plurals (33) | .64 | .64 | .67 |
+| adjectives (22) | .32 | .55 | .68 |
+| comparatives (31) | .48 | **.61** | .48 |
+| verbs (8) | .50 | .50 | .62 |
+| attitudes (13) | .54 | .54 | .77 |
+| **total (181)** | **.608** | **.713** | **.69** |
+
+No wrong answers in either variant. Haruta, Mineshima & Bekki (ACL SRW
+2020), ccg2lambda's successor for these phenomena (two CCG parsers,
+Vampire), report quantifiers .92, adjectives .86, comparatives .77 (.95,
+.95, .84 with hand-coded tagging rules, two of them for FraCaS 214/215).
+
+What these numbers do and do not show:
+
+- **The grammar is the largest difference.** ccg2lambda parses with a
+  general statistical parser trained on newswire (CCGbank) and a lexicon
+  its authors describe as "not specific with respect to the FraCaS test
+  suite". This pipeline parses with a grammar restricted to the functions
+  and words of FraCaS-derived trees (step 2 above): a controlled language
+  for FraCaS. Its parses are more reliable on FraCaS and it parses almost
+  nothing else.
+- **Both are development-set figures.** ccg2lambda's authors say the same
+  of theirs ("do not constitute an evaluation on real texts nor on unseen
+  test data"). Haruta et al. add held-out sets (MED, 498 monotonicity
+  problems: .84; CAD, 105 comparatives: .77), which is the evaluation this
+  pipeline cannot yet attempt: its grammar would not parse them.
+- **Background knowledge is comparable in kind.** ccg2lambda takes
+  antonymy from WordNet; this pipeline's `background.py` derives
+  entailments from the parse trees and a small degree lexicon, written with
+  FraCaS in view.
+- **Wrong answers are not reported** for ccg2lambda. LangPro (Abzianidze,
+  EMNLP 2015) reports precision, about 98%, but on SICK, not FraCaS; its
+  FraCaS figures in other papers' tables come from a later paper of
+  Abzianidze's, not compared here.
+
 ## Comparison with FraCoq
 
 FraCoq (Bernardy & Chatzikyriakidis: IWCS 2017, 0.83 on five sections;
