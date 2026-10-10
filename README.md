@@ -119,6 +119,7 @@ LeanNLSemantics/
     Adverbs.lean              -- veridical adverbs
     DotTypes.lean             -- copredication (Pustejovsky dot-types)
     Individuation.lean        -- identity criteria
+    Intensionality.lean       -- FraCaS 215: which noun meanings let "competent N" compose
   FraCaS/
     Types.lean                -- Problem/Answer representation
     Data/                     -- fracas.xml + the 342 parsed Problem records
