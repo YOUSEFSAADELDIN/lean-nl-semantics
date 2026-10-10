@@ -7,6 +7,7 @@ import LeanNLSemantics.MTT.Adverbs
 import LeanNLSemantics.MTT.DotTypes
 import LeanNLSemantics.MTT.Individuation
 import LeanNLSemantics.MTT.Intensionality
+import LeanNLSemantics.MTT.DependentAnaphora
 import LeanNLSemantics.MTT.NLIExamples
 import LeanNLSemantics.MTT.AssumptionAudit
 import LeanNLSemantics.MTT.AxiomModel
