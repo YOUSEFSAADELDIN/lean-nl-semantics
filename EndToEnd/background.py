@@ -399,6 +399,69 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
             # readings.py's `_ordered` makes
             add(f"(∀ x, {p1} x → ¬ {p2} x)")
 
+    # Frequency within a year: "in 1994 ITEL sent a progress report every
+    # month" ⊑ "sent a progress report in July 1994" - every month (week,
+    # day) of 1994 has one, July's included (FraCaS 307).
+    for tree in trees:
+        for st in _subtrees(tree):
+            if not (st.head == "AdvVP" and len(st.args) == 2 and st.args[0].head == "AdvVP"
+                    and len(st.args[0].args) == 2):
+                continue
+            v, a, b = st.args[0].args[0], st.args[0].args[1], st.args[1]
+            pair = {x.head for x in (a, b) if not x.args}
+            every = pair & FREQUENCY
+            year = [_time_value(x) for x in (a, b) if _time_value(x) is not None]
+            name = _name(st)
+            if not (every and len(year) == 1 and year[0][0] == "year" and name in unary):
+                continue
+            for k, _v, when, occasion in timed:
+                if k == repr(v) and when == ("month", year[0][1]):
+                    add(f"(∀ x, {name} x → {occasion} x)")
+
+    # What a creation verb's event brings about did not exist before it:
+    # "in March 1993 APCOM founded ITEL" ⊢ ITEL did not exist in 1992
+    # (FraCaS 258).
+    existence = []  # (individual name, year, predicate name)
+    for tree in trees:
+        for st in _subtrees(tree):
+            if st.head == "PredVP" and len(st.args) == 2 and st.args[0].head == "UsePN":
+                vp = st.args[1]
+                if vp.head == "AdvVP" and len(vp.args) == 2 and vp.args[0].head == "UseV" \
+                        and vp.args[0].args[0].head == "exist_V":
+                    when, name = _time_value(vp.args[1]), _name(vp)
+                    if when is not None and when[0] == "year" and name in unary:
+                        existence.append((_name(st.args[0]), when[1], name))
+    for _k, v, when, p in timed:
+        if not (when[0] in ("year", "month") and v.head == "ComplSlash" and len(v.args) == 2
+                and v.args[0].head == "SlashV2a" and v.args[0].args[0].head in CREATION
+                and v.args[1].head == "UsePN"):
+            continue
+        for ind, year, q in existence:
+            if ind == _name(v.args[1]) and year < when[1]:
+                add(f"(∀ x, {p} x → ¬ {q} {ind})")
+
+    # "Finish" with a noun phrase object finishes some event on it
+    # (logical metonymy, Pustejovsky 1995); when the problem mentions
+    # exactly one other kind of event on that same particular thing, it is
+    # that one, and a culminating one is finished: "ITEL built MTALK in
+    # 1993" ⊑ "ITEL finished MTALK in 1993" (FraCaS 326; the progressive
+    # "was building", 327, does not culminate).
+    for tree in trees:
+        for st in _subtrees(tree):
+            core = _verb_core(st)
+            if core is None or core.args[0].args[0].head != "finish_V2" or not _unique_object(core):
+                continue
+            finished = _name(st)
+            others = {c.args[0].args[0].head for t2 in trees for s2 in _subtrees(t2)
+                      if (c := _verb_core(s2)) is not None and repr(c.args[1]) == repr(core.args[1])
+                      and c.args[0].args[0].head != "finish_V2"}
+            if finished not in unary or len(others) != 1:
+                continue
+            event = _with_verb(st, others.pop())
+            name = _name(event)
+            if name in unary and _telic(event):
+                add(f"(∀ x, {name} x → {finished} x)")
+
     # 5. "always"/"never" (gen_claims.py marks them `always_Adv`/`never_Adv`)
     # quantify over occasions: "ITEL always delivers
     # reports late" and "ITEL delivered reports in 1993" ⊑ "ITEL delivered
@@ -427,6 +490,11 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
                         add(f"(∀ x, {habit} x → {occasion} x → ¬ {target} x)")
     return facts
 
+
+# Frequency adverbials: once in every such period ("every month").
+FREQUENCY = {"everyDay_Adv", "everyWeek_Adv", "everyMonth_Adv"}
+# Verbs whose object comes into existence through the event.
+CREATION = {"build_V2", "construct_V2", "create_V2", "establish_V2", "found_V2", "make_V2", "write_V2"}
 
 _NUMBERS = {"A": 1, "An": 1, "One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5, "Six": 6,
             "Seven": 7, "Eight": 8, "Nine": 9, "Ten": 10}
@@ -459,6 +527,22 @@ def _time_value(adv):
     if m:
         return ("since", int(m.group(1)), int(m.group(2)))
     return None
+
+
+def _verb_core(vp):
+    """The transitive "V NP" inside one-word adverbials, or None."""
+    while vp.head == "AdvVP" and len(vp.args) == 2 and not vp.args[1].args:
+        vp = vp.args[0]
+    if vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[0].head == "SlashV2a":
+        return vp
+    return None
+
+
+def _with_verb(vp, verb):
+    """`vp` with its core transitive verb replaced by `verb`."""
+    if vp.head == "AdvVP":
+        return App("AdvVP", [_with_verb(vp.args[0], verb), vp.args[1]])
+    return App("ComplSlash", [App("SlashV2a", [App(verb, [])]), vp.args[1]])
 
 
 def _stative(vp) -> bool:

@@ -18,8 +18,8 @@ FraCaS's English:
   `More`, by unfolding them and calling `omega` (FraCaS 232);
 - `blind_exactly_no`: a nonzero exact count refutes `No` (FraCaS 105,
   106);
-- `blind_refute_count`: refutes a positive count by refuting `Some`
-  (FraCaS 46).
+- `blind_refute_count`: refutes a positive count, at least or exactly,
+  by refuting `Some` (FraCaS 46).
 
 Each was added after seeing a specific end-to-end claim fail, so the
 end-to-end scores are development-set figures. Keeping them here, not in
@@ -108,11 +108,26 @@ theorem not_atLeast_succ_of {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
     ¬ FraCaS.Section1.AtLeast (n + 1) P Q :=
   fun hc => h (FraCaS.Section1.atLeast_some (n + 1) P Q (Nat.succ_pos n) hc)
 
-/-- A positive count refuted by `No`/`Neither` and the background facts -
-FraCaS 46's "neither commissioner spends time at home ⊢ not one of the
-commissioners spends a lot of time at home". -/
+/-- The same for an exact positive count ("one of the commissioners" on
+its exact reading). -/
+theorem not_exactly_succ_of {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
+    [DecidablePred fun x => P x ∧ Q x] (h : FraCaS.Section1.Some P Q → False) :
+    ¬ FraCaS.Section2.Exactly (n + 1) P Q :=
+  fun hc => h (FraCaS.Section2.some_of_exactly (n + 1) P Q (Nat.succ_ne_zero n) hc)
+
+/-- A positive count (at least or exactly) refuted by `No`/`Neither` and
+the background facts - FraCaS 46's "neither commissioner spends time at
+home ⊢ not one of the commissioners spends a lot of time at home", on both
+readings of "one". `Neither` is unfolded first: `blind_aesop_e2e` does not
+see through it to its `No`. -/
 macro "blind_refute_count" : tactic => `(tactic|
-  (intros; apply FraCaS.EndToEnd.not_atLeast_succ_of; blind_aesop_e2e))
+  (intros; (try simp only [FraCaS.Section1.Neither] at *)
+   first
+     | apply FraCaS.EndToEnd.not_atLeast_succ_of
+     | apply FraCaS.EndToEnd.not_exactly_succ_of
+   first
+     | (intro hs; obtain ⟨x, hx₁, hx₂⟩ := hs; (try simp only [FraCaS.Section1.No] at *); grind)
+     | blind_aesop_e2e))
 
 -- Canaries: each fails the build if its tactic stops closing the exact
 -- shape the pipeline generates for the problem named.
@@ -142,6 +157,16 @@ example {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [Decidabl
     [DecidablePred attendMeeting] :
     FraCaS.Section2.Exactly 1 accountant attendMeeting →
       ¬ FraCaS.Section1.No accountant attendMeeting := by blind_exactly_no
+
+-- FraCaS 46, both readings of "one of", in the exact shape the generator emits
+example {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop)
+    [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome] :
+    (∀ x, spendALotOfTimeAtHome x → spendTimeAtHome x) → FraCaS.Section1.Neither commissioner spendTimeAtHome →
+      ¬ FraCaS.Section1.AtLeast 1 commissioner spendALotOfTimeAtHome := by blind_refute_count
+example {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop)
+    [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome] :
+    (∀ x, spendALotOfTimeAtHome x → spendTimeAtHome x) → FraCaS.Section1.Neither commissioner spendTimeAtHome →
+      ¬ FraCaS.Section2.Exactly 1 commissioner spendALotOfTimeAtHome := by blind_refute_count
 
 -- Event order (`EndToEnd/readings.py`'s `_ordered`): FraCaS 261's chain
 -- of "before"s and 264's "before" ⇒ "after", in the exact shape the

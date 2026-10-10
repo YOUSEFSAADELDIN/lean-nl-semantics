@@ -75,7 +75,7 @@ PROBLEMS = ROOT / "LeanNLSemantics" / "FraCaS" / "Data" / "Problems.lean"
 sys.path.insert(0, str(GF_DIR))
 sys.path.insert(0, str(ROOT / "EndToEnd"))
 from parse_rank import parse_readings, ranked, tokenize  # noqa: E402
-from translate import App, parse_tree  # noqa: E402
+from translate import App, _leaf_words, camel_name, parse_tree  # noqa: E402
 from readings import AMBIGUITY_KINDS, translate_cl_reading  # noqa: E402
 from background import postulates  # noqa: E402
 
@@ -126,7 +126,7 @@ _TIME_OPAQUE = ("UseCl", "EmbedS", "EmbedVP", "RelCN", "SentCN", "SubjS", "Compl
 
 # Manner adverbials that modify the event, lifted like time adverbials
 # ("delivered [reports late]" -> "[delivered reports] late").
-_EVENT_ADVERBS = ("late_Adv",)
+_EVENT_ADVERBS = ("late_Adv", "everyDay_Adv", "everyWeek_Adv", "everyMonth_Adv")
 
 
 def _is_time_adverb(t) -> bool:
@@ -736,6 +736,101 @@ def _resolve_sentence(tree, role, state):
     return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype, tuple(bridging.items()), tuple(named), now), None
 
 
+def _object_slot(vp):
+    """(the transitive VP inside one-word adverbials, rebuild) for "V NP
+    [ADV...]": rebuild(new_object) gives the same VP with its object
+    replaced."""
+    if vp.head == "AdvVP" and len(vp.args) == 2:
+        inner = _object_slot(vp.args[0])
+        if inner is None:
+            return None
+        core, rebuild = inner
+        return core, lambda np: App("AdvVP", [rebuild(np), vp.args[1]])
+    if vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[0].head == "SlashV2a":
+        return vp, lambda np: App("ComplSlash", [vp.args[0], np])
+    return None
+
+
+def _is_it(np):
+    return np.head == "UsePron" and np.args[0].head == "it_Pron"
+
+
+def _singular_nps(t):
+    """The singular noun phrases in a tree - everything a later "it" could
+    in principle pick up."""
+    if t.head == "UsePN" or t.head == "MassNP":
+        yield t
+    elif t.head == "DetCN" and len(t.args) == 2 and t.args[0].head == "DetQuant" \
+            and len(t.args[0].args) == 2 and t.args[0].args[1].head == "NumSg":
+        yield t
+    for a in t.args:
+        yield from _singular_nps(a)
+
+
+def _hypothesis_referent(clauses):
+    """An object "it" in the hypothesis whose only possible antecedent is a
+    premise's "NAME V-ed a CN" ("Smith wrote a novel in 1991 ⊢ Smith wrote
+    IT in 1992"): the indefinite introduces a discourse referent, named
+    here (`theNovel`), and "it" is that referent - DRT's dynamic
+    entailment, under which the premises' existential binds the
+    hypothesis's pronoun (Kamp 1981; Groenendijk and Stokhof 1991). The
+    premise becomes "Smith wrote theNovel in 1991" with "theNovel is a
+    novel", which the claim's universal binding of `theNovel` makes
+    exactly as strong as "Smith wrote a novel in 1991". Only when "it" has
+    no other candidate: every other singular noun phrase in the premises
+    is the hypothesis's own subject, which an object pronoun cannot be
+    (binding principle B)."""
+    role, hyp, negated, n = clauses[-1]
+    if hyp.head != "PredVP" or len(hyp.args) != 2:
+        return clauses
+    slot = _object_slot(hyp.args[1])
+    if slot is None:
+        return clauses
+    obj = slot[0].args[1]
+    wrap = None
+    if obj.head == "AdvNP" and len(obj.args) == 2:
+        obj, wrap = obj.args
+    if not _is_it(obj):
+        return clauses
+    subject = repr(hyp.args[0])
+    found = None
+    for i, (_r, clause, neg, _n) in enumerate(clauses[:-1]):
+        others = [np for np in _singular_nps(clause) if repr(np) != subject]
+        if not others:
+            continue
+        if found is not None or neg or clause.head != "PredVP" or clause.args[0].head != "UsePN":
+            return clauses
+        premise_slot = _object_slot(clause.args[1])
+        if premise_slot is None:
+            return clauses
+        np = premise_slot[0].args[1]
+        if not (np.head == "DetCN" and np.args[0].head == "DetQuant" and np.args[0].args[0].head == "IndefArt"
+                and others == [np]):
+            return clauses
+        found = (i, premise_slot[1], np.args[1])
+    if found is None:
+        return clauses
+    i, rebuild, cn = found
+    ref = App("UsePN", [App(camel_name(["the", *_leaf_words(cn)]) + "_PN", [])])
+    r, clause, neg, k = clauses[i]
+    sort = App("PredVP", [ref, App("UseComp", [App("CompCN", [cn])])])
+    out = list(clauses[:i]) + [(r, App("PredVP", [clause.args[0], rebuild(ref)]), neg, k), (r, sort, False, k)]
+    out += clauses[i + 1:-1]
+    out.append((role, App("PredVP", [hyp.args[0], slot[1](ref if wrap is None else App("AdvNP", [ref, wrap]))]),
+                negated, n))
+    return out
+
+
+def _unresolved_object_pronoun(t):
+    """An "it"/"them" left inside a verb phrase that nothing resolved:
+    predicate names are built from words and a pronoun has none, so it
+    would silently drop out ("Smith wrote it" named like "Smith wrote")."""
+    if t.head in ("ComplSlash", "ComplVV", "AdvVP", "UseComp", "ComplVS", "PrepNP"):
+        return any(n.head == "UsePron" and n.args[0].head in ("it_Pron", "they_Pron")
+                   for n in _subtrees_of(t))
+    return any(_unresolved_object_pronoun(a) for a in t.args)
+
+
 def _since_to_now(t, now):
     """"Since 1992 ITEL has been in Birmingham. It is now 1996": the
     perfect's "since" runs up to the utterance time, `since1992to1996`
@@ -791,6 +886,10 @@ def assemble(idn, sentences):
         clauses.extend((role, clause, negated, n) for clause, negated in resolved)
     if state[-1] is not None:
         clauses = [(role, _since_to_now(cl, state[-1]), neg, n) for role, cl, neg, n in clauses]
+    clauses = _hypothesis_referent(clauses)
+    for role, cl, _neg, n in clauses:
+        if _unresolved_object_pronoun(cl):
+            return None, f"{role} parses ({n} readings) but does not translate: an object pronoun with no resolved antecedent"
     # A dependency a bridging definite used is stated with its function
     # (readings.py's `DependentHave`).
     used = {repr(c.args[0]) for _r, cl, _n, _k in clauses for c in _subtrees_of(cl) if c.head == "FunTermNP"}
