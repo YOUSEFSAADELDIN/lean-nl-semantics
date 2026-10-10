@@ -45,7 +45,7 @@ Two honest limits, both proved rather than asserted:
   fails. Maximality is an extra ingredient dependent types do not supply.
 - **119 depends on a reading.** Its "no" holds only if "Mary used a
   workstation" continues "her workstation"; as a fresh indefinite it is
-  not refuted. The corpus makes the same choice; `fracas_119` below states
+  not refuted. The corpus makes the same choice; `anaphora_119` below states
   it explicitly.
 -/
 
@@ -75,16 +75,16 @@ that workstation. The context is one Σ-proof of all of it. -/
 abbrev Premise114 := Σ' _ : Female mary, Σ' w : Workstation, Owns mary w ∧ Used mary w
 
 /-- 114: "Mary's workstation was used." -/
-theorem fracas_114 (p : Premise114 Female Owns Used mary) :
+theorem anaphora_114 (p : Premise114 Female Owns Used mary) :
     ∃ w, Owns mary w ∧ Used mary w :=
   ⟨p.2.1, p.2.2⟩
 
 /-- 115: "Mary has a workstation." -/
-theorem fracas_115 (p : Premise114 Female Owns Used mary) : ∃ w, Owns mary w :=
+theorem anaphora_115 (p : Premise114 Female Owns Used mary) : ∃ w, Owns mary w :=
   ⟨p.2.1, p.2.2.1⟩
 
 /-- 116: "Mary is female." -/
-theorem fracas_116 (p : Premise114 Female Owns Used mary) : Female mary := p.1
+theorem anaphora_116 (p : Premise114 Female Owns Used mary) : Female mary := p.1
 
 end P114
 
@@ -97,12 +97,12 @@ variable (mary : Student)
 /-- 117: "… Mary is a student. ⇒ Mary used her workstation." Mary *is* a
 student is the typing `mary : Student`; "her workstation" is the
 projection of the first premise at Mary. -/
-theorem fracas_117 (p : (s : Student) → Σ' w : Workstation, Owns s w ∧ Used s w) :
+theorem anaphora_117 (p : (s : Student) → Σ' w : Workstation, Owns s w ∧ Used s w) :
     ∃ w, Owns mary w ∧ Used mary w :=
   ⟨(p mary).1, (p mary).2⟩
 
 /-- 118: "⇒ Mary has a workstation." -/
-theorem fracas_118 (p : (s : Student) → Σ' w : Workstation, Owns s w ∧ Used s w) :
+theorem anaphora_118 (p : (s : Student) → Σ' w : Workstation, Owns s w ∧ Used s w) :
     ∃ w, Owns mary w :=
   ⟨(p mary).1, (p mary).2.1⟩
 
@@ -111,7 +111,7 @@ a workstation" — gold no, on the reading where "a workstation" continues
 "her workstation" (the corpus's reading too). "Her workstation" under
 "no" still presupposes that each student has one (`p`); the assertion is
 about that workstation. -/
-theorem fracas_119 (p : (s : Student) → Σ' w : Workstation, Owns s w)
+theorem anaphora_119 (p : (s : Student) → Σ' w : Workstation, Owns s w)
     (h : ∀ s, ¬ Used s (p s).1) : ¬ Used mary (p mary).1 :=
   h mary
 
@@ -119,7 +119,7 @@ end P117
 
 /-! ## 120: "Smith attended a meeting. She chaired it." -/
 
-theorem fracas_120 {Human Meeting : Type} (Attended Chaired : Human → Meeting → Prop)
+theorem anaphora_120 {Human Meeting : Type} (Attended Chaired : Human → Meeting → Prop)
     (smith : Human) (p : Σ' m : Meeting, Attended smith m) (q : Chaired smith p.1) :
     ∃ m, Chaired smith m :=
   ⟨p.1, q⟩
@@ -129,7 +129,7 @@ theorem fracas_120 {Human Meeting : Type} (Attended Chaired : Human → Meeting 
 /-- The second sentence is typed in the context of the first's proof `p`:
 "he" is `(p c).1`, the chairman the first sentence provides for `c`. No
 folding of the two sentences into one. -/
-theorem fracas_122 {Committee Human : Type} (Chairman : Human → Committee → Prop)
+theorem anaphora_122 {Committee Human : Type} (Chairman : Human → Committee → Prop)
     (AppointedByMembers : Human → Committee → Prop)
     (p : (c : Committee) → Σ' h : Human, Chairman h c)
     (q : ∀ c, AppointedByMembers (p c).1 c) :
@@ -143,13 +143,13 @@ variable {Department Line : Type} (HasLine RentsFromBT : Department → Line →
 
 /-- 131: "They rent them from BT. ⇒ Every department rents a line from BT."
 "They" ranges over the departments, "them" is each one's line. -/
-theorem fracas_131 (p : (d : Department) → Σ' l : Line, HasLine d l)
+theorem anaphora_131 (p : (d : Department) → Σ' l : Line, HasLine d l)
     (q : ∀ d, RentsFromBT d (p d).1) : ∀ d, ∃ l, RentsFromBT d l :=
   fun d => ⟨(p d).1, q d⟩
 
 /-- 132: "The sales department rents it from BT. ⇒ The sales department
 rents a line from BT." "It" is the sales department's own line. -/
-theorem fracas_132 (sales : Department) (p : (d : Department) → Σ' l : Line, HasLine d l)
+theorem anaphora_132 (sales : Department) (p : (d : Department) → Σ' l : Line, HasLine d l)
     (q : RentsFromBT sales (p sales).1) : ∃ l, RentsFromBT sales l :=
   ⟨(p sales).1, q⟩
 
@@ -168,7 +168,7 @@ signed the cover page." -/
 only report mentioned, `(p r95103).1`; the hypothesis "Smith signed the
 cover page of R-95-103" then follows. (The corpus's version omits the
 first premise and proves `h → h`.) -/
-theorem fracas_138 {Report Page Human : Type} (CoverOf : Page → Report → Prop)
+theorem anaphora_138 {Report Page Human : Type} (CoverOf : Page → Report → Prop)
     (Signed : Human → Page → Prop) (smith : Human) (r95103 : Report)
     (p : (r : Report) → Σ' c : Page, CoverOf c r) (q : Signed smith (p r95103).1) :
     ∃ c, CoverOf c r95103 ∧ Signed smith c :=
@@ -198,8 +198,8 @@ end MTT.DependentAnaphora
 
 #print axioms MTT.DependentAnaphora.type_theoretic_choice
 #print axioms MTT.DependentAnaphora.prop_skolem
-#print axioms MTT.DependentAnaphora.fracas_117
-#print axioms MTT.DependentAnaphora.fracas_122
-#print axioms MTT.DependentAnaphora.fracas_131
+#print axioms MTT.DependentAnaphora.anaphora_117
+#print axioms MTT.DependentAnaphora.anaphora_122
+#print axioms MTT.DependentAnaphora.anaphora_131
 #print axioms MTT.DependentAnaphora.lineOf_derived
-#print axioms MTT.DependentAnaphora.fracas_138
+#print axioms MTT.DependentAnaphora.anaphora_138
