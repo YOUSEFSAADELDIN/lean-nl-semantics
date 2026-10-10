@@ -170,21 +170,21 @@ The `build-gf` CI job regenerates the claims file from the English and
 fails if it differs from the committed copy, so the scored claims are
 reproducible.
 
-**Parser quality, on the 471 distinct CI-confirmed sentences**
-(`EndToEnd/parse_eval.py`; 456 before the ellipsis round's checks, 449
-before `main`'s anaphora and degree-adjective work was merged in): all
-471 parse; the hand-built tree is among the readings for all 471; median
-4 readings (max 3,600); and the top-ranked reading translates to the same
-`Prop` as the hand tree for 393 of the 394 sentences `translate.py`
-covers. The one exception (136) is a garden-path
+**Parser quality, on the CI-confirmed sentences**
+(`EndToEnd/parse_eval.py`, which grows as each round adds its
+confirmation checks): all parse; the hand-built tree is among the
+readings for all; median 4 readings (max 3,600); and the top-ranked
+reading translates to the same `Prop` as the hand tree for all but one
+of the sentences `translate.py` covers (398 of 399 after the tense
+round). The one exception (136) is a garden-path
 compound ("[executive that had a laptop] computer") tied in size with the
 correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 240 of 342 problems go all
-the way through (70.2%). 87 stop at a sentence the restricted grammar
-doesn't parse, 14 at a reading the translation doesn't cover, and 1
+**Coverage, on FraCaS's original English**: 252 of 342 problems go all
+the way through (73.7%). 74 stop at a sentence the restricted grammar
+doesn't parse, 15 at a reading the translation doesn't cover, and 1
 (104) at a predicate named after a Lean keyword (`have`). The remaining parse failures are
 mostly hard phenomena rather than missing glue: tense and aspect
 (Section 7), embedded questions, antecedent-contained and parallel-scope
@@ -201,16 +201,16 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38089191811), on those 240 problems:
+**Result** (CI run 38091759266), on those 252 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 81/240 (33.8%) | — |
-| as translated | **169/240 (70.4%)** | **0** |
-| with background knowledge | **214/240 (89.2%)** | **0** |
+| always "unknown" (baseline) | 84/252 (33.3%) | — |
+| as translated | **173/252 (68.7%)** | **0** |
+| with background knowledge | **224/252 (88.9%)** | **0** |
 
-Counting the 102 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 194/342 (56.7%) as translated and 239/342 (69.9%)
+Counting the 90 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 195/342 (57.0%) as translated and 246/342 (71.9%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
 
@@ -253,6 +253,33 @@ sentences) are not attempted: "MFI has a service contract for all its
 computers" needs "its" read as ownership and a uniqueness argument from
 "exactly one computer", and 135 holds only on the strong donkey reading.
 Before, CI run 38087617550 gave 166/237 and 211/237.
+
+**Tense and aspect** (CI run 38091759266) reached 251-257, 301, 302 and
+311-313, matched 251, 252, 301, 302, 311, 312 and 313 with background
+knowledge (251 also as translated) and 253, 254 and 256 (gold unknown),
+and lost nothing. "Currently" adds nothing to a translation that reads
+the present tense as the present (251). "It is now 1996" makes the
+perfect's "since 1992" a span up to 1996, and a *state* that has held
+since then held in 1993 (252); for any other verb phrase the perfect
+says only that the event happened at some time since, so "ITEL has
+expanded since 1992" says nothing about 1993 (254, gold unknown). 255
+("Since 1992 ITEL has made a loss", gold yes) and 257 (the same as 256,
+gold unknown, but labelled yes) would need the fronted "since" to force
+the continuous reading on a non-state; they stay "unknown". "Ran his own
+business for two years" gives "for a year" and, since running a
+business does not culminate, "ran his own business" (301, 302). A
+separate "Then S." puts S's event after the previous premise's, which
+the event-time encoding of "before"/"after" then orders (311). "Always"
+and "never" quantify over occasions: "ITEL always delivers reports late"
+and "ITEL delivered reports in 1993" give "delivered reports late in
+1993", and "never" excludes it (312, 313); the end-to-end namer now keeps
+the adverb in the predicate's name, which `translate.py`'s default namer
+drops (so its default mode still names "never delivers reports late"
+like "delivers reports late" - not a problem for the hand-written
+cross-check, which never uses either). Section 7's remaining parse
+failures are calendar arithmetic (259, 260, 284, 314), "spent N hours
+V-ing" (285-291), and the long multi-clause problems 315-325. Before,
+CI run 38089191811 gave 169/240 and 214/240.
 
 **Ellipsis** (CI run 38041260727) reached 145, 146, 154, 164-167, 178
 and 179 and matched all of them, matched 150-152 (reached before, but
@@ -408,7 +435,7 @@ uses the C&C CCG parser and Coq "fully automated" with a 30-second
 timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
 problems that lack a well-defined answer": exactly this project's `undef`
 problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
-the same labels. With CI run 38089191811's verdicts
+the same labels. With CI run 38091759266's verdicts
 (`compare_fracoq.py`):
 
 | section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
@@ -481,13 +508,13 @@ do so" (2021).
 from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
 paper's 259 problems exactly) and scores this pipeline's verdicts by
 FraCoq's own rules (only clearly labelled problems; an `Undef` label
-accepts any answer). With the verdicts of CI run 38089191811:
+accepts any answer). With the verdicts of CI run 38091759266:
 
 | FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
 |---|---|---|---|---|
 | 2017: sections 1, 2, 5, 6, 9 | 171 | 62.6% | 80.7% | 0.83 (on 174) |
 | 2019: all but section 7 | 259 | 58.7% | 72.6% | 0.89 |
-| 2021: all sections | 326 | 55.2% | 68.7% | 0.81 (on 329) |
+| 2021: all sections | 326 | 55.5% | 70.9% | 0.81 (on 329) |
 
 On the 2017 sections, per section with background knowledge: quantifiers
 69/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
