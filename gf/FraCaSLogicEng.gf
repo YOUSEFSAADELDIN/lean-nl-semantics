@@ -173,6 +173,10 @@ concrete FraCaSLogicEng of FraCaSLogic =
     ThenS s = {s = "then" ++ s.s} ;
     ellGoingTo = {s = table {Sg => "is going to" ; Pl => "are going to"}} ;
     ComplVSBare v s = insertExtra s.s (predV v) ;
+    currently_AdV = mkAdV "currently" ;
+    ItIsNow np = {s = "it" ++ "is" ++ "now" ++ np.s ! npNom} ;
+    y1996_PN = mkPN "1996" ;
+    atAQuarterPastFive_Adv = mkAdv "at a quarter past five" ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

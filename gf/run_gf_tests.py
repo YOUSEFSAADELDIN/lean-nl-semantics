@@ -4010,6 +4010,41 @@ _FRACAS_ENGLISH_CHECKS = [
         'linearize ExtAdvS (SubjS if_Subj (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN john_PN) (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))) (ThenS (TooS (ElliptS (UsePN bill_PN) ellDid)))',
         'if John wrote a report , then Bill did too',
     ),
+    (
+        'english_251_hypothesis',
+        'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN itel_PN) (AdVVP currently_AdV (ComplSlash (SlashV2a have_V2) (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN factory_N) (PrepNP in_Prep (UsePN birmingham_PN)))))))',
+        'ITEL currently has a factory in Birmingham',
+    ),
+    (
+        'english_252_premise2',
+        'linearize ItIsNow (UsePN y1996_PN)',
+        'it is now 1996',
+    ),
+    (
+        'english_301_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (AdjCN (PositA own_A) (UseN business_N)))) forTwoYears_Adv))',
+        'Smith ran his own business for two years',
+    ),
+    (
+        'english_311_premise1',
+        'linearize UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a leave_V2) (DetCN (DetQuant DefArt NumSg) (UseN house_N))) atAQuarterPastFive_Adv))',
+        'Smith had left the house at a quarter past five',
+    ),
+    (
+        'english_311_premise2',
+        'linearize ThenS (UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePron she_Pron) (AdvVP (ComplSlash (SlashV2a take_V2) (DetCN (DetQuant IndefArt NumSg) (UseN taxi_N))) (PrepNP to_Prep (DetCN (DetQuant DefArt NumSg) (UseN station_N))))))',
+        'then she took a taxi to the station',
+    ),
+    (
+        'english_312_premise1',
+        'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN itel_PN) (AdVVP always_AdV (AdvVP (ComplSlash (SlashV2a deliver_V2) (DetCN (DetQuant IndefArt NumPl) (UseN report_N))) late_Adv)))',
+        'ITEL always delivers reports late',
+    ),
+    (
+        'english_313_premise1',
+        'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN itel_PN) (AdVVP never_AdV (AdvVP (ComplSlash (SlashV2a deliver_V2) (DetCN (DetQuant IndefArt NumPl) (UseN report_N))) late_Adv)))',
+        'ITEL never delivers reports late',
+    ),
 ]
 
 CHECKS = (

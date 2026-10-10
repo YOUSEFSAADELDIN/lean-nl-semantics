@@ -75,7 +75,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gf"))
 from translate import App, _leaf_words, _scope_name, camel_name  # noqa: E402
-from readings import _telic  # noqa: E402
+from readings import _STATIVE_TRANSITIVE, _telic  # noqa: E402
 
 NON_SUBSECTIVE = {"former", "fake", "alleged", "false", "imaginary", "would-be", "fictional", "potential"}
 NON_VERIDICAL = {"allegedly", "apparently", "likely", "possibly", "nearly", "almost"}
@@ -384,6 +384,13 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
             # a state or activity holds at every time within its span
             # ("owned APCOM from 1988 to 1992" ⊑ "owned APCOM in 1990")
             add(f"(∀ x, {p1} x → {p2} x)")
+        elif w1[0] == "since" and w2[0] == "year" and w1[1] <= w2[1] <= w1[2] and _stative(v):
+            # "since 1992 ITEL has been in Birmingham", now 1996 ⊑ "was in
+            # Birmingham in 1993": a state the perfect says has held since
+            # then holds throughout. Not for other VPs, whose perfect says
+            # only that it happened at some time since ("ITEL has expanded
+            # since 1992" ⇏ "expanded in 1993", FraCaS 254)
+            add(f"(∀ x, {p1} x → {p2} x)")
         elif w1[0] == "month" and w2[0] == "year" and w1[1] == w2[1]:
             add(f"(∀ x, {p1} x → {p2} x)")
         elif w1[0] == w2[0] == "year" and w1[1] < w2[1] and _telic(v) and _unique_object(v):
@@ -391,6 +398,33 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
             # first novel") happens at one time - the same assumption
             # readings.py's `_ordered` makes
             add(f"(∀ x, {p1} x → ¬ {p2} x)")
+
+    # 5. "always"/"never" (gen_claims.py marks them `always_Adv`/`never_Adv`)
+    # quantify over occasions: "ITEL always delivers
+    # reports late" and "ITEL delivered reports in 1993" ⊑ "ITEL delivered
+    # reports late in 1993" (and "never" excludes it, FraCaS 312/313)
+    for tree in trees:
+        for st in _subtrees(tree):
+            if not (st.head == "AdVVP" and len(st.args) == 2 and st.args[0].head in ("always_Adv", "never_Adv")):
+                continue
+            habit, manner = _name(st), st.args[1]
+            if habit not in unary or manner.head != "AdvVP" or len(manner.args) != 2:
+                continue
+            for k, v, when, occasion in timed:
+                if k != repr(manner.args[0]):
+                    continue
+                # the same time adverbial on the habitual VP, if the problem has it
+                target = None
+                for tree2 in trees:
+                    for st2 in _subtrees(tree2):
+                        if st2.head == "AdvVP" and len(st2.args) == 2 and repr(st2.args[0]) == repr(manner) \
+                                and _time_value(st2.args[1]) == when:
+                            target = _name(st2)
+                if target in unary:
+                    if st.args[0].head == "always_Adv":
+                        add(f"(∀ x, {habit} x → {occasion} x → {target} x)")
+                    else:
+                        add(f"(∀ x, {habit} x → {occasion} x → ¬ {target} x)")
     return facts
 
 
@@ -419,7 +453,20 @@ def _time_value(adv):
     m = re.fullmatch(r"from(\d{4})to(\d{4})", w)
     if m:
         return ("span", int(m.group(1)), int(m.group(2)))
+    # the perfect's "since 1992" up to the utterance time (gen_claims.py's
+    # `_since_to_now`)
+    m = re.fullmatch(r"since(\d{4})to(\d{4})", w)
+    if m:
+        return ("since", int(m.group(1)), int(m.group(2)))
     return None
+
+
+def _stative(vp) -> bool:
+    """A state: the copula ("has been in Birmingham") or a stative verb."""
+    if vp.head == "UseComp":
+        return True
+    return vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[0].head == "SlashV2a" \
+        and vp.args[0].args[0].head in _STATIVE_TRANSITIVE
 
 
 def _unique_object(vp) -> bool:

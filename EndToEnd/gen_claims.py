@@ -115,7 +115,7 @@ _NEGATIVE_POLARITIES = ("PNeg", "UncNeg")
 # years", "from 1988 to 1992", "in July 1994", "on Friday").
 _TIME_ADVERB = re.compile(
     r"(in|for|from|since|on|at)[A-Z0-9][A-Za-z0-9]*"
-    r"(\d|Year|Hour|Month|Week|Day|OClock|day|January|February|March|April|May|June|July|August|"
+    r"(\d|Year|Hour|Month|Week|Day|OClock|Quarter|day|January|February|March|April|May|June|July|August|"
     r"September|October|November|December)[A-Za-z0-9]*_Adv"
 )
 # Where a time adverbial is not lifted out of: embedded clauses and the
@@ -124,8 +124,17 @@ _TIME_ADVERB = re.compile(
 _TIME_OPAQUE = ("UseCl", "EmbedS", "EmbedVP", "RelCN", "SentCN", "SubjS", "ComplVS", "ComplVV", "SlashV2V")
 
 
+# Manner adverbials that modify the event, lifted like time adverbials
+# ("delivered [reports late]" -> "[delivered reports] late").
+_EVENT_ADVERBS = ("late_Adv",)
+
+
 def _is_time_adverb(t) -> bool:
     return not t.args and bool(_TIME_ADVERB.fullmatch(t.head))
+
+
+def _is_event_adverb(t) -> bool:
+    return _is_time_adverb(t) or (not t.args and t.head in _EVENT_ADVERBS)
 
 
 def _lift_time_adverbs(clause):
@@ -140,7 +149,7 @@ def _lift_time_adverbs(clause):
     found = []
 
     def strip(t):
-        if t.head in ("AdvNP", "AdvCN") and len(t.args) == 2 and _is_time_adverb(t.args[1]):
+        if t.head in ("AdvNP", "AdvCN") and len(t.args) == 2 and _is_event_adverb(t.args[1]):
             found.append(t.args[1])
             return strip(t.args[0])
         if t.head in _TIME_OPAQUE:
@@ -150,7 +159,11 @@ def _lift_time_adverbs(clause):
     def wrap(vp):
         if vp.head == "AdvVP" and len(vp.args) == 2 and vp.args[1].head == "SubjS":
             return App("AdvVP", [wrap(vp.args[0]), vp.args[1]])
-        for adv in found:
+        # inside "always"/"never": "always [delivers reports late]"
+        if vp.head == "AdVVP" and len(vp.args) == 2:
+            return App("AdVVP", [vp.args[0], wrap(vp.args[1])])
+        # innermost first, as in the sentence ("reports late in 1993")
+        for adv in reversed(found):
             vp = App("AdvVP", [vp, adv])
         return vp
 
@@ -321,6 +334,8 @@ def resolve(t, antecedent_vp, antecedent_cn, antecedent_subject=None):
             return None, False, "one-anaphora with no antecedent noun"
         clause, _ = _replace_one(clause, antecedent_cn)
     clause = _possessor_in_coordination(clause)
+    clause = _own_possessive(clause)
+    clause = _subordinate_pronoun(clause)
     if _complement_ellipsis(clause):
         # ellipsis as a clausal complement ("Bill said Peter did too");
         # "before Smith did" is readings.py's `_ordered`'s, copying the
@@ -336,10 +351,49 @@ _ELLIPTICAL = ("ElliptS", "SoS", "ElliptAdvS", "GapS", "GapS2", "FragAdvS", "Fra
 
 
 def _strip_too(t):
-    """"too" adds nothing to truth conditions, wherever it attaches."""
+    """"too" adds nothing to truth conditions, wherever it attaches; nor
+    does "currently" in a translation that reads the present tense as the
+    present ("ITEL currently has a factory", FraCaS 251)."""
     if t.head == "TooS" and len(t.args) == 1:
         return _strip_too(t.args[0])
+    if t.head == "AdVVP" and len(t.args) == 2 and t.args[0].head == "currently_AdV":
+        return _strip_too(t.args[1])
+    # "always"/"never" quantify over occasions and must stay in the VP's
+    # name (translate.py's namer drops pre-verbal adverbs, which would make
+    # "never delivers reports late" the same predicate as "delivers reports
+    # late"): as a one-word adverbial they name it, `neverDeliverReportLate`
+    if t.head == "AdVVP" and len(t.args) == 2 and t.args[0].head in ("always_AdV", "never_AdV"):
+        word = t.args[0].head[: -len("_AdV")]
+        return App("AdVVP", [App(f"{word}_Adv", []), _strip_too(t.args[1])])
     return App(t.head, [_strip_too(a) for a in t.args])
+
+
+def _own_possessive(t):
+    """"Smith ran his own business": "his own" is the subject's own, so the
+    VP is a property of the subject - "ran an own business" names it
+    (`runOwnBusiness`), with no pronoun left to resolve."""
+    if t.head == "DetCN" and len(t.args) == 2 and t.args[0].head == "DetQuant" \
+            and t.args[0].args[0].head == "PossPron" and t.args[1].head == "AdjCN" \
+            and t.args[1].args[0].head == "PositA" and t.args[1].args[0].args[0].head == "own_A":
+        return App("DetCN", [App("DetQuant", [App("IndefArt", []), t.args[0].args[1]]), t.args[1]])
+    return App(t.head, [_own_possessive(a) for a in t.args])
+
+
+def _subordinate_pronoun(clause):
+    """"Smith left the house before she took a taxi": a he/she subject of
+    the subordinate clause is the main clause's named subject, the only
+    antecedent in the sentence."""
+    if not (clause.head == "PredVP" and len(clause.args) == 2 and clause.args[0].head == "UsePN"):
+        return clause
+    subject, vp = clause.args
+    if vp.head == "AdvVP" and len(vp.args) == 2 and vp.args[1].head == "SubjS":
+        conj, sub = vp.args[1].args
+        if sub.head == "UseCl" and len(sub.args) == 3 and sub.args[2].head == "PredVP" \
+                and sub.args[2].args[0].head == "UsePron" and sub.args[2].args[0].args[0].head in ("he_Pron", "she_Pron"):
+            inner = App("PredVP", [subject, sub.args[2].args[1]])
+            vp = App("AdvVP", [vp.args[0], App("SubjS", [conj, App("UseCl", [sub.args[0], sub.args[1], inner])])])
+            return App("PredVP", [subject, vp])
+    return clause
 
 
 def _ambiguous_antecedent(vp) -> bool:
@@ -590,14 +644,36 @@ def _map_items(t, f):
 
 def _resolve_sentence(tree, role, state):
     """([(clause, negated), ...], new state, error) for one sentence."""
-    antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype, bridging, named = state
+    antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype, bridging, named, now = state
     bridging, named = dict(bridging), list(named)
     parts = _sentence_parts(tree)
     if role == "hypothesis" and len(parts) != 1:
         return None, state, "a coordinated hypothesis"
     out = []
     for part in parts:
+        # "It is now 1996": the utterance time, for the perfect's "since"
+        # (see `_since_to_now`); it asserts nothing else.
+        if part.head == "ItIsNow" and part.args[0].head == "UsePN" and re.fullmatch(r"y\d{4}_PN", part.args[0].args[0].head):
+            now = int(part.args[0].args[0].head[1:5])
+            continue
+        # "Then S." after a premise: S's event follows the previous one
+        # ("Smith had left the house. Then she took a taxi" - she took a
+        # taxi after Smith left the house, FraCaS 311).
+        then = part.head == "ThenS" and len(part.args) == 1
+        if then:
+            part = part.args[0]
         clause, negated, err = resolve(part, antecedent_vp, antecedent_cn, antecedent_subject)
+        if then and clause is not None:
+            if negated or clause.head != "PredVP" or antecedent_subject is None or antecedent_vp is None \
+                    or role == "hypothesis":
+                return None, state, "\"then\" without a positive premise to follow"
+            subject = clause.args[0]
+            if subject.head == "UsePron" and subject.args[0].head in ("he_Pron", "she_Pron") \
+                    and antecedent_subject.head == "UsePN":
+                subject = antecedent_subject
+            before = App("UseCl", [App("TTAnt", [App("TPast", []), App("ASimul", [])]), App("PPos", []),
+                                   App("PredVP", [antecedent_subject, antecedent_vp])])
+            clause = App("PredVP", [subject, App("AdvVP", [clause.args[1], App("SubjS", [App("after_Subj", []), before])])])
         if clause is None:
             return None, state, err
         # Object "it" in a premise, with an antecedent `_it_antecedent`
@@ -657,7 +733,16 @@ def _resolve_sentence(tree, role, state):
             antecedent_vp = clause.args[1]
             antecedent_cn = _object_cn(clause.args[1]) or antecedent_cn
             antecedent_subject = clause.args[0]
-    return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype, tuple(bridging.items()), tuple(named)), None
+    return out, (antecedent_vp, antecedent_cn, antecedent_subject, it_cn, etype, tuple(bridging.items()), tuple(named), now), None
+
+
+def _since_to_now(t, now):
+    """"Since 1992 ITEL has been in Birmingham. It is now 1996": the
+    perfect's "since" runs up to the utterance time, `since1992to1996`
+    (background.py relates it to the years within it, for a state)."""
+    if not t.args and (m := re.fullmatch(r"since(\d{4})_Adv", t.head)) and int(m.group(1)) <= now:
+        return App(f"since{m.group(1)}to{now}_Adv", [])
+    return App(t.head, [_since_to_now(a, now) for a in t.args])
 
 
 def _subtrees_of(t):
@@ -685,7 +770,7 @@ def assemble(idn, sentences):
     clauses = []  # (clause tree, negated)
     # antecedent VP, CN, subject; "it"'s CN; E-type antecedent; bridging
     # dependencies and named individuals' sorts (see `_bridge`)
-    state = (None, None, None, None, None, (), ())
+    state = (None, None, None, None, None, (), (), None)
     for role, s in sentences:
         candidates = ranked_readings(s)
         n = len(candidates)
@@ -704,6 +789,8 @@ def assemble(idn, sentences):
             return None, f"{role} parses ({n} readings) but does not translate: {err or 'no reading resolves'}"
         state = new_state
         clauses.extend((role, clause, negated, n) for clause, negated in resolved)
+    if state[-1] is not None:
+        clauses = [(role, _since_to_now(cl, state[-1]), neg, n) for role, cl, neg, n in clauses]
     # A dependency a bridging definite used is stated with its function
     # (readings.py's `DependentHave`).
     used = {repr(c.args[0]) for _r, cl, _n, _k in clauses for c in _subtrees_of(cl) if c.head == "FunTermNP"}

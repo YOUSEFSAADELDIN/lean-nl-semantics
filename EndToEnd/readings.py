@@ -171,7 +171,11 @@ def _combine(parts, op: str) -> Translation:
 # examples of each class, not drawn from FraCaS's answers.
 _TELIC_INTRANSITIVE = ("leave_V", "arrive_V", "die_V", "depart_V", "fall_V", "win_V")
 _STATIVE_TRANSITIVE = ("own_V2", "have_V2", "know_V2", "like_V2", "love_V2", "need_V2",
-                       "want_V2", "contain_V2", "believe_V2", "hate_V2")
+                       "want_V2", "contain_V2", "believe_V2", "hate_V2",
+                       # "run (a business)", the sense FraCaS uses: an activity
+                       # that does not culminate ("ran his own business for
+                       # two years" ⇒ "ran his own business", 302)
+                       "run_V2")
 _ORDER = {"before_Subj": "<", "after_Subj": ">"}
 
 # Karttunen's (1971) verbs that commit the speaker to their complement:
@@ -223,8 +227,25 @@ def _telic(vp) -> bool:
     if vp.head == "ComplSlash" and vp.args[0].head == "SlashV2a":
         return vp.args[0].args[0].head not in _STATIVE_TRANSITIVE and _quantized(vp.args[1])
     if vp.head == "AdvVP" and vp.args[1].head == "PrepNP" and vp.args[1].args[0].head == "to_Prep":
-        return vp.args[0].head == "UseV" and _quantized(vp.args[1].args[1])
+        return (vp.args[0].head == "UseV" and _quantized(vp.args[1].args[1])) or _telic(vp.args[0])
+    # any other adverbial keeps a culminating VP culminating ("took a taxi
+    # to the station", "left the house at a quarter past five"), except a
+    # durative one ("wrote a report for two hours")
+    if vp.head == "AdvVP" and len(vp.args) == 2:
+        adv = vp.args[1]
+        durative = (not adv.args and adv.head.startswith("for")) or (
+            adv.head == "PrepNP" and adv.args[0].head == "for_Prep")
+        return not durative and _telic(vp.args[0])
     return False
+
+
+def _event_type(vp):
+    """The VP without its one-word time adverbials: what kind of event it
+    is, which names its time function ("left the house at a quarter past
+    five" is a leaving of the house, at a time `leaveHouseTime`)."""
+    if vp.head == "AdvVP" and len(vp.args) == 2 and not vp.args[1].args and vp.args[1].head.endswith("_Adv"):
+        return _event_type(vp.args[0])
+    return vp
 
 
 class EndToEndReadings(Readings):
@@ -383,7 +404,7 @@ class EndToEndReadings(Readings):
             return None
         times, who = [], []
         for v, np in ((vp, subject), (other.args[1], other.args[0])):
-            name = _scope_name(v) + "Time"
+            name = _scope_name(_event_type(v)) + "Time"
             if name not in self.time_functions:
                 self.time_functions.append(name)
             who.append(camel_name(_leaf_words(np)))

@@ -572,4 +572,14 @@ abstract FraCaSLogic =
     ThenS : S -> S ;
     ellGoingTo : EllAux ;
     ComplVSBare : VS -> S -> VP ;
+    -- Tense and aspect, FraCaS's own wording (Section 7):
+    -- currently_AdV: "ITEL currently has a factory" (251).
+    -- ItIsNow / y1996_PN: "It is now 1996" (252-257), the utterance time
+    --   the perfect's "since 1992" runs up to.
+    -- atAQuarterPastFive_Adv: a clock time, lexicalized like
+    --   atFiveOClock_Adv (311).
+    currently_AdV : AdV ;
+    ItIsNow : NP -> S ;
+    y1996_PN : PN ;
+    atAQuarterPastFive_Adv : Adv ;
 }

@@ -64,7 +64,7 @@ def tokenize(sentence: str, pgf: Path = DEFAULT_PGF) -> str:
     s = re.sub(r"([,;:])", r" \1 ", s)
 
     def lookup(tok: str):
-        for v in (tok, tok.lower(), tok[:1].upper() + tok[1:], tok.capitalize()):
+        for v in (tok, tok.lower(), tok[:1].upper() + tok[1:], tok.capitalize(), tok.upper()):
             if v in vocab:
                 return [v]
         return None
