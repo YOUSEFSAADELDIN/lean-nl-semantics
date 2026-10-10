@@ -48,6 +48,25 @@ compositionally, which extensional predicates provably cannot. It is not an
 edge over intensional Montague semantics (5), which gets the same verdict
 with possible worlds instead of a universe of codes; and it needs a
 preorder of coercions, not the partial order this repo's `CNTag` uses.
+
+A sixth case qualifies 1, and it is the one a published system uses.
+`extensional_forces_215` depends on two extensionality principles:
+propositional extensionality (`propext`, an axiom in Lean) and function
+extensionality (`funext`, a theorem in Lean via `Quot.sound`). Coq assumes
+neither by default, so there a predicate `object → Prop` is *not*
+determined by its extension, and an adjective `(object → Prop) → (object →
+Prop)` can tell coextensive nouns apart. FraCoq (Bernardy &
+Chatzikyriakidis, IWCS 2017) relies on this: it keeps nouns as predicates
+(`CN := object → Prop`) and gets 214 by declaring "fat" an
+`ExtensionalSubsectiveA`, an adjective that comes with an explicit proof
+that it respects coextensive nouns, while an undeclared adjective such as
+"competent" stays free to differ. So the precise statement is: noun
+meanings must be finer than extensions, and either codes (4), worlds (5),
+or an intensional metatheory without these two principles (FraCoq's Coq)
+provides that; extensional predicates in a metatheory with them (1–3, and
+Lean as used here) do not. The same paper leaves "common nouns as types"
+versus predicates as an open comparison ("we hope that results will shed
+light on the theoretical advantages of the two approaches").
 -/
 
 namespace MTT.Intensionality
