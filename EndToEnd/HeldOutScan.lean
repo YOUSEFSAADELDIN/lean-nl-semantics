@@ -52,9 +52,23 @@ def run (label : String) (reg : List (Nat × Bool × List Lean.Name × List Lean
     {decided.length} decided (yes/no); entailment problems proved: \
     {(ent.filter (·.2.2 == "yes")).length}/{ent.length}"
 
+/-- `HELDOUT_SCAN` = `<as_translated|with_background>:<k>/<n>` scores the
+k-th of n interleaved shards of one registry, so CI runs the scan as
+parallel jobs; the report sums the shards' lines. -/
 elab "#heldout_scan" : command => liftTermElabM do
-  run "as_translated" FraCaS.HeldOut.registry
-  run "with_background" FraCaS.HeldOut.registryBk
+  let spec := (← IO.getEnv "HELDOUT_SCAN").getD "with_background:0/1"
+  let (label, shard) := match spec.splitOn ":" with
+    | [l, s] => (l, s)
+    | _ => ("", "")
+  let (k, n) := match shard.splitOn "/" with
+    | [a, b] => (a.toNat!, b.toNat!)
+    | _ => (0, 1)
+  let reg := if label == "as_translated" then FraCaS.HeldOut.registry
+    else if label == "with_background" then FraCaS.HeldOut.registryBk else []
+  if reg.isEmpty || n == 0 then
+    throwError "set HELDOUT_SCAN to <as_translated|with_background>:<k>/<n>, got {repr spec}"
+  let mine := (reg.zipIdx.filter fun (_, i) => i % n == k).map (·.1)
+  run s!"{label} shard {k}/{n}" mine
 
 end FraCaS.HeldOut.Scan
 
