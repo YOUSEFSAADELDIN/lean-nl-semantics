@@ -136,42 +136,6 @@ def fracas_025_bk_yes_0 : Prop :=
 def fracas_025_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getResultPublishInMajorNationalNewspaper getResultPublish : A → Prop) [DecidablePred delegate] [DecidablePred getResultPublishInMajorNationalNewspaper] [DecidablePred getResultPublish] (severalCount : Nat), (severalCount ≥ 2) → (∀ x, getResultPublishInMajorNationalNewspaper x → getResultPublish x) → (AtLeast severalCount delegate getResultPublishInMajorNationalNewspaper) → (¬ (AtLeast severalCount delegate getResultPublish))
 
-def fracas_030_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (Neither commissioner spendTimeAtHome)
-
-def fracas_030_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (Neither commissioner spendTimeAtHome))
-
-def fracas_030_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (Neither commissioner spendTimeAtHome)
-
-def fracas_030_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (¬ (Neither commissioner spendTimeAtHome))
-
-def fracas_031_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
-
-def fracas_031_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
-
-def fracas_031_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
-
-def fracas_031_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
-
-def fracas_032_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
-
-def fracas_032_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
-
-def fracas_032_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
-
-def fracas_032_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
-
 def fracas_041_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getResultPublish getResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getResultPublish] [DecidablePred getResultPublishInMajorNationalNewspaper] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount delegate getResultPublish) → (AtLeast severalCount delegate getResultPublishInMajorNationalNewspaper)
 
@@ -183,54 +147,6 @@ def fracas_041_bk_yes_0 : Prop :=
 
 def fracas_041_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (delegate getResultPublish getResultPublishInMajorNationalNewspaper : A → Prop) [DecidablePred delegate] [DecidablePred getResultPublish] [DecidablePred getResultPublishInMajorNationalNewspaper] (severalCount : Nat), (severalCount ≥ 2) → (∀ x, getResultPublishInMajorNationalNewspaper x → getResultPublish x) → (AtLeast severalCount delegate getResultPublish) → (¬ (AtLeast severalCount delegate getResultPublishInMajorNationalNewspaper))
-
-def fracas_046_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (AtLeast 1 commissioner spendTimeAtHome)
-
-def fracas_046_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → ((∃ y, commissioner y) ∧ ¬ (AtLeast 1 commissioner spendTimeAtHome))
-
-def fracas_046_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (AtLeast 1 commissioner spendTimeAtHome)
-
-def fracas_046_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → ((∃ y, commissioner y) ∧ ¬ (AtLeast 1 commissioner spendTimeAtHome))
-
-def fracas_046_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (Exactly 1 commissioner spendTimeAtHome)
-
-def fracas_046_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → ((∃ y, commissioner y) ∧ ¬ (Exactly 1 commissioner spendTimeAtHome))
-
-def fracas_046_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → (Exactly 1 commissioner spendTimeAtHome)
-
-def fracas_046_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (Neither commissioner spendTimeAtHome) → ((∃ y, commissioner y) ∧ ¬ (Exactly 1 commissioner spendTimeAtHome))
-
-def fracas_047_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
-
-def fracas_047_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
-
-def fracas_047_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (AtLeast 3 commissioner spendTimeAtHome)
-
-def fracas_047_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtLeast 3 commissioner spendTimeAtHome) → (¬ (AtLeast 3 commissioner spendTimeAtHome))
-
-def fracas_048_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
-
-def fracas_048_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
-
-def fracas_048_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (AtMost 10 commissioner spendTimeAtHome)
-
-def fracas_048_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome], (AtMost 10 commissioner spendTimeAtHome) → (¬ (AtMost 10 commissioner spendTimeAtHome))
 
 def fracas_057_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (portugueseDelegate getResultPublishInMajorNationalNewspaper delegate : A → Prop) [DecidablePred portugueseDelegate] [DecidablePred getResultPublishInMajorNationalNewspaper] [DecidablePred delegate] (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount portugueseDelegate getResultPublishInMajorNationalNewspaper) → (AtLeast severalCount delegate getResultPublishInMajorNationalNewspaper)
@@ -303,18 +219,6 @@ def fracas_078_bk_yes_1 : Prop :=
 
 def fracas_078_bk_no_1 : Prop :=
   ∀ {A : Type} [Fintype A] (commissioner spendTimeAtHome femaleCommissioner : A → Prop) [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred femaleCommissioner], (∀ x, femaleCommissioner x → commissioner x) → (Neither commissioner spendTimeAtHome) → ((∃ y, femaleCommissioner y) ∧ ¬ (Exactly 1 femaleCommissioner spendTimeAtHome))
-
-def fracas_090_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (chairman read_outItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outItemOnAgenda], (Every chairman read_outItemOnAgenda) → (Every chairman read_outItemOnAgenda)
-
-def fracas_090_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (chairman read_outItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outItemOnAgenda], (Every chairman read_outItemOnAgenda) → (¬ (Every chairman read_outItemOnAgenda))
-
-def fracas_090_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (chairman read_outItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outItemOnAgenda], (Every chairman read_outItemOnAgenda) → (Every chairman read_outItemOnAgenda)
-
-def fracas_090_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (chairman read_outItemOnAgenda : A → Prop) [DecidablePred chairman] [DecidablePred read_outItemOnAgenda], (Every chairman read_outItemOnAgenda) → (¬ (Every chairman read_outItemOnAgenda))
 
 def fracas_133_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (computer maintainComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintainComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A) (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount computer (own gfi)) → (maintainComputerGfiOwn itel) → (maintainComputerGfiOwn itel)
@@ -428,18 +332,11 @@ def fracas_329_bk_no_0 : Prop :=
 def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (1, .yes, [``Ablations.CoarseNames.fracas_001_yes_0], [``Ablations.CoarseNames.fracas_001_no_0]),
   (25, .yes, [``Ablations.CoarseNames.fracas_025_yes_0], [``Ablations.CoarseNames.fracas_025_no_0]),
-  (30, .unknown, [``Ablations.CoarseNames.fracas_030_yes_0], [``Ablations.CoarseNames.fracas_030_no_0]),
-  (31, .yes, [``Ablations.CoarseNames.fracas_031_yes_0], [``Ablations.CoarseNames.fracas_031_no_0]),
-  (32, .unknown, [``Ablations.CoarseNames.fracas_032_yes_0], [``Ablations.CoarseNames.fracas_032_no_0]),
   (41, .unknown, [``Ablations.CoarseNames.fracas_041_yes_0], [``Ablations.CoarseNames.fracas_041_no_0]),
-  (46, .no, [``Ablations.CoarseNames.fracas_046_yes_0, ``Ablations.CoarseNames.fracas_046_yes_1], [``Ablations.CoarseNames.fracas_046_no_0, ``Ablations.CoarseNames.fracas_046_no_1]),
-  (47, .unknown, [``Ablations.CoarseNames.fracas_047_yes_0], [``Ablations.CoarseNames.fracas_047_no_0]),
-  (48, .yes, [``Ablations.CoarseNames.fracas_048_yes_0], [``Ablations.CoarseNames.fracas_048_no_0]),
   (57, .yes, [``Ablations.CoarseNames.fracas_057_yes_0], [``Ablations.CoarseNames.fracas_057_no_0]),
   (62, .undef, [``Ablations.CoarseNames.fracas_062_yes_0, ``Ablations.CoarseNames.fracas_062_yes_1], [``Ablations.CoarseNames.fracas_062_no_0, ``Ablations.CoarseNames.fracas_062_no_1]),
   (73, .unknown, [``Ablations.CoarseNames.fracas_073_yes_0], [``Ablations.CoarseNames.fracas_073_no_0]),
   (78, .undef, [``Ablations.CoarseNames.fracas_078_yes_0, ``Ablations.CoarseNames.fracas_078_yes_1], [``Ablations.CoarseNames.fracas_078_no_0, ``Ablations.CoarseNames.fracas_078_no_1]),
-  (90, .yes, [``Ablations.CoarseNames.fracas_090_yes_0], [``Ablations.CoarseNames.fracas_090_no_0]),
   (133, .yes, [``Ablations.CoarseNames.fracas_133_yes_0], [``Ablations.CoarseNames.fracas_133_no_0]),
   (153, .yes, [``Ablations.CoarseNames.fracas_153_yes_0, ``Ablations.CoarseNames.fracas_153_yes_1], [``Ablations.CoarseNames.fracas_153_no_0, ``Ablations.CoarseNames.fracas_153_no_1]),
   (273, .unknown, [``Ablations.CoarseNames.fracas_273_yes_0], [``Ablations.CoarseNames.fracas_273_no_0]),
@@ -454,18 +351,11 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
 def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (1, .yes, [``Ablations.CoarseNames.fracas_001_bk_yes_0], [``Ablations.CoarseNames.fracas_001_bk_no_0]),
   (25, .yes, [``Ablations.CoarseNames.fracas_025_bk_yes_0], [``Ablations.CoarseNames.fracas_025_bk_no_0]),
-  (30, .unknown, [``Ablations.CoarseNames.fracas_030_bk_yes_0], [``Ablations.CoarseNames.fracas_030_bk_no_0]),
-  (31, .yes, [``Ablations.CoarseNames.fracas_031_bk_yes_0], [``Ablations.CoarseNames.fracas_031_bk_no_0]),
-  (32, .unknown, [``Ablations.CoarseNames.fracas_032_bk_yes_0], [``Ablations.CoarseNames.fracas_032_bk_no_0]),
   (41, .unknown, [``Ablations.CoarseNames.fracas_041_bk_yes_0], [``Ablations.CoarseNames.fracas_041_bk_no_0]),
-  (46, .no, [``Ablations.CoarseNames.fracas_046_bk_yes_0, ``Ablations.CoarseNames.fracas_046_bk_yes_1], [``Ablations.CoarseNames.fracas_046_bk_no_0, ``Ablations.CoarseNames.fracas_046_bk_no_1]),
-  (47, .unknown, [``Ablations.CoarseNames.fracas_047_bk_yes_0], [``Ablations.CoarseNames.fracas_047_bk_no_0]),
-  (48, .yes, [``Ablations.CoarseNames.fracas_048_bk_yes_0], [``Ablations.CoarseNames.fracas_048_bk_no_0]),
   (57, .yes, [``Ablations.CoarseNames.fracas_057_bk_yes_0], [``Ablations.CoarseNames.fracas_057_bk_no_0]),
   (62, .undef, [``Ablations.CoarseNames.fracas_062_bk_yes_0, ``Ablations.CoarseNames.fracas_062_bk_yes_1], [``Ablations.CoarseNames.fracas_062_bk_no_0, ``Ablations.CoarseNames.fracas_062_bk_no_1]),
   (73, .unknown, [``Ablations.CoarseNames.fracas_073_bk_yes_0], [``Ablations.CoarseNames.fracas_073_bk_no_0]),
   (78, .undef, [``Ablations.CoarseNames.fracas_078_bk_yes_0, ``Ablations.CoarseNames.fracas_078_bk_yes_1], [``Ablations.CoarseNames.fracas_078_bk_no_0, ``Ablations.CoarseNames.fracas_078_bk_no_1]),
-  (90, .yes, [``Ablations.CoarseNames.fracas_090_bk_yes_0], [``Ablations.CoarseNames.fracas_090_bk_no_0]),
   (133, .yes, [``Ablations.CoarseNames.fracas_133_bk_yes_0], [``Ablations.CoarseNames.fracas_133_bk_no_0]),
   (153, .yes, [``Ablations.CoarseNames.fracas_153_bk_yes_0, ``Ablations.CoarseNames.fracas_153_bk_yes_1], [``Ablations.CoarseNames.fracas_153_bk_no_0, ``Ablations.CoarseNames.fracas_153_bk_no_1]),
   (273, .unknown, [``Ablations.CoarseNames.fracas_273_bk_yes_0], [``Ablations.CoarseNames.fracas_273_bk_no_0]),
@@ -746,40 +636,12 @@ end NoParseFilters
 
 namespace NoPronounGuard
 
-def fracas_134_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (haveServiceContractForComputer mfi)
-
-def fracas_134_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (¬ (haveServiceContractForComputer mfi))
-
-def fracas_134_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (haveServiceContractForComputer mfi)
-
-def fracas_134_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownExactly1Computer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownExactly1Computer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownExactly1Computer x) mfi) → (¬ (haveServiceContractForComputer mfi))
-
-def fracas_135_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (haveServiceContractForComputer mfi)
-
-def fracas_135_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
-
-def fracas_135_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (∀ x, ownSeveralComputer x → ownComputer x) → (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (haveServiceContractForComputer mfi)
-
-def fracas_135_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (customer ownComputer haveServiceContractFor ownSeveralComputer haveServiceContractForComputer : A → Prop) [DecidablePred customer] [DecidablePred ownComputer] [DecidablePred haveServiceContractFor] [DecidablePred ownSeveralComputer] [DecidablePred haveServiceContractForComputer] (mfi : A), (∀ x, ownSeveralComputer x → ownComputer x) → (Every (fun x => customer x ∧ ownComputer x) haveServiceContractFor) → ((fun x => customer x ∧ ownSeveralComputer x) mfi) → (¬ (haveServiceContractForComputer mfi))
-
 /-- The ablation's changed and newly reached problems, as in `EndToEnd.registry`. -/
 def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
-  (134, .yes, [``Ablations.NoPronounGuard.fracas_134_yes_0], [``Ablations.NoPronounGuard.fracas_134_no_0]),
-  (135, .yes, [``Ablations.NoPronounGuard.fracas_135_yes_0], [``Ablations.NoPronounGuard.fracas_135_no_0])
 ]
 
 /-- The same, with background knowledge. -/
 def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
-  (134, .yes, [``Ablations.NoPronounGuard.fracas_134_bk_yes_0], [``Ablations.NoPronounGuard.fracas_134_bk_no_0]),
-  (135, .yes, [``Ablations.NoPronounGuard.fracas_135_bk_yes_0], [``Ablations.NoPronounGuard.fracas_135_bk_no_0])
 ]
 
 end NoPronounGuard

@@ -112,7 +112,6 @@
   116,
   117,
   118,
-  119,
   120,
   128,
   129,
@@ -277,18 +276,11 @@
    "changed": [
     1,
     25,
-    30,
-    31,
-    32,
     41,
-    46,
-    47,
-    48,
     57,
     62,
     73,
     78,
-    90,
     133,
     153,
     273,
@@ -299,7 +291,15 @@
     329
    ],
    "newly_reached": [],
-   "no_longer_reached": []
+   "no_longer_reached": [
+    30,
+    31,
+    32,
+    46,
+    47,
+    48,
+    90
+   ]
   },
   "no_telicity": {
    "description": "Background knowledge treats every verb phrase as not culminating: a durative (\"for two hours\") and the progressive delete from any verb phrase, and the rules that need a culminating event do not fire.",
@@ -343,10 +343,7 @@
   "no_pronoun_guard": {
    "description": "An object pronoun nothing resolves is no longer refused (it drops out of the predicate's name).",
    "changed": [],
-   "newly_reached": [
-    134,
-    135
-   ],
+   "newly_reached": [],
    "no_longer_reached": []
   },
   "no_lexical_exclusions": {
