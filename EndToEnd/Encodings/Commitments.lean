@@ -1,4 +1,5 @@
 import EndToEnd.Encodings.Section5
+import EndToEnd.Encodings.Section3
 
 /-!
 # What each encoding commits to on FraCaS 215
@@ -16,11 +17,12 @@ which, for the generated claims themselves:
 - in W (intensional Montague) and M (MTT) it is *not* valid: each has a
   countermodel, so "unknown" is the encoding's own answer.
 
-It also proves valid the M claims the generic prover misses (202, 210,
-211, 212, 214): each needs identity reasoning across the embeddings
-(`eAnimal a = eMouse m`), which `aesop` and `grind` do not find. So M's
-lower score with that prover is a cost of automation, not of what M
-entails.
+It also proves valid the M claims the generic prover misses: in Section
+5 (202, 210, 211, 212, 214): each needs identity reasoning across the embeddings
+(`eAnimal a = eMouse m`), which `aesop` and `grind` do not find; in Section 3 (118, 131, 132),
+which need a Σ-typed proof object in the context projected or a
+conjunction taken apart under one. So M's lower scores with that prover
+are a cost of automation, not of what M entails.
 
 These are checked by `lake build`, so a change to the generated claims
 that broke them would fail the build.
@@ -101,5 +103,21 @@ theorem m_214 : M.fracas_214_yes := by
   refine ⟨z, ?_, hz⟩
   rw [hz]
   exact ext hco _ hfat
+
+/-! ## Section 3: M's claims the generic prover misses, proved by hand -/
+
+theorem m_118 : S3.fracas_118_yes := by
+  intro E Student eS Workstation eW female use haveV mary dep is _
+  exact ⟨(dep is.1).1, by rw [← is.2]; exact (dep is.1).2.2⟩
+
+theorem m_131 : S3.fracas_131_yes := by
+  intro E Department eD Line eL dedicated haveV rent fromP bt _ h x
+  obtain ⟨y, _, hf, hr⟩ := h x
+  exact ⟨y, hf, hr⟩
+
+theorem m_132 : S3.fracas_132_yes := by
+  intro E Department eD Line eL SalesDepartment eSD dedicated haveV rent fromP bt _ h x
+  obtain ⟨y, _, hf, hr⟩ := h x
+  exact ⟨y, hf, hr⟩
 
 end FraCaS.Encodings.Commitments
