@@ -39,7 +39,11 @@ MTT. That comparison, with everything else held fixed, is in
 and 3, nouns as types answer as many problems as the pipeline and as
 intensional Montague semantics (no accuracy edge), avoid a wrong answer
 that extensional Montague semantics makes valid (215), and need the
-fewest stipulations, at a cost in proof automation.
+fewest stipulations, at a cost in proof automation. On every problem the
+pipeline reaches, they answer the same problems except where a noun is
+counted. There, nouns as types must assume that distinct elements of a
+noun's type are distinct individuals, which the predicate encoding
+assumes silently.
 
 The browser lab (below) is meant to end up demoing all four.
 

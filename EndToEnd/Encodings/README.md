@@ -183,10 +183,81 @@ differences in (3) are differences in what is assumed, not in what
 follows: classically, a stipulated function exists by choice wherever
 the Σ-premise holds.
 
+## Phase 2 results: every problem the pipeline reaches (CI run 38125879289)
+
+Phase 2 restates the pipeline's own claims, all 260 problems, with each
+quantified noun as a type (`gen_lifted.py`, `Lifted.lean`, `Typed.lean`).
+Nothing else changes: parse, readings, background knowledge and fused
+names are F's. "Every Italian man wants..." becomes `EveryT eItalianMan
+(fun _ => True) wantGreatTenor`, a quantifier over the type `ItalianMan`.
+Verbs and adjectives stay predicates of individuals. Elsewhere, "x is an N"
+is `IsA eN x`, meaning x is the individual of some element of `N`.
+
+**Where the encoding can matter at all: 138 of the 260 problems.** The
+other 122 never quantify over a noun. They only talk about named
+individuals through fused names (`haveGenuineDiamond smith`), so their
+lifted claim is F's, token for token (the generator checks). That covers
+most of Sections 4 and 7-9: at the granularity the pipeline translates
+to, there is no noun there to make a type of.
+
+On the 138 (with background knowledge; 0 wrong answers in every row):
+
+| | pipeline's prover | generic prover (`aesop`, `grind`) |
+|---|---|---|
+| F (pipeline) | **125** | 104 |
+| M (nouns as types) | 65 | 97 |
+| M, rewritten into F's form first (`*_transfer`) | 95 | - |
+| MInj (injective embeddings), rewritten first | 95 | - |
+
+| problems | F, generic | M, generic | F, pipeline's prover | M, best |
+|---|---|---|---|---|
+| only every / some / no (64) | 60 | **60** | 60 | 60 |
+| a counting determiner, `Many` or `Few` (74) | 44 | 37 | 65 | 37 |
+
+1. **No accuracy edge for M, and no loss outside counting.** On the 64
+   problems quantified only by every, some and no, M and F match the same
+   60 problems under the generic prover. Every problem F gets and M
+   misses has "at least", "exactly", "most", "both"/"neither", "more" or
+   "many" over a typed noun.
+2. **Counting is where nouns as types make a choice.** With nouns as
+   types, "two Ns" counts elements of the type `N`. Two elements may
+   be one individual, so this need not be two individuals: MTT's
+   individuation question. `Typed.lean` proves:
+   - every, some and no transfer to F's quantifiers unconditionally
+     (`every_t`, `some_t`, `no_t`);
+   - the counting determiners transfer exactly when the embedding is
+     injective (`atLeast_t`, ..., `more_t`, from `cardT_eq`);
+   - without injectivity they do not (`counting_needs_injectivity`, a
+     countermodel).
+
+   So M with injective embeddings (MInj) states each problem as F does,
+   with "n" read as `IsA eN`. Each predicate is `IsA` of its subtype's
+   inclusion, so the two have the same valid claims. The exceptions are
+   the opaque `Many` and `Few`, stated at every type in M. That last
+   step is an argument from the per-determiner lemmas; it is not
+   mechanized claim by claim. F counts individuals without saying so;
+   M has to state it, one postulate per counted noun.
+3. **The gap is the prover's.** The pipeline's prover is built for F's
+   syntax. Rewriting M's claims into F's quantifiers by the transfer
+   lemmas recovers nothing beyond what the generic prover finds: 95
+   with injectivity or without, against F's 125. The likely reason is
+   that after the rewrite the restrictor is a term (`IsA eN`), not a
+   predicate variable, and the pipeline's monotonicity and counting
+   tactics look for variables. That has not been checked tactic by
+   tactic. The generic prover, which
+   neither encoding was tuned for, puts them closer: 104 against 97, the
+   7-problem difference being counting problems.
+
+So on the rest of FraCaS, as predicted, a tie on what follows. There is
+no accuracy edge, and with injective embeddings no logical difference.
+The one substantive difference is that nouns as types make the
+individuation of counted nouns an explicit assumption. As in Phases
+1a/1b, there is a real cost in automation that was built for predicates.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
 - **1b**: Section 3 (anaphora): F against M.
-- **2**: the remaining sections, where a tie is expected.
+- **2**: every problem the pipeline reaches, its own claims with nouns as types.
 
 These are development-set problems, as everywhere in this project.
