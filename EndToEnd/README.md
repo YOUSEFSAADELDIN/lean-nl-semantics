@@ -158,9 +158,13 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    ("competent", "clever") is plainly subsective and licenses nothing
    beyond the noun. It also relates time adverbials on the same verb
    phrase ("for two years" ⇒ "for a year"; a state "from 1988 to 1992"
-   ⇒ "in 1990"; "in July 1994" ⇒ "in 1994"; one culminating event on one
-   object per year), deletes a durative only from a verb phrase that does
-   not culminate, deletes "a lot of" and a PP on a non-quantified object,
+   ⇒ "in 1990"; "in July 1994" ⇒ "in 1994"; "every month" in 1994 ⇒ "in
+   July 1994"; "for two years" excludes "for exactly a year"; one
+   culminating event on one object per year), deletes a durative and the
+   progressive only from a verb phrase that does not culminate, has a
+   creation verb's object not exist before the event and "finish NP"
+   finish the one event the problem mentions on it, deletes "a lot of"
+   and a PP on a non-quantified object,
    weakens the complements of "can", "must" and "used to", and makes "as
    fast as" exclude "slower than". Nothing in it is keyed by problem or gold answer,
    but the lists were written with this corpus in view, so it is not a
@@ -175,16 +179,16 @@ reproducible.
 confirmation checks): all parse; the hand-built tree is among the
 readings for all; median 4 readings (max 3,600); and the top-ranked
 reading translates to the same `Prop` as the hand tree for all but one
-of the sentences `translate.py` covers (398 of 399 after the tense
-round). The one exception (136) is a garden-path
+of the sentences `translate.py` covers (405 of 406 after the
+progressive round). The one exception (136) is a garden-path
 compound ("[executive that had a laptop] computer") tied in size with the
 correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 252 of 342 problems go all
-the way through (73.7%). 74 stop at a sentence the restricted grammar
-doesn't parse, 15 at a reading the translation doesn't cover, and 1
+**Coverage, on FraCaS's original English**: 260 of 342 problems go all
+the way through (76.0%). 65 stop at a sentence the restricted grammar
+doesn't parse, 16 at a reading the translation doesn't cover, and 1
 (104) at a predicate named after a Lean keyword (`have`). The remaining parse failures are
 mostly hard phenomena rather than missing glue: tense and aspect
 (Section 7), embedded questions, antecedent-contained and parallel-scope
@@ -201,16 +205,16 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38091759266), on those 252 problems:
+**Result** (CI run 38101249418), on those 260 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 84/252 (33.3%) | — |
-| as translated | **173/252 (68.7%)** | **0** |
-| with background knowledge | **224/252 (88.9%)** | **0** |
+| always "unknown" (baseline) | 90/260 (34.6%) | — |
+| as translated | **181/260 (69.6%)** | **0** |
+| with background knowledge | **240/260 (92.3%)** | **0** |
 
-Counting the 90 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 195/342 (57.0%) as translated and 246/342 (71.9%)
+Counting the 82 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 197/342 (57.6%) as translated and 256/342 (74.9%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
 
@@ -253,6 +257,73 @@ sentences) are not attempted: "MFI has a service contract for all its
 computers" needs "its" read as ownership and a uniqueness argument from
 "exactly one computer", and 135 holds only on the strong donkey reading.
 Before, CI run 38087617550 gave 166/237 and 211/237.
+
+**Diagnosing reached problems** (CI runs 38093927327 and 38100351678)
+took the reached problems answered "unknown" against a yes/no label one
+by one. Matched with background knowledge: 46, 258, 279, 282, 307 and
+326.
+- **Discourse referents.** "Smith wrote a novel in 1991 ⊢ Smith wrote
+  it in 1992": when the hypothesis's object "it" has exactly one
+  possible antecedent, a premise's "NAME V-ed a CN", the indefinite
+  introduces a referent (`theNovel`) that "it" names. This is dynamic
+  entailment (Kamp; Groenendijk and Stokhof); the claim's universal
+  binding makes the premise exactly as strong as before. The
+  one-time-per-event rule then gives "no" (279, 282).
+- **A silent bug, now refused.** That diagnosis found that an object
+  pronoun nothing resolves dropped out of the predicate's name ("Smith
+  wrote it" was named like "Smith wrote"). An unresolved object pronoun
+  is now refused instead. Of the reached problems this affected only
+  279/282 and the donkey pronoun of 134/135 ("has a service contract for
+  it"). 134/135 are therefore no longer reached; they were "unknown"
+  before, on a translation that had lost the pronoun.
+- **Background knowledge.** "Every month" within a year gives each month
+  of it (307). A creation verb's object did not exist before the event
+  (258). "Finish NP" is the one other kind of event the problem mentions
+  on that same thing, finished when it culminates: "ITEL built MTALK" ⇒
+  "ITEL finished MTALK" (326; logical metonymy, Pustejovsky 1995).
+- **Prover.** A positive count is refuted on its exact reading too (46).
+- **Presupposition.** That change at first also proved 78's "no" (gold
+  undefined). "One of the female commissioners spends a lot of time at
+  home" is vacuously untrue when there are no female commissioners, but
+  it is not false then: "the female commissioners" presupposes them. A
+  hypothesis's partitive now records that presupposition, and a "no"
+  claim must establish it as well as the negation (Strawson). 78 and 62
+  stay "unknown"; 46 still follows, since "neither commissioner"
+  presupposes two.
+- **Left "unknown".** 140 ("John said Bill had hurt himself" ⇒ "John
+  said Bill had been hurt") would need what is said to be closed under
+  entailment, which saying is not. The step inside the report, from
+  "hurt himself" to "been hurt", would be fine on its own.
+
+That run gave 173/250 and 230/250, with no wrong answers.
+
+**Progressive and other constructions** (CI run 38101249418) reached
+141, 153, 273, 274, 281, 294, 296, 299, 327, 329 and 343, matched all of
+them, and lost 308.
+- **The progressive** ("was writing a report") is marked in predicate
+  names (`progWriteReport`), so it is never the simple past. Background
+  knowledge gives "was running his own business" ⇒ "ran his own
+  business" (294) only for a VP that does not culminate. "Was building
+  MTALK" need not have built it, and "was winning the contract" need not
+  have won it (327, 329, gold unknown: the imperfective paradox).
+- **Gapping** now copies into a progressive: "John is going to Paris by
+  car, and the students by train" (153).
+- **Durations.** "For two years" excludes "for exactly a year" (299).
+- **Perception** is transparent in its agent, so "Smith saw Jones sign
+  the contract" and "Jones is the chairman of ITEL" give "Smith saw the
+  chairman of ITEL sign the contract" (343).
+- **Attitudes.** "Someone said ..." is an attitude report (141, gold
+  unknown).
+- **Ranking.** A reading with a noun phrase that has no words (the bare
+  plural indefinite article) is not a reading of the sentence. A parse
+  category whose parses are all of that kind no longer hides the next
+  one: "Bill is going to." keeps its elliptical reading. 308 is no longer
+  reached because every parse of its hypothesis ("There is a
+  representative that Smith wrote to every week") had such an empty noun
+  phrase; it was reached before only through one. `parse_eval.py` uses
+  the same category choice.
+
+Before, CI run 38100351678 gave 173/250 and 230/250.
 
 **Tense and aspect** (CI run 38091759266) reached 251-257, 301, 302 and
 311-313, matched 251, 252, 301, 302, 311, 312 and 313 with background
@@ -435,18 +506,18 @@ uses the C&C CCG parser and Coq "fully automated" with a 30-second
 timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
 problems that lack a well-defined answer": exactly this project's `undef`
 problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
-the same labels. With CI run 38091759266's verdicts
+the same labels. With CI run 38101249418's verdicts
 (`compare_fracoq.py`):
 
 | section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
 |---|---|---|---|
-| quantifiers (74) | .76 | **.95** | .77 |
+| quantifiers (74) | .76 | **.96** | .77 |
 | plurals (33) | .70 | **.70** | .67 |
 | adjectives (22) | .32 | **.91** | .68 |
 | comparatives (31) | .48 | **.65** | .48 |
-| verbs (8) | .50 | **.75** | .62 |
-| attitudes (13) | .69 | .69 | .77 |
-| **total (181)** | **.630** | **.818** | **.69** |
+| verbs (8) | .50 | **.88** | .62 |
+| attitudes (13) | .77 | .77 | .77 |
+| **total (181)** | **.635** | **.834** | **.69** |
 
 No wrong answers in either variant. Haruta, Mineshima & Bekki (ACL SRW
 2020), ccg2lambda's successor for these phenomena (two CCG parsers,
@@ -508,17 +579,17 @@ do so" (2021).
 from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
 paper's 259 problems exactly) and scores this pipeline's verdicts by
 FraCoq's own rules (only clearly labelled problems; an `Undef` label
-accepts any answer). With the verdicts of CI run 38091759266:
+accepts any answer). With the verdicts of CI run 38101249418:
 
 | FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
 |---|---|---|---|---|
-| 2017: sections 1, 2, 5, 6, 9 | 171 | 62.6% | 80.7% | 0.83 (on 174) |
-| 2019: all but section 7 | 259 | 58.7% | 72.6% | 0.89 |
-| 2021: all sections | 326 | 55.5% | 70.9% | 0.81 (on 329) |
+| 2017: sections 1, 2, 5, 6, 9 | 171 | 63.2% | 81.9% | 0.83 (on 174) |
+| 2019: all but section 7 | 259 | 59.5% | 74.1% | 0.89 |
+| 2021: all sections | 326 | 56.1% | 73.9% | 0.81 (on 329) |
 
 On the 2017 sections, per section with background knowledge: quantifiers
-69/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
-comparatives 19/31 (.56), attitudes 9/13 (.85). Under FraCoq's labels one
+70/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
+comparatives 19/31 (.56), attitudes 10/13 (.85). Under FraCoq's labels one
 answer counts as wrong: 5, whose label FraCoq overrules from yes to
 unknown ("missing hypothesis: there are italian tenors"); under the
 original labels it is correct. The 2017 subset comes out at 171 problems
