@@ -108,7 +108,9 @@ theorem m_214 : M.fracas_214_yes := by
 
 theorem m_118 : S3.fracas_118_yes := by
   intro E Student eS Workstation eW female use haveV mary dep is _
-  exact ⟨(dep is.1).1, by rw [← is.2]; exact (dep is.1).2.2⟩
+  obtain ⟨s, hs⟩ := is
+  subst hs
+  exact ⟨(dep s).1, (dep s).2.2⟩
 
 theorem m_131 : S3.fracas_131_yes := by
   intro E Department eD Line eL dedicated haveV rent fromP bt _ h x
