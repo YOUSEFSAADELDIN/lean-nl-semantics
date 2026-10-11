@@ -104,6 +104,52 @@ edge in validity over extensional Montague (215); the fewest postulates;
 and a cost in proof automation. These are development-set problems,
 and Section 5 is small.
 
+## Phase 1b results: Section 3 (CI run 38120599283)
+
+The 11 Section 3 problems the pipeline reaches through possessives,
+dependencies and pronouns (114-120, 131-133, 138). Both encodings follow
+the pipeline's own resolution decisions; they differ only in how a
+dependency is stated.
+
+| | generic prover: matched | wrong | valid answers: matched | stipulated functions | background facts | accommodated presuppositions |
+|---|---|---|---|---|---|---|
+| F (pipeline) | 10/11 | 0 | 10/11 | 7 | 3 | 6 (side premises) |
+| M (dependent types) | 7/11 | 0 | 10/11 | **0** | **0** | 6 (Σ-hypotheses) |
+
+Both miss 119 ("No student used her workstation" ⇒ not "Mary used a
+workstation", gold no): she may have used someone else's.
+
+- **No stipulated functions.** F states "her workstation" and "the cover
+  page of R-95-103" with functions on every individual (`workstationOf,
+  coverPageOf : A → A`). M states them as projections of Σ-typed proof
+  objects: the premise "every report has a cover page" itself, as
+  `(x : Report) → Σ' c : CoverPage, …`, applied to the proof that
+  R-95-103 is a report.
+- **No background facts.** F needs one for each of 120, 131 and 132
+  ("chaired the meeting Smith attended" ⊑ "chaired a meeting", "rents a
+  dedicated line" ⊑ "rents a line"). In M the first is a projection
+  (`ev.1` is a meeting) and the second is subsectivity, built into the
+  types.
+- **The same presuppositions.** Where the context has no antecedent
+  ("Mary used her workstation", with nothing about Mary before it),
+  both accommodate the presupposition that she has one. F does it as a
+  side premise about a stipulated function; M as a Σ-hypothesis
+  restricted to the possessor.
+- **The same accuracy, and the same automation cost as in Section 5.**
+  The generic prover misses three M claims (118, 131, 132) that are
+  valid (`Commitments.lean`): they need a proof object in the context
+  projected, or a conjunction taken apart under one.
+- **133 is not a test of maximality here.** The pipeline resolves "them"
+  to the E-type description "all the computers GFI owns" before either
+  encoding sees it, so both get 133. A projection alone would not
+  (`MTT/DependentAnaphora.lean`'s `projection_misses_133`).
+
+So on Section 3, as predicted: equal accuracy, and M states the same
+problems without the stipulated functions and background facts F
+needs. Classically the two are equivalent (a stipulated function exists
+by choice whenever the Σ-premise holds), so this is a difference in what
+is assumed, not in what follows.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
