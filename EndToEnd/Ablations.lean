@@ -590,18 +590,6 @@ def fracas_308_bk_yes_0 : Prop :=
 def fracas_308_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (writeToRepresentativeMascEveryWeek representativeMascSmithWriteToEveryWeek : A → Prop) [DecidablePred writeToRepresentativeMascEveryWeek] [DecidablePred representativeMascSmithWriteToEveryWeek] (smith : A), (writeToRepresentativeMascEveryWeek smith) → (¬ (∃ x, representativeMascSmithWriteToEveryWeek x))
 
-def fracas_311_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveHouseAtAQuarterPastFive takeTaxiToStation leaveHouseTakeTaxiToStation : A → Prop) [DecidablePred leaveHouseAtAQuarterPastFive] [DecidablePred takeTaxiToStation] [DecidablePred leaveHouseTakeTaxiToStation] (smith : A) (takeTaxiToStationTime leaveHouseTime : A → ℕ), (leaveHouseAtAQuarterPastFive smith) → ((takeTaxiToStation smith ∧ leaveHouseAtAQuarterPastFive smith ∧ takeTaxiToStationTime smith > leaveHouseTime smith)) → (leaveHouseTakeTaxiToStation smith)
-
-def fracas_311_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveHouseAtAQuarterPastFive takeTaxiToStation leaveHouseTakeTaxiToStation : A → Prop) [DecidablePred leaveHouseAtAQuarterPastFive] [DecidablePred takeTaxiToStation] [DecidablePred leaveHouseTakeTaxiToStation] (smith : A) (takeTaxiToStationTime leaveHouseTime : A → ℕ), (leaveHouseAtAQuarterPastFive smith) → ((takeTaxiToStation smith ∧ leaveHouseAtAQuarterPastFive smith ∧ takeTaxiToStationTime smith > leaveHouseTime smith)) → (¬ (leaveHouseTakeTaxiToStation smith))
-
-def fracas_311_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveHouseAtAQuarterPastFive takeTaxiToStation leaveHouseTakeTaxiToStation : A → Prop) [DecidablePred leaveHouseAtAQuarterPastFive] [DecidablePred takeTaxiToStation] [DecidablePred leaveHouseTakeTaxiToStation] (smith : A) (takeTaxiToStationTime leaveHouseTime : A → ℕ), (leaveHouseAtAQuarterPastFive smith) → ((takeTaxiToStation smith ∧ leaveHouseAtAQuarterPastFive smith ∧ takeTaxiToStationTime smith > leaveHouseTime smith)) → (leaveHouseTakeTaxiToStation smith)
-
-def fracas_311_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (leaveHouseAtAQuarterPastFive takeTaxiToStation leaveHouseTakeTaxiToStation : A → Prop) [DecidablePred leaveHouseAtAQuarterPastFive] [DecidablePred takeTaxiToStation] [DecidablePred leaveHouseTakeTaxiToStation] (smith : A) (takeTaxiToStationTime leaveHouseTime : A → ℕ), (leaveHouseAtAQuarterPastFive smith) → ((takeTaxiToStation smith ∧ leaveHouseAtAQuarterPastFive smith ∧ takeTaxiToStationTime smith > leaveHouseTime smith)) → (¬ (leaveHouseTakeTaxiToStation smith))
-
 /-- The ablation's changed and newly reached problems, as in `EndToEnd.registry`. -/
 def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (46, .no, [``Ablations.NoParseFilters.fracas_046_yes_0], [``Ablations.NoParseFilters.fracas_046_no_0]),
@@ -612,8 +600,7 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (169, .yes, [``Ablations.NoParseFilters.fracas_169_yes_0], [``Ablations.NoParseFilters.fracas_169_no_0]),
   (170, .yes, [``Ablations.NoParseFilters.fracas_170_yes_0], [``Ablations.NoParseFilters.fracas_170_no_0]),
   (270, .yes, [``Ablations.NoParseFilters.fracas_270_yes_0], [``Ablations.NoParseFilters.fracas_270_no_0]),
-  (308, .undef, [``Ablations.NoParseFilters.fracas_308_yes_0], [``Ablations.NoParseFilters.fracas_308_no_0]),
-  (311, .yes, [``Ablations.NoParseFilters.fracas_311_yes_0], [``Ablations.NoParseFilters.fracas_311_no_0])
+  (308, .undef, [``Ablations.NoParseFilters.fracas_308_yes_0], [``Ablations.NoParseFilters.fracas_308_no_0])
 ]
 
 /-- The same, with background knowledge. -/
@@ -626,8 +613,7 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (169, .yes, [``Ablations.NoParseFilters.fracas_169_bk_yes_0], [``Ablations.NoParseFilters.fracas_169_bk_no_0]),
   (170, .yes, [``Ablations.NoParseFilters.fracas_170_bk_yes_0], [``Ablations.NoParseFilters.fracas_170_bk_no_0]),
   (270, .yes, [``Ablations.NoParseFilters.fracas_270_bk_yes_0], [``Ablations.NoParseFilters.fracas_270_bk_no_0]),
-  (308, .undef, [``Ablations.NoParseFilters.fracas_308_bk_yes_0], [``Ablations.NoParseFilters.fracas_308_bk_no_0]),
-  (311, .yes, [``Ablations.NoParseFilters.fracas_311_bk_yes_0], [``Ablations.NoParseFilters.fracas_311_bk_no_0])
+  (308, .undef, [``Ablations.NoParseFilters.fracas_308_bk_yes_0], [``Ablations.NoParseFilters.fracas_308_bk_no_0])
 ]
 
 end NoParseFilters
