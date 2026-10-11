@@ -678,4 +678,8 @@ further problems (such as 199) as unclear.
   (automatic translation from English), but it reaches only part of the
   corpus and is still below FraCoq's reported 83%/81% on what it
   does reach. Its distinguishing property is that it gives no wrong
-  answers on what it reaches, with every verdict machine-checked.
+  answers on what it reaches, with every verdict machine-checked. That
+  property is measured on the development set only. On held-out
+  problems (MED, `HeldOut/README.md`) it gives 3 wrong answers in 140
+  decided. One is a real translation error: a fused name that silently
+  drops a verb taking a clause, and that verb's negated complement.

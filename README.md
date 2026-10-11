@@ -122,7 +122,10 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   background knowledge), with no wrong answers. These are
   **development-set** figures: the pipeline was extended by looking at
   which of these same problems failed. Full write-up:
-  `EndToEnd/README.md`.
+  `EndToEnd/README.md`. On a held-out set it was never developed on
+  (989 problems from MED, `EndToEnd/HeldOut/`), it proves 137 of 477
+  entailments and gives 3 wrong answers in 140 decided: one a real
+  translation error, two against labels that look wrong.
 
   This is deliberately not aimed at general English coverage — FraCaS
   is a small, closed vocabulary and sentence set, and covering it was
