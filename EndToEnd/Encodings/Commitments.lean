@@ -16,6 +16,12 @@ which, for the generated claims themselves:
 - in W (intensional Montague) and M (MTT) it is *not* valid: each has a
   countermodel, so "unknown" is the encoding's own answer.
 
+It also proves valid the M claims the generic prover misses (202, 210,
+211, 212, 214): each needs identity reasoning across the embeddings
+(`eAnimal a = eMouse m`), which `aesop` and `grind` do not find. So M's
+lower score with that prover is a cost of automation, not of what M
+entails.
+
 These are checked by `lake build`, so a change to the generated claims
 that broke them would fail the build.
 -/
@@ -52,5 +58,48 @@ theorem m_215_not_valid : ¬ M.fracas_215_yes := by
     () trivial ⟨fun _ _ => Subtype.ext rfl⟩
   have hb' : Subsingleton Bool := hb
   exact absurd (hb'.elim true false) (by decide)
+
+/-! ## M's claims the generic prover misses, proved by hand -/
+
+theorem m_202 : M.fracas_202_yes := by
+  intro E Mammal eM Animal eA fl h x hx
+  obtain ⟨a, ha⟩ := h x
+  exact ⟨a, by rw [ha]; exact hx, ha⟩
+
+theorem m_210 : M.fracas_210_no := by
+  intro E Mouse eM Animal eA small large mickey _ _ hc h1 ⟨m, _, hm⟩ ⟨a, ha, ha'⟩
+  obtain ⟨a', hs, ha''⟩ := h1 m
+  have h : eA a' = eA a := by rw [ha'', hm, ha']
+  exact hc Animal (eA a) (h ▸ hs) ha
+
+theorem m_211 : M.fracas_211_no := by
+  intro E Elephant eEl Animal eA large small dumbo _ _ hc h1 ⟨el, _, hel⟩ ⟨a, ha, ha'⟩
+  obtain ⟨a', hl, ha''⟩ := h1 el
+  have h : eA a' = eA a := by rw [ha'', hel, ha']
+  exact hc Animal (eA a) ha (h ▸ hl)
+
+theorem m_212 : M.fracas_212_yes := by
+  intro E Mouse eM Animal eA Elephant eEl small large largeThan mickey dumbo _ _ _ _ _ hcomp _ h1 h2
+    ⟨m, _, hm⟩ ⟨el, _, hel⟩
+  obtain ⟨a, hs, ha⟩ := h1 m
+  obtain ⟨b, hl, hb⟩ := h2 el
+  have hs' : small Animal mickey := by rw [← hm, ← ha]; exact hs
+  have hl' : large Animal dumbo := by rw [← hel, ← hb]; exact hl
+  exact hcomp Animal mickey dumbo hs' hl'
+
+theorem m_214 : M.fracas_214_yes := by
+  intro E Authority eAu LawLecturer eLL legal fat ext _ p1 p2 x hx hfat
+  have hco : ∀ e, (∃ y : Authority, legal Authority (eAu y) ∧ eAu y = e) ↔
+      (∃ z : LawLecturer, eLL z = e) := by
+    intro e
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      exact p1 y hy
+    · rintro ⟨z, rfl⟩
+      exact p2 z
+  obtain ⟨z, hz⟩ := p1 x hx
+  refine ⟨z, ?_, hz⟩
+  rw [hz]
+  exact ext hco _ hfat
 
 end FraCaS.Encodings.Commitments
