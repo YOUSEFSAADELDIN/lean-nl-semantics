@@ -22,11 +22,13 @@ open FraCaS.Section1.Monotonicity.BlindEval (withFreshBudget)
 
 namespace FraCaS.HeldOut.Scan
 
+def attempt (ty : Expr) : TermElabM String := do
+  return if ← FraCaS.EndToEnd.attemptCloseEndToEnd ty then "1" else "0"
+
 def prove (n : Lean.Name) : TermElabM String := do
   match (← getEnv).find? n |>.bind (·.value?) with
   | none => return "m"
-  | some ty => withFreshBudget
-      (do pure (if ← FraCaS.EndToEnd.attemptCloseEndToEnd ty then "1" else "0")) (fun _ => pure "e")
+  | some ty => withFreshBudget (attempt ty) (fun _ => pure "e")
 
 def verdict (yes no : List String) : String :=
   let y := !yes.isEmpty && yes.all (· == "1")
