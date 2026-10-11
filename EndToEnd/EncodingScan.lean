@@ -1,9 +1,10 @@
 import EndToEnd
 import EndToEnd.Encodings.Section5
 import EndToEnd.Encodings.Commitments
+import EndToEnd.Encodings.Section3
 
 /-!
-# Noun encodings compared: FraCaS Section 5
+# Noun encodings compared: FraCaS Sections 5 and 3
 
 Scores FraCaS Section 5 in four encodings (`EndToEnd/Encodings/
 README.md`) with one generic prover: `aesop`, then `grind`, each told only
@@ -50,21 +51,28 @@ def runEncoding (label : String) (reg : List (Nat × FraCaS.Answer × Lean.Name 
     rows := rows ++ [(i, g, verdict [← prove attemptGeneric y] [← prove attemptGeneric n])]
   report label rows
 
-def runF (label : String) (prover : Expr → TermElabM Bool) : TermElabM Unit := do
+def runF (label : String) (prover : Expr → TermElabM Bool) (ids : List Nat) : TermElabM Unit := do
   let mut rows : List (Nat × FraCaS.Answer × String) := []
   for (i, g, ys, ns) in FraCaS.EndToEnd.registryBk do
-    if 197 ≤ i && i ≤ 219 then
+    if ids.contains i then
       let yv ← ys.mapM (prove prover)
       let nv ← ns.mapM (prove prover)
       rows := rows ++ [(i, g, verdict yv nv)]
   report label rows
 
+/-- Section 5's problems, and the Section 3 problems `S3` states. -/
+def section5 : List Nat := (List.range 23).map (· + 197)
+def section3 : List Nat := FraCaS.Encodings.S3.registry.map (·.1)
+
 elab "#encoding_scan" : command => liftTermElabM do
-  runF "F" attemptGeneric
+  runF "F" attemptGeneric section5
   runEncoding "P" FraCaS.Encodings.registryP
   runEncoding "W" FraCaS.Encodings.registryW
   runEncoding "M" FraCaS.Encodings.registryM
-  runF "F_pipeline_prover" FraCaS.EndToEnd.attemptCloseEndToEnd
+  runF "F_pipeline_prover" FraCaS.EndToEnd.attemptCloseEndToEnd section5
+  runF "F_S3" attemptGeneric section3
+  runEncoding "M_S3" FraCaS.Encodings.S3.registry
+  runF "F_S3_pipeline_prover" FraCaS.EndToEnd.attemptCloseEndToEnd section3
 
 end FraCaS.Encodings.Scan
 

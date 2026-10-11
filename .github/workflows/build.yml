@@ -391,7 +391,9 @@ jobs:
       - name: Regenerate the encoding comparison and check it matches
         run: |
           python3 EndToEnd/Encodings/gen_encodings.py
-          git diff --exit-code EndToEnd/Encodings/Section5.lean EndToEnd/Encodings/postulates.json
+          python3 EndToEnd/Encodings/gen_anaphora.py
+          git diff --exit-code EndToEnd/Encodings/Section5.lean EndToEnd/Encodings/postulates.json \
+            EndToEnd/Encodings/Section3.lean EndToEnd/Encodings/assumptions3.json
 
       - name: Regenerate the soundness ablations and check they match
         run: |

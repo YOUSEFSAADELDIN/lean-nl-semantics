@@ -1,0 +1,61 @@
+{
+ "skipped": {},
+ "assumptions": {
+  "114": [
+   [
+    "accommodated",
+    "mary's Workstation"
+   ]
+  ],
+  "115": [
+   [
+    "accommodated",
+    "mary's Workstation"
+   ]
+  ],
+  "116": [
+   [
+    "accommodated",
+    "mary's Workstation"
+   ]
+  ],
+  "117": [
+   [
+    "accommodated",
+    "Student \u2192 Workstation"
+   ]
+  ],
+  "118": [
+   [
+    "accommodated",
+    "Student \u2192 Workstation"
+   ]
+  ],
+  "119": [
+   [
+    "accommodated",
+    "Student \u2192 Workstation"
+   ]
+  ],
+  "120": [],
+  "131": [
+   [
+    "asserted",
+    "Department \u2192 Line"
+   ]
+  ],
+  "132": [
+   [
+    "asserted",
+    "Department \u2192 Line"
+   ]
+  ],
+  "133": [],
+  "138": [
+   [
+    "asserted",
+    "Report \u2192 CoverPage"
+   ]
+  ]
+ }
+}

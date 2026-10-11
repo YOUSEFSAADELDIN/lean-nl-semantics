@@ -32,4 +32,4 @@ roots = ["EndToEnd.Ablations"]
 # what each commits to. Built and scored by the `encodings` CI job.
 [[lean_lib]]
 name = "EndToEndEncodings"
-roots = ["EndToEnd.Encodings.Section5", "EndToEnd.Encodings.Commitments"]
+roots = ["EndToEnd.Encodings.Section5", "EndToEnd.Encodings.Commitments", "EndToEnd.Encodings.Section3"]
