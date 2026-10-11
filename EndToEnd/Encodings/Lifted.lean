@@ -1805,18 +1805,6 @@ def fracas_118_bk_yes_0 : Prop :=
 def fracas_118_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female haveWorkstation : A → Prop) [DecidablePred female] [DecidablePred haveWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, haveWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => has x y)) → (EveryT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (¬ (haveWorkstation mary))
 
-def fracas_119_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (useWorkstation mary)
-
-def fracas_119_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (¬ (useWorkstation mary))
-
-def fracas_119_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (useWorkstation mary)
-
-def fracas_119_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (¬ (useWorkstation mary))
-
 def fracas_120_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (attendMeeting chairMeetingSmithAttend chairMeeting : A → Prop) [DecidablePred attendMeeting] [DecidablePred chairMeetingSmithAttend] [DecidablePred chairMeeting] (smith : A), (attendMeeting smith) → (chairMeetingSmithAttend smith) → (chairMeeting smith)
 
@@ -5552,18 +5540,6 @@ def fracas_118_bk_yes_0 : Prop :=
 def fracas_118_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female haveWorkstation : A → Prop) [DecidablePred female] [DecidablePred haveWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (Function.Injective eWorkstation) → (Function.Injective eStudent) → (∀ x, haveWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => has x y)) → (EveryT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (¬ (haveWorkstation mary))
 
-def fracas_119_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (Function.Injective eWorkstation) → (Function.Injective eStudent) → (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (useWorkstation mary)
-
-def fracas_119_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (Function.Injective eWorkstation) → (Function.Injective eStudent) → (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (¬ (useWorkstation mary))
-
-def fracas_119_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (Function.Injective eWorkstation) → (Function.Injective eStudent) → (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (useWorkstation mary)
-
-def fracas_119_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (Workstation : Type) [Fintype Workstation] (eWorkstation : Workstation → A) (Student : Type) [Fintype Student] (eStudent : Student → A) (female useWorkstation : A → Prop) [DecidablePred female] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (Function.Injective eWorkstation) → (Function.Injective eStudent) → (∀ x, useWorkstation x ↔ SomeT eWorkstation (fun _ => True) (fun y => use x y)) → (NoT eStudent (fun _ => True) (fun x => use x (workstationOf x))) → (EveryT eStudent (fun _ => True) (fun x => female x ∧ has x (workstationOf x) ∧ (IsA eWorkstation (workstationOf x)))) → ((IsA eStudent mary)) → (¬ (useWorkstation mary))
-
 def fracas_120_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (attendMeeting chairMeetingSmithAttend chairMeeting : A → Prop) [DecidablePred attendMeeting] [DecidablePred chairMeetingSmithAttend] [DecidablePred chairMeeting] (smith : A), (attendMeeting smith) → (chairMeetingSmithAttend smith) → (chairMeeting smith)
 
@@ -7623,7 +7599,6 @@ def registryM : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (116, .yes, [``M.fracas_116_yes_0], [``M.fracas_116_no_0]),
   (117, .yes, [``M.fracas_117_yes_0], [``M.fracas_117_no_0]),
   (118, .yes, [``M.fracas_118_yes_0], [``M.fracas_118_no_0]),
-  (119, .no, [``M.fracas_119_yes_0], [``M.fracas_119_no_0]),
   (120, .yes, [``M.fracas_120_yes_0], [``M.fracas_120_no_0]),
   (128, .yes, [``M.fracas_128_yes_0, ``M.fracas_128_yes_1], [``M.fracas_128_no_0, ``M.fracas_128_no_1]),
   (129, .yes, [``M.fracas_129_yes_0, ``M.fracas_129_yes_1], [``M.fracas_129_no_0, ``M.fracas_129_no_1]),
@@ -7886,7 +7861,6 @@ def registryMBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (116, .yes, [``M.fracas_116_bk_yes_0], [``M.fracas_116_bk_no_0]),
   (117, .yes, [``M.fracas_117_bk_yes_0], [``M.fracas_117_bk_no_0]),
   (118, .yes, [``M.fracas_118_bk_yes_0], [``M.fracas_118_bk_no_0]),
-  (119, .no, [``M.fracas_119_bk_yes_0], [``M.fracas_119_bk_no_0]),
   (120, .yes, [``M.fracas_120_bk_yes_0], [``M.fracas_120_bk_no_0]),
   (128, .yes, [``M.fracas_128_bk_yes_0, ``M.fracas_128_bk_yes_1], [``M.fracas_128_bk_no_0, ``M.fracas_128_bk_no_1]),
   (129, .yes, [``M.fracas_129_bk_yes_0, ``M.fracas_129_bk_yes_1], [``M.fracas_129_bk_no_0, ``M.fracas_129_bk_no_1]),
@@ -8149,7 +8123,6 @@ def registryMInj : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (116, .yes, [``MInj.fracas_116_yes_0], [``MInj.fracas_116_no_0]),
   (117, .yes, [``MInj.fracas_117_yes_0], [``MInj.fracas_117_no_0]),
   (118, .yes, [``MInj.fracas_118_yes_0], [``MInj.fracas_118_no_0]),
-  (119, .no, [``MInj.fracas_119_yes_0], [``MInj.fracas_119_no_0]),
   (120, .yes, [``MInj.fracas_120_yes_0], [``MInj.fracas_120_no_0]),
   (128, .yes, [``MInj.fracas_128_yes_0, ``MInj.fracas_128_yes_1], [``MInj.fracas_128_no_0, ``MInj.fracas_128_no_1]),
   (129, .yes, [``MInj.fracas_129_yes_0, ``MInj.fracas_129_yes_1], [``MInj.fracas_129_no_0, ``MInj.fracas_129_no_1]),
@@ -8412,7 +8385,6 @@ def registryMInjBk : List (Nat × Answer × List Lean.Name × List Lean.Name) :=
   (116, .yes, [``MInj.fracas_116_bk_yes_0], [``MInj.fracas_116_bk_no_0]),
   (117, .yes, [``MInj.fracas_117_bk_yes_0], [``MInj.fracas_117_bk_no_0]),
   (118, .yes, [``MInj.fracas_118_bk_yes_0], [``MInj.fracas_118_bk_no_0]),
-  (119, .no, [``MInj.fracas_119_bk_yes_0], [``MInj.fracas_119_bk_no_0]),
   (120, .yes, [``MInj.fracas_120_bk_yes_0], [``MInj.fracas_120_bk_no_0]),
   (128, .yes, [``MInj.fracas_128_bk_yes_0, ``MInj.fracas_128_bk_yes_1], [``MInj.fracas_128_bk_no_0, ``MInj.fracas_128_bk_no_1]),
   (129, .yes, [``MInj.fracas_129_bk_yes_0, ``MInj.fracas_129_bk_yes_1], [``MInj.fracas_129_bk_no_0, ``MInj.fracas_129_bk_no_1]),
@@ -8564,6 +8536,6 @@ def registryMInjBk : List (Nat × Answer × List Lean.Name × List Lean.Name) :=
 
 /-- The problems whose claims quantify over a noun: on every other problem
 the lifted claim is F's, token for token (the generator checks). -/
-def typed : List Nat := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 82, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100, 102, 103, 105, 106, 107, 108, 109, 110, 115, 117, 118, 119, 128, 129, 130, 131, 132, 133, 138, 149, 153, 167, 202, 210, 211, 212, 213, 214, 215, 230, 231, 232, 233, 234, 235, 239, 240, 241, 246, 247, 248, 343]
+def typed : List Nat := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 82, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100, 102, 103, 105, 106, 107, 108, 109, 110, 115, 117, 118, 128, 129, 130, 131, 132, 133, 138, 149, 153, 167, 202, 210, 211, 212, 213, 214, 215, 230, 231, 232, 233, 234, 235, 239, 240, 241, 246, 247, 248, 343]
 
 end FraCaS.Encodings.Lifted

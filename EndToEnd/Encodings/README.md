@@ -225,10 +225,10 @@ On the 138 (with background knowledge; 0 wrong answers in every row):
    individuation question. `Typed.lean` proves:
    - every, some and no transfer to F's quantifiers unconditionally
      (`every_t`, `some_t`, `no_t`);
-   - the counting determiners transfer exactly when the embedding is
-     injective (`atLeast_t`, ..., `more_t`, from `cardT_eq`);
-   - without injectivity they do not (`counting_needs_injectivity`, a
-     countermodel).
+   - the counting determiners transfer when the embedding is injective
+     (`atLeast_t`, ..., `more_t`, from `cardT_eq`);
+   - without injectivity they need not (`counting_needs_injectivity`, a
+     countermodel). Injectivity is sufficient, not shown necessary.
 
    So M with injective embeddings (MInj) states each problem as F does,
    with "n" read as `IsA eN`. Each predicate is `IsA` of its subtype's
@@ -253,6 +253,20 @@ no accuracy edge, and with injective embeddings no logical difference.
 The one substantive difference is that nouns as types make the
 individuation of counted nouns an explicit assumption. As in Phases
 1a/1b, there is a real cost in automation that was built for predicates.
+
+What this phase does not show:
+- **The tie on every, some and no holds by construction.** M is F with
+  each quantified noun lifted to a type, and the transfer lemmas prove
+  the lift preserves those quantifiers; the experiment measures only
+  how well each form is proved. The comparison of genuinely different
+  noun encodings is Phase 1 (34 problems).
+- **Injectivity changed no result on FraCaS**: 95 with it or without.
+  The individuation point itself is not new: Chatzikyriakidis & Luo
+  (2018) argue that common nouns need identity criteria precisely for
+  counting. This phase mechanizes it; it does not discover it.
+- **M here keeps F's fused names**: "Italian man" is one type, not an
+  adjective applied to a noun, so MTT's treatment of modification is
+  not tested (Phase 1a tests it on Section 5).
 
 ## Phases
 

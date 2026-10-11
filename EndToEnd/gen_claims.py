@@ -51,9 +51,11 @@ the standard copy treatment; negation is translated only with a proper-
 name subject, where its scope is unambiguous.
 
 A problem is skipped, with its reason reported, if any sentence fails to
-parse, any top-ranked reading fails to translate, or a translation needs
+parse, any top-ranked reading fails to translate, a translation needs
 something the generic rule doesn't assemble (Skolem functions, presupposition
-bundles, conjunct projections, a name used at two different kinds).
+bundles, conjunct projections, a name used at two different kinds), or a
+name would stand for two different phrases (`names.py`: "said he didn't
+drink black coffee" and "drink black coffee" both named `drinkBlackCoffee`).
 
 Needs the `gf` binary and a compiled EndToEnd/FraCaSParse.pgf (the `build-gf` CI
 job has both and regenerates this file to check it is reproducible). Do not
@@ -78,6 +80,7 @@ from parse_rank import parse_readings, ranked, tokenize  # noqa: E402
 from translate import App, _leaf_words, camel_name, parse_tree  # noqa: E402
 from readings import AMBIGUITY_KINDS, translate_cl_reading  # noqa: E402
 from background import postulates  # noqa: E402
+from names import clashes as name_clashes  # noqa: E402
 
 # Identifiers a generated predicate/individual name must not collide with.
 LEAN_RESERVED = {
@@ -976,6 +979,11 @@ def assemble(idn, sentences):
     bad = [n for n in order if n in LEAN_RESERVED or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", n)]
     if bad:
         return None, f"generated names unusable as Lean binders: {bad}"
+    # No name may stand for two different phrases (`names.py`).
+    clash = name_clashes([c for _r, c, _n, _k in clauses], set(order))
+    if clash:
+        name, diffs = next(iter(clash.items()))
+        return None, f"does not translate: `{name}` would name phrases that differ in {diffs}"
 
     unary = [n for n in order if kinds[n] == "unary"]
     binary = [n for n in order if kinds[n] == "binary"]

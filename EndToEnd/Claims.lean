@@ -15,10 +15,10 @@ assembled by one generic rule. See `EndToEnd/gen_claims.py` for the
 exact pipeline and what it deliberately does not supply. Evaluated by
 `EndToEnd/Scan.lean`.
 
-260 of 342 problems carried all the way through;
+259 of 342 problems carried all the way through;
 the rest, by first failing stage:
 - a sentence does not parse: 65
-- a sentence parses but translate.py does not cover its reading: 16
+- a sentence parses but translate.py does not cover its reading: 17
 - a generated name is not a usable Lean binder: 1
 
 Per-problem skip reasons (first failing sentence/stage):
@@ -29,6 +29,7 @@ Per-problem skip reasons (first failing sentence/stage):
 - 111: hypothesis parses (1 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
 - 112: hypothesis parses (1 readings) but does not translate: coordinated subject with a counted object (cumulative reading)
 - 113: premise 2 parses (1 readings) but does not translate: an object pronoun with no resolved antecedent
+- 119: does not translate: `useWorkstation` would name phrases that differ in [(), ('she_Pron',)]
 - 121: premise 2 does not parse: 'She also delivered them an invoice.'
 - 122: premise 2 does not parse: 'He is appointed its members.'
 - 123: premise 1 does not parse: 'ITEL has sent most of the reports Smith needs.'
@@ -2494,22 +2495,6 @@ def fracas_118_bk_yes_0 : Prop :=
 /-- As `_no_0`, with the same background knowledge. -/
 def fracas_118_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (student female workstation haveWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred haveWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, haveWorkstation x ↔ ∃ y, workstation y ∧ has x y) → (Every student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (¬ (haveWorkstation mary))
-
-/-- Reading assignment 0 (unambiguous): "yes" test. -/
-def fracas_119_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (useWorkstation mary)
-
-/-- Reading assignment 0 (unambiguous): "no" test. -/
-def fracas_119_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (¬ (useWorkstation mary))
-
-/-- As `_yes_0`, with 0 background-knowledge premise(s) from `EndToEnd/background.py`. -/
-def fracas_119_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (useWorkstation mary)
-
-/-- As `_no_0`, with the same background knowledge. -/
-def fracas_119_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (¬ (useWorkstation mary))
 
 /-- Reading assignment 0 (unambiguous): "yes" test. -/
 def fracas_120_yes_0 : Prop :=
@@ -5221,7 +5206,6 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (116, .yes, [``Claims.fracas_116_yes_0], [``Claims.fracas_116_no_0]),
   (117, .yes, [``Claims.fracas_117_yes_0], [``Claims.fracas_117_no_0]),
   (118, .yes, [``Claims.fracas_118_yes_0], [``Claims.fracas_118_no_0]),
-  (119, .no, [``Claims.fracas_119_yes_0], [``Claims.fracas_119_no_0]),
   (120, .yes, [``Claims.fracas_120_yes_0], [``Claims.fracas_120_no_0]),
   (128, .yes, [``Claims.fracas_128_yes_0, ``Claims.fracas_128_yes_1], [``Claims.fracas_128_no_0, ``Claims.fracas_128_no_1]),
   (129, .yes, [``Claims.fracas_129_yes_0, ``Claims.fracas_129_yes_1], [``Claims.fracas_129_no_0, ``Claims.fracas_129_no_1]),
@@ -5486,7 +5470,6 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (116, .yes, [``Claims.fracas_116_bk_yes_0], [``Claims.fracas_116_bk_no_0]),
   (117, .yes, [``Claims.fracas_117_bk_yes_0], [``Claims.fracas_117_bk_no_0]),
   (118, .yes, [``Claims.fracas_118_bk_yes_0], [``Claims.fracas_118_bk_no_0]),
-  (119, .no, [``Claims.fracas_119_bk_yes_0], [``Claims.fracas_119_bk_no_0]),
   (120, .yes, [``Claims.fracas_120_bk_yes_0], [``Claims.fracas_120_bk_no_0]),
   (128, .yes, [``Claims.fracas_128_bk_yes_0, ``Claims.fracas_128_bk_yes_1], [``Claims.fracas_128_bk_no_0, ``Claims.fracas_128_bk_no_1]),
   (129, .yes, [``Claims.fracas_129_bk_yes_0, ``Claims.fracas_129_bk_yes_1], [``Claims.fracas_129_bk_no_0, ``Claims.fracas_129_bk_no_1]),
