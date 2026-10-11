@@ -30,10 +30,10 @@ end W
 
 namespace M
 def fracas_197_yes : Prop :=
-  ∀ {E : Type} (Diamond : Type) (eDiamond : Diamond → E) (genuine : Type → E → Prop) (haveV : E → E → Prop) (john : E), (∃ y1 : {x : Diamond // genuine Diamond (eDiamond x)}, haveV john ((fun x => eDiamond x.1) y1)) → (∃ y2 : Diamond, haveV john (eDiamond y2))
+  ∀ {E : Type} (Diamond : Type) (eDiamond : Diamond → E) (genuine : Type → E → Prop) (haveV : E → E → Prop) (john : E), (∃ y1 : Diamond, genuine Diamond (eDiamond y1) ∧ haveV john (eDiamond y1)) → (∃ y2 : Diamond, haveV john (eDiamond y2))
 
 def fracas_197_no : Prop :=
-  ∀ {E : Type} (Diamond : Type) (eDiamond : Diamond → E) (genuine : Type → E → Prop) (haveV : E → E → Prop) (john : E), (∃ y1 : {x : Diamond // genuine Diamond (eDiamond x)}, haveV john ((fun x => eDiamond x.1) y1)) → ¬ (∃ y2 : Diamond, haveV john (eDiamond y2))
+  ∀ {E : Type} (Diamond : Type) (eDiamond : Diamond → E) (genuine : Type → E → Prop) (haveV : E → E → Prop) (john : E), (∃ y1 : Diamond, genuine Diamond (eDiamond y1) ∧ haveV john (eDiamond y1)) → ¬ (∃ y2 : Diamond, haveV john (eDiamond y2))
 end M
 
 namespace P
@@ -54,10 +54,10 @@ end W
 
 namespace M
 def fracas_198_yes : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x : UniversityStudent, eUniversityStudent x = e)) → ((∃ x1 : {e : E // former UniversityStudent e}, (fun x => x.1) x1 = john)) → ((∃ x2 : UniversityStudent, eUniversityStudent x2 = john))
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x3 : UniversityStudent, (eUniversityStudent x3) = e)) → ((∃ x1 : E, former UniversityStudent x1 ∧ x1 = john)) → ((∃ x2 : UniversityStudent, (eUniversityStudent x2) = john))
 
 def fracas_198_no : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x : UniversityStudent, eUniversityStudent x = e)) → ((∃ x1 : {e : E // former UniversityStudent e}, (fun x => x.1) x1 = john)) → ¬ ((∃ x2 : UniversityStudent, eUniversityStudent x2 = john))
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x3 : UniversityStudent, (eUniversityStudent x3) = e)) → ((∃ x1 : E, former UniversityStudent x1 ∧ x1 = john)) → ¬ ((∃ x2 : UniversityStudent, (eUniversityStudent x2) = john))
 end M
 
 namespace P
@@ -78,10 +78,10 @@ end W
 
 namespace M
 def fracas_199_yes : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (successful : Type → E → Prop) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x : UniversityStudent, eUniversityStudent x = e)) → ((∃ x1 : {x : {e : E // former UniversityStudent e} // successful {e : E // former UniversityStudent e} ((fun x => x.1) x)}, (fun x => (fun x => x.1) x.1) x1 = john)) → (successful E john)
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (successful : Type → E → Prop) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x2 : UniversityStudent, (eUniversityStudent x2) = e)) → ((∃ x1 : E, former UniversityStudent x1 ∧ successful {x : E // former UniversityStudent x} x1 ∧ x1 = john)) → (successful E john)
 
 def fracas_199_no : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (successful : Type → E → Prop) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x : UniversityStudent, eUniversityStudent x = e)) → ((∃ x1 : {x : {e : E // former UniversityStudent e} // successful {e : E // former UniversityStudent e} ((fun x => x.1) x)}, (fun x => (fun x => x.1) x.1) x1 = john)) → ¬ (successful E john)
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (successful : Type → E → Prop) (former : Type → E → Prop) (john : E), (∀ e, former UniversityStudent e → ¬ (∃ x2 : UniversityStudent, (eUniversityStudent x2) = e)) → ((∃ x1 : E, former UniversityStudent x1 ∧ successful {x : E // former UniversityStudent x} x1 ∧ x1 = john)) → ¬ (successful E john)
 end M
 
 namespace P
@@ -102,10 +102,10 @@ end W
 
 namespace M
 def fracas_200_yes : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x : {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)}, (fun x => eUniversityStudent x.1) x = e)) → ((∃ x1 : {e : E // former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e}, (fun x => x.1) x1 = john)) → (successful E john)
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x2 : UniversityStudent, successful UniversityStudent (eUniversityStudent x2) ∧ (eUniversityStudent x2) = e)) → ((∃ x1 : E, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} x1 ∧ x1 = john)) → (successful E john)
 
 def fracas_200_no : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x : {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)}, (fun x => eUniversityStudent x.1) x = e)) → ((∃ x1 : {e : E // former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e}, (fun x => x.1) x1 = john)) → ¬ (successful E john)
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x2 : UniversityStudent, successful UniversityStudent (eUniversityStudent x2) ∧ (eUniversityStudent x2) = e)) → ((∃ x1 : E, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} x1 ∧ x1 = john)) → ¬ (successful E john)
 end M
 
 namespace P
@@ -126,10 +126,10 @@ end W
 
 namespace M
 def fracas_201_yes : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x : {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)}, (fun x => eUniversityStudent x.1) x = e)) → ((∃ x1 : {e : E // former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e}, (fun x => x.1) x1 = john)) → ((∃ x2 : UniversityStudent, eUniversityStudent x2 = john))
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x3 : UniversityStudent, successful UniversityStudent (eUniversityStudent x3) ∧ (eUniversityStudent x3) = e)) → ((∃ x1 : E, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} x1 ∧ x1 = john)) → ((∃ x2 : UniversityStudent, (eUniversityStudent x2) = john))
 
 def fracas_201_no : Prop :=
-  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x : {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)}, (fun x => eUniversityStudent x.1) x = e)) → ((∃ x1 : {e : E // former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e}, (fun x => x.1) x1 = john)) → ¬ ((∃ x2 : UniversityStudent, eUniversityStudent x2 = john))
+  ∀ {E : Type} (UniversityStudent : Type) (eUniversityStudent : UniversityStudent → E) (former : Type → E → Prop) (successful : Type → E → Prop) (john : E), (∀ e, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} e → ¬ (∃ x3 : UniversityStudent, successful UniversityStudent (eUniversityStudent x3) ∧ (eUniversityStudent x3) = e)) → ((∃ x1 : E, former {x : UniversityStudent // successful UniversityStudent (eUniversityStudent x)} x1 ∧ x1 = john)) → ¬ ((∃ x2 : UniversityStudent, (eUniversityStudent x2) = john))
 end M
 
 namespace P
@@ -150,10 +150,10 @@ end W
 
 namespace M
 def fracas_202_yes : Prop :=
-  ∀ {E : Type} (Mammal : Type) (eMammal : Mammal → E) (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop), (∀ x1 : Mammal, (∃ x2 : Animal, eAnimal x2 = (eMammal x1))) → (∀ x3 : {x : Mammal // fourLegged (eMammal x)}, (∃ x4 : {x : Animal // fourLegged (eAnimal x)}, (fun x => eAnimal x.1) x4 = ((fun x => eMammal x.1) x3)))
+  ∀ {E : Type} (Mammal : Type) (eMammal : Mammal → E) (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop), (∀ x1 : Mammal, (∃ x2 : Animal, (eAnimal x2) = (eMammal x1))) → (∀ x3 : Mammal, fourLegged (eMammal x3) → (∃ x4 : Animal, fourLegged (eAnimal x4) ∧ (eAnimal x4) = (eMammal x3)))
 
 def fracas_202_no : Prop :=
-  ∀ {E : Type} (Mammal : Type) (eMammal : Mammal → E) (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop), (∀ x1 : Mammal, (∃ x2 : Animal, eAnimal x2 = (eMammal x1))) → ¬ (∀ x3 : {x : Mammal // fourLegged (eMammal x)}, (∃ x4 : {x : Animal // fourLegged (eAnimal x)}, (fun x => eAnimal x.1) x4 = ((fun x => eMammal x.1) x3)))
+  ∀ {E : Type} (Mammal : Type) (eMammal : Mammal → E) (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop), (∀ x1 : Mammal, (∃ x2 : Animal, (eAnimal x2) = (eMammal x1))) → ¬ (∀ x3 : Mammal, fourLegged (eMammal x3) → (∃ x4 : Animal, fourLegged (eAnimal x4) ∧ (eAnimal x4) = (eMammal x3)))
 end M
 
 namespace P
@@ -174,10 +174,10 @@ end W
 
 namespace M
 def fracas_203_yes : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop) (dumbo : E), ((∃ x1 : {x : Animal // fourLegged (eAnimal x)}, (fun x => eAnimal x.1) x1 = dumbo)) → (fourLegged dumbo)
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop) (dumbo : E), ((∃ x1 : Animal, fourLegged (eAnimal x1) ∧ (eAnimal x1) = dumbo)) → (fourLegged dumbo)
 
 def fracas_203_no : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop) (dumbo : E), ((∃ x1 : {x : Animal // fourLegged (eAnimal x)}, (fun x => eAnimal x.1) x1 = dumbo)) → ¬ (fourLegged dumbo)
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (fourLegged : E → Prop) (dumbo : E), ((∃ x1 : Animal, fourLegged (eAnimal x1) ∧ (eAnimal x1) = dumbo)) → ¬ (fourLegged dumbo)
 end M
 
 namespace P
@@ -198,10 +198,10 @@ end W
 
 namespace M
 def fracas_204_yes : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = mickey)) → ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = mickey))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = mickey)) → ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = mickey))
 
 def fracas_204_no : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = mickey)) → ¬ ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = mickey))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = mickey)) → ¬ ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = mickey))
 end M
 
 namespace P
@@ -222,10 +222,10 @@ end W
 
 namespace M
 def fracas_205_yes : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = dumbo)) → ((∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = dumbo))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : Animal, large Animal (eAnimal x1) ∧ (eAnimal x1) = dumbo)) → ((∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = dumbo))
 
 def fracas_205_no : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = dumbo)) → ¬ ((∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = dumbo))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → ((∃ x1 : Animal, large Animal (eAnimal x1) ∧ (eAnimal x1) = dumbo)) → ¬ ((∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = dumbo))
 end M
 
 namespace P
@@ -246,10 +246,10 @@ end W
 
 namespace M
 def fracas_206_yes : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = fido)) → ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = fido))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = fido)) → ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = fido))
 
 def fracas_206_no : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = fido)) → ¬ ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = fido))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = fido)) → ¬ ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = fido))
 end M
 
 namespace P
@@ -270,10 +270,10 @@ end W
 
 namespace M
 def fracas_207_yes : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = fido)) → ((∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = fido))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : Animal, large Animal (eAnimal x1) ∧ (eAnimal x1) = fido)) → ((∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = fido))
 
 def fracas_207_no : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = fido)) → ¬ ((∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = fido))
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (fido : E), (∀ (c : Type) e, small c e → ¬ large c e) → ¬ ((∃ x1 : Animal, large Animal (eAnimal x1) ∧ (eAnimal x1) = fido)) → ¬ ((∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = fido))
 end M
 
 namespace P
@@ -294,10 +294,10 @@ end W
 
 namespace M
 def fracas_208_yes : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (smallThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → smallThan e₁ e₂) → (∀ e₁ e₂, smallThan e₁ e₂ → ¬ smallThan e₂ e₁) → ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = mickey)) → ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = dumbo)) → (smallThan mickey dumbo)
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (smallThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → smallThan e₁ e₂) → (∀ e₁ e₂, smallThan e₁ e₂ → ¬ smallThan e₂ e₁) → ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = mickey)) → ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = dumbo)) → (smallThan mickey dumbo)
 
 def fracas_208_no : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (smallThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → smallThan e₁ e₂) → (∀ e₁ e₂, smallThan e₁ e₂ → ¬ smallThan e₂ e₁) → ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = mickey)) → ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = dumbo)) → ¬ (smallThan mickey dumbo)
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (smallThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → smallThan e₁ e₂) → (∀ e₁ e₂, smallThan e₁ e₂ → ¬ smallThan e₂ e₁) → ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = mickey)) → ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = dumbo)) → ¬ (smallThan mickey dumbo)
 end M
 
 namespace P
@@ -318,10 +318,10 @@ end W
 
 namespace M
 def fracas_209_yes : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = mickey)) → ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = dumbo)) → (largeThan mickey dumbo)
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = mickey)) → ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = dumbo)) → (largeThan mickey dumbo)
 
 def fracas_209_no : Prop :=
-  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → ((∃ x1 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x1 = mickey)) → ((∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = dumbo)) → ¬ (largeThan mickey dumbo)
+  ∀ {E : Type} (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → ((∃ x1 : Animal, small Animal (eAnimal x1) ∧ (eAnimal x1) = mickey)) → ((∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = dumbo)) → ¬ (largeThan mickey dumbo)
 end M
 
 namespace P
@@ -342,10 +342,10 @@ end W
 
 namespace M
 def fracas_210_yes : Prop :=
-  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x5 : Mouse, eMouse x5 = e) ↔ (∃ x6 : Animal, eAnimal x6 = e)) → ∀ e, large Mouse e → large Animal e) → ((∀ e, (∃ x7 : Animal, eAnimal x7 = e) ↔ (∃ x8 : Mouse, eMouse x8 = e)) → ∀ e, large Animal e → large Mouse e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eMouse x1))) → ((∃ x3 : {x : Mouse // large Mouse (eMouse x)}, (fun x => eMouse x.1) x3 = mickey)) → ((∃ x4 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x4 = mickey))
+  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x5 : Mouse, (eMouse x5) = e) ↔ (∃ x6 : Animal, (eAnimal x6) = e)) → ∀ e, large Mouse e → large Animal e) → ((∀ e, (∃ x7 : Animal, (eAnimal x7) = e) ↔ (∃ x8 : Mouse, (eMouse x8) = e)) → ∀ e, large Animal e → large Mouse e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = (eMouse x1))) → ((∃ x3 : Mouse, large Mouse (eMouse x3) ∧ (eMouse x3) = mickey)) → ((∃ x4 : Animal, large Animal (eAnimal x4) ∧ (eAnimal x4) = mickey))
 
 def fracas_210_no : Prop :=
-  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x5 : Mouse, eMouse x5 = e) ↔ (∃ x6 : Animal, eAnimal x6 = e)) → ∀ e, large Mouse e → large Animal e) → ((∀ e, (∃ x7 : Animal, eAnimal x7 = e) ↔ (∃ x8 : Mouse, eMouse x8 = e)) → ∀ e, large Animal e → large Mouse e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eMouse x1))) → ((∃ x3 : {x : Mouse // large Mouse (eMouse x)}, (fun x => eMouse x.1) x3 = mickey)) → ¬ ((∃ x4 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x4 = mickey))
+  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x5 : Mouse, (eMouse x5) = e) ↔ (∃ x6 : Animal, (eAnimal x6) = e)) → ∀ e, large Mouse e → large Animal e) → ((∀ e, (∃ x7 : Animal, (eAnimal x7) = e) ↔ (∃ x8 : Mouse, (eMouse x8) = e)) → ∀ e, large Animal e → large Mouse e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = (eMouse x1))) → ((∃ x3 : Mouse, large Mouse (eMouse x3) ∧ (eMouse x3) = mickey)) → ¬ ((∃ x4 : Animal, large Animal (eAnimal x4) ∧ (eAnimal x4) = mickey))
 end M
 
 namespace P
@@ -366,10 +366,10 @@ end W
 
 namespace M
 def fracas_211_yes : Prop :=
-  ∀ {E : Type} (Elephant : Type) (eElephant : Elephant → E) (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), ((∀ e, (∃ x5 : Elephant, eElephant x5 = e) ↔ (∃ x6 : Animal, eAnimal x6 = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x7 : Animal, eAnimal x7 = e) ↔ (∃ x8 : Elephant, eElephant x8 = e)) → ∀ e, small Animal e → small Elephant e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Elephant, (∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eElephant x1))) → ((∃ x3 : {x : Elephant // small Elephant (eElephant x)}, (fun x => eElephant x.1) x3 = dumbo)) → ((∃ x4 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x4 = dumbo))
+  ∀ {E : Type} (Elephant : Type) (eElephant : Elephant → E) (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), ((∀ e, (∃ x5 : Elephant, (eElephant x5) = e) ↔ (∃ x6 : Animal, (eAnimal x6) = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x7 : Animal, (eAnimal x7) = e) ↔ (∃ x8 : Elephant, (eElephant x8) = e)) → ∀ e, small Animal e → small Elephant e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Elephant, (∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = (eElephant x1))) → ((∃ x3 : Elephant, small Elephant (eElephant x3) ∧ (eElephant x3) = dumbo)) → ((∃ x4 : Animal, small Animal (eAnimal x4) ∧ (eAnimal x4) = dumbo))
 
 def fracas_211_no : Prop :=
-  ∀ {E : Type} (Elephant : Type) (eElephant : Elephant → E) (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), ((∀ e, (∃ x5 : Elephant, eElephant x5 = e) ↔ (∃ x6 : Animal, eAnimal x6 = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x7 : Animal, eAnimal x7 = e) ↔ (∃ x8 : Elephant, eElephant x8 = e)) → ∀ e, small Animal e → small Elephant e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Elephant, (∃ x2 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eElephant x1))) → ((∃ x3 : {x : Elephant // small Elephant (eElephant x)}, (fun x => eElephant x.1) x3 = dumbo)) → ¬ ((∃ x4 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x4 = dumbo))
+  ∀ {E : Type} (Elephant : Type) (eElephant : Elephant → E) (Animal : Type) (eAnimal : Animal → E) (large : Type → E → Prop) (small : Type → E → Prop) (dumbo : E), ((∀ e, (∃ x5 : Elephant, (eElephant x5) = e) ↔ (∃ x6 : Animal, (eAnimal x6) = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x7 : Animal, (eAnimal x7) = e) ↔ (∃ x8 : Elephant, (eElephant x8) = e)) → ∀ e, small Animal e → small Elephant e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Elephant, (∃ x2 : Animal, large Animal (eAnimal x2) ∧ (eAnimal x2) = (eElephant x1))) → ((∃ x3 : Elephant, small Elephant (eElephant x3) ∧ (eElephant x3) = dumbo)) → ¬ ((∃ x4 : Animal, small Animal (eAnimal x4) ∧ (eAnimal x4) = dumbo))
 end M
 
 namespace P
@@ -390,10 +390,10 @@ end W
 
 namespace M
 def fracas_212_yes : Prop :=
-  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (Elephant : Type) (eElephant : Elephant → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), ((∀ e, (∃ x7 : Animal, eAnimal x7 = e) ↔ (∃ x8 : Elephant, eElephant x8 = e)) → ∀ e, small Animal e → small Elephant e) → ((∀ e, (∃ x9 : Elephant, eElephant x9 = e) ↔ (∃ x10 : Animal, eAnimal x10 = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x11 : Animal, eAnimal x11 = e) ↔ (∃ x12 : Mouse, eMouse x12 = e)) → ∀ e, large Animal e → large Mouse e) → ((∀ e, (∃ x13 : Mouse, eMouse x13 = e) ↔ (∃ x14 : Animal, eAnimal x14 = e)) → ∀ e, large Mouse e → large Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → (∀ x1 : Mouse, (∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eMouse x1))) → (∀ x3 : Elephant, (∃ x4 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x4 = (eElephant x3))) → ((∃ x5 : {x : Mouse // large Mouse (eMouse x)}, (fun x => eMouse x.1) x5 = mickey)) → ((∃ x6 : {x : Elephant // small Elephant (eElephant x)}, (fun x => eElephant x.1) x6 = dumbo)) → (largeThan dumbo mickey)
+  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (Elephant : Type) (eElephant : Elephant → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), ((∀ e, (∃ x7 : Animal, (eAnimal x7) = e) ↔ (∃ x8 : Elephant, (eElephant x8) = e)) → ∀ e, small Animal e → small Elephant e) → ((∀ e, (∃ x9 : Elephant, (eElephant x9) = e) ↔ (∃ x10 : Animal, (eAnimal x10) = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x11 : Animal, (eAnimal x11) = e) ↔ (∃ x12 : Mouse, (eMouse x12) = e)) → ∀ e, large Animal e → large Mouse e) → ((∀ e, (∃ x13 : Mouse, (eMouse x13) = e) ↔ (∃ x14 : Animal, (eAnimal x14) = e)) → ∀ e, large Mouse e → large Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → (∀ x1 : Mouse, (∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = (eMouse x1))) → (∀ x3 : Elephant, (∃ x4 : Animal, large Animal (eAnimal x4) ∧ (eAnimal x4) = (eElephant x3))) → ((∃ x5 : Mouse, large Mouse (eMouse x5) ∧ (eMouse x5) = mickey)) → ((∃ x6 : Elephant, small Elephant (eElephant x6) ∧ (eElephant x6) = dumbo)) → (largeThan dumbo mickey)
 
 def fracas_212_no : Prop :=
-  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (Elephant : Type) (eElephant : Elephant → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), ((∀ e, (∃ x7 : Animal, eAnimal x7 = e) ↔ (∃ x8 : Elephant, eElephant x8 = e)) → ∀ e, small Animal e → small Elephant e) → ((∀ e, (∃ x9 : Elephant, eElephant x9 = e) ↔ (∃ x10 : Animal, eAnimal x10 = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x11 : Animal, eAnimal x11 = e) ↔ (∃ x12 : Mouse, eMouse x12 = e)) → ∀ e, large Animal e → large Mouse e) → ((∀ e, (∃ x13 : Mouse, eMouse x13 = e) ↔ (∃ x14 : Animal, eAnimal x14 = e)) → ∀ e, large Mouse e → large Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → (∀ x1 : Mouse, (∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eMouse x1))) → (∀ x3 : Elephant, (∃ x4 : {x : Animal // large Animal (eAnimal x)}, (fun x => eAnimal x.1) x4 = (eElephant x3))) → ((∃ x5 : {x : Mouse // large Mouse (eMouse x)}, (fun x => eMouse x.1) x5 = mickey)) → ((∃ x6 : {x : Elephant // small Elephant (eElephant x)}, (fun x => eElephant x.1) x6 = dumbo)) → ¬ (largeThan dumbo mickey)
+  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (Elephant : Type) (eElephant : Elephant → E) (small : Type → E → Prop) (large : Type → E → Prop) (largeThan : E → E → Prop) (mickey dumbo : E), ((∀ e, (∃ x7 : Animal, (eAnimal x7) = e) ↔ (∃ x8 : Elephant, (eElephant x8) = e)) → ∀ e, small Animal e → small Elephant e) → ((∀ e, (∃ x9 : Elephant, (eElephant x9) = e) ↔ (∃ x10 : Animal, (eAnimal x10) = e)) → ∀ e, small Elephant e → small Animal e) → ((∀ e, (∃ x11 : Animal, (eAnimal x11) = e) ↔ (∃ x12 : Mouse, (eMouse x12) = e)) → ∀ e, large Animal e → large Mouse e) → ((∀ e, (∃ x13 : Mouse, (eMouse x13) = e) ↔ (∃ x14 : Animal, (eAnimal x14) = e)) → ∀ e, large Mouse e → large Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ (c : Type) e₁ e₂, small c e₁ → large c e₂ → largeThan e₂ e₁) → (∀ e₁ e₂, largeThan e₁ e₂ → ¬ largeThan e₂ e₁) → (∀ x1 : Mouse, (∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = (eMouse x1))) → (∀ x3 : Elephant, (∃ x4 : Animal, large Animal (eAnimal x4) ∧ (eAnimal x4) = (eElephant x3))) → ((∃ x5 : Mouse, large Mouse (eMouse x5) ∧ (eMouse x5) = mickey)) → ((∃ x6 : Elephant, small Elephant (eElephant x6) ∧ (eElephant x6) = dumbo)) → ¬ (largeThan dumbo mickey)
 end M
 
 namespace P
@@ -414,10 +414,10 @@ end W
 
 namespace M
 def fracas_213_yes : Prop :=
-  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x4 : Animal, eAnimal x4 = e) ↔ (∃ x5 : E, (fun x : E => x) x5 = e)) → ∀ e, small Animal e → small E e) → ((∀ e, (∃ x6 : E, (fun x : E => x) x6 = e) ↔ (∃ x7 : Animal, eAnimal x7 = e)) → ∀ e, small E e → small Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eMouse x1))) → ((∃ x3 : {x : Mouse // large Mouse (eMouse x)}, (fun x => eMouse x.1) x3 = mickey)) → (small E mickey)
+  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x4 : Animal, (eAnimal x4) = e) ↔ (∃ x5 : E, x5 = e)) → ∀ e, small Animal e → small E e) → ((∀ e, (∃ x6 : E, x6 = e) ↔ (∃ x7 : Animal, (eAnimal x7) = e)) → ∀ e, small E e → small Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = (eMouse x1))) → ((∃ x3 : Mouse, large Mouse (eMouse x3) ∧ (eMouse x3) = mickey)) → (small E mickey)
 
 def fracas_213_no : Prop :=
-  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x4 : Animal, eAnimal x4 = e) ↔ (∃ x5 : E, (fun x : E => x) x5 = e)) → ∀ e, small Animal e → small E e) → ((∀ e, (∃ x6 : E, (fun x : E => x) x6 = e) ↔ (∃ x7 : Animal, eAnimal x7 = e)) → ∀ e, small E e → small Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : {x : Animal // small Animal (eAnimal x)}, (fun x => eAnimal x.1) x2 = (eMouse x1))) → ((∃ x3 : {x : Mouse // large Mouse (eMouse x)}, (fun x => eMouse x.1) x3 = mickey)) → ¬ (small E mickey)
+  ∀ {E : Type} (Mouse : Type) (eMouse : Mouse → E) (Animal : Type) (eAnimal : Animal → E) (small : Type → E → Prop) (large : Type → E → Prop) (mickey : E), ((∀ e, (∃ x4 : Animal, (eAnimal x4) = e) ↔ (∃ x5 : E, x5 = e)) → ∀ e, small Animal e → small E e) → ((∀ e, (∃ x6 : E, x6 = e) ↔ (∃ x7 : Animal, (eAnimal x7) = e)) → ∀ e, small E e → small Animal e) → (∀ (c : Type) e, small c e → ¬ large c e) → (∀ x1 : Mouse, (∃ x2 : Animal, small Animal (eAnimal x2) ∧ (eAnimal x2) = (eMouse x1))) → ((∃ x3 : Mouse, large Mouse (eMouse x3) ∧ (eMouse x3) = mickey)) → ¬ (small E mickey)
 end M
 
 namespace P
@@ -438,10 +438,10 @@ end W
 
 namespace M
 def fracas_214_yes : Prop :=
-  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (fat : Type → E → Prop), ((∀ e, (∃ x7 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x7 = e) ↔ (∃ x8 : LawLecturer, eLawLecturer x8 = e)) → ∀ e, fat {x : Authority // legal Authority (eAuthority x)} e → fat LawLecturer e) → ((∀ e, (∃ x9 : LawLecturer, eLawLecturer x9 = e) ↔ (∃ x10 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x10 = e)) → ∀ e, fat LawLecturer e → fat {x : Authority // legal Authority (eAuthority x)} e) → (∀ x1 : {x : Authority // legal Authority (eAuthority x)}, (∃ x2 : LawLecturer, eLawLecturer x2 = ((fun x => eAuthority x.1) x1))) → (∀ x3 : LawLecturer, (∃ x4 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x4 = (eLawLecturer x3))) → (∀ x5 : {x : {x : Authority // legal Authority (eAuthority x)} // fat {x : Authority // legal Authority (eAuthority x)} ((fun x => eAuthority x.1) x)}, (∃ x6 : {x : LawLecturer // fat LawLecturer (eLawLecturer x)}, (fun x => eLawLecturer x.1) x6 = ((fun x => (fun x => eAuthority x.1) x.1) x5)))
+  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (fat : Type → E → Prop), ((∀ e, (∃ x7 : Authority, legal Authority (eAuthority x7) ∧ (eAuthority x7) = e) ↔ (∃ x8 : LawLecturer, (eLawLecturer x8) = e)) → ∀ e, fat {x : Authority // legal Authority (eAuthority x)} e → fat LawLecturer e) → ((∀ e, (∃ x9 : LawLecturer, (eLawLecturer x9) = e) ↔ (∃ x10 : Authority, legal Authority (eAuthority x10) ∧ (eAuthority x10) = e)) → ∀ e, fat LawLecturer e → fat {x : Authority // legal Authority (eAuthority x)} e) → (∀ x1 : Authority, legal Authority (eAuthority x1) → (∃ x2 : LawLecturer, (eLawLecturer x2) = (eAuthority x1))) → (∀ x3 : LawLecturer, (∃ x4 : Authority, legal Authority (eAuthority x4) ∧ (eAuthority x4) = (eLawLecturer x3))) → (∀ x5 : Authority, legal Authority (eAuthority x5) → fat {x : Authority // legal Authority (eAuthority x)} (eAuthority x5) → (∃ x6 : LawLecturer, fat LawLecturer (eLawLecturer x6) ∧ (eLawLecturer x6) = (eAuthority x5)))
 
 def fracas_214_no : Prop :=
-  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (fat : Type → E → Prop), ((∀ e, (∃ x7 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x7 = e) ↔ (∃ x8 : LawLecturer, eLawLecturer x8 = e)) → ∀ e, fat {x : Authority // legal Authority (eAuthority x)} e → fat LawLecturer e) → ((∀ e, (∃ x9 : LawLecturer, eLawLecturer x9 = e) ↔ (∃ x10 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x10 = e)) → ∀ e, fat LawLecturer e → fat {x : Authority // legal Authority (eAuthority x)} e) → (∀ x1 : {x : Authority // legal Authority (eAuthority x)}, (∃ x2 : LawLecturer, eLawLecturer x2 = ((fun x => eAuthority x.1) x1))) → (∀ x3 : LawLecturer, (∃ x4 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x4 = (eLawLecturer x3))) → ¬ (∀ x5 : {x : {x : Authority // legal Authority (eAuthority x)} // fat {x : Authority // legal Authority (eAuthority x)} ((fun x => eAuthority x.1) x)}, (∃ x6 : {x : LawLecturer // fat LawLecturer (eLawLecturer x)}, (fun x => eLawLecturer x.1) x6 = ((fun x => (fun x => eAuthority x.1) x.1) x5)))
+  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (fat : Type → E → Prop), ((∀ e, (∃ x7 : Authority, legal Authority (eAuthority x7) ∧ (eAuthority x7) = e) ↔ (∃ x8 : LawLecturer, (eLawLecturer x8) = e)) → ∀ e, fat {x : Authority // legal Authority (eAuthority x)} e → fat LawLecturer e) → ((∀ e, (∃ x9 : LawLecturer, (eLawLecturer x9) = e) ↔ (∃ x10 : Authority, legal Authority (eAuthority x10) ∧ (eAuthority x10) = e)) → ∀ e, fat LawLecturer e → fat {x : Authority // legal Authority (eAuthority x)} e) → (∀ x1 : Authority, legal Authority (eAuthority x1) → (∃ x2 : LawLecturer, (eLawLecturer x2) = (eAuthority x1))) → (∀ x3 : LawLecturer, (∃ x4 : Authority, legal Authority (eAuthority x4) ∧ (eAuthority x4) = (eLawLecturer x3))) → ¬ (∀ x5 : Authority, legal Authority (eAuthority x5) → fat {x : Authority // legal Authority (eAuthority x)} (eAuthority x5) → (∃ x6 : LawLecturer, fat LawLecturer (eLawLecturer x6) ∧ (eLawLecturer x6) = (eAuthority x5)))
 end M
 
 namespace P
@@ -462,10 +462,10 @@ end W
 
 namespace M
 def fracas_215_yes : Prop :=
-  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (competent : Type → E → Prop), (∀ x1 : {x : Authority // legal Authority (eAuthority x)}, (∃ x2 : LawLecturer, eLawLecturer x2 = ((fun x => eAuthority x.1) x1))) → (∀ x3 : LawLecturer, (∃ x4 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x4 = (eLawLecturer x3))) → (∀ x5 : {x : {x : Authority // legal Authority (eAuthority x)} // competent {x : Authority // legal Authority (eAuthority x)} ((fun x => eAuthority x.1) x)}, (∃ x6 : {x : LawLecturer // competent LawLecturer (eLawLecturer x)}, (fun x => eLawLecturer x.1) x6 = ((fun x => (fun x => eAuthority x.1) x.1) x5)))
+  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (competent : Type → E → Prop), (∀ x1 : Authority, legal Authority (eAuthority x1) → (∃ x2 : LawLecturer, (eLawLecturer x2) = (eAuthority x1))) → (∀ x3 : LawLecturer, (∃ x4 : Authority, legal Authority (eAuthority x4) ∧ (eAuthority x4) = (eLawLecturer x3))) → (∀ x5 : Authority, legal Authority (eAuthority x5) → competent {x : Authority // legal Authority (eAuthority x)} (eAuthority x5) → (∃ x6 : LawLecturer, competent LawLecturer (eLawLecturer x6) ∧ (eLawLecturer x6) = (eAuthority x5)))
 
 def fracas_215_no : Prop :=
-  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (competent : Type → E → Prop), (∀ x1 : {x : Authority // legal Authority (eAuthority x)}, (∃ x2 : LawLecturer, eLawLecturer x2 = ((fun x => eAuthority x.1) x1))) → (∀ x3 : LawLecturer, (∃ x4 : {x : Authority // legal Authority (eAuthority x)}, (fun x => eAuthority x.1) x4 = (eLawLecturer x3))) → ¬ (∀ x5 : {x : {x : Authority // legal Authority (eAuthority x)} // competent {x : Authority // legal Authority (eAuthority x)} ((fun x => eAuthority x.1) x)}, (∃ x6 : {x : LawLecturer // competent LawLecturer (eLawLecturer x)}, (fun x => eLawLecturer x.1) x6 = ((fun x => (fun x => eAuthority x.1) x.1) x5)))
+  ∀ {E : Type} (Authority : Type) (eAuthority : Authority → E) (LawLecturer : Type) (eLawLecturer : LawLecturer → E) (legal : Type → E → Prop) (competent : Type → E → Prop), (∀ x1 : Authority, legal Authority (eAuthority x1) → (∃ x2 : LawLecturer, (eLawLecturer x2) = (eAuthority x1))) → (∀ x3 : LawLecturer, (∃ x4 : Authority, legal Authority (eAuthority x4) ∧ (eAuthority x4) = (eLawLecturer x3))) → ¬ (∀ x5 : Authority, legal Authority (eAuthority x5) → competent {x : Authority // legal Authority (eAuthority x)} (eAuthority x5) → (∃ x6 : LawLecturer, competent LawLecturer (eLawLecturer x6) ∧ (eLawLecturer x6) = (eAuthority x5)))
 end M
 
 namespace P
@@ -486,10 +486,10 @@ end W
 
 namespace M
 def fracas_216_yes : Prop :=
-  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (fatThan : E → E → Prop) (fatThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, fatThan e₁ e₂ → ¬ fatThan e₂ e₁) → (∀ (c : Type) e₁ e₂, fatThanAs c e₁ e₂ → fatThan e₁ e₂) → ((∃ x1 : {x : Politician // fatThanAs Politician (ePolitician x) bill}, (fun x => ePolitician x.1) x1 = john)) → (fatThan john bill)
+  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (fatThan : E → E → Prop) (fatThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, fatThan e₁ e₂ → ¬ fatThan e₂ e₁) → (∀ (c : Type) e₁ e₂, fatThanAs c e₁ e₂ → fatThan e₁ e₂) → ((∃ x1 : Politician, fatThanAs Politician (ePolitician x1) bill ∧ (ePolitician x1) = john)) → (fatThan john bill)
 
 def fracas_216_no : Prop :=
-  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (fatThan : E → E → Prop) (fatThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, fatThan e₁ e₂ → ¬ fatThan e₂ e₁) → (∀ (c : Type) e₁ e₂, fatThanAs c e₁ e₂ → fatThan e₁ e₂) → ((∃ x1 : {x : Politician // fatThanAs Politician (ePolitician x) bill}, (fun x => ePolitician x.1) x1 = john)) → ¬ (fatThan john bill)
+  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (fatThan : E → E → Prop) (fatThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, fatThan e₁ e₂ → ¬ fatThan e₂ e₁) → (∀ (c : Type) e₁ e₂, fatThanAs c e₁ e₂ → fatThan e₁ e₂) → ((∃ x1 : Politician, fatThanAs Politician (ePolitician x1) bill ∧ (ePolitician x1) = john)) → ¬ (fatThan john bill)
 end M
 
 namespace P
@@ -510,10 +510,10 @@ end W
 
 namespace M
 def fracas_217_yes : Prop :=
-  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (cleverThan : E → E → Prop) (cleverThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, cleverThan e₁ e₂ → ¬ cleverThan e₂ e₁) → ((∃ x1 : {x : Politician // cleverThanAs Politician (ePolitician x) bill}, (fun x => ePolitician x.1) x1 = john)) → (cleverThan john bill)
+  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (cleverThan : E → E → Prop) (cleverThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, cleverThan e₁ e₂ → ¬ cleverThan e₂ e₁) → ((∃ x1 : Politician, cleverThanAs Politician (ePolitician x1) bill ∧ (ePolitician x1) = john)) → (cleverThan john bill)
 
 def fracas_217_no : Prop :=
-  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (cleverThan : E → E → Prop) (cleverThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, cleverThan e₁ e₂ → ¬ cleverThan e₂ e₁) → ((∃ x1 : {x : Politician // cleverThanAs Politician (ePolitician x) bill}, (fun x => ePolitician x.1) x1 = john)) → ¬ (cleverThan john bill)
+  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (cleverThan : E → E → Prop) (cleverThanAs : Type → E → E → Prop) (john bill : E), (∀ e₁ e₂, cleverThan e₁ e₂ → ¬ cleverThan e₂ e₁) → ((∃ x1 : Politician, cleverThanAs Politician (ePolitician x1) bill ∧ (ePolitician x1) = john)) → ¬ (cleverThan john bill)
 end M
 
 namespace P
@@ -534,10 +534,10 @@ end W
 
 namespace M
 def fracas_218_yes : Prop :=
-  ∀ {E : Type} (Person : Type) (ePerson : Person → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : {x : Person // clever Person (ePerson x)}, (fun x => ePerson x.1) x1 = kim)) → (clever E kim)
+  ∀ {E : Type} (Person : Type) (ePerson : Person → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : Person, clever Person (ePerson x1) ∧ (ePerson x1) = kim)) → (clever E kim)
 
 def fracas_218_no : Prop :=
-  ∀ {E : Type} (Person : Type) (ePerson : Person → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : {x : Person // clever Person (ePerson x)}, (fun x => ePerson x.1) x1 = kim)) → ¬ (clever E kim)
+  ∀ {E : Type} (Person : Type) (ePerson : Person → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : Person, clever Person (ePerson x1) ∧ (ePerson x1) = kim)) → ¬ (clever E kim)
 end M
 
 namespace P
@@ -558,10 +558,10 @@ end W
 
 namespace M
 def fracas_219_yes : Prop :=
-  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : {x : Politician // clever Politician (ePolitician x)}, (fun x => ePolitician x.1) x1 = kim)) → (clever E kim)
+  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : Politician, clever Politician (ePolitician x1) ∧ (ePolitician x1) = kim)) → (clever E kim)
 
 def fracas_219_no : Prop :=
-  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : {x : Politician // clever Politician (ePolitician x)}, (fun x => ePolitician x.1) x1 = kim)) → ¬ (clever E kim)
+  ∀ {E : Type} (Politician : Type) (ePolitician : Politician → E) (clever : Type → E → Prop) (kim : E), ((∃ x1 : Politician, clever Politician (ePolitician x1) ∧ (ePolitician x1) = kim)) → ¬ (clever E kim)
 end M
 
 /-- Encoding P: (problem, gold, yes-claim, no-claim). -/

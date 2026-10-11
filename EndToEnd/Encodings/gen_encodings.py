@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import json
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -77,6 +78,36 @@ def _type_name(name: str) -> str:
     return name[:1].upper() + name[1:]
 
 
+@dataclass(frozen=True)
+class MClass:
+    """A class in M: the elements of `base` (a noun's type, or `E`) that
+    satisfy `conds` (templates over `§`), seen as individuals through
+    `emb`. Quantifying over the class quantifies over `base` with the
+    conditions as hypotheses - the curried form of quantifying over the
+    Σ-type `{x : base // conds}`, which is logically the same and leaves
+    the prover no subtype elements to build. That Σ-type itself is the
+    class's `index`, what a non-intersective adjective is indexed by."""
+
+    base: str
+    emb: str  # an embedding function's name, or "id"
+    conds: tuple = ()
+
+    def elt(self, v: str) -> str:
+        return v if self.emb == "id" else f"({self.emb} {v})"
+
+    def cond(self, v: str) -> list[str]:
+        return [c.replace("§", v) for c in self.conds]
+
+    @property
+    def index(self) -> str:
+        if not self.conds:
+            return self.base
+        return f"{{x : {self.base} // {' ∧ '.join(self.cond('x'))}}}"
+
+    def add(self, cond: str) -> "MClass":
+        return MClass(self.base, self.emb, (*self.conds, cond))
+
+
 class Encoding:
     """Builds one problem's claim in one encoding, collecting the symbols
     it binds and the postulates it needs."""
@@ -106,7 +137,7 @@ class Encoding:
     def noun(self, n):
         self._add(self.nouns, n)
         if self.enc == "M":
-            return (_type_name(n), f"e{_type_name(n)}")
+            return MClass(_type_name(n), f"e{_type_name(n)}")
         return n
 
     def name(self, n):
@@ -124,9 +155,8 @@ class Encoding:
             return f"{c} {e}"
         if self.enc == "W":
             return f"{c} w₀ {e}"
-        t, emb = c
         x = self.fresh("x")
-        return f"(∃ {x} : {t}, {emb} {x} = {e})"
+        return f"(∃ {x} : {c.base}, {' ∧ '.join([*c.cond(x), f'{c.elt(x)} = {e}'])})"
 
     def adj_holds(self, a, c, e):
         """Adjective `a`, relative to class `c` unless intersective, holds of `e`."""
@@ -140,11 +170,11 @@ class Encoding:
             return f"{a} {c} {e}"
         if self.enc == "W":
             return f"{a} {c} w₀ {e}"
-        return f"{a} {c[0]} {e}"
+        return f"{a} {c.index} {e}"
 
     def thing(self):
         """The comparison class of a predicative adjective with no noun."""
-        return {"P": "(fun _ => True)", "W": "(fun _ _ => True)", "M": ("E", "(fun x : E => x)")}[self.enc]
+        return {"P": "(fun _ => True)", "W": "(fun _ _ => True)", "M": MClass("E", "id")}[self.enc]
 
     def cn(self, t):
         """A CN subtree's class."""
@@ -159,24 +189,21 @@ class Encoding:
                     return f"(fun e => {a} e ∧ {base} e)"
                 if self.enc == "W":
                     return f"(fun w e => {a} w e ∧ {base} w e)"
-                bt, be = base
-                return (f"{{x : {bt} // {a} ({be} x)}}", f"(fun x => {be} x.1)")
+                return base.add(f"{a} {base.elt('§')}")
             if kind == "privative" and self.enc == "M":
-                bt, be = base
                 self.classes.setdefault(a, [])
                 if base not in self.classes[a]:
                     self.classes[a].append(base)
-                return (f"{{e : E // {a} {bt} e}}", "(fun x => x.1)")
+                return MClass("E", "id", (f"{a} {base.index} §",))
             if self.enc in ("P", "W"):
                 self.classes.setdefault(a, [])
                 if base not in self.classes[a]:
                     self.classes[a].append(base)
                 return f"({a} {base})"
-            bt, be = base
             self.classes.setdefault(a, [])
             if base not in self.classes[a]:
                 self.classes[a].append(base)
-            return (f"{{x : {bt} // {a} {bt} ({be} x)}}", f"(fun x => {be} x.1)")
+            return base.add(f"{a} {base.index} {base.elt('§')}")
         if t.head == "ComparCN" and len(t.args) == 3:
             a = _adj(t.args[0])
             base = self.cn(t.args[1])
@@ -188,8 +215,7 @@ class Encoding:
                 return f"(fun e => {rel} {base} e {other})"
             if self.enc == "W":
                 return f"(fun w e => {rel} {base} w e {other})"
-            bt, be = base
-            return (f"{{x : {bt} // {rel} {bt} ({be} x) {other}}}", f"(fun x => {be} x.1)")
+            return base.add(f"{rel} {base.index} {base.elt('§')} {other}")
         raise Unsupported(f"CN {t.head}")
 
     def np_name(self, np):
@@ -229,8 +255,7 @@ class Encoding:
                 c = self.cn(obj.args[1])
                 y = self.fresh("y")
                 if self.enc == "M":
-                    t, emb = c
-                    return f"∃ {y} : {t}, {v} {e} ({emb} {y})"
+                    return f"∃ {y} : {c.base}, {' ∧ '.join([*c.cond(y), f'{v} {e} {c.elt(y)}'])}"
                 rel = f"{v} {e} {y}" if self.enc == "P" else f"{v} w₀ {e} {y}"
                 return f"∃ {y}, {self.is_member(c, y)} ∧ {rel}"
         raise Unsupported(f"VP {vp.head}")
@@ -250,9 +275,8 @@ class Encoding:
             raise Unsupported(f"subject {subj.head}")
         c = self.cn(cn)
         if self.enc == "M":
-            t, emb = c
             x = self.fresh("x")
-            return f"∀ {x} : {t}, {self.vp(vp, f'({emb} {x})')}"
+            return f"∀ {x} : {c.base}, {' → '.join([*c.cond(x), self.vp(vp, c.elt(x))])}"
         x = self.fresh("e")
         return f"∀ {x}, {self.is_member(c, x)} → {self.vp(vp, x)}"
 
@@ -270,8 +294,7 @@ class Encoding:
             if kind == "privative":
                 for c in self.classes.get(a, []):
                     if self.enc == "M":
-                        t, emb = c
-                        out.append(("privativity", f"∀ e, {a} {t} e → ¬ (∃ x : {t}, {emb} x = e)"))
+                        out.append(("privativity", f"∀ e, {a} {c.index} e → ¬ {self.is_member(c, 'e')}"))
                     elif self.enc == "P":
                         out.append(("privativity", f"∀ (c : E → Prop) e, {a} c e → ¬ c e"))
                         break

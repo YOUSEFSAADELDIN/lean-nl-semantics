@@ -46,10 +46,10 @@ and "competent" is indexed by the type (here: whether it has at most one
 element). -/
 theorem m_215_not_valid : ¬ M.fracas_215_yes := by
   intro h
-  obtain ⟨⟨b, hb⟩, _⟩ := @h Unit Unit (fun _ => ()) Bool (fun _ => ())
+  obtain ⟨_, hb, _⟩ := @h Unit Unit (fun _ => ()) Bool (fun _ => ())
     (fun _ _ => True) (fun X _ => Subsingleton X)
-    (fun _ => ⟨true, rfl⟩) (fun _ => ⟨⟨(), trivial⟩, rfl⟩)
-    ⟨⟨(), trivial⟩, ⟨fun a b => Subtype.ext rfl⟩⟩
+    (fun _ _ => ⟨true, rfl⟩) (fun _ => ⟨(), trivial, rfl⟩)
+    () trivial ⟨fun _ _ => Subtype.ext rfl⟩
   have hb' : Subsingleton Bool := hb
   exact absurd (hb'.elim true false) (by decide)
 
