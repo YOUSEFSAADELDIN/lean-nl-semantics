@@ -915,14 +915,14 @@ def assemble(idn, sentences):
                 raise ValueError(f"{role} parses ({n} readings) but does not translate: {str(e)[:120]}")
             if tr.conjuncts or tr.free_functions or tr.template:
                 raise ValueError(f"{role} needs non-generic assembly (conjuncts/Skolem/bundle)")
-            out.append((tr, side, f"¬ ({tr.lean_prop})" if negated else tr.lean_prop))
+            out.append((tr, side, f"¬ ({tr.lean_prop})" if negated else tr.lean_prop, extras["presuppositions"]))
         return out
 
     def premise_props(trs):
         # A premise's side premises (see readings.py's `quantified`) follow
         # it as separate hypotheses.
         props = []
-        for _tr, side, p in trs:
+        for _tr, side, p, _presupposed in trs:
             props.append(f"({p})")
             props += [f"({sp})" for sp in side]
         return props
@@ -931,7 +931,7 @@ def assemble(idn, sentences):
         base = translate_all({})
         present = [
             k for k in AMBIGUITY_KINDS
-            if [p for *_, p in translate_all({k: "strong"})] != [p for *_, p in base]
+            if [p for _t, _s, p, _q in translate_all({k: "strong"})] != [p for _t, _s, p, _q in base]
         ]
         assignments = [dict(zip(present, combo)) for combo in itertools.product(("weak", "strong"), repeat=len(present))]
         translated = [(a, translate_all(a)) for a in assignments]
@@ -941,7 +941,7 @@ def assemble(idn, sentences):
     kinds: dict[str, str] = {}
     order: list[str] = []
     for _a, trs in translated:
-        for tr, _side, _p in trs:
+        for tr, _side, _p, _q in trs:
             for name in tr.free_predicates:
                 kind = "binary" if name in tr.binary_predicates else "unary"
                 if kinds.setdefault(name, kind) != kind:
@@ -1001,7 +1001,7 @@ def assemble(idn, sentences):
     # monotone in its restrictor - "many British delegates" says nothing
     # about "many delegates" on the proportional reading (FraCaS 56).
     meaning = []
-    if any(re.search(r"\bMany\b", p) for _a, trs in translated for *_, p in trs):
+    if any(re.search(r"\bMany\b", p) for _a, trs in translated for _t, _s, p, _q in trs):
         binders.append("(Many : (A → Prop) → (A → Prop) → Prop)")
         meaning.append("(∀ P Q : A → Prop, Many P Q → Some P Q)")
         meaning.append("(∀ P Q R : A → Prop, Many P Q → (∀ x, Q x → R x) → Many P R)")
@@ -1013,15 +1013,15 @@ def assemble(idn, sentences):
     # any such X exist (12). The cardinal reading, `AtMost fewCount`, and
     # "a few", `AtLeast aFewCount`, and "several", `AtLeast severalCount`,
     # count against an unknown threshold.
-    if any(re.search(r"\bFew\b", p) for _a, trs in translated for *_, p in trs):
+    if any(re.search(r"\bFew\b", p) for _a, trs in translated for _t, _s, p, _q in trs):
         binders.append("(Few : (A → Prop) → (A → Prop) → Prop)")
         meaning.append("(∀ P Q R : A → Prop, Few P Q → (∀ x, P x → R x → Q x) → Few P R)")
-    if any(re.search(r"\bfewCount\b", p) for _a, trs in translated for *_, p in trs):
+    if any(re.search(r"\bfewCount\b", p) for _a, trs in translated for _t, _s, p, _q in trs):
         binders.append("(fewCount : Nat)")
-    if any(re.search(r"\baFewCount\b", p) for _a, trs in translated for *_, p in trs):
+    if any(re.search(r"\baFewCount\b", p) for _a, trs in translated for _t, _s, p, _q in trs):
         binders.append("(aFewCount : Nat)")
         meaning.append("(aFewCount ≥ 1)")
-    if any(re.search(r"\bseveralCount\b", p) for _a, trs in translated for *_, p in trs):
+    if any(re.search(r"\bseveralCount\b", p) for _a, trs in translated for _t, _s, p, _q in trs):
         binders.append("(severalCount : Nat)")
         meaning.append("(severalCount ≥ 2)")
     # A relation and the fused name of "V a CN" (`use x y`, `useWorkstation
@@ -1038,6 +1038,8 @@ def assemble(idn, sentences):
     for a, trs in translated:
         premises = premise_props(trs[:-1])
         hyp = trs[-1][2]
+        # The hypothesis is false only if what it presupposes holds.
+        refuted = " ∧ ".join([*(f"({p})" for p in trs[-1][3]), f"¬ ({hyp})"])
 
         def chain(facts, conclusion):
             return head + " → ".join([*meaning, *facts, *premises, f"({conclusion})"])
@@ -1046,9 +1048,9 @@ def assemble(idn, sentences):
         out.append({
             "desc": desc,
             "yes": chain([], hyp),
-            "no": chain([], f"¬ ({hyp})"),
+            "no": chain([], refuted),
             "bk_yes": chain(knowledge, hyp),
-            "bk_no": chain(knowledge, f"¬ ({hyp})"),
+            "bk_no": chain(knowledge, refuted),
         })
     return {"assignments": out, "n_facts": len(knowledge)}, None
 

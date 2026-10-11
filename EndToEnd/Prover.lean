@@ -115,13 +115,25 @@ theorem not_exactly_succ_of {A : Type*} [Fintype A] (n : Nat) (P Q : A → Prop)
     ¬ FraCaS.Section2.Exactly (n + 1) P Q :=
   fun hc => h (FraCaS.Section2.some_of_exactly (n + 1) P Q (Nat.succ_ne_zero n) hc)
 
+/-- "Neither P" presupposes two `P`s, so there is one. -/
+theorem exists_of_neither {A : Type*} [Fintype A] (P Q : A → Prop) [DecidablePred P]
+    (h : FraCaS.Section1.Neither P Q) : ∃ x, P x := by
+  have hpos : 0 < FraCaS.Section1.card P := by have := h.1; omega
+  obtain ⟨x, hx⟩ := Finset.card_pos.mp hpos
+  simp only [Finset.mem_filter] at hx
+  exact ⟨x, hx.2⟩
+
 /-- A positive count (at least or exactly) refuted by `No`/`Neither` and
 the background facts - FraCaS 46's "neither commissioner spends time at
 home ⊢ not one of the commissioners spends a lot of time at home", on both
-readings of "one". `Neither` is unfolded first: `blind_aesop_e2e` does not
+readings of "one". The hypothesis's partitive presupposes commissioners,
+which the "no" claim must establish too (`gen_claims.py`); `Neither`
+presupposes them. `Neither` is then unfolded: `blind_aesop_e2e` does not
 see through it to its `No`. -/
 macro "blind_refute_count" : tactic => `(tactic|
-  (intros; (try simp only [FraCaS.Section1.Neither] at *)
+  (intros
+   (try refine ⟨FraCaS.EndToEnd.exists_of_neither _ _ (by assumption), ?_⟩)
+   (try simp only [FraCaS.Section1.Neither] at *)
    first
      | apply FraCaS.EndToEnd.not_atLeast_succ_of
      | apply FraCaS.EndToEnd.not_exactly_succ_of
@@ -162,11 +174,13 @@ example {A : Type} [Fintype A] (accountant attendMeeting : A → Prop) [Decidabl
 example {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop)
     [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome] :
     (∀ x, spendALotOfTimeAtHome x → spendTimeAtHome x) → FraCaS.Section1.Neither commissioner spendTimeAtHome →
-      ¬ FraCaS.Section1.AtLeast 1 commissioner spendALotOfTimeAtHome := by blind_refute_count
+      (∃ y, commissioner y) ∧ ¬ FraCaS.Section1.AtLeast 1 commissioner spendALotOfTimeAtHome := by
+  blind_refute_count
 example {A : Type} [Fintype A] (commissioner spendTimeAtHome spendALotOfTimeAtHome : A → Prop)
     [DecidablePred commissioner] [DecidablePred spendTimeAtHome] [DecidablePred spendALotOfTimeAtHome] :
     (∀ x, spendALotOfTimeAtHome x → spendTimeAtHome x) → FraCaS.Section1.Neither commissioner spendTimeAtHome →
-      ¬ FraCaS.Section2.Exactly 1 commissioner spendALotOfTimeAtHome := by blind_refute_count
+      (∃ y, commissioner y) ∧ ¬ FraCaS.Section2.Exactly 1 commissioner spendALotOfTimeAtHome := by
+  blind_refute_count
 
 -- Event order (`EndToEnd/readings.py`'s `_ordered`): FraCaS 261's chain
 -- of "before"s and 264's "before" ⇒ "after", in the exact shape the

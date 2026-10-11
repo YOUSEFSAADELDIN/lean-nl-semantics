@@ -261,6 +261,10 @@ class EndToEndReadings(Readings):
         # relational/fused name pairs they need related (gen_claims.py).
         self.functions: list[str] = []
         self.encodings: list[tuple[str, str, str]] = []
+        # What a hypothesis presupposes: its "no" claim must establish
+        # these too, since a sentence whose presupposition fails is not
+        # false (gen_claims.py).
+        self.presuppositions: list[str] = []
 
     def mode(self, kind: str) -> str:
         if isinstance(self.reading, dict):
@@ -736,6 +740,10 @@ class EndToEndReadings(Readings):
         quant = f"AtLeast {count}" if self.mode("numeral") == "weak" else f"Exactly {count}"
         restrictor_expr, restrictor_preds = _restrictor_expr(_normalize_cn(np.args[1]))
         scope_name = _scope_name(vp)
+        # "the Ns" presupposes that there are Ns: "one of the female
+        # commissioners spends a lot of time at home" is not false when
+        # there are none (FraCaS 78, undefined)
+        self.presuppositions.append(f"∃ y, {restrictor_expr} y")
         return Translation(
             lean_prop=self.quantified(quant, restrictor_expr, scope_name),
             free_predicates=[*restrictor_preds, scope_name],
@@ -922,5 +930,6 @@ def translate_cl_reading(t, reading, position: str = "premise"):
     possession functions and encoding pairs it uses (see `_possessive`)."""
     readings = EndToEndReadings(reading, position)
     tr = translate_cl_with(t, readings)
-    extras = {"functions": list(readings.functions), "encodings": list(readings.encodings)}
+    extras = {"functions": list(readings.functions), "encodings": list(readings.encodings),
+              "presuppositions": list(readings.presuppositions)}
     return tr, list(readings.side_premises), list(readings.time_functions), extras
