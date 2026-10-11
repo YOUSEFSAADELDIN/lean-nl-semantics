@@ -5,6 +5,15 @@ hand-written FraCaS corpus, and the linglib bridge. It translates FraCaS
 problems into Lean **automatically, from their original English**, and
 scores the result with a fixed prover.
 
+It does not use the MTT core. Like the hand-written corpus, its claims
+state nouns as predicates over one domain of individuals (`commissioner
+: A → Prop`); where it borrows an idea from dependent type semantics (a
+possessive as a function of its possessor, `workstationOf`), it encodes
+it as a function on that domain, not as a Σ-type. Its figures are
+therefore evidence about the pipeline's methods - parsing, ranking,
+reading ambiguous English, background knowledge, the prover - under the
+predicate encoding, and not about MTT.
+
 | file | what it is |
 |---|---|
 | `gen_claims.py` | the generator: English → parse → rank → resolve → translate → assemble (needs the `gf` binary) |
