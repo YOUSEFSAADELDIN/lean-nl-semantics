@@ -26,6 +26,9 @@ nothing else. Four sources, all stated here in full:
    - a counting determiner on an object ("a lot of time" ⊑ "time",
      `COUNTING_TO_BARE`);
    - a relative clause on a noun (`RelCN`);
+   - the progressive of a VP that does not culminate ("was running a
+     business" ⊑ "ran a business"; not "was building MTALK", the
+     imperfective paradox);
    - a degree word on an adjective (`AdAP`: "really great" -> "great");
    - recursively inside a verb's object or a copula complement, but only
      when that NP is existential or definite-singular ("a/some/several/
@@ -54,7 +57,8 @@ nothing else. Four sources, all stated here in full:
    class a contrary pair's thresholds are ordered ("a small animal" is
    smaller than "a large animal").
 4. **Time adverbials** on the same verb phrase (gen_claims.py moves them
-   to the verb phrase first): "for two years" ⊑ "for a year"; a state or
+   to the verb phrase first): "for two years" ⊑ "for a year" and
+   excludes "for exactly a year"; a state or
    activity "from 1988 to 1992" ⊑ "in 1990"; "in July 1994" ⊑ "in 1994";
    and a culminating event on one particular object ("wrote his first
    novel") in one year excludes it in another - the one-time-per-event
@@ -137,7 +141,7 @@ UPWARD_VV = {"usedTo_VV", "can_VV", "must_VV"}
 COUNTING_TO_BARE = {"aLotOf_Det", "many_Det", "several_Det", "aFew_Det", "somePl_Det"}
 
 CN_HEADS = {"UseN", "AdjCN", "AdvCN", "RelCN", "CompoundCN", "SentCN", "ApposCN"}
-VP_HEADS = {"UseComp", "ComplSlash", "AdvVP", "ComplVV", "UseV", "PassV2", "AdVVP", "ComplVS", "ComplVQ"}
+VP_HEADS = {"UseComp", "ComplSlash", "AdvVP", "ComplVV", "UseV", "PassV2", "AdVVP", "ComplVS", "ComplVQ", "ProgrVP"}
 UPWARD_DETS = {"IndefArt", "someSg_Det", "somePl_Det", "several_Det", "aFew_Det", "aLotOf_Det", "many_Det"}
 
 
@@ -205,6 +209,13 @@ def weakenings(t):
                 # BT"), whose own modifiers then delete as usual
                 if inner.head == "DetCN" and _np_allows_weakening(inner):
                     out.append(App("ComplSlash", [a[0], App("DetCN", [inner.args[0], App("AdvCN", [inner.args[1], adv])])]))
+    elif h == "ProgrVP" and len(a) == 1:
+        # "was running his own business" ⊑ "ran his own business" for a VP
+        # that does not culminate; "was building MTALK" need not have
+        # built it (the imperfective paradox, FraCaS 327, 329)
+        if not _telic(a[0]):
+            out.append(a[0])
+        out += [App("ProgrVP", [w]) for w in weakenings(a[0])]
     elif h == "ComplVV" and len(a) == 2 and a[0].head in UPWARD_VV:
         out += [App("ComplVV", [a[0], w]) for w in weakenings(a[1])]
     elif h == "UseComp" and len(a) == 1:
@@ -380,6 +391,13 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
         if w1[0] == w2[0] == "for" and w1[2] == w2[2] and w1[1] >= w2[1]:
             # "for two years" ⊑ "for a year"
             add(f"(∀ x, {p1} x → {p2} x)")
+        elif w1[0] == "exactly" and w2[0] == "for" and w1[2] == w2[2] and w1[1] >= w2[1]:
+            # "for exactly a year" ⊑ "for a year"
+            add(f"(∀ x, {p1} x → {p2} x)")
+        elif w1[0] == "for" and w2[0] == "exactly" and w1[2] == w2[2] and w1[1] > w2[1]:
+            # "for two years" excludes "for exactly a year", which gives
+            # the whole duration (FraCaS 299)
+            add(f"(∀ x, {p1} x → ¬ {p2} x)")
         elif w1[0] == "span" and w2[0] == "year" and w1[1] <= w2[1] <= w1[2] and not _telic(v):
             # a state or activity holds at every time within its span
             # ("owned APCOM from 1988 to 1992" ⊑ "owned APCOM in 1990")
@@ -504,13 +522,15 @@ _MONTHS = ("January", "February", "March", "April", "May", "June", "July", "Augu
 
 def _time_value(adv):
     """A lexicalized time adverbial's meaning: ("for", n, unit) for a
-    duration of at least n units, ("year", y), ("month", y) for a month of
+    duration of at least n units, ("exactly", n, unit) for exactly n, ("year", y), ("month", y) for a month of
     year y, ("span", y1, y2) for "from y1 to y2"; None for anything else."""
     if adv.args or not adv.head.endswith("_Adv"):
         return None
     w = adv.head.rsplit("_", 1)[0]
-    m = re.fullmatch(r"for(MoreThan)?([A-Z][a-z]*)(Hour|Year|Day|Week|Month|Minute)s?", w)
+    m = re.fullmatch(r"for(MoreThan|Exactly)?([A-Z][a-z]*)(Hour|Year|Day|Week|Month|Minute)s?", w)
     if m and m.group(2) in _NUMBERS:
+        if m.group(1) == "Exactly":
+            return ("exactly", _NUMBERS[m.group(2)], m.group(3))
         return ("for", _NUMBERS[m.group(2)] + (1 if m.group(1) else 0), m.group(3))
     m = re.fullmatch(r"in(\d{4})", w)
     if m:

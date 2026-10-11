@@ -71,7 +71,7 @@ def main() -> int:
             continue
         seen.add((english, hand))
         stats["sentences"] += 1
-        cat, trees = parse_readings(english)
+        cat, trees = parse_readings(english, require_well_formed=True)
         if not trees:
             regressions.append(f"{label}: no parse for {english!r}")
             continue

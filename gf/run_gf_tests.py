@@ -4045,6 +4045,47 @@ _FRACAS_ENGLISH_CHECKS = [
         'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN itel_PN) (AdVVP never_AdV (AdvVP (ComplSlash (SlashV2a deliver_V2) (DetCN (DetQuant IndefArt NumPl) (UseN report_N))) late_Adv)))',
         'ITEL never delivers reports late',
     ),
+    # The progressive (ProgrVP).
+    (
+        'english_141_hypothesis',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP someone_NP (ComplVSBare say_VS (UseCl (TTAnt TPast AAnter) PPos (PredVP (UsePN john_PN) (PassV2 hurt_V2)))))',
+        'someone said John had been hurt',
+    ),
+    (
+        'english_273_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (ProgrVP (ComplSlash (SlashV2a write_V2) (DetCN (DetQuant IndefArt NumSg) (UseN report_N)))))',
+        'Smith was writing a report',
+    ),
+    (
+        'english_281_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ProgrVP (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant IndefArt NumSg) (UseN business_N)))) in1991_Adv))',
+        'Smith was running a business in 1991',
+    ),
+    (
+        'english_294_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ProgrVP (ComplSlash (SlashV2a run_V2) (DetCN (DetQuant (PossPron he_Pron) NumSg) (AdjCN (PositA own_A) (UseN business_N))))) inTwoYears_Adv))',
+        'Smith was running his own business in two years',
+    ),
+    (
+        'english_296_hypothesis',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdvCN (UseN chain_N) (PrepNP of_Prep (MassNP (UseN business_N)))))) forMoreThanTwoYears_Adv))',
+        'Smith owned a chain of business for more than two years',
+    ),
+    (
+        'english_299_hypothesis',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN smith_PN) (AdvVP (AdvVP (UseV live_V) (PrepNP in_Prep (UsePN birmingham_PN))) forExactlyAYear_Adv))',
+        'Smith lived in Birmingham for exactly a year',
+    ),
+    (
+        'english_327_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ProgrVP (ComplSlash (SlashV2a build_V2) (UsePN mtalk_PN))) in1993_Adv))',
+        'ITEL was building MTALK in 1993',
+    ),
+    (
+        'english_329_premise1',
+        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (AdvVP (ProgrVP (AdvVP (ComplSlash (SlashV2a win_V2) (DetCN (DetQuant DefArt NumSg) (UseN contract_N))) (PrepNP from_Prep (UsePN apcom_PN)))) in1993_Adv))',
+        'ITEL was winning the contract from APCOM in 1993',
+    ),
 ]
 
 CHECKS = (

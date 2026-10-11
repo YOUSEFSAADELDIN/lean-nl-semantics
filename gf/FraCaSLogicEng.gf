@@ -118,6 +118,8 @@ concrete FraCaSLogicEng of FraCaSLogic =
     everyWeek_Adv = mkAdv "every week" ;
     forEightYears_Adv = mkAdv "for eight years" ;
     forMoreThanTenYears_Adv = mkAdv "for more than ten years" ;
+    forMoreThanTwoYears_Adv = mkAdv "for more than two years" ;
+    forExactlyAYear_Adv = mkAdv "for exactly a year" ;
     mtalk_PN = mkPN "MTALK" ;
     in1990_Adv = mkAdv "in 1990" ;
     from1988to1992_Adv = mkAdv "from 1988 to 1992" ;
@@ -177,6 +179,7 @@ concrete FraCaSLogicEng of FraCaSLogic =
     ItIsNow np = {s = "it" ++ "is" ++ "now" ++ np.s ! npNom} ;
     y1996_PN = mkPN "1996" ;
     atAQuarterPastFive_Adv = mkAdv "at a quarter past five" ;
+    ProgrVP vp = insertObj (\\a => vp.ad ! a ++ vp.prp ++ vp.p ++ vp.s2 ! a) (predAux auxBe) ;
 }
 
 -- Confirmed working (see gf/NOTES.md), building with:

@@ -460,7 +460,11 @@ def _replace_modifiers(vp, remnants):
     """The antecedent VP with each remnant replacing its parallel adverbial,
     or added if it has none - gapping ("John went to Paris by car, and
     Bill to Berlin": Bill went to Berlin by car, FraCaS 152) and fragments
-    ("John spoke to Mary on Thursday. And on Friday.")."""
+    ("John spoke to Mary on Thursday. And on Friday."); inside a
+    progressive too ("John is going to Paris by car, and the students by
+    train", FraCaS 153)."""
+    if vp.head == "ProgrVP" and len(vp.args) == 1:
+        return App("ProgrVP", [_replace_modifiers(vp.args[0], remnants)])
     core, mods = _vp_frame(vp)
     mods = list(mods)
     for r in remnants:
@@ -737,15 +741,21 @@ def _resolve_sentence(tree, role, state):
 
 
 def _object_slot(vp):
-    """(the transitive VP inside one-word adverbials, rebuild) for "V NP
-    [ADV...]": rebuild(new_object) gives the same VP with its object
-    replaced."""
+    """(the transitive VP inside one-word adverbials and the progressive,
+    rebuild) for "[was] V[-ing] NP [ADV...]": rebuild(new_object) gives the
+    same VP with its object replaced."""
     if vp.head == "AdvVP" and len(vp.args) == 2:
         inner = _object_slot(vp.args[0])
         if inner is None:
             return None
         core, rebuild = inner
         return core, lambda np: App("AdvVP", [rebuild(np), vp.args[1]])
+    if vp.head == "ProgrVP" and len(vp.args) == 1:
+        inner = _object_slot(vp.args[0])
+        if inner is None:
+            return None
+        core, rebuild = inner
+        return core, lambda np: App("ProgrVP", [rebuild(np)])
     if vp.head == "ComplSlash" and len(vp.args) == 2 and vp.args[0].head == "SlashV2a":
         return vp, lambda np: App("ComplSlash", [vp.args[0], np])
     return None
@@ -852,7 +862,7 @@ _parse_cache: dict = {}
 def ranked_readings(sentence: str) -> list[str]:
     tokens = tokenize(sentence)
     if tokens not in _parse_cache:
-        _parse_cache[tokens] = parse_readings(tokens)
+        _parse_cache[tokens] = parse_readings(tokens, require_well_formed=True)
     _cat, trees = _parse_cache[tokens]
     return ranked(trees)
 

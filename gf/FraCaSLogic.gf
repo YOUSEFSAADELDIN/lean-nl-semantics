@@ -475,6 +475,8 @@ abstract FraCaSLogic =
     -- twice_Adv all already exist in DictEngAbs - checked directly, not
     -- self-declared.
     forEightYears_Adv, forMoreThanTenYears_Adv : Adv ;
+    -- Two more of the same pattern (296, 299).
+    forMoreThanTwoYears_Adv, forExactlyAYear_Adv : Adv ;
     -- Section 8 (Verbs), problems 326-333: mtalk_PN (ITEL's own
     -- invented product name, problems 326/327) is FraCaS's own
     -- fictional entity, not in a general-purpose dictionary. in1990_Adv/
@@ -582,4 +584,9 @@ abstract FraCaSLogic =
     ItIsNow : NP -> S ;
     y1996_PN : PN ;
     atAQuarterPastFive_Adv : Adv ;
+    -- ProgrVP: the progressive, "was writing a report" (273, 274, 281,
+    --   294, 327, 329). Declared here with the RGL's own linearization
+    --   (IdiomEng's ProgrVP), since Idiom itself does not build with
+    --   this grammar (see missing_A above).
+    ProgrVP : VP -> VP ;
 }

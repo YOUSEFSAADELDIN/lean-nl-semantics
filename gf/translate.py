@@ -218,6 +218,12 @@ def _leaf_words(t, keep_det: bool = False) -> list[str]:
     words = []
     for a in t.args:
         words.extend(_leaf_words(a, keep_det))
+    # The progressive has no word of its own in the tree ("was writing a
+    # report"), but it is not the simple past: "was building MTALK" does
+    # not entail "built MTALK" (the imperfective paradox), so it is marked
+    # in the name (`progWriteReport`).
+    if t.head == "ProgrVP":
+        return ["prog", *words]
     return words
 
 

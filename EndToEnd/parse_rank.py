@@ -80,9 +80,13 @@ def tokenize(sentence: str, pgf: Path = DEFAULT_PGF) -> str:
     return " ".join(out)
 
 
-def parse_readings(sentence: str, pgf: Path = DEFAULT_PGF, timeout: int = 120):
+def parse_readings(sentence: str, pgf: Path = DEFAULT_PGF, timeout: int = 120, require_well_formed: bool = False):
     """(category, [tree, ...]) for the first category in PARSE_CATS with at
-    least one complete parse, or (None, []) if none parses."""
+    least one complete parse, or (None, []) if none parses. With
+    `require_well_formed`, a category whose parses are all ill-formed
+    (`ranked` would discard them all) does not count: "Bill is going to."
+    has only junk clause parses, and its reading is the elliptical
+    sentence."""
     for cat in PARSE_CATS:
         out = subprocess.run(
             ["gf", "--run", str(pgf)],
@@ -93,7 +97,7 @@ def parse_readings(sentence: str, pgf: Path = DEFAULT_PGF, timeout: int = 120):
             line.strip() for line in out.splitlines()
             if _TREE_HEADS.match(line.strip()) and not line.startswith("The ")
         ]
-        if trees:
+        if trees and (not require_well_formed or any(well_formed(t) for t in trees)):
             return cat, trees
     return None, []
 
@@ -191,17 +195,38 @@ def _clause_modifiers_well_formed(t) -> bool:
     return all(_clause_modifiers_well_formed(a) for a in t.args)
 
 
-def ranked(trees: list[str]) -> list[str]:
-    """Readings in preference order, ill-formed readings removed."""
+def _empty_np(t) -> bool:
+    """A noun phrase that linearizes to nothing: the plural indefinite
+    article alone (`DetNP (DetQuant IndefArt NumPl)`), or the genitive of
+    one used as a determiner."""
+    if t.head != "DetNP" or len(t.args) != 1 or t.args[0].head != "DetQuant" or len(t.args[0].args) != 2:
+        return False
+    quant, num = t.args[0].args
+    if quant.head == "IndefArt":
+        return num.head == "NumPl"
+    return quant.head == "GenNP" and len(quant.args) == 1 and _empty_np(quant.args[0])
+
+
+def _no_empty_np(t) -> bool:
+    """No noun phrase without words: readings using one ("Bill is going to
+    [ ]", "Smith wrote [ ] to a representative") are not readings of the
+    words given."""
+    if _empty_np(t):
+        return False
+    return all(_no_empty_np(a) for a in t.args)
+
+
+def well_formed(tree: str) -> bool:
     from translate import parse_tree  # local import: translate.py does not import this module
 
-    kept = []
-    for t in trees:
-        tree = parse_tree(t)
-        if _anaphora_well_formed(tree) and _clause_modifiers_well_formed(tree) \
-                and _fragments_well_formed(tree):
-            kept.append(t)
-    return sorted(kept, key=rank_key)
+    t = parse_tree(tree)
+    return _anaphora_well_formed(t) and _clause_modifiers_well_formed(t) \
+        and _fragments_well_formed(t) and _no_empty_np(t)
+
+
+def ranked(trees: list[str]) -> list[str]:
+    """Readings in preference order, ill-formed readings removed."""
+    return sorted([t for t in trees if well_formed(t)], key=rank_key)
 
 
 def normalize(tree: str) -> str:

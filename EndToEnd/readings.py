@@ -298,7 +298,7 @@ class EndToEndReadings(Readings):
             return self._possessive(subject, *possessed)
         if vp.head == "PassV2" and _genitive_subject(subject) is not None:
             return self._genitive_passive(subject, vp)
-        if subject.head == "UsePN" and vp.head in ("ComplVS", "ComplVSBare") and len(vp.args) == 2:
+        if subject.head in ("UsePN", "someone_NP") and vp.head in ("ComplVS", "ComplVSBare") and len(vp.args) == 2:
             attitude = self._attitude(subject, vp)
             if attitude is not None:
                 return attitude
@@ -428,25 +428,42 @@ class EndToEndReadings(Readings):
         bare infinitive is veridical - what was seen happened ("Jones
         signed the contract", FraCaS 342) - and relates the perceiver to
         the event's agent: `seeSignContract smith jones ∧ signContract
-        jones`. Only with proper names on both sides; a description as the
-        perceived agent ("saw the chairman of ITEL sign", 343) is left
-        untranslated."""
+        jones`. Perception is transparent in its agent, so in a hypothesis
+        the agent may also be a definite description ("Smith saw the
+        chairman of ITEL sign the contract", 343): someone who is the
+        chairman of ITEL, whom Smith saw sign it - its uniqueness, a
+        presupposition, is left out, as for every hypothesis. Otherwise
+        only proper names on both sides."""
         slash, agent = vp.args
         if slash.args[0].head != "seeDo_V2V" or len(slash.args) != 2:
             return None
+        described = None
+        if agent.head == "DetCN" and agent.args[0].head == "DetQuant" and agent.args[0].args[0].head == "DefArt" \
+                and agent.args[0].args[1].head == "NumSg" and self.position == "hypothesis":
+            described = camel_name(_leaf_words(agent.args[1]))
+            agent = App("UsePN", [App("perceived_PN", [])])
         if agent.head != "UsePN":
             raise NotImplementedError("perception report whose perceived agent is not a proper name")
         seen = translate_cl(App("PredVP", [agent, slash.args[1]]))
         if not _plain(seen):
             raise NotImplementedError("perceived event needs non-generic assembly")
         relation = camel_name(["see", *_leaf_words(slash.args[1], keep_det=True)])
+        who = camel_name(_leaf_words(agent))
         report = Translation(
-            lean_prop=f"{relation} {camel_name(_leaf_words(subject))} {camel_name(_leaf_words(agent))}",
+            lean_prop=f"{relation} {camel_name(_leaf_words(subject))} {who}",
             free_predicates=[relation],
-            free_individuals=[camel_name(_leaf_words(subject)), camel_name(_leaf_words(agent))],
+            free_individuals=[camel_name(_leaf_words(subject)), who],
             binary_predicates=[relation],
         )
-        return _combine([report, seen], "∧")
+        both = _combine([report, seen], "∧")
+        if described is None:
+            return both
+        return Translation(
+            lean_prop=f"∃ {who}, {described} {who} ∧ {both.lean_prop}",
+            free_predicates=[described, *both.free_predicates],
+            free_individuals=[i for i in both.free_individuals if i != who],
+            binary_predicates=both.binary_predicates,
+        )
 
     def _attitude(self, subject, vp):
         """"Smith knew that ITEL had won the contract": the attitude, as a
@@ -474,16 +491,25 @@ class EndToEndReadings(Readings):
         elif cl.args[1].head == "ReflVP":
             words = [*words, "self"]
         relation = camel_name([verb.head.rsplit("_", 1)[0], *words])
-        knower, agent = camel_name(_leaf_words(subject)), camel_name(_leaf_words(cl.args[0]))
+        agent = camel_name(_leaf_words(cl.args[0]))
+        # "someone said ..." (FraCaS 141): some holder
+        knower = "someone" if subject.head == "someone_NP" else camel_name(_leaf_words(subject))
         attitude = Translation(
             lean_prop=f"{relation} {knower} {agent}",
             free_predicates=[relation],
-            free_individuals=[knower, agent],
+            free_individuals=[knower, agent] if subject.head != "someone_NP" else [agent],
             binary_predicates=[relation],
         )
-        if verb.head not in _FACTIVE:
-            return attitude
-        return _combine([attitude, said], "∧")
+        if verb.head in _FACTIVE:
+            attitude = _combine([attitude, said], "∧")
+        if subject.head == "someone_NP":
+            attitude = Translation(
+                lean_prop=f"∃ someone, {attitude.lean_prop}",
+                free_predicates=attitude.free_predicates,
+                free_individuals=attitude.free_individuals,
+                binary_predicates=attitude.binary_predicates,
+            )
+        return attitude
 
     def _implicative(self, subject, vp):
         """"ITEL managed to win the contract": the managing, as the
