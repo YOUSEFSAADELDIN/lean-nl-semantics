@@ -94,13 +94,13 @@ theorem cardT_eq [Fintype N] [Fintype A] (e : N → A) (he : Function.Injective 
   rw [← Finset.card_map ⟨e, he⟩]
   congr 1
   ext x
-  simp only [Finset.mem_map, Finset.mem_filter, Finset.mem_univ, true_and,
-    Function.Embedding.coeFn_mk, IsA]
+  rw [Finset.mem_map, Finset.mem_filter]
   constructor
   · rintro ⟨y, hy, rfl⟩
-    exact ⟨⟨y, rfl⟩, hy⟩
-  · rintro ⟨⟨y, rfl⟩, hy⟩
-    exact ⟨y, hy, rfl⟩
+    rw [Finset.mem_filter] at hy
+    exact ⟨Finset.mem_univ _, ⟨y, rfl⟩, hy.2⟩
+  · rintro ⟨-, ⟨y, rfl⟩, hy⟩
+    exact ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hy⟩, rfl⟩
 
 /-- `card` does not depend on how its predicate is stated. -/
 theorem card_iff [Fintype A] {P P' : A → Prop} [DecidablePred P] [DecidablePred P']
