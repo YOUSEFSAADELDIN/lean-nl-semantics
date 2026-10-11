@@ -60,6 +60,50 @@ counted postulates:
 - Overall: no accuracy edge for M over W, a validity edge over P, and
   fewer postulates than either.
 
+## Phase 1a results: Section 5 (CI run 38113017348)
+
+All 23 problems, from the pipeline's own parses. "Matched" is with one
+generic prover (`aesop`, then `grind`). "Valid" adds what
+`Commitments.lean` settles by hand: a claim proved valid, or refuted by a
+countermodel.
+
+| | generic prover: matched | wrong | valid answers: matched | wrong | postulates |
+|---|---|---|---|---|---|
+| F (pipeline, background knowledge) | 21/23 | 0 | 21/23 | 0 | 38 background facts |
+| P (extensional Montague) | 21/23 | 0 | **20/23** | **1** (215: "yes" is valid) | 53 |
+| W (intensional Montague) | 21/23 | 0 | 21/23 | 0 | 65 |
+| M (MTT) | 16/23 | 0 | 21/23 | 0 | **35** |
+
+Every encoding misses 199 and 218 (gold yes). They need a default
+comparison class for "successful" and "clever", which the shared lexicon
+deliberately lacks.
+
+What the predictions got right, and what they missed:
+- **P commits to the wrong answer on 215, as predicted.** The prover does
+  not find it, so P scores the same as the others. Its claim is valid,
+  though (`p_215_valid`): with nouns as extensions, "competent" cannot
+  tell coextensive nouns apart. A stronger prover would make P answer
+  215 wrongly.
+- **W and M leave 215 open, as predicted**, each with a countermodel.
+- **M needs the fewest postulates**: 35, against 53 for P and 65 for W.
+  Subsectivity ("a competent N is an N") is built into M's types, and is
+  a postulate per adjective in P and W. W also needs the extensionality
+  of dimensional adjectives as a postulate, which P gets as a theorem
+  (for every adjective, which is the problem).
+- **Not predicted: M is harder for a generic prover.** Its premises
+  relate nouns only through their embeddings into individuals
+  (`eAnimal a = eMouse m`), so a proof needs identity reasoning that
+  `aesop` and `grind` did not find on five problems (202, 210, 211, 212,
+  214). All five are valid in M (proved in `Commitments.lean`). This is
+  a real cost of the encoding, but to automation, not to what it
+  entails. A first version stated M's modified nouns as subtypes and
+  did no better (CI run 38109159944); currying them changed nothing.
+
+So on Section 5: no accuracy edge for M over intensional Montague; an
+edge in validity over extensional Montague (215); the fewest postulates;
+and a cost in proof automation. These are development-set problems,
+and Section 5 is small.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
