@@ -116,6 +116,17 @@ labels corrected for 2504 and 536 it would be 1 of 140: the one real
 error, 2718. Either way, "zero wrong answers" does not survive the
 held-out test as a property of the pipeline.
 
+**How far the same gap reaches.** Re-resolving the 989 reached problems
+and listing the open-class words the naming drops: 33 problems (3.3%)
+have one. The dropped words are verbs taking a clause ("watch" 17,
+"believe" 4, "say" 3, "expect" 2, "stand" 1, "learn" 1), a perception
+verb ("see ... do" 2) and two adverbs ("even" 2, "no longer" 1). Three
+of the 33 also have a negated complement clause. Only 2718 turned this
+into a wrong answer; on the others the claim also said less than the
+English, and came out unknown, or right by luck. One general guard
+would close it: refuse to name a predicate when its subtree has an
+open-class word or a polarity the naming does not keep.
+
 ## What this does and does not show
 
 - It is a test of soundness more than accuracy. MED is about monotonicity
