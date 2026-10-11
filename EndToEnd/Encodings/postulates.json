@@ -1,0 +1,292 @@
+{
+ "skipped": {},
+ "postulates": {
+  "P": {
+   "197": [
+    "subsectivity"
+   ],
+   "198": [
+    "privativity"
+   ],
+   "199": [
+    "subsectivity",
+    "privativity"
+   ],
+   "200": [
+    "privativity",
+    "subsectivity"
+   ],
+   "201": [
+    "privativity",
+    "subsectivity"
+   ],
+   "202": [],
+   "203": [],
+   "204": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "205": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "206": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "207": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "208": [
+    "subsectivity",
+    "subsectivity",
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "209": [
+    "subsectivity",
+    "subsectivity",
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "210": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "211": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "212": [
+    "subsectivity",
+    "subsectivity",
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "213": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "214": [
+    "subsectivity",
+    "subsectivity"
+   ],
+   "215": [
+    "subsectivity",
+    "subsectivity"
+   ],
+   "216": [
+    "degree",
+    "degree"
+   ],
+   "217": [
+    "degree"
+   ],
+   "218": [
+    "subsectivity"
+   ],
+   "219": [
+    "subsectivity"
+   ]
+  },
+  "W": {
+   "197": [
+    "subsectivity"
+   ],
+   "198": [
+    "privativity"
+   ],
+   "199": [
+    "subsectivity",
+    "privativity"
+   ],
+   "200": [
+    "privativity",
+    "subsectivity"
+   ],
+   "201": [
+    "privativity",
+    "subsectivity"
+   ],
+   "202": [],
+   "203": [],
+   "204": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "205": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "206": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "207": [
+    "subsectivity",
+    "subsectivity",
+    "degree"
+   ],
+   "208": [
+    "subsectivity",
+    "subsectivity",
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "209": [
+    "subsectivity",
+    "subsectivity",
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "210": [
+    "subsectivity",
+    "subsectivity",
+    "extensionality",
+    "extensionality",
+    "degree"
+   ],
+   "211": [
+    "subsectivity",
+    "subsectivity",
+    "extensionality",
+    "extensionality",
+    "degree"
+   ],
+   "212": [
+    "subsectivity",
+    "extensionality",
+    "extensionality",
+    "subsectivity",
+    "extensionality",
+    "extensionality",
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "213": [
+    "subsectivity",
+    "extensionality",
+    "extensionality",
+    "subsectivity",
+    "degree"
+   ],
+   "214": [
+    "subsectivity",
+    "subsectivity",
+    "extensionality",
+    "extensionality"
+   ],
+   "215": [
+    "subsectivity",
+    "subsectivity"
+   ],
+   "216": [
+    "degree",
+    "degree"
+   ],
+   "217": [
+    "degree"
+   ],
+   "218": [
+    "subsectivity"
+   ],
+   "219": [
+    "subsectivity"
+   ]
+  },
+  "M": {
+   "197": [],
+   "198": [
+    "privativity"
+   ],
+   "199": [
+    "privativity"
+   ],
+   "200": [
+    "privativity"
+   ],
+   "201": [
+    "privativity"
+   ],
+   "202": [],
+   "203": [],
+   "204": [
+    "degree"
+   ],
+   "205": [
+    "degree"
+   ],
+   "206": [
+    "degree"
+   ],
+   "207": [
+    "degree"
+   ],
+   "208": [
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "209": [
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "210": [
+    "extensionality",
+    "extensionality",
+    "degree"
+   ],
+   "211": [
+    "extensionality",
+    "extensionality",
+    "degree"
+   ],
+   "212": [
+    "extensionality",
+    "extensionality",
+    "extensionality",
+    "extensionality",
+    "degree",
+    "degree",
+    "degree"
+   ],
+   "213": [
+    "extensionality",
+    "extensionality",
+    "degree"
+   ],
+   "214": [
+    "extensionality",
+    "extensionality"
+   ],
+   "215": [],
+   "216": [
+    "degree",
+    "degree"
+   ],
+   "217": [
+    "degree"
+   ],
+   "218": [],
+   "219": []
+  }
+ }
+}
