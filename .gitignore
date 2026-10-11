@@ -9,3 +9,5 @@ gf/*.gfo
 gf/*.pgf
 EndToEnd/*.gfo
 EndToEnd/*.pgf
+EndToEnd/HeldOut/*.gfo
+EndToEnd/HeldOut/*.pgf

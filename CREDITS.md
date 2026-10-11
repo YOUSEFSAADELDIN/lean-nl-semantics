@@ -27,6 +27,15 @@ a direct port, and what was only ever read for reference.
   requested. Vendored at `LeanNLSemantics/FraCaS/Data/fracas.xml`; see
   `FraCaS/Data/SOURCE.md` for exact provenance.
 
+- **MED** (Monotonicity Entailment Dataset) — Yanaka, Mineshima, Bekki,
+  Inui, Sekine, Abzianidze and Bos 2019, `github.com/verypluming/MED`,
+  commit `860ba36`, **CC BY-SA 4.0**. Vendored unmodified at
+  `EndToEnd/HeldOut/MED.tsv` as the end-to-end pipeline's held-out test
+  (see `EndToEnd/HeldOut/README.md`). That file, and anything derived
+  from its sentences (`EndToEnd/HeldOut/Claims.lean`), stays under CC
+  BY-SA 4.0, not MIT. Part of MED is itself drawn from FraCaS and the GLUE
+  diagnostics; the FraCaS part is excluded from the test.
+
 ## Read for reference only, not used
 
 These were looked at for architecture or ideas during design, but
