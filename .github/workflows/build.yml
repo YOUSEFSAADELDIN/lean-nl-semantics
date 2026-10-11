@@ -232,6 +232,34 @@ jobs:
           LIFTED_SCAN: ${{ matrix.scan }}
         run: lake env lean EndToEnd/LiftedScan.lean
 
+  # The held-out test: MED problems through the frozen end-to-end pipeline
+  # (EndToEnd/HeldOut/README.md), scored like the main scan.
+  heldout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies
+        run: |
+          if [ ! -f lake-manifest.json ]; then
+            lake update
+          fi
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Build the EndToEnd and held-out libraries
+        run: lake build EndToEnd EndToEndHeldOut
+
+      - name: Held-out scan
+        run: lake env lean EndToEnd/HeldOutScan.lean
+
   # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
   # package with its own manifest, so a version conflict between this
   # repo's (unpinned, tracking `main`) Mathlib and linglib's own pinned
