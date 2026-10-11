@@ -136,6 +136,37 @@ jobs:
       - name: End-to-end evaluation from FraCaS's English
         run: lake env lean EndToEnd/Scan.lean
 
+  # Soundness ablations (EndToEnd/ablations.py): every claim of the
+  # end-to-end baseline, and of each ablation that switches one safeguard
+  # off, scored individually. EndToEnd/ablation_report.py turns this log
+  # into the wrong answers each safeguard prevents. Its own job, so it
+  # does not slow the end-to-end evaluation.
+  ablations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies
+        run: |
+          if [ ! -f lake-manifest.json ]; then
+            lake update
+          fi
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Build the EndToEnd and ablation libraries
+        run: lake build EndToEnd EndToEndAblations
+
+      - name: Ablation scan
+        run: lake env lean EndToEnd/AblationScan.lean
+
   # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
   # package with its own manifest, so a version conflict between this
   # repo's (unpinned, tracking `main`) Mathlib and linglib's own pinned
@@ -289,16 +320,26 @@ jobs:
         working-directory: gf
         run: python3 run_gf_tests.py
 
-      # Restricted parse grammar (gf/gen_parse_grammar.py - see its header
-      # for why parsing with the full FraCaSLogic grammar is unusable).
-      # Regenerated from run_gf_tests.py and checked against the committed
-      # copy, then compiled.
+      # The end-to-end pipeline's own constructions extend gf/'s grammar
+      # (EndToEnd/FraCaSEndToEnd.gf) rather than editing it, with their
+      # own linearize checks.
+      - name: Build the end-to-end grammar extension
+        working-directory: EndToEnd
+        run: gf -make -path=".:../gf:$HOME/gf-libs/alltenses:$HOME/gf-libs/prelude" FraCaSEndToEndEng.gf
+
+      - name: Run the end-to-end linearize checks
+        run: python3 EndToEnd/english_checks.py
+
+      # Restricted parse grammar (EndToEnd/gen_parse_grammar.py - see its
+      # header for why parsing with the full FraCaSLogic grammar is
+      # unusable). Regenerated from both check lists and checked against
+      # the committed copy, then compiled against the extension above.
       - name: Build FraCaSParse grammar
-        working-directory: gf
+        working-directory: EndToEnd
         run: |
           python3 gen_parse_grammar.py
           git diff --exit-code FraCaSParse.gf FraCaSParseEng.gf
-          gf -make -path=".:$HOME/gf-libs/alltenses:$HOME/gf-libs/prelude" FraCaSParseEng.gf
+          gf -make -path=".:../gf:$HOME/gf-libs/alltenses:$HOME/gf-libs/prelude" FraCaSParseEng.gf
 
       # Parses every confirmed sentence's English and reports parse
       # coverage, reading counts, and whether the top-ranked reading
@@ -306,22 +347,28 @@ jobs:
       # regression (a confirmed sentence that no longer parses, or whose
       # hand tree is no longer among its readings).
       - name: Parser evaluation
-        working-directory: gf
+        working-directory: EndToEnd
         run: python3 parse_eval.py
 
-      # The end-to-end claims the Lean job's "Blind evaluation, end-to-end
-      # from English" step scores must be exactly what the pipeline
-      # produces from FraCaS's English - regenerate and compare.
+      # The end-to-end claims the end-to-end job scores must be exactly
+      # what the pipeline produces from FraCaS's English - regenerate and
+      # compare.
       - name: Regenerate end-to-end claims and check they match
         run: |
           python3 EndToEnd/gen_claims.py
           git diff --exit-code EndToEnd/Claims.lean
 
-      # translate.py's default mode serves the hand-written corpus's GF
-      # cross-check; its reading modes serve the end-to-end pipeline. Both
-      # checks below fail if a change meant for one silently changes the
-      # other: every default-mode translation of a confirmed tree is
-      # snapshotted, and the cross-check theorems are regenerated.
+      - name: Regenerate the soundness ablations and check they match
+        run: |
+          python3 EndToEnd/ablations.py
+          git diff --exit-code EndToEnd/Ablations.lean EndToEnd/ablations.json
+
+      # gf/translate.py serves the hand-written corpus's GF cross-check
+      # as it stands, and the end-to-end pipeline with EndToEnd/readings.py
+      # plugged in. Both checks below fail if a change meant for the
+      # pipeline silently changes the cross-check: every default
+      # translation of a confirmed tree is snapshotted, and the cross-check
+      # theorems are regenerated.
       - name: Default-mode translations unchanged
         run: |
           python3 gf/snapshot_default_translations.py

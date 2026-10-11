@@ -169,7 +169,7 @@ fracas_160_hypothesis	ownFastRedCar bill
 fracas_160_premise1	ownRedCar john
 fracas_162_premise1	ownFastRedCar john
 fracas_162_hypothesis	ownSlowRedCar bill
-fracas_167_premise1	-
+fracas_167_premise1	Exactly 20 man workInSalesDepartment
 fracas_167_premise2	Exactly 1 woman workInSalesDepartment
 fracas_167_hypothesis	Exactly 2 woman workInSalesDepartment
 fracas_168_premise1	Exactly 5 man workPartTime
@@ -459,7 +459,7 @@ fracas_160_hypothesis_tense_reconfirm	ownFastRedCar bill
 fracas_160_premise1_tense_reconfirm	ownRedCar john
 fracas_162_premise1_tense_reconfirm	ownFastRedCar john
 fracas_162_hypothesis_tense_reconfirm	ownSlowRedCar bill
-fracas_167_premise1_tense_reconfirm	-
+fracas_167_premise1_tense_reconfirm	Exactly 20 man workInSalesDepartment
 fracas_167_premise2_tense_reconfirm	Exactly 1 woman workInSalesDepartment
 fracas_167_hypothesis_tense_reconfirm	Exactly 2 woman workInSalesDepartment
 fracas_168_premise1_tense_reconfirm	Exactly 5 man workPartTime
@@ -686,7 +686,7 @@ fracas_230_hypothesis	winSomePlOrder itel
 fracas_232_premise2	win10Order apcom
 fracas_232_hypothesis	winAtLeast11Order itel
 fracas_234_hypothesis	winSomePlOrder apcom
-fracas_238_hypothesis	winOrder itel
+fracas_238_hypothesis	win20Order itel
 fracas_240_hypothesis	loseSomePlOrder apcom
 fracas_241_premise2	lose10Order apcom
 fracas_243_premise2	sellComputer apcom
@@ -810,19 +810,3 @@ fracas_344_premise1	answerPhoneChairmanOfDepartment helen
 fracas_344_premise2	Every chairmanOfDepartment person
 fracas_345_premise	-
 fracas_346_premise	-
-english_001_hypothesis	Some italian becomeWorldsGreatestTenor
-english_002_hypothesis	Some italianMan wantGreatTenor
-english_015_hypothesis	Some tenor takePartInConcert
-english_013_premise2	Every (fun x => leadingTenor x ∧ excellent x) indispensable
-english_029_premise1	Every commissioner usedToLeadingBusinessman
-english_105_premise1	Exactly 1 accountant attendMeeting
-english_142_premise2	-
-english_147_premise2	-
-english_149_premise2	-
-english_155_premise2	-
-english_157_premise2	ownBlueAnaphOne bill
-english_206_premise1	-
-english_230_premise1	winOrderApcom itel
-english_233_premise1	winOrderApcom itel
-english_239_premise1	winOrderApcomLose itel
-english_248_premise1	Every itelComputer (fastThan pc6082)

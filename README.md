@@ -1,11 +1,13 @@
 # lean-nl-semantics
 
-A Lean 4 library for natural language semantics based on Modern Type
-Theory (MTT) — Chatzikyriakidis & Luo's account of common nouns as
-types (rather than as predicates), with subtyping via coercions. It
-includes a full mechanization of the FraCaS test suite for natural
-language inference, and a bridge to `linglib`, a Montagovian (predicate
-semantics) library, for comparing the two approaches.
+A Lean 4 library for natural language semantics. Its core is a port of
+Modern Type Theory (MTT) semantics — Chatzikyriakidis & Luo's account of
+common nouns as types (rather than as predicates), with subtyping via
+coercions. It also includes a full mechanization of the FraCaS test
+suite for natural language inference, an end-to-end pipeline that
+translates FraCaS from its English automatically, and a bridge to
+`linglib`, a Montagovian (predicate semantics) library, for comparing
+the two approaches.
 
 It has four parts, each self-contained, with its own code, checks and
 results:
@@ -20,6 +22,20 @@ results:
 4. **The end-to-end pipeline** (`EndToEnd/`): FraCaS translated
    automatically from its original English and scored by its own prover
    (`EndToEnd/README.md`).
+
+**Which parts are MTT.** Only parts 1 and 3 use nouns as types. Parts 2
+and 4 state every problem with nouns as *predicates* over one domain of
+individuals (`commissioner : A → Prop`, `Every commissioner
+spendTimeAtHome`), the encoding of Montague semantics. Where they use an
+MTT idea - adjective classes, subtyping between nouns, a possessive as a
+function of its possessor - it is restated as a predicate fact or a
+function on that domain, not as a type. (One file, `FraCaS/Section1/
+Monotonicity/CNAdapter.lean`, derives two such facts from part 1's noun
+lattice.) So the FraCaS results in parts 2 and 4 are results about that
+encoding and about the methods around it - parsing, reading ambiguity,
+the prover - and do not by themselves show anything for or against
+MTT. Comparing the two encodings on the same problems, with everything
+else held fixed, is future work.
 
 The browser lab (below) is meant to end up demoing all four.
 
@@ -38,7 +54,8 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   `CREDITS.md`), covering common nouns as types, coercive subtyping,
   quantifiers, adjectives, adverbs, copredication/dot-types, and
   individuation.
-- **FraCaS suite** (`LeanNLSemantics/FraCaS/`): all 342 formalizable
+- **FraCaS suite** (`LeanNLSemantics/FraCaS/`; nouns as predicates,
+  see "Which parts are MTT" above): all 342 formalizable
   problems from the FraCaS test suite (Cooper et al. 1996; 4 of the
   original 346 have no question/hypothesis in the source and are
   skipped) are formalized as Lean theorems, one per problem, each
@@ -87,11 +104,13 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   `gf/FraCaSLogicEng.gf`'s own per-section comments and `gf/NOTES.md`
   for the full setup and every gotcha hit along the way.
 
-- **End-to-end pipeline** (`EndToEnd/`, part 4): FraCaS's original
+- **End-to-end pipeline** (`EndToEnd/`, part 4; nouns as predicates,
+  like part 2): FraCaS's original
   English parsed with a restricted GF grammar, the top reading chosen by
-  a generic ranker and translated by `gf/translate.py`'s reading modes,
-  scored by its own prover. It reaches 195 of 342 problems and matches
-  gold on 118 of them as translated (139 with problem-independent
+  a generic ranker and translated by `gf/translate.py` under the
+  pipeline's own readings of ambiguous English (`EndToEnd/readings.py`),
+  scored by its own prover. It reaches 260 of 342 problems and matches
+  gold on 181 of them as translated (240 with problem-independent
   background knowledge), with no wrong answers. These are
   **development-set** figures: the pipeline was extended by looking at
   which of these same problems failed. Full write-up:
@@ -129,8 +148,8 @@ bridge/                      -- the linglib bridge, a separate Lake package
   lakefile.toml
   LinglibBridge.lean
 EndToEnd/                    -- part 4: the end-to-end pipeline (its own Lake library)
-gf/                           -- Grammatical Framework grammar + cross-checks (and
-                                 the end-to-end pipeline's parsing tools)
+gf/                           -- Grammatical Framework grammar + cross-checks (the
+                                 end-to-end pipeline extends this grammar in EndToEnd/)
 scripts/                      -- generators for the files gf/ and FraCaS/ commit
 viz/                          -- data exports + the three live visualizer pages
 lake-manifest.json            -- pinned Mathlib commit
@@ -160,7 +179,8 @@ lake build
 CI (`.github/workflows/build.yml`) runs three jobs on every push: `build`
 (the main package, must stay green), `build-linglib-bridge`
 (informational, won't fail the workflow if it breaks), and `build-gf`
-(the GF/RGL toolchain plus all 803 `linearize` checks, must stay green).
+(the GF/RGL toolchain, the 810 `linearize` checks of `gf/`'s grammar
+and the end-to-end pipeline's own 46, must stay green).
 
 ## The FraCaS suite
 

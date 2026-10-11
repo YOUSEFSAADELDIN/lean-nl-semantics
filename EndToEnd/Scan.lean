@@ -88,7 +88,7 @@ def runParsed (registry : List (Nat × FraCaS.Answer × List Lean.Name × List L
 elab "#end_to_end_eval" : command => liftTermElabM do
   runParsed FraCaS.EndToEnd.registry "end_to_end"
 
--- The same claims with `gf/background.py`'s problem-independent
+-- The same claims with `EndToEnd/background.py`'s problem-independent
 -- background knowledge added as premises (tree-structural entailments and
 -- a small degree-semantics lexicon - see that file for the full list).
 elab "#end_to_end_eval_bk" : command => liftTermElabM do

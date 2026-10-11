@@ -242,8 +242,6 @@ abstract FraCaSLogic =
     with_Prep, without_Prep, youPl_Pron, youSg_Pron
   ]
   ** {
-  cat
-    EllAux ;  -- the auxiliary left behind by VP ellipsis ("did", "didn't", "has", ...)
   fun
     several_Det, aFew_Det : Det ;
     -- worlds_Det : Det ("the world's", problem 1's "the world's greatest
@@ -482,46 +480,8 @@ abstract FraCaSLogic =
     -- reasoning as Section 7's temporal adverbials).
     mtalk_PN : PN ;
     in1990_Adv, from1988to1992_Adv : Adv ;
-    -- Added for parsing FraCaS's own English (scripts/gen_blind_eval_
-    -- parsed.py), where the hand-built trees above used rewordings:
-    -- who_RP: FraCaS writes "tenors who are excellent"; IdRP realizes
-    --   "that" by design (see FraCaSLogicEng.gf's problem 13 note).
-    -- ExistNP: "there are/was NP" - FraCaS Section 1's own hypothesis
-    --   shape. Self-declared rather than extending Idiom, which fails at
-    --   PMCFG-generation time at this gf-rgl tag (see missing_A above);
-    --   the lin is IdiomEng's own, verbatim.
-    -- (just_Predet, "just one accountant" in 105-109, already comes
-    --   from DictEng.)
-    -- usedTo_VV: the frozen past-habitual "used to" (problems 29, 45,
-    --   61, 77) - DictEng's use_VV is the freely-conjugated verb "use".
-    who_RP : RP ;
-    ExistNP : NP -> Cl ;
-    usedTo_VV : VV ;
-    -- Ellipsis and anaphora, FraCaS's own wording (Section 4):
-    -- UncNeg: uncontracted negation ("Fido is NOT a small animal"); the
-    --   grammar's own PNeg realizes the contracted "isn't".
-    -- EllAux / ElliptS / SoS / TooS: VP ellipsis - "Bill didn't",
-    --   "the students have [too]", "so did Bill". The elided VP is NOT
-    --   represented here; scripts/gen_blind_eval_parsed.py resolves it to
-    --   the antecedent clause's VP, the standard copy treatment.
-    -- anaphOne_N / anaphOne_NP: one-anaphora - "a blue one", "owns one
-    --   too"; likewise resolved to the antecedent's noun by the generator.
-    UncNeg : Pol ;
-    ElliptS : NP -> EllAux -> S ;
-    SoS : EllAux -> NP -> S ;
-    TooS : S -> S ;
-    ellDid, ellDidnt, ellDoes, ellHas : EllAux ;
-    anaphOne_N : N ;
-    anaphOne_NP : NP ;
-    -- Quantity comparatives, FraCaS's own wording (Section 6, 230-241):
-    -- "more orders than APCOM", "more orders than APCOM did", "more
-    --   orders than APCOM lost". An object NP whose meaning is a
-    --   comparison of two counts (gf/translate.py: `More`); the "than"
-    --   part is not a full clause here - the elided verb ("did", or
-    --   nothing) is resolved to the main clause's verb by the translator,
-    --   and an explicit one ("lost") is a bare past-tense V2 with the
-    --   object gap that the compared noun fills.
-    MoreThanNP : CN -> NP -> NP ;
-    MoreThanAux : CN -> NP -> EllAux -> NP ;
-    MoreThanV2 : CN -> NP -> V2 -> NP ;
+    -- The constructions only the end-to-end pipeline uses (FraCaS's own
+    -- wording, parsed from its English) are not here: they live in
+    -- EndToEnd/FraCaSEndToEnd.gf, which extends this grammar, so the
+    -- pipeline's rounds do not edit this one.
 }

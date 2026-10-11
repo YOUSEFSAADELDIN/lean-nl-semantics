@@ -3839,104 +3839,6 @@ _FRACAS_084_HYPOTHESIS_CHECK = [
     ),
 ]
 
-# FraCaS's OWN wording, for the constructions the end-to-end parser
-# (parse_rank.py / EndToEnd/gen_claims.py) needs but which the
-# hand-built trees above never used, because they were written for the
-# project's rewordings ("leading tenors THAT are excellent", "SOME Italian
-# men want ..."): the `who` relative pronoun, the "there are/was NP"
-# existential (FraCaS Section 1's usual hypothesis shape), the frozen
-# "used to", "just one", and - for Section 4 - VP ellipsis ("so did Bill",
-# "Bill didn't", "the students have too"), one-anaphora ("a blue one",
-# "owns one too") and uncontracted negation ("is not"). One confirmed tree per construction is
-# enough - the restricted parse grammar (gen_parse_grammar.py) inherits
-# every function a confirmed tree uses, and the parser then has to find
-# trees for all other sentences on its own. Labelled `english_...`, not
-# `fracas_...`, so scripts/gen_gf_cross_check.py (which reads `fracas_`
-# labels as premise/hypothesis roles of its own cross-check theorems)
-# never mistakes one for an extra role.
-_FRACAS_ENGLISH_CHECKS = [
-    (
-        'english_001_hypothesis',
-        'linearize UttS (UseCl (TTAnt TPast ASimul) PPos (ExistNP (DetCN (DetQuant IndefArt NumSg) (RelCN (UseN italian_N) (UseRCl (TTAnt TPast ASimul) PPos (RelVP who_RP (ComplSlash (SlashV2a become_V2) (DetCN worlds_Det (AdjCN (PositA greatest_A) (UseN tenor_N))))))))))',
-        "there was an Italian who became the world's greatest tenor",
-    ),
-    (
-        'english_002_hypothesis',
-        'linearize ExistNP (DetCN (DetQuant IndefArt NumPl) (RelCN (AdjCN (PositA italian_A) (UseN man_N)) (UseRCl (TTAnt TPres ASimul) PPos (RelVP who_RP (ComplVV want_VV (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA great_A) (UseN tenor_N))))))))))',
-        'there are Italian men who want to be a great tenor',
-    ),
-    (
-        'english_015_hypothesis',
-        'linearize ExistNP (DetCN (DetQuant IndefArt NumPl) (RelCN (UseN tenor_N) (UseRCl (TTAnt TFut ASimul) PPos (RelVP who_RP (ComplSlash (SlashV2a take_V2) (AdvNP (MassNP (UseN part_N)) (PrepNP in_Prep (DetCN (DetQuant DefArt NumSg) (UseN concert_N)))))))))',
-        'there are tenors who will take part in the concert',
-    ),
-    (
-        'english_013_premise2',
-        'linearize PredVP (DetCN (DetQuant IndefArt NumPl) (RelCN (AdjCN (PositA leading_A) (UseN tenor_N)) (UseRCl (TTAnt TPres ASimul) PPos (RelVP who_RP (UseComp (CompAP (PositA excellent_A))))))) (UseComp (CompAP (PositA indispensable_A)))',
-        'leading tenors who are excellent are indispensable',
-    ),
-    (
-        'english_029_premise1',
-        'linearize PredVP (DetCN both_Det (UseN commissioner_N)) (ComplVV usedTo_VV (UseComp (CompCN (AdjCN (PositA leading_A) (UseN businessman_N)))))',
-        'both commissioners used to be leading businessmen',
-    ),
-    (
-        'english_105_premise1',
-        'linearize UttS (UseCl (TTAnt TPast ASimul) PPos (PredVP (PredetNP just_Predet (DetCN (DetQuant IndefArt (NumCard (NumNumeral (num (pot2as3 (pot1as2 (pot0as1 pot01))))))) (UseN accountant_N))) (ComplSlash (SlashV2a attend_V2) (DetCN (DetQuant DefArt NumSg) (UseN meeting_N)))))',
-        'just one accountant attended the meeting',
-    ),
-    (
-        'english_142_premise2',
-        'linearize SoS ellDid (UsePN bill_PN)',
-        'so did Bill',
-    ),
-    (
-        'english_147_premise2',
-        'linearize ElliptS (UsePN bill_PN) ellDidnt',
-        "Bill didn't",
-    ),
-    (
-        'english_149_premise2',
-        'linearize TooS (ElliptS (DetCN (DetQuant DefArt NumPl) (UseN student_N)) ellHas)',
-        'the students have too',
-    ),
-    (
-        'english_155_premise2',
-        'linearize TooS (UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) anaphOne_NP)))',
-        'Bill owns one too',
-    ),
-    (
-        'english_157_premise2',
-        'linearize UseCl (TTAnt TPres ASimul) PPos (PredVP (UsePN bill_PN) (ComplSlash (SlashV2a own_V2) (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA blue_A) (UseN anaphOne_N)))))',
-        'Bill owns a blue one',
-    ),
-    (
-        'english_206_premise1',
-        'linearize UseCl (TTAnt TPres ASimul) UncNeg (PredVP (UsePN fido_PN) (UseComp (CompNP (DetCN (DetQuant IndefArt NumSg) (AdjCN (PositA small_A) (UseN animal_N))))))',
-        'Fido is not a small animal',
-    ),
-    (
-        'english_230_premise1',
-        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (MoreThanAux (UseN order_N) (UsePN apcom_PN) ellDid)))',
-        'ITEL won more orders than APCOM did',
-    ),
-    (
-        'english_233_premise1',
-        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (MoreThanNP (UseN order_N) (UsePN apcom_PN))))',
-        'ITEL won more orders than APCOM',
-    ),
-    (
-        'english_239_premise1',
-        'linearize UseCl (TTAnt TPast ASimul) PPos (PredVP (UsePN itel_PN) (ComplSlash (SlashV2a win_V2) (MoreThanV2 (UseN order_N) (UsePN apcom_PN) lose_V2)))',
-        'ITEL won more orders than APCOM lost',
-    ),
-    (
-        'english_248_premise1',
-        'linearize PredVP (UsePN pc6082_PN) (UseComp (CompAP (ComparA fast_A (DetCN anySg_Det (UseN itelComputer_N)))))',
-        'the PC-6082 is faster than any ITEL computer',
-    ),
-]
-
 CHECKS = (
     BASE_CHECKS
     + TENSE_RECONFIRMATIONS
@@ -3950,43 +3852,46 @@ CHECKS = (
     + _SECTION7_TENSED_CHECKS
     + _SECTION8_TENSED_CHECKS
     + _SECTION9_TENSED_CHECKS
-    + _FRACAS_ENGLISH_CHECKS
 )
+# The end-to-end pipeline's own confirmation checks (FraCaS's original
+# wording, against its extension of this grammar) are in
+# EndToEnd/english_checks.py, run by its own CI step.
 
 
-def main() -> int:
-    gf_dir = os.path.dirname(os.path.abspath(__file__))
-    pgf = os.path.join(gf_dir, "FraCaSLogic.pgf")
+def run_checks(checks, pgf: str, cwd: str) -> int:
+    """Run `checks` (label, linearize command, expected English) against
+    `pgf` in one gf session; 0 if every check matches exactly."""
     if not os.path.exists(pgf):
         print(f"error: {pgf} not found - did the gf -make step run first?", file=sys.stderr)
         return 1
+    prompt = os.path.splitext(os.path.basename(pgf))[0] + "> "
 
-    script = "\n".join(cmd for _, cmd, _ in CHECKS) + "\nquit\n"
+    script = "\n".join(cmd for _, cmd, _ in checks) + "\nquit\n"
     result = subprocess.run(
         ["gf", PATH_ARG, pgf],
         input=script,
         capture_output=True,
         text=True,
-        cwd=gf_dir,
+        cwd=cwd,
         timeout=60,
     )
     print(result.stdout)
     if result.stderr:
         print(result.stderr, file=sys.stderr)
 
-    segments = result.stdout.split(PROMPT)
+    segments = result.stdout.split(prompt)
     # segments[0]: startup banner, before any command's result.
-    # segments[1 .. len(CHECKS)]: each command's own result, in order.
-    if len(segments) < len(CHECKS) + 1:
+    # segments[1 .. len(checks)]: each command's own result, in order.
+    if len(segments) < len(checks) + 1:
         print(
-            f"error: expected at least {len(CHECKS) + 1} '{PROMPT}'-delimited "
+            f"error: expected at least {len(checks) + 1} '{prompt}'-delimited "
             f"segments, got {len(segments)} - gf output shape changed unexpectedly",
             file=sys.stderr,
         )
         return 1
 
     failures = []
-    for idx, (label, _cmd, expected) in enumerate(CHECKS):
+    for idx, (label, _cmd, expected) in enumerate(checks):
         segment = segments[idx + 1]
         # Exact match on the linearized output's own first line - NOT a
         # substring check (`expected in segment`, this file's original
@@ -4006,8 +3911,13 @@ def main() -> int:
             print(f"  {label}: expected {expected!r}, got {actual!r}", file=sys.stderr)
         return 1
 
-    print(f"All {len(CHECKS)} linearize checks passed.")
+    print(f"All {len(checks)} linearize checks passed.")
     return 0
+
+
+def main() -> int:
+    gf_dir = os.path.dirname(os.path.abspath(__file__))
+    return run_checks(CHECKS, os.path.join(gf_dir, "FraCaSLogic.pgf"), gf_dir)
 
 
 if __name__ == "__main__":

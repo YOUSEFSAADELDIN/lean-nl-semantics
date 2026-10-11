@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Measure the restricted-grammar parser against every CI-confirmed
-English sentence in run_gf_tests.py's CHECKS.
+English sentence: gf/run_gf_tests.py's CHECKS and english_checks.py's
+ENGLISH_CHECKS.
 
 For each sentence: parse its English (never looking at the hand tree),
 then report (a) whether it parses at all, (b) whether the hand-built tree
 is among the readings, (c) how many readings there are, and, for
-sentences gf/translate.py covers, (d) whether every reading translates to
+sentences gf/translate.py covers (its default reading, plus the
+pipeline's "there is/are NP", readings.py), (d) whether every reading translates to
 the same Lean Prop (i.e. the ambiguity is semantically spurious) and (e)
 whether the top-ranked reading's translation equals the hand tree's.
 
@@ -20,10 +22,29 @@ import importlib.util
 import sys
 from pathlib import Path
 
-GF_DIR = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent
+GF_DIR = HERE.parent / "gf"
 sys.path.insert(0, str(GF_DIR))
+sys.path.insert(0, str(HERE))
 from parse_rank import normalize, parse_readings, ranked  # noqa: E402
-from translate import App, parse_tree, translate_cl  # noqa: E402
+from translate import App, Readings, parse_tree, translate_cl_with  # noqa: E402
+from readings import EndToEndReadings  # noqa: E402
+
+
+class _DefaultWithExistential(Readings):
+    """translate.py's default reading of every construction, plus the
+    pipeline's existential ("there are NP"), which lives in readings.py
+    with the rest of the pipeline's grammar extension. Ranking is judged
+    against this, not against the pipeline's full readings, which also
+    depend on its discourse resolution (gen_claims.py)."""
+
+    def __init__(self):
+        self._pipeline = EndToEndReadings({}, "premise")
+
+    def sentence(self, t):
+        if t.head == "ExistNP" and len(t.args) == 1:
+            return self._pipeline._existential(t.args[0])
+        return None
 
 
 def to_clause(t):
@@ -47,19 +68,22 @@ def core(tree_text: str) -> str:
 
 def translate(tree_text: str):
     try:
-        return translate_cl(to_clause(parse_tree(tree_text))).lean_prop
+        return translate_cl_with(to_clause(parse_tree(tree_text)), _DefaultWithExistential()).lean_prop
     except Exception:
         return None
 
 
 def main() -> int:
-    spec = importlib.util.spec_from_file_location("run_gf_tests", GF_DIR / "run_gf_tests.py")
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
+    checks = []
+    for path, name in ((GF_DIR / "run_gf_tests.py", "CHECKS"), (HERE / "english_checks.py", "ENGLISH_CHECKS")):
+        spec = importlib.util.spec_from_file_location(path.stem, path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        checks += getattr(mod, name)
     stats = collections.Counter()
     regressions, rank_misses, readings = [], [], []
     seen = set()
-    for label, cmd, english in mod.CHECKS:
+    for label, cmd, english in checks:
         # `_tense_reconfirm` checks re-linearize an already-listed tree
         # under a tense wrapper - the same English, not a new sentence.
         if label.endswith("_tense_reconfirm"):
@@ -69,7 +93,7 @@ def main() -> int:
             continue
         seen.add((english, hand))
         stats["sentences"] += 1
-        cat, trees = parse_readings(english)
+        cat, trees = parse_readings(english, require_well_formed=True)
         if not trees:
             regressions.append(f"{label}: no parse for {english!r}")
             continue

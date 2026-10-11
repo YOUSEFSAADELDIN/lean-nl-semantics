@@ -3655,8 +3655,8 @@ def main() -> None:
         # roles use).
         if label.endswith("_tense_reconfirm"):
             continue
-        # `english_...` checks (run_gf_tests.py's _FRACAS_ENGLISH_CHECKS)
-        # exist for the end-to-end parser, not as cross-check roles.
+        # Only `fracas_...` labels are cross-check roles (the end-to-end
+        # pipeline's `english_...` checks now live in EndToEnd/).
         if not label.startswith("fracas_"):
             continue
         m = re.match(r"fracas_(\d+)(.*)", label)

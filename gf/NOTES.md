@@ -348,10 +348,11 @@ generator's restrictor names (`everyCommittee`) and breaks the
 
 **Later round - FraCaS's own wording, and the fixes it needed.** Parsing
 FraCaS's original English (not the confirmed rewordings) surfaced four
-constructions no hand-built tree used, each now added to FraCaSLogic with
-one confirmed linearize check (`run_gf_tests.py`'s
-`_FRACAS_ENGLISH_CHECKS`, labelled `english_*` so `gen_gf_cross_check.py`
-ignores them): `who_RP` (`IdRP` realizes "that" by design), a
+constructions no hand-built tree used, each added with one confirmed
+linearize check labelled `english_*`. (These, and every construction the
+pipeline added later, have since moved out of this grammar into
+`EndToEnd/FraCaSEndToEnd.gf`, which extends it, with their checks in
+`EndToEnd/english_checks.py`.) The four: `who_RP` (`IdRP` realizes "that" by design), a
 self-declared `ExistNP` ("there are/was NP" - IdiomEng's own lin, since
 extending `Idiom` fails at this gf-rgl tag), a frozen `usedTo_VV` (DictEng's
 `use_VV` is the freely conjugated verb), and DictEng's own `just_Predet`.
@@ -430,14 +431,16 @@ it first. FraCaS 27 then needed the `(AtLeast, scope)` counterpart of
 `mono_nl`'s Phase-5 conditioned narrowing (`atLeast_mono_scope_
 conditioned`); aesop did not find the equivalent `atLeast_trans`.
 
-**Which files belong to which part of the project.** `gf/` serves two
-parts. The FraCaS corpus's GF cross-check uses `FraCaSLogic*.gf`,
-`run_gf_tests.py`, and `translate.py`'s default mode (via
-`scripts/gen_gf_cross_check.py`). The end-to-end pipeline (`EndToEnd/`)
-uses the same grammar plus `FraCaSParse*.gf`/`gen_parse_grammar.py`,
-`parse_rank.py`, `parse_eval.py`, `background.py`, and `translate.py`'s
-reading modes. The reading modes sit behind one gate (`_READING !=
-"default"`). `snapshot_default_translations.py` writes every default-mode
+**Which files belong to which part of the project.** `gf/` belongs to
+the FraCaS corpus's GF cross-check: `FraCaSLogic*.gf`, `run_gf_tests.py`,
+and `translate.py` (via `scripts/gen_gf_cross_check.py`). The end-to-end
+pipeline lives in `EndToEnd/` (parse grammar, parser, ranker, background
+knowledge, and its readings of ambiguous English in `readings.py`) and
+uses `gf/` only as a library: it restricts the FraCaSLogic grammar, and
+translates through `translate.py`'s one extension point, the `Readings`
+class, which `EndToEnd/readings.py` subclasses. Until the
+`end-to-end-pipeline` branch, those readings lived inside `translate.py`
+behind a global switch. `snapshot_default_translations.py` writes every default-mode
 translation of a confirmed tree to `default_translations.tsv`, and CI
 fails if it changes; the cross-check theorems are regenerated and diffed
 too. When the snapshot was introduced it showed that two end-to-end

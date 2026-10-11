@@ -26,8 +26,8 @@ import re
 import subprocess
 from pathlib import Path
 
-GF_DIR = Path(__file__).resolve().parent
-DEFAULT_PGF = GF_DIR / "FraCaSParse.pgf"
+HERE = Path(__file__).resolve().parent
+DEFAULT_PGF = HERE / "FraCaSParse.pgf"
 # Section 1/2 sentences are tenseless clauses (`Cl`, this project's default
 # target - see FraCaSLogic.gf); later sections' trees are tensed (`S`).
 # Tried in this order; the first category with any reading wins.
@@ -64,7 +64,7 @@ def tokenize(sentence: str, pgf: Path = DEFAULT_PGF) -> str:
     s = re.sub(r"([,;:])", r" \1 ", s)
 
     def lookup(tok: str):
-        for v in (tok, tok.lower(), tok[:1].upper() + tok[1:], tok.capitalize()):
+        for v in (tok, tok.lower(), tok[:1].upper() + tok[1:], tok.capitalize(), tok.upper()):
             if v in vocab:
                 return [v]
         return None
@@ -80,9 +80,13 @@ def tokenize(sentence: str, pgf: Path = DEFAULT_PGF) -> str:
     return " ".join(out)
 
 
-def parse_readings(sentence: str, pgf: Path = DEFAULT_PGF, timeout: int = 120):
+def parse_readings(sentence: str, pgf: Path = DEFAULT_PGF, timeout: int = 120, require_well_formed: bool = False):
     """(category, [tree, ...]) for the first category in PARSE_CATS with at
-    least one complete parse, or (None, []) if none parses."""
+    least one complete parse, or (None, []) if none parses. With
+    `require_well_formed`, a category whose parses are all ill-formed
+    (`ranked` would discard them all) does not count: "Bill is going to."
+    has only junk clause parses, and its reading is the elliptical
+    sentence."""
     for cat in PARSE_CATS:
         out = subprocess.run(
             ["gf", "--run", str(pgf)],
@@ -93,7 +97,7 @@ def parse_readings(sentence: str, pgf: Path = DEFAULT_PGF, timeout: int = 120):
             line.strip() for line in out.splitlines()
             if _TREE_HEADS.match(line.strip()) and not line.startswith("The ")
         ]
-        if trees:
+        if trees and (not require_well_formed or any(well_formed(t) for t in trees)):
             return cat, trees
     return None, []
 
@@ -122,7 +126,7 @@ def rank_key(tree: str):
     return (size(tree), -adverbial_depth(tree), tree)
 
 
-# Where anaphoric "one" (FraCaSLogic.gf's anaphOne_NP) may appear: as a
+# Where anaphoric "one" (FraCaSEndToEnd.gf's anaphOne_NP) may appear: as a
 # bare argument of a verb, preposition or copula - "owns one", "Bill owns
 # one too". Never modified ("ONE OF the leading tenors" is the partitive
 # numeral, "JUST ONE accountant" the counted numeral) and never a possessor.
@@ -143,16 +147,86 @@ def _anaphora_well_formed(t, parent: str = "") -> bool:
     return all(_anaphora_well_formed(a, t.head) for a in t.args)
 
 
+# Elliptical sentences (FraCaSEndToEnd.gf's gapping and fragments) and where
+# they may stand: as a whole sentence, after "and"/"but", or as a conjunct.
+_FRAGMENTS = {"GapS", "GapS2", "ElliptAdvS", "FragAdvS", "FragNPS"}
+_SENTENCE_LEVEL = {"", "UttS", "AndS", "ButS", "CommaAndS", "TooS"}
+
+
+def _remnant_ok(adv) -> bool:
+    """A gapping or fragment remnant is a prepositional phrase or a
+    one-word adverbial ("by train", "on Friday"), not a clause."""
+    return adv.head == "PrepNP" or (not adv.args and adv.head.endswith("_Adv"))
+
+
+def _fragments_well_formed(t, parent: str = "") -> bool:
+    """A fragment is a sentence on its own ("Bill by train.", "On
+    Friday."), never part of one: readings that put one inside a clause
+    ("before [Bill]" as a fragment sentence) or use a noun phrase like
+    "Smith left" (participle) as a gapped subject are not readings of
+    English and are discarded before ranking."""
+    if t.head in _FRAGMENTS:
+        if parent not in _SENTENCE_LEVEL:
+            return False
+        if t.head in ("GapS", "GapS2") and (t.args[0].head == "PPartNP" or not all(_remnant_ok(a) for a in t.args[1:])):
+            return False
+        # a bare noun phrase is a fragment only after "and"/"but" ("But
+        # only one woman."): alone, "Smith left." would also be one
+        if t.head == "FragNPS" and (parent not in ("AndS", "ButS") or t.args[0].head == "PPartNP"):
+            return False
+        if t.head == "FragAdvS" and not _remnant_ok(t.args[0]):
+            return False
+        if t.head == "ElliptAdvS" and not _remnant_ok(t.args[2]):
+            return False
+    return all(_fragments_well_formed(a, t.head) for a in t.args)
+
+
 def _contains(t, head: str) -> bool:
     return t.head == head or any(_contains(a, head) for a in t.args)
 
 
-def ranked(trees: list[str]) -> list[str]:
-    """Readings in preference order, ill-formed anaphora readings removed."""
+def _clause_modifiers_well_formed(t) -> bool:
+    """A subordinate clause ("before Jones left", "if he came") modifies a
+    clause or a verb phrase, never a noun or noun phrase: "[the shore
+    before Jones swam to the shore]" is not a reading of English. Right association would
+    otherwise prefer it, as the lowest attachment (FraCaS 270)."""
+    if t.head in ("AdvCN", "AdvNP") and len(t.args) == 2 and t.args[1].head == "SubjS":
+        return False
+    return all(_clause_modifiers_well_formed(a) for a in t.args)
+
+
+def _empty_np(t) -> bool:
+    """A noun phrase that linearizes to nothing: the plural indefinite
+    article alone (`DetNP (DetQuant IndefArt NumPl)`), or the genitive of
+    one used as a determiner."""
+    if t.head != "DetNP" or len(t.args) != 1 or t.args[0].head != "DetQuant" or len(t.args[0].args) != 2:
+        return False
+    quant, num = t.args[0].args
+    if quant.head == "IndefArt":
+        return num.head == "NumPl"
+    return quant.head == "GenNP" and len(quant.args) == 1 and _empty_np(quant.args[0])
+
+
+def _no_empty_np(t) -> bool:
+    """No noun phrase without words: readings using one ("Bill is going to
+    [ ]", "Smith wrote [ ] to a representative") are not readings of the
+    words given."""
+    if _empty_np(t):
+        return False
+    return all(_no_empty_np(a) for a in t.args)
+
+
+def well_formed(tree: str) -> bool:
     from translate import parse_tree  # local import: translate.py does not import this module
 
-    kept = [t for t in trees if _anaphora_well_formed(parse_tree(t))]
-    return sorted(kept, key=rank_key)
+    t = parse_tree(tree)
+    return _anaphora_well_formed(t) and _clause_modifiers_well_formed(t) \
+        and _fragments_well_formed(t) and _no_empty_np(t)
+
+
+def ranked(trees: list[str]) -> list[str]:
+    """Readings in preference order, ill-formed readings removed."""
+    return sorted([t for t in trees if well_formed(t)], key=rank_key)
 
 
 def normalize(tree: str) -> str:

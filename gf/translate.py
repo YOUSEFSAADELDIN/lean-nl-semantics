@@ -218,7 +218,16 @@ def _leaf_words(t, keep_det: bool = False) -> list[str]:
     words = []
     for a in t.args:
         words.extend(_leaf_words(a, keep_det))
+    marker = NAME_MARKERS.get(t.head)
+    if marker is not None:
+        return [marker, *words]
     return words
+
+
+# Constructions with no word of their own that must still show in a
+# predicate's name - empty here; a grammar extending FraCaSLogic adds its
+# own (the end-to-end pipeline's progressive, EndToEnd/readings.py).
+NAME_MARKERS: dict[str, str] = {}
 
 
 def camel_name(words: list[str]) -> str:
@@ -326,6 +335,15 @@ def _decode_sub100(t) -> int:
         return 10
     if t.head == "pot111" and not t.args:
         return 11
+    # tens: "twenty" (pot1 n2), "twelve" (pot1to19 n2), "forty-five"
+    # (pot1plus n4 (pot0 n5)) - the end-to-end pipeline's "twenty men"
+    # (FraCaS 167)
+    if t.head == "pot1" and len(t.args) == 1 and t.args[0].head in _DIGIT_BY_CONST:
+        return 10 * _DIGIT_BY_CONST[t.args[0].head]
+    if t.head == "pot1to19" and len(t.args) == 1 and t.args[0].head in _DIGIT_BY_CONST:
+        return 10 + _DIGIT_BY_CONST[t.args[0].head]
+    if t.head == "pot1plus" and len(t.args) == 2 and t.args[0].head in _DIGIT_BY_CONST:
+        return 10 * _DIGIT_BY_CONST[t.args[0].head] + _decode_sub10(t.args[1])
     raise NotImplementedError(f"unrecognized Sub100 numeral shape: {t.head!r}")
 
 
@@ -374,94 +392,76 @@ def _decode_card(card):
     raise NotImplementedError(f"unrecognized Card shape: {card.head!r}")
 
 
-# Which reading to produce for constructions with more than one. "default"
-# is this module's long-standing behaviour, which the cross-check theorems
-# (scripts/gen_gf_cross_check.py) are proved against and which therefore
-# never changes. The end-to-end blind evaluation (scripts/gen_blind_eval_
-# parsed.py) instead asks for the "weak" reading (entailed by every reading
-# - used for premises, and for the hypothesis in the "no" test) and the
-# "strong" one (entailing every reading - the hypothesis in the "yes"
-# test), so no yes/no it reports depends on picking one reading:
-#   - definite plural subject ("the inhabitants voted ..."): distributive
-#     `Every` vs collective/generic - weak `Some`, strong `Every` plus the
-#     definite's existence presupposition (see _quantified);
-#   - bare plural + relative clause ("leading tenors who are excellent
-#     are ..."): generic vs existential - weak `Some`, strong `Every`;
-#   - "many": cardinal vs proportional - weak `Some`; strong is an opaque
-#     `Many` relation with no properties (no GQ here entails both);
-#   - plural "some Xs": number-neutral vs at-least-two - weak `Some`,
-#     strong `AtLeast 2` (with its "some" consequence spelled out);
-#   - a bare numeral ("APCOM won ten orders"): at least n vs exactly n -
-#     weak `AtLeast n`, strong `Exactly n` ("only/just n" is always
-#     `Exactly n`, and "at least/at most/exactly n" say which outright);
-#   - "few": cardinal vs proportional (Partee's two readings, as for
-#     "many") - weak `AtMost fewCount` for an unknown threshold
-#     `fewCount`; strong an opaque `Few` relation, stated (by the
-#     generator) only with the property every reading shares: narrowing
-#     its scope within its restrictor preserves it. Neither reading entails
-#     that any such X exist (FraCaS 12);
-#   - "a few"/"at least a few" are not ambiguous but vague: `AtLeast
-#     aFewCount` for an unknown threshold `aFewCount ≥ 1` (previously
-#     plain `Some`, which made "some X are Y" entail "a few X are Y");
-#   - "both"/"neither": not ambiguous, just previously simplified to
-#     `Every`/`No` (see the CAUTION below) - both modes use GQ.lean's own
-#     `Both`/`Neither`, which keep the exactly-two presupposition.
+# How to read constructions that have more than one reading. This base
+# class is the translator's own (default) behaviour, which the GF
+# cross-check theorems (scripts/gen_gf_cross_check.py) are proved
+# against: each hook either returns None (no override) or the one fixed
+# reading this module has always produced.
 #
-# `reading` may also be a dict assigning "weak"/"strong" per KIND of
-# ambiguity - "defpl", "generic", "many", "somepl", "numeral", "few" (AMBIGUITY_KINDS) - so a
-# caller can read the same kind of ambiguity the same way in every
-# sentence of a problem (EndToEnd/gen_claims.py enumerates all
-# such assignments); a kind missing from the dict reads "weak".
-AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl", "numeral", "few")
-_READING = "default"
+# The end-to-end pipeline (the project's fourth part) subclasses it in
+# EndToEnd/readings.py to translate ambiguous English under several
+# readings instead. That subclass, not this file, holds every reading
+# the end-to-end pipeline adds; CI's default-translation snapshot
+# (gf/default_translations.tsv) fails if anything here changes what the
+# default produces.
+class Readings:
+    def sentence(self, t):
+        """A translation of a whole clause that takes precedence over the
+        translator's own rules, or None."""
+        return None
+
+    def quantifier(self, det):
+        """Override `_resolve_quantifier` for `det`, or None."""
+        return None
+
+    def clause(self, quant: str, cn, vp):
+        """Adjust a quantified clause's (quantifier, restrictor, VP).
+
+        Bare-plural + relative-clause subjects ("leading tenors that are
+        excellent are indispensable", problem 13) are a genuine ambiguity
+        this translator can't resolve from syntax alone: `DetQuant IndefArt
+        NumPl` is GF's own encoding for an article-less bare plural, used
+        both for real existentials ("tenors are singing") and for FraCaS's
+        own "characterizing generic construed as universal" idiom - which
+        is what this specific problem needs (`every_mp`'s own `Every (fun
+        x => leadingTenor x ∧ excellent x) indispensable`, not `Some`).
+        Narrowly overridden here (not a blanket "bare plural = Every" rule,
+        which would be wrong for a genuine existential bare plural) for
+        exactly the shape that's actually confirmed to need it: a
+        RelCN-restricted bare plural."""
+        if quant == "Some" and cn.head == "RelCN":
+            quant = "Every"
+        return quant, cn, vp
+
+    def named_object(self, subject_name: str, vp):
+        """A translation of a proper-name subject's VP that keeps its
+        object's quantifier separate from the verb, or None (the VP is then
+        fused into one predicate name, see _scope_name)."""
+        return None
+
+    def quantified(self, quant: str, restrictor: str, scope: str) -> str:
+        """Render `quant restrictor scope`."""
+        return f"{quant} {restrictor} {scope}"
 
 
-_POSITION = "premise"
-_SIDE_PREMISES: list = []
+_readings = Readings()
 
 
-def translate_cl_reading(t, reading, position: str = "premise"):
-    """`translate_cl` under a given reading: "default", "weak", "strong",
-    or a dict {kind: "weak"|"strong"} over AMBIGUITY_KINDS. `position`
-    ("premise"/"hypothesis") only chooses between equivalent renderings
-    (see _quantified)."""
-    global _READING, _POSITION, _SIDE_PREMISES
-    previous, _READING = _READING, reading
-    previous_pos, _POSITION = _POSITION, position
-    previous_side, _SIDE_PREMISES = _SIDE_PREMISES, []
+def translate_cl_with(t, readings: Readings):
+    """`translate_cl` with `readings` in place of the default."""
+    global _readings
+    previous, _readings = _readings, readings
     try:
-        tr = translate_cl(t)
-        tr.side_premises = list(_SIDE_PREMISES)
-        return tr
+        return translate_cl(t)
     finally:
-        _READING = previous
-        _POSITION = previous_pos
-        _SIDE_PREMISES = previous_side
-
-
-def _mode(kind: str) -> str:
-    if isinstance(_READING, dict):
-        return _READING.get(kind, "weak")
-    return _READING
+        _readings = previous
 
 
 def _resolve_quantifier(det) -> str:
-    if det.head == "atLeastAFew_Det" and not det.args and _READING != "default":
-        return "AtLeast aFewCount"
-    if det.head == "few_Det" and not det.args and _READING != "default":
-        return "AtMost fewCount" if _mode("few") == "weak" else "Few"
+    override = _readings.quantifier(det)
+    if override is not None:
+        return override
     if det.head in _QUANTIFIER_BY_DET and not det.args:
-        if _READING != "default":
-            if det.head == "many_Det":
-                return "Many" if _mode("many") == "strong" else "Some"
-            if det.head == "somePl_Det" and _mode("somepl") == "strong":
-                return "AtLeast 2+"
-            if det.head == "aFew_Det":
-                return "AtLeast aFewCount"
-            if det.head == "both_Det":
-                return "Both"
-            if det.head == "neither_Det":
-                return "Neither"
         return _QUANTIFIER_BY_DET[det.head]
     if det.head == "DetQuant" and len(det.args) == 2:
         quant, num = det.args
@@ -480,12 +480,8 @@ def _resolve_quantifier(det) -> str:
             # signed`/`Exactly 6 accountant signed`, for the gold
             # hypotheses "Six lawyers/accountants signed the contract"),
             # not guessed from the English alone. The end-to-end readings
-            # treat it as ambiguous instead (at least n / exactly n).
-            if _READING != "default" and _mode("numeral") == "weak":
-                return f"AtLeast {count}"
+            # (EndToEnd/readings.py) treat it as ambiguous instead.
             return f"Exactly {count}"
-        if _READING != "default" and quant.head == "DefArt" and num.head == "NumPl":
-            return "Some" if _mode("defpl") == "weak" else "Every+"
         if quant.head in _QUANTIFIER_BY_QUANT:
             return _QUANTIFIER_BY_QUANT[quant.head]
         raise NotImplementedError(
@@ -612,16 +608,17 @@ def _scope_name(vp) -> str:
 
 
 # Relative pronouns `_restrictor_expr` treats alike: `IdRP` (realized
-# "that") and `who_RP` (FraCaSLogic.gf's own, realized "who" - FraCaS's
-# own wording). Same relative clause, same translation.
-_RELATIVE_PRONOUNS = ("IdRP", "who_RP")
+# "that"). A grammar extending FraCaSLogic adds its own here (the
+# end-to-end pipeline's `who_RP`, EndToEnd/readings.py): same relative
+# clause, same translation.
+_RELATIVE_PRONOUNS = {"IdRP"}
 
 
 def _normalize_cn(cn):
     """`AdjCN ap (RelCN base rel)` ("leading [tenors that are excellent]")
     and `RelCN (AdjCN ap base) rel` ("[leading tenors] that are
     excellent") are two attachments of the same words that a real parse
-    (gf/parse_eval.py) returns side by side. With an intersective
+    (EndToEnd/parse_eval.py) returns side by side. With an intersective
     adjective both denote the same set, so the first is normalized into
     the second - otherwise the same English would translate differently
     (a fused name vs a conjunction, or - via translate_cl's bare-plural
@@ -719,10 +716,6 @@ class Translation:
     # assumed it uniformly; this field lets them keep doing that for
     # every OTHER predicate while declaring these few correctly.
     binary_predicates: list = field(default_factory=list)
-    # Extra premises a strong reading entails, stated as separate
-    # hypotheses rather than conjoined into `lean_prop` (see _quantified) -
-    # only ever set in premise position.
-    side_premises: list = field(default_factory=list)
     # Free SKOLEM FUNCTIONS (`A -> A`, as opposed to every other free
     # variable this translator produces, which is either a predicate
     # or a bare individual) - set only by
@@ -870,74 +863,6 @@ def _try_translate_comparative(subject_name: str, vp):
     return None
 
 
-# Object determiners that make a named subject's transitive VP count its
-# objects, so the count is kept as a quantifier over a binary verb rather
-# than fused into one predicate name (see _try_translate_object_quantifier).
-_COUNTING_OBJECT_DETS = ("somePl_Det", "several_Det", "aFew_Det", "many_Det")
-
-
-def _is_counting_det(det) -> bool:
-    if det.head in _COUNTING_OBJECT_DETS and not det.args:
-        return True
-    return (
-        det.head == "DetQuant"
-        and len(det.args) == 2
-        and det.args[1].head == "NumCard"
-    )
-
-
-def _try_translate_object_quantifier(subject_name: str, vp):
-    """A proper-name subject with a transitive verb whose object COUNTS:
-    "APCOM won ten orders" (`AtLeast 10 order (win apcom)` / `Exactly 10
-    ...`, see the "numeral" reading), "ITEL won some orders", and the
-    quantity comparative "ITEL won more orders than APCOM did / than APCOM
-    / than APCOM lost" (`More order (win itel) (win apcom)`; an elided
-    verb is the main clause's own). The verb becomes a binary predicate
-    and the object's determiner a quantifier over it, so counts can be
-    compared and added - fused into one name ("won ten orders" ->
-    `win10Order`) they can't. Only with a proper-name subject (no scope
-    interaction with a quantified subject) and only in the end-to-end
-    readings; other objects keep the fused name, so a problem mixing the
-    two shapes may lose an inference, never gain a wrong one. Returns None
-    when the shape doesn't match."""
-    if _READING == "default":
-        return None
-    if not (
-        vp.head == "ComplSlash"
-        and len(vp.args) == 2
-        and vp.args[0].head == "SlashV2a"
-        and len(vp.args[0].args) == 1
-    ):
-        return None
-    verb = camel_name(_leaf_words(vp.args[0]))
-    obj = vp.args[1]
-    if obj.head in ("MoreThanNP", "MoreThanAux", "MoreThanV2") and len(obj.args) >= 2:
-        cn, standard = obj.args[0], obj.args[1]
-        if standard.head != "UsePN" or len(standard.args) != 1:
-            return None
-        if obj.head == "MoreThanAux" and obj.args[2].head not in ("ellDid", "ellDoes", "ellHas"):
-            return None
-        other = camel_name(_leaf_words(standard))
-        other_verb = camel_name(_leaf_words(obj.args[2])) if obj.head == "MoreThanV2" else verb
-        restrictor_expr, restrictor_preds = _restrictor_expr(cn)
-        return Translation(
-            lean_prop=f"More {restrictor_expr} ({verb} {subject_name}) ({other_verb} {other})",
-            free_predicates=[*restrictor_preds, verb, other_verb],
-            free_individuals=[subject_name, other],
-            binary_predicates=[verb, other_verb],
-        )
-    if obj.head != "DetCN" or len(obj.args) != 2 or not _is_counting_det(obj.args[0]):
-        return None
-    quant = _resolve_quantifier(obj.args[0])
-    restrictor_expr, restrictor_preds = _restrictor_expr(_normalize_cn(obj.args[1]))
-    return Translation(
-        lean_prop=_quantified(quant, restrictor_expr, f"({verb} {subject_name})"),
-        free_predicates=[*restrictor_preds, verb],
-        free_individuals=[subject_name],
-        binary_predicates=[verb],
-    )
-
-
 def _try_translate_named_individual_fact(subject, vp):
     """Handles a bare 'ProperNoun is/was a CN' or 'ProperNoun VERB-PHRASE'
     fact about a single named individual - e.g. fracas_099's "Smith was
@@ -966,7 +891,7 @@ def _try_translate_named_individual_fact(subject, vp):
     comparative = _try_translate_comparative(individual_name, vp)
     if comparative is not None:
         return comparative
-    counted = _try_translate_object_quantifier(individual_name, vp)
+    counted = _readings.named_object(individual_name, vp)
     if counted is not None:
         return counted
     if (
@@ -987,7 +912,7 @@ def _try_translate_named_individual_fact(subject, vp):
     # `UseComp (CompCN cn)` - the RGL's other derivation of "is a CN",
     # with the indefinite article supplied by CompCN's own linearization
     # rather than a DetCN node. A real parse returns both derivations
-    # for the same English (gf/parse_eval.py), so this must translate
+    # for the same English (EndToEnd/parse_eval.py), so this must translate
     # identically to the CompNP/DetCN branch just above, not fall
     # through to `_scope_name`'s single fused name.
     if (
@@ -1267,73 +1192,6 @@ def _try_translate_bound_possessive_presupposition(subject, vp):
         binary_predicates=binary_preds,
         free_functions=[skolem_name],
         template=template,
-    )
-
-
-def _translate_existential(np) -> Translation:
-    """`ExistNP np` - "there is/are/was NP", FraCaS Section 1's usual
-    hypothesis shape ("There are Italian men who want to be a great
-    tenor"). Only an indefinite NP is handled (the existential's own
-    definiteness restriction makes that the normal case). A relative
-    clause on it supplies the scope - "there are [Italian men] [who want
-    to be a great tenor]" is `Some italianMan wantToBeGreatTenor`, the same
-    shape this project's own Lean statement of those problems uses - and
-    a bare one is plain existence."""
-    quant, cn = _resolve_subject(np)
-    cn = _normalize_cn(cn)
-    if quant != "Some":
-        # A counting existential ("there are few committee members from
-        # southern Europe", FraCaS 28/44) says the same as "few committee
-        # members are from southern Europe": the NP's own relative clause
-        # or PP is the scope. Without one there is nothing to count, so it
-        # is not handled. (The existential `Some` keeps its long-standing
-        # fused translation below.)
-        if _READING == "default":
-            raise NotImplementedError(f"existential with a non-indefinite NP ({quant}) is not handled")
-        if cn.head == "CompoundCN" and len(cn.args) == 2 and cn.args[1].head == "AdvCN":
-            # "committee [members from southern Europe]" is the same set as
-            # "[committee members] from southern Europe"
-            inner = cn.args[1]
-            cn = App("AdvCN", [App("CompoundCN", [cn.args[0], inner.args[0]]), inner.args[1]])
-        if cn.head == "AdvCN" and len(cn.args) == 2 and cn.args[1].head == "PrepNP":
-            restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
-            scope_name = _scope_name(App("UseComp", [App("CompAdv", [cn.args[1]])]))
-        elif (
-            cn.head == "RelCN"
-            and len(cn.args) == 2
-            and cn.args[1].head == "UseRCl"
-            and len(cn.args[1].args) == 3
-            and cn.args[1].args[2].head == "RelVP"
-            and len(cn.args[1].args[2].args) == 2
-            and cn.args[1].args[2].args[0].head in _RELATIVE_PRONOUNS
-        ):
-            restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
-            scope_name = _scope_name(cn.args[1].args[2].args[1])
-        else:
-            raise NotImplementedError(f"counting existential ({quant}) without a relative clause or PP")
-        return Translation(
-            lean_prop=_quantified(quant, restrictor_expr, scope_name),
-            free_predicates=[*restrictor_preds, scope_name],
-        )
-    if (
-        cn.head == "RelCN"
-        and len(cn.args) == 2
-        and cn.args[1].head == "UseRCl"
-        and len(cn.args[1].args) == 3
-        and cn.args[1].args[2].head == "RelVP"
-        and len(cn.args[1].args[2].args) == 2
-        and cn.args[1].args[2].args[0].head in _RELATIVE_PRONOUNS
-    ):
-        restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
-        scope_name = _scope_name(cn.args[1].args[2].args[1])
-        return Translation(
-            lean_prop=f"Some {restrictor_expr} {scope_name}",
-            free_predicates=[*restrictor_preds, scope_name],
-        )
-    restrictor_expr, restrictor_preds = _restrictor_expr(cn)
-    return Translation(
-        lean_prop=f"∃ x, {restrictor_expr} x",
-        free_predicates=restrictor_preds,
     )
 
 
@@ -2561,8 +2419,9 @@ def _try_translate_existential_universal_object(subject, vp):
 
 def translate_cl(t) -> Translation:
     t = _unwrap_tense(t)
-    if t.head == "ExistNP" and len(t.args) == 1:
-        return _translate_existential(t.args[0])
+    override = _readings.sentence(t)
+    if override is not None:
+        return override
     if t.head != "PredVP" or len(t.args) != 2:
         raise NotImplementedError(
             f"only 'PredVP (DetCN det cn) vp' is handled so far, got head={t.head!r}"
@@ -2614,69 +2473,15 @@ def translate_cl(t) -> Translation:
     quant, cn = _resolve_subject(subject)
     cn = _normalize_cn(cn)
 
-    # Bare-plural + relative-clause subjects ("leading tenors that are
-    # excellent are indispensable", problem 13) are a genuine ambiguity
-    # this translator can't resolve from syntax alone: `DetQuant IndefArt
-    # NumPl` is GF's own encoding for an article-less bare plural, used
-    # both for real existentials ("tenors are singing") and for FraCaS's
-    # own "characterizing generic construed as universal" idiom - which
-    # is what this specific problem needs (`every_mp`'s own `Every (fun
-    # x => leadingTenor x ∧ excellent x) indispensable`, not `Some`).
-    # Narrowly overridden here (not a blanket "bare plural = Every" rule,
-    # which would be wrong for a genuine existential bare plural) for
-    # exactly the shape that's actually confirmed to need it: a
-    # RelCN-restricted bare plural.
-    if quant == "Some" and cn.head == "RelCN" and _mode("generic") != "weak":
-        quant = "Every"
-
-    # A floated "all" ("the Ancient Greeks were ALL noted philosophers",
-    # FraCaS 96): a parse attaches it to the predicate nominal ("[all noted
-    # philosophers]"), but a predicate nominal is not itself quantified, so
-    # "all" there can only be floated off the subject - which makes the
-    # subject unambiguously universal, whatever its own determiner.
-    if (
-        vp.head == "UseComp"
-        and len(vp.args) == 1
-        and vp.args[0].head == "CompNP"
-        and len(vp.args[0].args) == 1
-        and vp.args[0].args[0].head == "PredetNP"
-        and len(vp.args[0].args[0].args) == 2
-        and vp.args[0].args[0].args[0].head == "all_Predet"
-        and _READING != "default"
-    ):
-        quant = "Every"
-        vp = App("UseComp", [App("CompNP", [vp.args[0].args[0].args[1]])])
+    quant, cn, vp = _readings.clause(quant, cn, vp)
 
     restrictor_expr, restrictor_preds = _restrictor_expr(cn)
     scope_name = _scope_name(vp)
 
     return Translation(
-        lean_prop=_quantified(quant, restrictor_expr, scope_name),
+        lean_prop=_readings.quantified(quant, restrictor_expr, scope_name),
         free_predicates=[*restrictor_preds, scope_name],
     )
-
-
-def _quantified(quant: str, restrictor: str, scope: str) -> str:
-    """Render `quant restrictor scope`. Two strong readings entail an
-    existence fact: a definite plural presupposes its referents exist
-    ("Every+": `Every` alone is vacuously true of no tenors at all), and
-    "at least two" entails "some" ("AtLeast 2+"). In premise position that
-    fact becomes a SEPARATE premise (`_SIDE_PREMISES`) - logically the same
-    as conjoining it, but a conjunction hides the plain `Every`/`AtLeast`
-    premise from shape-directed tactics like `mono_nl` (CI run
-    37185572606: FraCaS 23/55 were provable with `AtLeast 2 P Q` as a
-    premise but not with `AtLeast 2 P Q ∧ Some P Q`). As a hypothesis, a
-    definite plural must establish existence too, so it stays a
-    conjunction; "at least two" needs no extra conjunct there."""
-    if quant in ("Every+", "AtLeast 2+"):
-        base = "Every" if quant == "Every+" else "AtLeast 2"
-        if _POSITION == "premise":
-            _SIDE_PREMISES.append(f"Some {restrictor} {scope}")
-            return f"{base} {restrictor} {scope}"
-        if quant == "Every+":
-            return f"(Every {restrictor} {scope} ∧ Some {restrictor} {scope})"
-        return f"AtLeast 2 {restrictor} {scope}"
-    return f"{quant} {restrictor} {scope}"
 
 
 def render_lean(translation: Translation, *, domain: str = "A") -> str:
