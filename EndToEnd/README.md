@@ -554,7 +554,7 @@ need a marker in the name (`translate.py`'s `NAME_MARKERS`).
 
 Which of the pipeline's safeguards prevent wrong answers? Each ablation
 switches one off and re-scores (`ablations.py`, `AblationScan.lean`,
-`ablation_report.py`; CI run 38176812855, with the name check in
+`ablation_report.py`; CI run 38179774490, with the name check in
 place). The reading-rule rows reuse the baseline's claims, scored one
 reading at a time. The others regenerate the claims with one safeguard
 patched out, and score the problems whose claims change. Recomputing
