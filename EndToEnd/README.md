@@ -515,6 +515,52 @@ translates the two attachments of an adjective-plus-relative-clause noun
 phrase identically. Its default reading — the one the cross-check
 theorems are proved against — is unchanged throughout.
 
+## Soundness ablations
+
+Which of the pipeline's safeguards prevent wrong answers? Each ablation
+switches one off and re-scores (`ablations.py`, `AblationScan.lean`,
+`ablation_report.py`; CI run 38105846712). The reading-rule rows reuse the
+baseline's claims, scored one reading at a time. The others regenerate
+the claims with one safeguard patched out, and score the problems whose
+claims change. Recomputing the every-reading rule from the per-claim
+results reproduces the main scan exactly (181 and 240), so the two scans
+agree.
+
+| switched off | as translated: matched | wrong | with background knowledge: matched | wrong | wrong answers it lets through |
+|---|---|---|---|---|---|
+| nothing (the pipeline) | 181/260 | 0 | 240/260 | 0 | |
+| every reading → weak readings only | 182/260 | 1 | 241/260 | 2 | 56, 109 |
+| every reading → strong readings only | 181/260 | 4 | 240/260 | 4 | 91, 94, 95, 107 |
+| every reading → any reading (FraCoq's rule) | 180/260 | 5 | 239/260 | 6 | 56, 91, 94, 95, 107, 109 |
+| presupposition in "no" claims | 181/260 | 0 | 239/260 | 1 | 78 |
+| determiners, numerals and the progressive in names | 181/260 | 3 | 235/260 | 5 | 30, 32, 47, 327, 329 |
+| telicity | 181/260 | 0 | 234/260 | 2 | 304, 329 |
+| non-subsective/non-veridical exclusions | 181/260 | 0 | 238/260 | 2 | 198, 201 |
+| parse-ranking filters | 173/263 | 0 | 230/263 | 0 | |
+| unresolved-pronoun guard | 181/262 | 0 | 240/262 | 0 | |
+
+What this shows:
+- **Committing to one reading buys almost nothing and costs wrong
+  answers.** The weak readings alone match one more problem and answer
+  one or two wrongly; the strong readings alone match none more and
+  answer four wrongly; "yes if any reading proves it" answers five or six
+  wrongly (counting two contradictions). The every-reading rule's price
+  is one problem.
+- **Each semantic safeguard prevents specific wrong answers:**
+  - keeping determiners, numerals and the progressive in names: 5;
+  - the imperfective paradox (telicity): 2;
+  - non-subsective adjectives and non-veridical adverbs: 2;
+  - the presupposition in "no" claims: 1.
+- **Two safeguards prevent none here.** The parse-ranking filters change
+  accuracy (10 matches), not soundness. The pronoun guard only refuses
+  134/135, which were "unknown" either way; it prevents a wrong
+  translation, but not a wrong answer on FraCaS.
+
+Caveat: every one of these safeguards was added after the pipeline gave
+one of these wrong answers on these same problems (or, for the reading
+rule, by design). So the table shows what each safeguard does on FraCaS.
+It does not show that it would be needed, or enough, on unseen problems.
+
 ## Comparison with systems that parse FraCaS's English
 
 The like-for-like comparison is with systems that, like this pipeline,
