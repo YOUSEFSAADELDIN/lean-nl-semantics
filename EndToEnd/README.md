@@ -27,6 +27,7 @@ predicate encoding, and not about MTT.
 | `parse_eval.py` | parser quality on the confirmed sentences |
 | `FraCaSEndToEnd*.gf`, `english_checks.py` | the pipeline's extension of `gf/`'s grammar, and its linearize checks |
 | `background.py` | problem-independent background knowledge |
+| `Encodings/` | the same parsed problems restated with nouns as types (MTT) and in two Montague encodings, and the comparison's results (`Encodings/README.md`) |
 
 **What it shares with the rest of the project.** Two things in `gf/`,
 both used without editing them:

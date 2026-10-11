@@ -34,8 +34,12 @@ Monotonicity/CNAdapter.lean`, derives two such facts from part 1's noun
 lattice.) So the FraCaS results in parts 2 and 4 are results about that
 encoding and about the methods around it - parsing, reading ambiguity,
 the prover - and do not by themselves show anything for or against
-MTT. Comparing the two encodings on the same problems, with everything
-else held fixed, is future work.
+MTT. That comparison, with everything else held fixed, is in
+`EndToEnd/Encodings/` (its README has the results): on FraCaS Sections 5
+and 3, nouns as types answer as many problems as the pipeline and as
+intensional Montague semantics (no accuracy edge), avoid a wrong answer
+that extensional Montague semantics makes valid (215), and need the
+fewest stipulations, at a cost in proof automation.
 
 The browser lab (below) is meant to end up demoing all four.
 

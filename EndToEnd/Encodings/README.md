@@ -150,6 +150,39 @@ needs. Classically the two are equivalent (a stipulated function exists
 by choice whenever the Σ-premise holds), so this is a difference in what
 is assumed, not in what follows.
 
+## Findings so far (Phases 1a and 1b)
+
+Across the 34 problems of Sections 5 and 3 the pipeline reaches, with the
+parser, readings and lexicon held fixed:
+
+| | Section 5: valid answers matched | Section 3: valid answers matched | wrong (valid) | stipulations |
+|---|---|---|---|---|
+| F (pipeline) | 21/23 | 10/11 | 0 | 38 background facts (S5); 7 functions and 3 background facts (S3) |
+| P (extensional Montague) | 20/23 | - | **1** (215) | 53 postulates (S5) |
+| W (intensional Montague) | 21/23 | - | 0 | 65 postulates (S5) |
+| M (MTT) | 21/23 | 10/11 | 0 | **35** postulates (S5); **none** (S3) |
+
+1. **No accuracy edge for M.** It matches intensional Montague semantics
+   and the pipeline on every problem.
+2. **A validity edge over extensional Montague.** Stating nouns as
+   extensions makes the wrong answer to 215 valid (`p_215_valid`); M,
+   like W, leaves it open (`m_215_not_valid`).
+3. **The fewest stipulations.** In Section 5, subsectivity is built into
+   M's types (35 postulates against 53 and 65). In Section 3, M states
+   possessives and dependencies as projections of the premises' own
+   proof objects, where F stipulates a function per possessive and
+   background facts linking fused names.
+4. **A cost in proof automation.** One generic prover finds 16/23 (S5)
+   and 7/11 (S3) of M's answers against 21/23 and 10/11 of F's. Every
+   miss is valid and proved by hand in `Commitments.lean`: M's premises
+   relate nouns through their embeddings into individuals and through
+   projections, which `aesop` and `grind` do not search well.
+
+These are development-set problems, and both sections are small. The
+differences in (3) are differences in what is assumed, not in what
+follows: classically, a stipulated function exists by choice wherever
+the Σ-premise holds.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
