@@ -205,7 +205,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scan: [F_pipeline, M_pipeline, MInj_pipeline, F_generic, M_generic, MInj_generic]
+        scan: [F_pipeline, M_pipeline, M_transfer, MInj_transfer, F_generic, M_generic]
     steps:
       - uses: actions/checkout@v4
 

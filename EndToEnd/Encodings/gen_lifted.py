@@ -15,15 +15,18 @@ claims, not on the trees, and changes only the nouns:
   `fun x => person x ∧ ...`). It becomes a type `ItalianMan` with
   `[Fintype ItalianMan]` and an embedding into the individuals,
   `eItalianMan : ItalianMan → A`. Its `[DecidablePred]` binder goes.
-- A **quantifier over a noun** quantifies over its type: `Every italianMan
-  Q` becomes `Every (A := ItalianMan) (fun _ => True) (fun y => Q
-  (eItalianMan y))`, the same determiner (`FraCaS.Section1.GQ`) used at
-  the noun's type. A restrictor's further conditions (a relative clause,
-  the other conjunct of "N and M") restrict that type; a disjunction of
-  two nouns ("representative or client") quantifies over their sum type.
-  A restrictor with no noun stays over the individuals, and is counted.
+- A **quantifier over a noun** ranges over its type: `Every italianMan Q`
+  becomes `EveryT eItalianMan (fun _ => True) Q` - every element of
+  `ItalianMan` is, as an individual, `Q` (EndToEnd/Encodings/Typed.lean).
+  Verbs and adjectives stay predicates of individuals, as in Phases 1a/1b.
+  A restrictor's further condition (a relative clause, the other conjunct
+  of "N and M") is the second argument; a disjunction of two nouns
+  ("representative or client") quantifies over their sum type. A few
+  translations' explicit `∃ x, n x ∧ …` and `∀ x, n x → …` become
+  `SomeT` and `EveryT` the same way.
 - **Anywhere else** a noun is a predicate of individuals, stated through
-  its type: `italianMan x` becomes `∃ m : ItalianMan, eItalianMan m = x`.
+  its type: `italianMan x` becomes `IsA eItalianMan x`, "x is the
+  individual of some element of ItalianMan".
 - `Many` and `Few`, opaque in F, are opaque at every type in M, with the
   same meaning postulates stated at every type.
 
@@ -57,7 +60,9 @@ DETERMINERS = {
     "Both": (0, 1), "Neither": (0, 1), "Many": (0, 1), "Few": (0, 1),
     "AtLeast": (1, 1), "AtMost": (1, 1), "Exactly": (1, 1), "More": (0, 2),
 }
-RESERVED = {*DETERMINERS, "A", "Type", "Prop", "Nat", "Fintype", "True", "False", "Sum", "D",
+TYPED = {d: d + "T" for d in DETERMINERS}
+OPAQUE = {"Many", "Few"}
+RESERVED = {*TYPED.values(), "IsA", *DETERMINERS, "A", "Type", "Prop", "Nat", "Fintype", "True", "False", "Sum", "D",
             "DecidablePred", "DecidableRel", "Function"}
 VARIANTS = ("M", "MInj")
 
@@ -236,25 +241,9 @@ class Lift:
                 return v
 
     def member(self, noun, e):
-        ty, emb = self.nouns[noun]
-        m = self.fresh("m")
-        return f"(∃ {m} : {ty}, {emb} {m} = {e})"
+        return f"(IsA {self.nouns[noun][1]} {e})"
 
-    def compose(self, s, dom, emb, subst):
-        """A scope over individuals as a predicate over `dom`."""
-        y = self.fresh("y")
-        at = f"({emb} {y})"
-        if isinstance(s, str):
-            if s in self.nouns:
-                return f"(fun ({y} : {dom}) => {self.member(s, at)})"
-            return f"(fun ({y} : {dom}) => {self.term([s], subst)} {at})"
-        fb = _fun_body(s)
-        if fb is not None:
-            x, body = fb
-            return f"(fun ({x} : {dom}) => {self.term(body, {**subst, x: f'({emb} {x})'})})"
-        return f"(fun ({y} : {dom}) => {self.term([s], subst)} {at})"
-
-    def det(self, d, args, subst):
+    def det(self, d, args):
         nnum, nscope = DETERMINERS[d]
         if len(args) != nnum + 1 + nscope:
             return None
@@ -277,48 +266,48 @@ class Lift:
             dom, emb = self.nouns[n]
         if kind == "cond":
             x, rest = cond
-            restr = f"(fun ({x} : {dom}) => {self.term(rest, {**subst, x: f'({emb} {x})'})})"
+            restr = f"(fun {x} => {self.term(rest)})"
         else:
-            restr = f"(fun (_ : {dom}) => True)"
-        parts = [d, *(self.term([a], subst) for a in nums), restr, *(self.compose(s, dom, emb, subst) for s in scopes)]
-        return " ".join(parts)
+            restr = "(fun _ => True)"
+        nums = [self.term([a]) for a in nums]
+        scopes = [self.term([sc]) for sc in scopes]
+        if d in OPAQUE:
+            # Opaque at every type: applied to the type's elements.
+            y = self.fresh("y")
+            at = lambda p: f"(fun ({y} : {dom}) => {p} ({emb} {y}))"  # noqa: E731
+            return " ".join([d, at(restr), *map(at, scopes)])
+        return " ".join([TYPED[d], *nums, emb, restr, *scopes])
 
-    def term(self, seq, subst) -> str:
+    def term(self, seq) -> str:
         out = []
         for sp in spines(seq):
             if isinstance(sp, Binder):
                 br = binder_restrictor(sp, self.nouns)
                 if br is not None:
                     n, x, rest = br
-                    ty, emb = self.nouns[n]
-                    out.append(f"{sp.kind} {x} : {ty}, {self.term(rest, {**subst, x: f'({emb} {x})'})}")
+                    det = "SomeT" if sp.kind == "∃" else "EveryT"
+                    out.append(f"{det} {self.nouns[n][1]} (fun _ => True) (fun {x} => {self.term(rest)})")
                     continue
-                inner = dict(subst)
-                for v in sp.header:
-                    inner.pop(v, None)
                 sep = " =>" if sp.kind == "fun" else ","
-                out.append(f"{sp.kind} {' '.join(sp.header)}{sep} {self.term(sp.body, inner)}")
+                out.append(f"{sp.kind} {' '.join(sp.header)}{sep} {self.term(sp.body)}")
                 continue
             if isinstance(sp, str):
                 out.append(sp)
                 continue
             head = sp[0]
             if isinstance(head, str) and head in DETERMINERS:
-                lifted = self.det(head, sp[1:], subst)
+                lifted = self.det(head, sp[1:])
                 if lifted is not None:
                     out.append(lifted)
                     continue
             if isinstance(head, str) and head in self.nouns and len(sp) == 2:
-                out.append(self.member(head, self.term([sp[1]], subst)))
+                out.append(self.member(head, self.term([sp[1]])))
                 continue
             for x in sp:
                 if isinstance(x, Group):
-                    out.append(x.open + self.term(x.items, subst) + _CLOSE[x.open])
-                elif x in subst:
-                    out.append(subst[x])
+                    out.append(x.open + self.term(x.items) + _CLOSE[x.open])
                 elif x in self.nouns:
-                    z = self.fresh("z")
-                    out.append(f"(fun ({z} : A) => {self.member(x, z)})")
+                    out.append(f"(IsA {self.nouns[x][1]})")
                 else:
                     out.append(x)
         s = " ".join(out)
@@ -393,7 +382,7 @@ def lift_claim(c: str, nouns: dict, used: set, injective: bool):
         if text == "[Fintype A]":
             for n, (ty, emb) in nouns.items():
                 binders.append(f"({ty} : Type) [Fintype {ty}] ({emb} : {ty} → A)")
-    props = [lift.term(p, {}) for p in parts]
+    props = [lift.term(p) for p in parts]
     facts = [f"(Function.Injective {emb})" for _ty, emb in nouns.values()] if injective else []
     return "∀ " + " ".join(binders) + ", " + " → ".join([*facts, *props]), lift
 
@@ -455,6 +444,7 @@ def main() -> None:
     lines = [
         "-- Generated by EndToEnd/Encodings/gen_lifted.py from EndToEnd/Claims.lean - do not hand-edit.",
         "import EndToEnd.Claims",
+        "import EndToEnd.Encodings.Typed",
         "",
         "/-!",
         "# Every end-to-end claim with nouns as types",
@@ -467,7 +457,7 @@ def main() -> None:
         "-/",
         "",
         "namespace FraCaS.Encodings.Lifted",
-        "open FraCaS FraCaS.Section1 FraCaS.Section2 FraCaS.EndToEnd",
+        "open FraCaS FraCaS.Section1 FraCaS.Section2 FraCaS.EndToEnd FraCaS.Encodings.Typed",
         "open scoped Classical",
         "",
     ]

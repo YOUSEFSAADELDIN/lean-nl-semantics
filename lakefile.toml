@@ -39,4 +39,4 @@ roots = ["EndToEnd.Encodings.Section5", "EndToEnd.Encodings.Commitments", "EndTo
 # library: built and scored by the `encodings-phase2` CI jobs.
 [[lean_lib]]
 name = "EndToEndLifted"
-roots = ["EndToEnd.Encodings.Lifted"]
+roots = ["EndToEnd.Encodings.Typed", "EndToEnd.Encodings.Lifted"]
