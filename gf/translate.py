@@ -218,13 +218,16 @@ def _leaf_words(t, keep_det: bool = False) -> list[str]:
     words = []
     for a in t.args:
         words.extend(_leaf_words(a, keep_det))
-    # The progressive has no word of its own in the tree ("was writing a
-    # report"), but it is not the simple past: "was building MTALK" does
-    # not entail "built MTALK" (the imperfective paradox), so it is marked
-    # in the name (`progWriteReport`).
-    if t.head == "ProgrVP":
-        return ["prog", *words]
+    marker = NAME_MARKERS.get(t.head)
+    if marker is not None:
+        return [marker, *words]
     return words
+
+
+# Constructions with no word of their own that must still show in a
+# predicate's name - empty here; a grammar extending FraCaSLogic adds its
+# own (the end-to-end pipeline's progressive, EndToEnd/readings.py).
+NAME_MARKERS: dict[str, str] = {}
 
 
 def camel_name(words: list[str]) -> str:
@@ -436,10 +439,6 @@ class Readings:
         fused into one predicate name, see _scope_name)."""
         return None
 
-    def counting_existential(self, quant: str, cn):
-        """"there are QUANT CN ..." for a quantifier other than `Some`."""
-        raise NotImplementedError(f"existential with a non-indefinite NP ({quant}) is not handled")
-
     def quantified(self, quant: str, restrictor: str, scope: str) -> str:
         """Render `quant restrictor scope`."""
         return f"{quant} {restrictor} {scope}"
@@ -609,9 +608,10 @@ def _scope_name(vp) -> str:
 
 
 # Relative pronouns `_restrictor_expr` treats alike: `IdRP` (realized
-# "that") and `who_RP` (FraCaSLogic.gf's own, realized "who" - FraCaS's
-# own wording). Same relative clause, same translation.
-_RELATIVE_PRONOUNS = ("IdRP", "who_RP")
+# "that"). A grammar extending FraCaSLogic adds its own here (the
+# end-to-end pipeline's `who_RP`, EndToEnd/readings.py): same relative
+# clause, same translation.
+_RELATIVE_PRONOUNS = {"IdRP"}
 
 
 def _normalize_cn(cn):
@@ -1192,41 +1192,6 @@ def _try_translate_bound_possessive_presupposition(subject, vp):
         binary_predicates=binary_preds,
         free_functions=[skolem_name],
         template=template,
-    )
-
-
-def _translate_existential(np) -> Translation:
-    """`ExistNP np` - "there is/are/was NP", FraCaS Section 1's usual
-    hypothesis shape ("There are Italian men who want to be a great
-    tenor"). Only an indefinite NP is handled (the existential's own
-    definiteness restriction makes that the normal case). A relative
-    clause on it supplies the scope - "there are [Italian men] [who want
-    to be a great tenor]" is `Some italianMan wantToBeGreatTenor`, the same
-    shape this project's own Lean statement of those problems uses - and
-    a bare one is plain existence."""
-    quant, cn = _resolve_subject(np)
-    cn = _normalize_cn(cn)
-    if quant != "Some":
-        return _readings.counting_existential(quant, cn)
-    if (
-        cn.head == "RelCN"
-        and len(cn.args) == 2
-        and cn.args[1].head == "UseRCl"
-        and len(cn.args[1].args) == 3
-        and cn.args[1].args[2].head == "RelVP"
-        and len(cn.args[1].args[2].args) == 2
-        and cn.args[1].args[2].args[0].head in _RELATIVE_PRONOUNS
-    ):
-        restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
-        scope_name = _scope_name(cn.args[1].args[2].args[1])
-        return Translation(
-            lean_prop=f"Some {restrictor_expr} {scope_name}",
-            free_predicates=[*restrictor_preds, scope_name],
-        )
-    restrictor_expr, restrictor_preds = _restrictor_expr(cn)
-    return Translation(
-        lean_prop=f"∃ x, {restrictor_expr} x",
-        free_predicates=restrictor_preds,
     )
 
 
@@ -2457,8 +2422,6 @@ def translate_cl(t) -> Translation:
     override = _readings.sentence(t)
     if override is not None:
         return override
-    if t.head == "ExistNP" and len(t.args) == 1:
-        return _translate_existential(t.args[0])
     if t.head != "PredVP" or len(t.args) != 2:
         raise NotImplementedError(
             f"only 'PredVP (DetCN det cn) vp' is handled so far, got head={t.head!r}"

@@ -126,7 +126,7 @@ def rank_key(tree: str):
     return (size(tree), -adverbial_depth(tree), tree)
 
 
-# Where anaphoric "one" (FraCaSLogic.gf's anaphOne_NP) may appear: as a
+# Where anaphoric "one" (FraCaSEndToEnd.gf's anaphOne_NP) may appear: as a
 # bare argument of a verb, preposition or copula - "owns one", "Bill owns
 # one too". Never modified ("ONE OF the leading tenors" is the partitive
 # numeral, "JUST ONE accountant" the counted numeral) and never a possessor.
@@ -147,7 +147,7 @@ def _anaphora_well_formed(t, parent: str = "") -> bool:
     return all(_anaphora_well_formed(a, t.head) for a in t.args)
 
 
-# Elliptical sentences (FraCaSLogic.gf's gapping and fragments) and where
+# Elliptical sentences (FraCaSEndToEnd.gf's gapping and fragments) and where
 # they may stand: as a whole sentence, after "and"/"but", or as a conjunct.
 _FRAGMENTS = {"GapS", "GapS2", "ElliptAdvS", "FragAdvS", "FragNPS"}
 _SENTENCE_LEVEL = {"", "UttS", "AndS", "ButS", "CommaAndS", "TooS"}

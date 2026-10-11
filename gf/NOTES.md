@@ -348,10 +348,11 @@ generator's restrictor names (`everyCommittee`) and breaks the
 
 **Later round - FraCaS's own wording, and the fixes it needed.** Parsing
 FraCaS's original English (not the confirmed rewordings) surfaced four
-constructions no hand-built tree used, each now added to FraCaSLogic with
-one confirmed linearize check (`run_gf_tests.py`'s
-`_FRACAS_ENGLISH_CHECKS`, labelled `english_*` so `gen_gf_cross_check.py`
-ignores them): `who_RP` (`IdRP` realizes "that" by design), a
+constructions no hand-built tree used, each added with one confirmed
+linearize check labelled `english_*`. (These, and every construction the
+pipeline added later, have since moved out of this grammar into
+`EndToEnd/FraCaSEndToEnd.gf`, which extends it, with their checks in
+`EndToEnd/english_checks.py`.) The four: `who_RP` (`IdRP` realizes "that" by design), a
 self-declared `ExistNP` ("there are/was NP" - IdiomEng's own lin, since
 extending `Idiom` fails at this gf-rgl tag), a frozen `usedTo_VV` (DictEng's
 `use_VV` is the freely conjugated verb), and DictEng's own `just_Predet`.

@@ -88,6 +88,8 @@ from translate import (  # noqa: E402
     _normalize_cn,
     _RELATIVE_PRONOUNS,
     _resolve_quantifier,
+    _resolve_subject,
+    NAME_MARKERS,
     _restrictor_expr,
     _scope_name,
     camel_name,
@@ -95,6 +97,14 @@ from translate import (  # noqa: E402
 )
 
 AMBIGUITY_KINDS = ("defpl", "generic", "many", "somepl", "numeral", "few")
+
+# The pipeline's grammar extension (EndToEnd/FraCaSEndToEnd.gf) in
+# translate.py's extension points: "who" is a relative pronoun like
+# "that", and the progressive ("was writing a report") is marked in
+# predicate names (`progWriteReport`) - it is not the simple past: "was
+# building MTALK" does not entail "built MTALK" (the imperfective paradox).
+_RELATIVE_PRONOUNS.add("who_RP")
+NAME_MARKERS["ProgrVP"] = "prog"
 
 # Object determiners that make a named subject's transitive VP count its
 # objects, so the count is kept as a quantifier over a binary verb rather
@@ -272,6 +282,8 @@ class EndToEndReadings(Readings):
         return self.reading
 
     def sentence(self, t):
+        if t.head == "ExistNP" and len(t.args) == 1:
+            return self._existential(t.args[0])
         if t.head == "DependentHave" and len(t.args) == 1:
             return self._dependent_have(t.args[0])
         if t.head == "ExtAdvS" and len(t.args) == 2:
@@ -890,6 +902,40 @@ class EndToEndReadings(Readings):
             free_predicates=[*restrictor_preds, verb],
             free_individuals=[subject_name],
             binary_predicates=[verb],
+        )
+
+    def _existential(self, np):
+        """`ExistNP np` - "there is/are/was NP", FraCaS Section 1's usual
+        hypothesis shape ("There are Italian men who want to be a great
+        tenor"). Only an indefinite NP is handled (the existential's own
+        definiteness restriction makes that the normal case). A relative
+        clause on it supplies the scope - "there are [Italian men] [who
+        want to be a great tenor]" is `Some italianMan
+        wantToBeGreatTenor`, the same shape the hand-written corpus uses -
+        and a bare one is plain existence."""
+        quant, cn = _resolve_subject(np)
+        cn = _normalize_cn(cn)
+        if quant != "Some":
+            return self.counting_existential(quant, cn)
+        if (
+            cn.head == "RelCN"
+            and len(cn.args) == 2
+            and cn.args[1].head == "UseRCl"
+            and len(cn.args[1].args) == 3
+            and cn.args[1].args[2].head == "RelVP"
+            and len(cn.args[1].args[2].args) == 2
+            and cn.args[1].args[2].args[0].head in _RELATIVE_PRONOUNS
+        ):
+            restrictor_expr, restrictor_preds = _restrictor_expr(cn.args[0])
+            scope_name = _scope_name(cn.args[1].args[2].args[1])
+            return Translation(
+                lean_prop=f"Some {restrictor_expr} {scope_name}",
+                free_predicates=[*restrictor_preds, scope_name],
+            )
+        restrictor_expr, restrictor_preds = _restrictor_expr(cn)
+        return Translation(
+            lean_prop=f"∃ x, {restrictor_expr} x",
+            free_predicates=restrictor_preds,
         )
 
     def counting_existential(self, quant: str, cn):

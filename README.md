@@ -146,8 +146,8 @@ bridge/                      -- the linglib bridge, a separate Lake package
   lakefile.toml
   LinglibBridge.lean
 EndToEnd/                    -- part 4: the end-to-end pipeline (its own Lake library)
-gf/                           -- Grammatical Framework grammar + cross-checks (and
-                                 the end-to-end pipeline's parsing tools)
+gf/                           -- Grammatical Framework grammar + cross-checks (the
+                                 end-to-end pipeline extends this grammar in EndToEnd/)
 scripts/                      -- generators for the files gf/ and FraCaS/ commit
 viz/                          -- data exports + the three live visualizer pages
 lake-manifest.json            -- pinned Mathlib commit
@@ -177,7 +177,8 @@ lake build
 CI (`.github/workflows/build.yml`) runs three jobs on every push: `build`
 (the main package, must stay green), `build-linglib-bridge`
 (informational, won't fail the workflow if it breaks), and `build-gf`
-(the GF/RGL toolchain plus all 803 `linearize` checks, must stay green).
+(the GF/RGL toolchain, the 810 `linearize` checks of `gf/`'s grammar
+and the end-to-end pipeline's own 46, must stay green).
 
 ## The FraCaS suite
 

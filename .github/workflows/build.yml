@@ -289,10 +289,20 @@ jobs:
         working-directory: gf
         run: python3 run_gf_tests.py
 
+      # The end-to-end pipeline's own constructions extend gf/'s grammar
+      # (EndToEnd/FraCaSEndToEnd.gf) rather than editing it, with their
+      # own linearize checks.
+      - name: Build the end-to-end grammar extension
+        working-directory: EndToEnd
+        run: gf -make -path=".:../gf:$HOME/gf-libs/alltenses:$HOME/gf-libs/prelude" FraCaSEndToEndEng.gf
+
+      - name: Run the end-to-end linearize checks
+        run: python3 EndToEnd/english_checks.py
+
       # Restricted parse grammar (EndToEnd/gen_parse_grammar.py - see its
       # header for why parsing with the full FraCaSLogic grammar is
-      # unusable). Regenerated from gf/run_gf_tests.py and checked against
-      # the committed copy, then compiled against gf/'s FraCaSLogic.
+      # unusable). Regenerated from both check lists and checked against
+      # the committed copy, then compiled against the extension above.
       - name: Build FraCaSParse grammar
         working-directory: EndToEnd
         run: |

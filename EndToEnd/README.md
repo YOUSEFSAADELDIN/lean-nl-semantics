@@ -25,17 +25,26 @@ predicate encoding, and not about MTT.
 | `parse_rank.py` | parsing and generic ranking |
 | `gen_parse_grammar.py`, `FraCaSParse*.gf` | the restricted parse grammar (generated) |
 | `parse_eval.py` | parser quality on the confirmed sentences |
+| `FraCaSEndToEnd*.gf`, `english_checks.py` | the pipeline's extension of `gf/`'s grammar, and its linearize checks |
 | `background.py` | problem-independent background knowledge |
 
-**What it shares with the rest of the project.** Two things in `gf/`:
-the FraCaSLogic grammar, which the parse grammar restricts, and
-`translate.py`, the tree-to-`Prop` translator. `translate.py` reads each
-construction one way, the way the hand-written corpus's GF cross-check
-needs; `readings.py` plugs into its one extension point (the `Readings`
-class) and holds every reading the pipeline adds. CI snapshots every
-default translation (`gf/default_translations.tsv`) and regenerates the
-cross-check theorems, failing if either changes, so work here cannot
-silently change the cross-check.
+**What it shares with the rest of the project.** Two things in `gf/`,
+both used without editing them:
+- the FraCaSLogic grammar, which `FraCaSEndToEnd.gf` extends with every
+  construction only the pipeline needs (FraCaS's own wording: "who",
+  "there are", ellipsis, gapping, the progressive, ...), each confirmed by
+  one linearize check in `english_checks.py`. The parse grammar
+  restricts that extension.
+- `translate.py`, the tree-to-`Prop` translator. It reads each
+  construction one way, the way the hand-written corpus's GF cross-check
+  needs; `readings.py` plugs into its extension points (the `Readings`
+  class, the relative pronouns, the name markers) and holds every reading
+  the pipeline adds, including its translation of "there are NP".
+
+CI snapshots every default translation of the corpus's trees
+(`gf/default_translations.tsv`) and regenerates the cross-check theorems,
+failing if either changes, so work here cannot silently change the
+cross-check.
 
 **These are development-set figures, not blind ones.** The grammar
 constructions, translator rules, ambiguity readings and prover steps were
@@ -70,7 +79,7 @@ pipeline can carry all the way through (`EndToEnd/gen_claims.py`):
    rewordings) never used: the "who" relative pronoun, the "there
    are/was X who…" existential that most Section 1 hypotheses use, the
    frozen "used to", and "just one"; each has one confirmed linearize
-   check (`_FRACAS_ENGLISH_CHECKS`). A later round added Section 4's VP
+   check (`english_checks.py`). A later round added Section 4's VP
    ellipsis ("so did Bill", "Bill didn't", "the students have too"),
    one-anaphora ("a blue one", "owns one too") and uncontracted negation
    ("is not") the same way; readings that use anaphoric "one" as anything
