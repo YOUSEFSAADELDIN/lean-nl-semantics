@@ -225,6 +225,7 @@ def write_claims(emitted) -> None:
         return ", ".join(f"``Claims.med_{pid}_{kind}_{i}" for i in range(len(c["assignments"])))
 
     for reg, prefix in (("registry", ""), ("registryBk", "bk_")):
+        lines.append("set_option maxRecDepth 100000 in")
         lines.append("/-- `(MED pairID, gold is entailment, yes-claims, no-claims)`. -/")
         lines.append(f"def {reg} : List (Nat × Bool × List Lean.Name × List Lean.Name) := [")
         lines.append(",\n".join(

@@ -12955,6 +12955,7 @@ def med_5382_bk_no_0 : Prop :=
 
 end Claims
 
+set_option maxRecDepth 100000 in
 /-- `(MED pairID, gold is entailment, yes-claims, no-claims)`. -/
 def registry : List (Nat × Bool × List Lean.Name × List Lean.Name) := [
   (152, false, [``Claims.med_152_yes_0, ``Claims.med_152_yes_1], [``Claims.med_152_no_0, ``Claims.med_152_no_1]),
@@ -13948,6 +13949,7 @@ def registry : List (Nat × Bool × List Lean.Name × List Lean.Name) := [
   (5382, false, [``Claims.med_5382_yes_0], [``Claims.med_5382_no_0])
 ]
 
+set_option maxRecDepth 100000 in
 /-- `(MED pairID, gold is entailment, yes-claims, no-claims)`. -/
 def registryBk : List (Nat × Bool × List Lean.Name × List Lean.Name) := [
   (152, false, [``Claims.med_152_bk_yes_0, ``Claims.med_152_bk_yes_1], [``Claims.med_152_bk_no_0, ``Claims.med_152_bk_no_1]),
