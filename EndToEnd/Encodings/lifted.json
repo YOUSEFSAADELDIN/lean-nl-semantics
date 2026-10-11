@@ -1,0 +1,1636 @@
+{
+ "1": {
+  "nouns": [
+   "italian"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "2": {
+  "nouns": [
+   "italianMan"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "3": {
+  "nouns": [
+   "italianMan"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "4": {
+  "nouns": [
+   "italianTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "5": {
+  "nouns": [
+   "reallyAmbitiousTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "6": {
+  "nouns": [
+   "reallyGreatTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "7": {
+  "nouns": [
+   "greatTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "8": {
+  "nouns": [
+   "greatTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "9": {
+  "nouns": [
+   "greatTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "10": {
+  "nouns": [
+   "greatTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "11": {
+  "nouns": [
+   "greatTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "12": {
+  "nouns": [
+   "greatTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "13": {
+  "nouns": [
+   "leadingTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "14": {
+  "nouns": [
+   "leadingTenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "15": {
+  "nouns": [
+   "tenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "16": {
+  "nouns": [
+   "tenor"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "17": {
+  "nouns": [
+   "irishman"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "18": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "19": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "20": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "21": {
+  "nouns": [
+   "residentOfMemberState",
+   "individual"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "22": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "23": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "24": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "25": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "26": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "27": {
+  "nouns": [
+   "committeeMember",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "28": {
+  "nouns": [
+   "committeeMember",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "29": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "30": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "31": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "32": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "33": {
+  "nouns": [
+   "irishman"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "34": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "35": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "36": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "37": {
+  "nouns": [
+   "residentOfMemberState",
+   "individual"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "38": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "39": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "40": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "41": {
+  "nouns": [
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "42": {
+  "nouns": [
+   "european",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "43": {
+  "nouns": [
+   "committeeMember",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "44": {
+  "nouns": [
+   "committeeMember",
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "45": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "46": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "47": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "48": {
+  "nouns": [
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "49": {
+  "nouns": [
+   "swedeMasc",
+   "scandinavian"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "50": {
+  "nouns": [
+   "canadianResident",
+   "residentOfNorthAmericanContinent"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "51": {
+  "nouns": [
+   "canadianResident",
+   "residentOfNorthAmericanContinent"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "52": {
+  "nouns": [
+   "canadianResident",
+   "residentOfNorthAmericanContinent"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "53": {
+  "nouns": [
+   "residentOfMajorWesternCountry",
+   "residentOfWesternCountry"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "54": {
+  "nouns": [
+   "scandinavianDelegate",
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "55": {
+  "nouns": [
+   "irishDelegate",
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "56": {
+  "nouns": [
+   "britishDelegate",
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "57": {
+  "nouns": [
+   "portugueseDelegate",
+   "delegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "58": {
+  "nouns": [
+   "european"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "59": {
+  "nouns": [
+   "femaleCommitteeMember",
+   "committeeMember"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "60": {
+  "nouns": [
+   "femaleCommitteeMember",
+   "committeeMember"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "61": {
+  "nouns": [
+   "femaleCommissioner",
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "62": {
+  "nouns": [
+   "femaleCommissioner",
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "63": {
+  "nouns": [
+   "femaleCommissioner",
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "64": {
+  "nouns": [
+   "femaleCommissioner",
+   "commissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "65": {
+  "nouns": [
+   "scandinavian",
+   "swedeMasc"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "66": {
+  "nouns": [
+   "residentOfNorthAmericanContinent",
+   "canadianResident"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "67": {
+  "nouns": [
+   "residentOfNorthAmericanContinent",
+   "canadianResident"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "68": {
+  "nouns": [
+   "residentOfNorthAmericanContinent",
+   "canadianResident"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "69": {
+  "nouns": [
+   "residentOfWesternCountry",
+   "residentOfMajorWesternCountry"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "70": {
+  "nouns": [
+   "delegate",
+   "scandinavianDelegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "71": {
+  "nouns": [
+   "delegate",
+   "irishDelegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "72": {
+  "nouns": [
+   "delegate",
+   "britishDelegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "73": {
+  "nouns": [
+   "delegate",
+   "portugueseDelegate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "74": {
+  "nouns": [
+   "european"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "75": {
+  "nouns": [
+   "committeeMember",
+   "femaleCommitteeMember"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "76": {
+  "nouns": [
+   "committeeMember",
+   "femaleCommitteeMember"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "77": {
+  "nouns": [
+   "commissioner",
+   "femaleCommissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "78": {
+  "nouns": [
+   "commissioner",
+   "femaleCommissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "79": {
+  "nouns": [
+   "commissioner",
+   "maleCommissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "80": {
+  "nouns": [
+   "commissioner",
+   "femaleCommissioner"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "81": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "82": {
+  "nouns": [
+   "lawyer"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "83": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "84": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "85": {
+  "nouns": [
+   "lawyer",
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "86": {
+  "nouns": [
+   "lawyer",
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "87": {
+  "nouns": [
+   "representativeMasc"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "88": {
+  "nouns": [
+   "representativeMasc"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "89": {
+  "nouns": [
+   "representativeMasc",
+   "client"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 1
+ },
+ "90": {
+  "nouns": [
+   "chairman"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "91": {
+  "nouns": [
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "92": {
+  "nouns": [
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "93": {
+  "nouns": [
+   "person"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "94": {
+  "nouns": [
+   "inhabitantOfCambridge"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "95": {
+  "nouns": [
+   "ancientGreek"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "96": {
+  "nouns": [
+   "ancientGreek"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "98": {
+  "nouns": [
+   "softwareFault"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "99": {
+  "nouns": [
+   "clientAtDemonstration"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "100": {
+  "nouns": [
+   "clientAtDemonstration"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "102": {
+  "nouns": [
+   "universityGraduate"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "103": {
+  "nouns": [
+   "apcomManager"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "105": {
+  "nouns": [
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "106": {
+  "nouns": [
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "107": {
+  "nouns": [
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "108": {
+  "nouns": [
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "109": {
+  "nouns": [
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "110": {
+  "nouns": [
+   "accountant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "114": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "115": {
+  "nouns": [
+   "workstation"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "116": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "117": {
+  "nouns": [
+   "student"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "118": {
+  "nouns": [
+   "workstation",
+   "student"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "119": {
+  "nouns": [
+   "workstation",
+   "student"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "120": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "128": {
+  "nouns": [
+   "colleague"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "129": {
+  "nouns": [
+   "colleague"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "130": {
+  "nouns": [
+   "colleague"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "131": {
+  "nouns": [
+   "department"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "132": {
+  "nouns": [
+   "department",
+   "salesDepartment"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "133": {
+  "nouns": [
+   "computer"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "138": {
+  "nouns": [
+   "coverPage",
+   "report"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "140": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "141": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "142": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "143": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "144": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "145": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "146": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "147": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "149": {
+  "nouns": [
+   "student"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "150": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "151": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "152": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "153": {
+  "nouns": [
+   "student"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "154": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "155": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "156": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "157": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "158": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "159": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "160": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "161": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "162": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "164": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "165": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "166": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "167": {
+  "nouns": [
+   "man",
+   "woman"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "178": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "179": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "197": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "198": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "199": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "200": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "201": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "202": {
+  "nouns": [
+   "mammal",
+   "fourLeggedMammal"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "203": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "204": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "205": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "206": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "207": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "208": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "209": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "210": {
+  "nouns": [
+   "mouse"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "211": {
+  "nouns": [
+   "elephant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "212": {
+  "nouns": [
+   "mouse",
+   "elephant"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "213": {
+  "nouns": [
+   "mouse"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "214": {
+  "nouns": [
+   "legalAuthority",
+   "lawLecturer",
+   "fatLegalAuthority"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "215": {
+  "nouns": [
+   "legalAuthority",
+   "lawLecturer",
+   "competentLegalAuthority"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "216": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "217": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "218": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "219": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "220": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "221": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "222": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "223": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "224": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "225": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "226": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "227": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "228": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "229": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "230": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "231": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "232": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "233": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "234": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "235": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "239": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "240": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "241": {
+  "nouns": [
+   "order"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "246": {
+  "nouns": [
+   "itelComputer"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "247": {
+  "nouns": [
+   "itelComputer"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "248": {
+  "nouns": [
+   "itelComputer"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "249": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "250": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "251": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "252": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "253": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "254": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "255": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "256": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "257": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "258": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "261": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "262": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "263": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "264": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "265": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "266": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "267": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "268": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "269": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "270": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "271": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "272": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "273": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "274": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "275": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "277": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "278": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "279": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "280": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "281": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "282": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "283": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "287": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "288": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "290": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "294": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "295": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "296": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "297": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "298": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "299": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "300": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "301": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "302": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "303": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "304": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "306": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "307": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "311": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "312": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "313": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "326": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "327": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "328": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "329": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "330": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "331": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "332": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "334": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "335": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "336": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "337": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "338": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "339": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "342": {
+  "nouns": [],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ },
+ "343": {
+  "nouns": [
+   "chairmanOfItel"
+  ],
+  "untyped_restrictors": 0,
+  "sum_types": 0
+ }
+}
