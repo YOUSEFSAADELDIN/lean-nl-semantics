@@ -183,9 +183,9 @@ differences in (3) are differences in what is assumed, not in what
 follows: classically, a stipulated function exists by choice wherever
 the Σ-premise holds.
 
-## Phase 2 results: every problem the pipeline reaches (CI run 38125879289)
+## Phase 2 results: every problem the pipeline reaches (CI run 38176812855)
 
-Phase 2 restates the pipeline's own claims, all 260 problems, with each
+Phase 2 restates the pipeline's own claims, all 259 problems, with each
 quantified noun as a type (`gen_lifted.py`, `Lifted.lean`, `Typed.lean`).
 Nothing else changes: parse, readings, background knowledge and fused
 names are F's. "Every Italian man wants..." becomes `EveryT eItalianMan
@@ -193,14 +193,17 @@ names are F's. "Every Italian man wants..." becomes `EveryT eItalianMan
 Verbs and adjectives stay predicates of individuals. Elsewhere, "x is an N"
 is `IsA eN x`, meaning x is the individual of some element of `N`.
 
-**Where the encoding can matter at all: 138 of the 260 problems.** The
+**Where the encoding can matter at all: 137 of the 259 problems.** The
 other 122 never quantify over a noun. They only talk about named
 individuals through fused names (`haveGenuineDiamond smith`), so their
 lifted claim is F's, token for token (the generator checks). That covers
 most of Sections 4 and 7-9: at the granularity the pipeline translates
 to, there is no noun there to make a type of.
 
-On the 138 (with background knowledge; 0 wrong answers in every row):
+On the 137 (with background knowledge; 0 wrong answers in every row).
+The first run (38125879289) also had 119, since refused by the
+pipeline's name check; it was unmatched in every row, and no other
+verdict changed:
 
 | | pipeline's prover | generic prover (`aesop`, `grind`) |
 |---|---|---|
@@ -211,10 +214,10 @@ On the 138 (with background knowledge; 0 wrong answers in every row):
 
 | problems | F, generic | M, generic | F, pipeline's prover | M, best |
 |---|---|---|---|---|
-| only every / some / no (64) | 60 | **60** | 60 | 60 |
+| only every / some / no (63) | 60 | **60** | 60 | 60 |
 | a counting determiner, `Many` or `Few` (74) | 44 | 37 | 65 | 37 |
 
-1. **No accuracy edge for M, and no loss outside counting.** On the 64
+1. **No accuracy edge for M, and no loss outside counting.** On the 63
    problems quantified only by every, some and no, M and F match the same
    60 problems under the generic prover. Every problem F gets and M
    misses has "at least", "exactly", "most", "both"/"neither", "more" or

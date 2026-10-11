@@ -25,12 +25,13 @@ negation, a verb taking a clause ("say", "believe"), an adverb ("even",
 "no longer"), a pronoun, a conjunction.
 
 The check compares every phrase of the problem's resolved clauses of a
-kind the translator names as a predicate (`NAMED_HEADS`), named as `background.py` names it (`_name`: a verb phrase
-with its determiners kept, `_scope_name`; anything else by its words),
-which is how the translator names the same phrases.
+category the translator names as a predicate (`NAMED_CATEGORIES`, read
+off the grammar), named as the translator names it (`_name`).
 """
 from __future__ import annotations
 
+import functools
+import subprocess
 import sys
 from pathlib import Path
 
@@ -40,9 +41,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 # The naming functions are looked up when called, not imported by name,
 # so the check always measures the naming actually in use (the soundness
 # ablations patch it, `ablations.py`).
-import background  # noqa: E402
 import translate  # noqa: E402
-from background import CN_HEADS, VP_HEADS, _subtrees  # noqa: E402
+from background import _subtrees  # noqa: E402
+
+# The grammar every parse grammar here restricts; each function's category
+# is read from it, so a construction the pipeline adds ("said S" without
+# "that", `ComplVSBare`) is covered without being listed here.
+GRAMMAR = Path(__file__).resolve().parent / "FraCaSEndToEnd.pgf"
 
 # What a name may leave out without changing what it stands for.
 DELIBERATE = {
@@ -64,11 +69,37 @@ DELIBERATE = {
 }
 
 
-# The phrases the translator names as predicates: nouns and verb phrases
-# (`background.py`'s lists), relative clauses ("who did not throw balls",
-# named with their polarity), adjectives and prepositional phrases. A noun
-# phrase is never one: its determiner becomes a quantifier.
-NAMED_HEADS = CN_HEADS | VP_HEADS | {"UseRCl", "RelVP", "PositA", "AdAP", "PrepNP"}
+# The categories of phrase the translator names as predicates: nouns,
+# verb phrases and their complements, relative clauses ("who did not throw
+# balls", named with their polarity), adjectives and adverbials. Not noun
+# phrases, whose determiner becomes a quantifier, nor clauses.
+NAMED_CATEGORIES = {"CN", "VP", "Comp", "RCl", "RS", "AP", "Adv"}
+
+
+@functools.cache
+def _categories() -> dict[str, str]:
+    """Each grammar function's result category (`pg -funs`)."""
+    out = subprocess.run(["gf", "--run", str(GRAMMAR)], input="pg -funs\n",
+                         capture_output=True, text=True, timeout=120, check=True).stdout
+    cats = {}
+    for line in out.splitlines():
+        head, sep, typ = line.partition(" : ")
+        if sep:
+            cats[head.strip()] = typ.rstrip(" ;").split("->")[-1].strip()
+    if not cats:
+        raise RuntimeError(f"no function types read from {GRAMMAR}")
+    return cats
+
+
+def _name(t):
+    """`t`'s predicate name as the translator gives it: a verb phrase with
+    its determiners kept (`_scope_name`), anything else by its words."""
+    try:
+        if _categories().get(t.head) == "VP":
+            return translate._scope_name(t)
+        return translate.camel_name(translate._leaf_words(t))
+    except Exception:
+        return None
 
 
 def _lost(t, keep_det: bool) -> tuple[str, ...]:
@@ -89,8 +120,8 @@ def _lost(t, keep_det: bool) -> tuple[str, ...]:
 
 
 def lost(t) -> tuple[str, ...]:
-    """What `background.py`'s `_name(t)` leaves out of `t`."""
-    if t.head in VP_HEADS:
+    """What `_name(t)` leaves out of `t`."""
+    if _categories().get(t.head) == "VP":
         if translate._scope_name(t) != translate.camel_name(translate._leaf_words(t, keep_det=True)):
             # the one idiom `_scope_name` names by part of the phrase
             # ("comes cheap" -> `cheap`)
@@ -105,9 +136,9 @@ def clashes(trees, used: set[str]) -> dict[str, list[tuple[str, ...]]]:
     seen: dict[str, set[tuple[str, ...]]] = {}
     for tree in trees:
         for st in _subtrees(tree):
-            if st.head not in NAMED_HEADS:
+            if _categories().get(st.head) not in NAMED_CATEGORIES:
                 continue
-            name = background._name(st)
+            name = _name(st)
             if name in used:
                 seen.setdefault(name, set()).add(tuple(sorted(lost(st))))
     return {n: sorted(s) for n, s in seen.items() if len(s) > 1}

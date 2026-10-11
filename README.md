@@ -117,15 +117,20 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   English parsed with a restricted GF grammar, the top reading chosen by
   a generic ranker and translated by `gf/translate.py` under the
   pipeline's own readings of ambiguous English (`EndToEnd/readings.py`),
-  scored by its own prover. It reaches 260 of 342 problems and matches
-  gold on 181 of them as translated (240 with problem-independent
-  background knowledge), with no wrong answers. These are
-  **development-set** figures: the pipeline was extended by looking at
-  which of these same problems failed. Full write-up:
+  scored by its own prover. Every "yes" or "no" it gives is a Lean
+  proof of the translated claim, so its errors can only come from
+  translation; it is evaluated by how many it makes. It reaches 259 of
+  342 problems and matches gold on 181 of them as translated (240 with
+  problem-independent background knowledge), with no wrong answers.
+  These are **development-set** figures: the pipeline was extended by
+  looking at which of these same problems failed. Full write-up:
   `EndToEnd/README.md`. On a held-out set it was never developed on
   (989 problems from MED, `EndToEnd/HeldOut/`), it proves 137 of 477
   entailments and gives 3 wrong answers in 140 decided: one a real
-  translation error, two against labels that look wrong.
+  translation error, two against labels that look wrong. The error was
+  one name standing for two different phrases; a check added after the
+  test (`EndToEnd/names.py`) refuses every problem where that happens,
+  28 of the 989 (a post-hoc figure, not a held-out one).
 
   This is deliberately not aimed at general English coverage — FraCaS
   is a small, closed vocabulary and sentence set, and covering it was

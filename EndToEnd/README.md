@@ -205,10 +205,12 @@ correct reading. The right-association tie-breaker was added after
 inspecting misses of the size rule alone on these same sentences, so this
 is not a held-out figure.
 
-**Coverage, on FraCaS's original English**: 260 of 342 problems go all
-the way through (76.0%). 65 stop at a sentence the restricted grammar
-doesn't parse, 16 at a reading the translation doesn't cover, and 1
-(104) at a predicate named after a Lean keyword (`have`). The remaining parse failures are
+**Coverage, on FraCaS's original English**: 259 of 342 problems go all
+the way through (75.7%). 65 stop at a sentence the restricted grammar
+doesn't parse, 16 at a reading the translation doesn't cover, 1 (104) at
+a predicate named after a Lean keyword (`have`), and 1 (119) at the name
+check (below): "used her workstation" and "used a workstation" would both
+be `useWorkstation`. The remaining parse failures are
 mostly hard phenomena rather than missing glue: tense and aspect
 (Section 7), embedded questions, antecedent-contained and parallel-scope
 ellipsis (Section 4's 163, 171-173, 191-196), cross-sentence anaphora,
@@ -224,13 +226,16 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38101249418), on those 260 problems:
+**Result** (CI run 38176812855), on those 259 problems:
 
 | | matched | wrong answers |
 |---|---|---|
-| always "unknown" (baseline) | 90/260 (34.6%) | — |
-| as translated | **181/260 (69.6%)** | **0** |
-| with background knowledge | **240/260 (92.3%)** | **0** |
+| always "unknown" (baseline) | 90/259 (34.7%) | — |
+| as translated | **181/259 (69.9%)** | **0** |
+| with background knowledge | **240/259 (92.7%)** | **0** |
+
+(Before the name check the pipeline also reached 119, answered
+"unknown" against gold "no"; no other verdict changed.)
 
 Counting the 82 problems the pipeline cannot yet reach as "unknown",
 corpus-wide that is 197/342 (57.6%) as translated and 256/342 (74.9%)
@@ -516,29 +521,58 @@ translates the two attachments of an adjective-plus-relative-clause noun
 phrase identically. Its default reading — the one the cross-check
 theorems are proved against — is unchanged throughout.
 
+## The name check
+
+Every fused name is a free variable of its claim, bound universally, so
+a name that leaves a word out of its phrase is harmless by itself:
+`throwBall` may as well mean "did not throw balls" if nothing else is
+said about it. It is wrong when the same name is also the name of a
+different phrase, because whatever holds of one is then applied to the
+other. That one mechanism is behind every wrong answer the pipeline has
+given from naming: "spend a lot of time" and "spend time" (FraCaS 30,
+32, 47, before determiners were kept in names), and, on the held-out
+test, "said he didn't drink black coffee" named like the "drink black
+coffee" inside it (MED 2718, `HeldOut/README.md`).
+
+`names.py` refuses a problem when a name its claims use is the name of
+two of its phrases that differ in what the name leaves out. What a name
+may leave out without that counting is a short explicit list, each entry
+with its reason (articles and number, tense, positive polarity, relative
+pronouns, a floated "all"); a negation, a verb taking a clause, an
+adverb, a pronoun or a conjunction counts. It reads the naming code in
+use, so it also guards any later change to it.
+
+On FraCaS it refuses one problem, 119, which was "unknown" before; no
+verdict changes. The ablations below show what it covers: with
+determiners and numerals dropped from names, it refuses the problems
+whose names collide instead of answering them wrongly. It does not see
+a construction with no word of its own: dropping the progressive's
+marker still gives two wrong answers (327, 329), and such constructions
+need a marker in the name (`translate.py`'s `NAME_MARKERS`).
+
 ## Soundness ablations
 
 Which of the pipeline's safeguards prevent wrong answers? Each ablation
 switches one off and re-scores (`ablations.py`, `AblationScan.lean`,
-`ablation_report.py`; CI run 38105846712). The reading-rule rows reuse the
-baseline's claims, scored one reading at a time. The others regenerate
-the claims with one safeguard patched out, and score the problems whose
-claims change. Recomputing the every-reading rule from the per-claim
-results reproduces the main scan exactly (181 and 240), so the two scans
-agree.
+`ablation_report.py`; CI run 38176812855, with the name check in
+place). The reading-rule rows reuse the baseline's claims, scored one
+reading at a time. The others regenerate the claims with one safeguard
+patched out, and score the problems whose claims change. Recomputing
+the every-reading rule from the per-claim results reproduces the main
+scan exactly (181 and 240), so the two scans agree.
 
 | switched off | as translated: matched | wrong | with background knowledge: matched | wrong | wrong answers it lets through |
 |---|---|---|---|---|---|
-| nothing (the pipeline) | 181/260 | 0 | 240/260 | 0 | |
-| every reading → weak readings only | 182/260 | 1 | 241/260 | 2 | 56, 109 |
-| every reading → strong readings only | 181/260 | 4 | 240/260 | 4 | 91, 94, 95, 107 |
-| every reading → any reading (FraCoq's rule) | 180/260 | 5 | 239/260 | 6 | 56, 91, 94, 95, 107, 109 |
-| presupposition in "no" claims | 181/260 | 0 | 239/260 | 1 | 78 |
-| determiners, numerals and the progressive in names | 181/260 | 3 | 235/260 | 5 | 30, 32, 47, 327, 329 |
-| telicity | 181/260 | 0 | 234/260 | 2 | 304, 329 |
-| non-subsective/non-veridical exclusions | 181/260 | 0 | 238/260 | 2 | 198, 201 |
-| parse-ranking filters | 173/263 | 0 | 230/263 | 0 | |
-| unresolved-pronoun guard | 181/262 | 0 | 240/262 | 0 | |
+| nothing (the pipeline) | 181/259 | 0 | 240/259 | 0 | |
+| every reading → weak readings only | 182/259 | 1 | 241/259 | 2 | 56, 109 |
+| every reading → strong readings only | 181/259 | 4 | 240/259 | 4 | 91, 94, 95, 107 |
+| every reading → any reading (FraCoq's rule) | 180/259 | 5 | 239/259 | 6 | 56, 91, 94, 95, 107, 109 |
+| presupposition in "no" claims | 181/259 | 0 | 239/259 | 1 | 78 |
+| determiners, numerals and the progressive in names | 180/259 | 0 | 234/259 | 2 | 327, 329 |
+| telicity | 181/259 | 0 | 234/259 | 2 | 304, 329 |
+| non-subsective/non-veridical exclusions | 181/259 | 0 | 238/259 | 2 | 198, 201 |
+| parse-ranking filters | 173/262 | 0 | 230/262 | 0 | |
+| unresolved-pronoun guard | 181/259 | 0 | 240/259 | 0 | |
 
 What this shows:
 - **Committing to one reading buys almost nothing and costs wrong
@@ -548,19 +582,24 @@ What this shows:
   wrongly (counting two contradictions). The every-reading rule's price
   is one problem.
 - **Each semantic safeguard prevents specific wrong answers:**
-  - keeping determiners, numerals and the progressive in names: 5;
   - the imperfective paradox (telicity): 2;
   - non-subsective adjectives and non-veridical adverbs: 2;
+  - keeping the progressive's marker in names: 2 (327, 329);
   - the presupposition in "no" claims: 1.
-- **Two safeguards prevent none here.** The parse-ranking filters change
-  accuracy (10 matches), not soundness. The pronoun guard only refuses
-  134/135, which were "unknown" either way; it prevents a wrong
-  translation, but not a wrong answer on FraCaS.
+- **The name check subsumes two safeguards.** Before it, dropping
+  determiners and numerals from names gave 3 wrong answers as
+  translated and 5 with background knowledge (30, 32, 47, 327, 329);
+  with it, the colliding problems (30-32, 46-48, 90) are refused, and
+  only the progressive's two remain. Without the unresolved-pronoun
+  guard, it refuses 134 and 135 itself.
+- **The parse-ranking filters** change accuracy (10 matches), not
+  soundness.
 
-Caveat: every one of these safeguards was added after the pipeline gave
-one of these wrong answers on these same problems (or, for the reading
-rule, by design). So the table shows what each safeguard does on FraCaS.
-It does not show that it would be needed, or enough, on unseen problems.
+Caveat: every one of these safeguards, the name check included, was
+added after the pipeline gave one of these wrong answers, on these same
+problems or (the name check) on the held-out test. So the table shows
+what each safeguard does on FraCaS. It does not show that it would be
+needed, or enough, on unseen problems.
 
 ## Comparison with systems that parse FraCaS's English
 
@@ -682,4 +721,9 @@ further problems (such as 199) as unclear.
   property is measured on the development set only. On held-out
   problems (MED, `HeldOut/README.md`) it gives 3 wrong answers in 140
   decided. One is a real translation error: a fused name that silently
-  drops a verb taking a clause, and that verb's negated complement.
+  drops a verb taking a clause, and that verb's negated complement, so
+  that it names the phrase inside it too. The name check now refuses
+  every problem where a name would stand for two phrases (28 of the 989
+  on MED, 1 on FraCaS); it was added after the held-out test, so its
+  MED figures are post-hoc, and the pipeline with it has not been
+  tested on unseen problems.

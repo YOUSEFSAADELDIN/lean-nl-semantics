@@ -116,16 +116,58 @@ labels corrected for 2504 and 536 it would be 1 of 140: the one real
 error, 2718. Either way, "zero wrong answers" does not survive the
 held-out test as a property of the pipeline.
 
-**How far the same gap reaches.** Re-resolving the 989 reached problems
-and listing the open-class words the naming drops: 33 problems (3.3%)
-have one. The dropped words are verbs taking a clause ("watch" 17,
-"believe" 4, "say" 3, "expect" 2, "stand" 1, "learn" 1), a perception
-verb ("see ... do" 2) and two adverbs ("even" 2, "no longer" 1). Three
-of the 33 also have a negated complement clause. Only 2718 turned this
-into a wrong answer; on the others the claim also said less than the
-English, and came out unknown, or right by luck. One general guard
-would close it: refuse to name a predicate when its subtree has an
-open-class word or a polarity the naming does not keep.
+**How far the same gap reaches.** The mechanism behind 2718: the
+translator names a phrase after the words of the categories it lists,
+and a name that leaves words out is harmless by itself (every name is
+a bound variable of its claim), but wrong when it is also the name of a
+different phrase in the same problem, so that what holds of one is
+applied to the other. Measured on the 989 reached problems, after the
+run and without changing it (`names.py`'s check applied to the frozen
+pipeline's translations): **28 problems** have a name standing for two
+phrases that differ in what it leaves out.
+
+| what the name leaves out | problems | example |
+|---|---|---|
+| the negation of a relative clause | 18 | "every alien who did **not** throw balls" named like "throw balls" |
+| "said" and the negation of its complement | 3 | 2718; 2717, 3675 |
+| "believes" | 4 | "Pete **believes** he is a spider" named like "is a spider" (5067-5070) |
+| "even" | 2 | 4023, 4024 |
+| "no longer" | 1 | "Tom is **no longer** a kid" named like "is a kid" (1355) |
+
+Only 2718 turned into a wrong answer. The other 27 came out "unknown":
+12 entailments missed, and 15 neutral problems "matched". Those 15 are
+right only while nothing is known about the colliding names. Lexical
+knowledge, which MED's other problems need ("a quarter is a coin"),
+would turn some into wrong answers: 4897's claim, `Every (fun x =>
+alienFem x ∧ useCoin x) hairy → Every (fun x => alienFem x ∧ useQuarter
+x) hairy`, follows from
+"quarter ⊑ coin", but its English ("every alien who did not use coins
+is hairy" ⇒ "... did not use quarters ...") does not. An earlier count
+here (33 problems, by open-class words the naming drops) missed the
+negated relative clauses entirely and counted words that cause no
+collision; this table replaces it.
+
+## After the test: the name check (post-hoc)
+
+The fix is the name check (`EndToEnd/names.py`, run by `gen_claims.py`
+on every problem): a problem is not translated when one of its names
+would stand for two different phrases. It was written after this test,
+in response to 2718, so **what follows is not a held-out result**. The
+claims above are the frozen pipeline's and are not regenerated; the
+check only removes problems, so each remaining problem's verdict is the
+frozen run's.
+
+| | reached | entailment proved | decided | wrong answers |
+|---|---|---|---|---|
+| the frozen run (held out) | 989 | 137 / 477 | 140 | 3 (536, 2504, 2718) |
+| with the name check (post-hoc) | 961 | 137 / 465 | 139 | 2 (536, 2504) |
+
+The check refuses the 28 problems in the table above and nothing else.
+The two wrong answers left are the two labels that look wrong (536,
+2504); neither involves naming. On FraCaS the check refuses one problem
+(119, "unknown" before) and changes no verdict; it also subsumes two
+of the pipeline's earlier safeguards (`EndToEnd/README.md`, "The name
+check").
 
 ## What this does and does not show
 
@@ -135,5 +177,6 @@ open-class word or a polarity the naming does not keep.
   the honest accuracy figure.
 - It found a real failure the FraCaS development set could not, of the
   kind the project's design is meant to exclude.
-- The pipeline is unchanged by it. A fix for 2718's cause belongs in a
-  separate change, and once made, a re-run on MED is no longer held out.
+- The pipeline was not changed during it. The fix for 2718's cause, the
+  name check, came after, and its MED figures above are post-hoc: a
+  clean test of the fixed pipeline needs problems it has not seen.
