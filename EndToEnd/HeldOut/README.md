@@ -104,11 +104,20 @@ most of its downward problems stay unknown.
   the claim says something the English does not.
 - **2504** has the same sentence as premise and hypothesis ("You can't
   live on a desolate island"), labelled neutral. Any sound system says
-  yes; the label looks like an annotation error.
+  yes. MED is inconsistent on such pairs: it has six whose two sentences
+  are the same, labelled entailment twice (1613, 2455) and neutral four
+  times (1612, 2504, 3876, 3907), and one pair that occurs twice with
+  both labels (2048 entailment, 2049 neutral).
 - **536**, "A cold bubbly bath refreshed him" ⊢ "A cold bath refreshed
   him", labelled neutral. "Bubbly" is intersective here, and deleting it
   under "a" is upward monotone, which is what MED's own tag
-  (`upward_monotone`) says; the label looks like an error too.
+  (`upward_monotone`) says. Its reverse, 535 ("a cold bath" ⊢ "a cold
+  bubbly bath"), is labelled neutral as well; at most one direction can
+  fail, and the pipeline answers 535 "unknown" and 536 "yes".
+
+  Neither label is shown wrong by MED's documentation (its README says
+  nothing on how labels were assigned); the evidence above is internal
+  to the dataset.
 
 Counted as the protocol says, that is 3 wrong answers in 140 decided
 (yes) answers with background knowledge, and 1 of 2 without. Against
