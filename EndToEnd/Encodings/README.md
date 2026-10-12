@@ -7,6 +7,15 @@ types (MTT) changes what follows. Everything before the semantic target is
 held fixed: the parser, the ranker, discourse resolution, the readings,
 the lexical classes, and the prover.
 
+FraCoq, whose authors also develop nouns as types, states nouns as
+predicates and leaves the comparison open: "Working on the common nouns
+as Types approach is left for future work, and we hope that results will
+shed light on the theoretical advantages of the two approaches"
+(Bernardy & Chatzikyriakidis, IWCS 2017, n. 2). The reason they give is
+that testing whether an object belongs to a noun "as a proposition" is
+tricky to encode compositionally with nouns as types; here that is
+`IsA` (the propositional form of a judgement, `MTT/Judgments.lean`).
+
 ## The encodings
 
 Each is produced from the pipeline's resolved trees by its own renderer:

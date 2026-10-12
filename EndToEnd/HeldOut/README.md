@@ -147,6 +147,25 @@ here (33 problems, by open-class words the naming drops) missed the
 negated relative clauses entirely and counted words that cause no
 collision; this table replaces it.
 
+**Against the closest logic-based system.** Haruta, Mineshima and Bekki
+(ACL SRW 2020) score MED on "a subset (498 problems) of MED that does not
+require world knowledge and commonsense reasoning; these problems were
+collected from various linguistics papers". MED's genre tags give
+exactly 498 such problems: `paper:` problems with no `lexical_knowledge`
+tag, not from FraCaS or GLUE. Their labels split 215/283 (yes/unknown);
+this file's split 207/291, so MED's labels have changed since, and the
+figures below are close to theirs but not identical. Scoring the frozen
+run on them, with unreached problems as "unknown", as their accuracy
+counts every problem:
+
+| | reached | accuracy | majority ("unknown") | entailments proved | wrong |
+|---|---|---|---|---|---|
+| this pipeline (frozen run) | 90 / 498 | .600 | .584 | 8 / 207 | 0 |
+| Haruta et al. 2020 | all | .84 | .60 | - | not reported |
+
+So on that subset the pipeline is no better than answering "unknown"
+throughout: it makes no wrong answer, and proves almost nothing.
+
 ## After the test: the name check (post-hoc)
 
 The fix is the name check (`EndToEnd/names.py`, run by `gen_claims.py`
