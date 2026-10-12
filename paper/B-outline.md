@@ -84,11 +84,17 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
 | frozen run | 989 / 5,345 | 137 / 477 | 140 | 3 |
 | with the name check (post-hoc) | 961 | 137 / 465 | 139 | 2 |
 
-- Precision of "yes": 137/140 (97.9%) frozen. For scale: LangPro reports
-  ≈98% precision on SICK (Abzianidze 2015), a different dataset.
+- Precision of "yes": 137/140 (97.9%) frozen. For scale, on SICK (a
+  different dataset): LangPro 98.0 precision / 58.1 recall, Martínez-Gómez
+  et al. 97.0 / 63.6 (as tabulated by Chen et al. 2021, Table 3).
+- Whole-MED accuracy, for context only: NeuralLog 93.4 (Chen et al. 2021,
+  Table 4). This pipeline reaches 18.5% of MED and is not comparable on
+  accuracy.
 - The 3 wrong: 2718, a real translation error (the name collision);
-  536 and 2504, whose labels MED itself contradicts (its identical-sentence
-  pairs are labelled both ways; 536's reverse has the same label).
+  536 and 2504, defects of MED's pair construction (Yanaka et al. 2019,
+  3.1.3: swapped pairs get the reversed label; 536 is a swap whose label
+  was not reversed, 2504 a swap whose hypothesis repeats its premise; 15
+  such pairs in MED).
 - Haruta et al.'s 498-problem subset: .600 against a .584 all-"unknown"
   baseline (Haruta et al. .84); 8/207 entailments proved; 0 wrong.
 - The name check refuses 28 reached problems. 27 of them were answered
@@ -113,13 +119,9 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
 1. **[decide] A held-out test of the fixed pipeline.** MED is used up.
    Options: another monotonicity set (HELP, Yanaka et al. 2019b), a
    SICK sample, or report the post-hoc figures as post-hoc only.
-2. **[gap] Citations still unread**: the MED paper (Yanaka et al. 2019,
-   BlackboxNLP; how labels were made), NeuralLog (Chen, Gao & Moss
-   2021; reports 93.4 on all of MED).
-3. **[gap] Related work**: Bernardy & Chatzikyriakidis 2017/2019/2021,
-   Mineshima et al. 2015, Haruta et al. 2020, Abzianidze 2015,
-   Ljunglöf & Siverbo 2012 (read); Yanaka et al. 2019, Chen et al. 2021
-   (not yet read).
+2. **[gap] Related work**, all read: Bernardy & Chatzikyriakidis
+   2017/2019/2021, Mineshima et al. 2015, Haruta et al. 2020, Abzianidze
+   2015, Ljunglöf & Siverbo 2012, Yanaka et al. 2019, Chen et al. 2021.
 
 ## Out of scope for this paper
 
