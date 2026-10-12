@@ -24,9 +24,14 @@ name may leave out without that being a difference is the explicit list
 negation, a verb taking a clause ("say", "believe"), an adverb ("even",
 "no longer"), a pronoun, a conjunction.
 
-The check compares every phrase of the problem's resolved clauses of a
-category the translator names as a predicate (`NAMED_CATEGORIES`, read
-off the grammar), named as the translator names it (`_name`).
+The check compares every phrase of a category the translator names as a
+predicate (`NAMED_CATEGORIES`, read off the grammar), named as the
+translator names it (`_name`): the phrases of the problem's resolved
+clauses, and the phrases its background knowledge states facts about
+without their being in any sentence (a weakening, the event "finish"
+stands for; `background.postulates`'s `built`). A construction with no
+word of its own whose mark is missing from a name (`CONSTRUCTIONS`)
+counts as left out, like a word.
 """
 from __future__ import annotations
 
