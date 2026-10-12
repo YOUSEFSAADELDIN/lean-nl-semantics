@@ -108,10 +108,12 @@ def _name(t):
 
 
 # Constructions that change what a phrase means with no word of their own.
-# The translator marks each in the name (`translate.py`'s `NAME_MARKERS`,
-# filled by `readings.py`); one whose marker is missing has been left out,
-# like a dropped word ("was building MTALK" named like "built MTALK").
-CONSTRUCTIONS = {"ProgrVP"}
+# The translator marks some in the name (`translate.py`'s `NAME_MARKERS`,
+# filled by `readings.py`: the progressive); one whose marker is missing
+# has been left out, like a dropped word ("was building MTALK" named like
+# "built MTALK"). The passive has no marker, so "(be) impressed" and
+# "impress" never pass as one phrase.
+CONSTRUCTIONS = {"ProgrVP", "PassV2"}
 
 
 def _lost(t, keep_det: bool) -> tuple[str, ...]:
