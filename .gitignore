@@ -11,3 +11,5 @@ EndToEnd/*.gfo
 EndToEnd/*.pgf
 EndToEnd/HeldOut/*.gfo
 EndToEnd/HeldOut/*.pgf
+EndToEnd/HeldOut/SICK/*.gfo
+EndToEnd/HeldOut/SICK/*.pgf

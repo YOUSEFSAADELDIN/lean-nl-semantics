@@ -35,6 +35,16 @@ a direct port, and what was only ever read for reference.
   from its sentences (`EndToEnd/HeldOut/Claims.lean`), stays under CC
   BY-SA 4.0, not MIT. Part of MED is itself drawn from FraCaS and the GLUE
   diagnostics; the FraCaS part is excluded from the test.
+- **SICK** (Sentences Involving Compositional Knowledge) — Marelli,
+  Menini, Baroni, Bentivogli, Bernardi and Zamparelli, LREC 2014,
+  University of Trento, **CC BY-NC-SA 3.0**. Its SemEval 2014 test split
+  is vendored, rows and columns unaltered, at
+  `EndToEnd/HeldOut/SICK/SICK_test.tsv` as the pipeline's second held-out
+  test (see `EndToEnd/HeldOut/SICK/README.md`). That file, and anything
+  derived from its sentences (`EndToEnd/HeldOut/SICK/Claims.lean`,
+  `SickNames*.gf`, `sick.json`), stays under CC BY-NC-SA 3.0, not MIT:
+  attribution, non-commercial use only, and the same licence for
+  derivatives.
 
 ## Read for reference only, not used
 
