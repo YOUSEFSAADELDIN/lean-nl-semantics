@@ -66,3 +66,40 @@ Reported figures, fixed now:
 
 Every wrong answer is counted as wrong whatever its cause; a label that
 looks mistaken is reported as such beside the count, never instead of it.
+
+## Results (CI run 38227786430)
+
+*Added after the run. Nothing in the pipeline has been changed since
+`ac92c4e`.*
+
+**Reach** (`sick.json`): 1,416 of 4,906 pairs (28.9%): 592 ENTAILMENT,
+762 NEUTRAL, 62 CONTRADICTION. 2,714 do not parse with the frozen
+constructions, 454 parse but do not translate, 322 need a closed-class word the grammar lacks.
+
+| | decided | correct | **wrong** | precision | recall (whole split) | accuracy (whole split) |
+|---|---|---|---|---|---|---|
+| as translated | 19 | 19 | **0** | 100% | 0.9% | .573 |
+| with background knowledge | 52 | 52 | **0** | 100% | 2.5% | .579 |
+
+All-"unknown" baseline accuracy: .569. Recall is over all 2,116
+ENTAILMENT and CONTRADICTION pairs, unreached ones counting as
+"unknown", as defined above.
+
+- **No wrong answer.** With 52 of 52 correct, a 95% (Clopper-Pearson)
+  lower bound on precision is 93.2%: the sample is too small to tell
+  this precision from LangPro's 98.0 or Martínez-Gómez et al.'s 97.0.
+- **What it proves**: 49 entailments, nearly all by deleting a modifier
+  in an upward position ("A wild deer is jumping a fence" ⇒ "A deer is
+  jumping a fence"; "A man is playing a piano at a concert" ⇒ "A man is
+  playing a piano"), plus "one N" ⇒ "a N" and a definite agent made
+  indefinite ("by the man" ⇒ "by a man"); and 3 contradictions of the
+  form "A N is V-ing" / "No N is V-ing".
+- **What it misses**: 543 of the 592 reached entailments and 59 of the
+  62 reached contradictions stay unknown. These were not analysed
+  pair by pair; SICK's entailments typically need lexical knowledge
+  ("man" ⊑ "person") or paraphrase, which the pipeline does not have.
+- **Recall is the cost of the design**: 2.5% against LangPro's 58.1%.
+  The pipeline reaches 29% of SICK and decides 4% of what it reaches.
+
+So on problems nothing in the pipeline was developed on or changed for,
+it gave no wrong answer, and almost no answers.

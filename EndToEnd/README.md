@@ -732,5 +732,6 @@ further problems (such as 199) as unclear.
   that it names the phrase inside it too. The name check now refuses
   every problem where a name would stand for two phrases (28 of the 989
   on MED, 1 on FraCaS); it was added after the held-out test, so its
-  MED figures are post-hoc, and the pipeline with it has not been
-  tested on unseen problems.
+  MED figures are post-hoc. The pipeline with it was then tested on
+  SICK's test split, pre-registered (`HeldOut/SICK/README.md`): 1,416 of
+  4,906 pairs reached, 52 answered, none wrong; recall 2.5%.

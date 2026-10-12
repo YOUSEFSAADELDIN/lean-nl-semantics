@@ -130,7 +130,10 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   translation error, two against labels that look wrong. The error was
   one name standing for two different phrases; a check added after the
   test (`EndToEnd/names.py`) refuses every problem where that happens,
-  28 of the 989 (a post-hoc figure, not a held-out one).
+  28 of the 989 (a post-hoc figure, not a held-out one). On a second
+  held-out set, pre-registered and run after the check (SICK's test
+  split, `EndToEnd/HeldOut/SICK/`), it reaches 1,416 of 4,906 pairs and
+  gives 52 answers, all correct: no wrong answers, 2.5% recall.
 
   This is deliberately not aimed at general English coverage — FraCaS
   is a small, closed vocabulary and sentence set, and covering it was

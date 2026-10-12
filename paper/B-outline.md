@@ -101,13 +101,26 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
   "unknown" anyway, but some would turn wrong once lexical knowledge is
   added (`HeldOut/README.md`, 4897).
 
+### Held-out: SICK, the fixed pipeline (CI run 38227786430)
+
+Pre-registered (`HeldOut/SICK/README.md`, committed before the claims);
+pipeline frozen at ac92c4e, name check included.
+
+| | reached | decided | wrong | precision | recall (whole split) |
+|---|---|---|---|---|---|
+| as translated | 1,416 / 4,906 | 19 | 0 | 100% | 0.9% |
+| background knowledge | 1,416 / 4,906 | 52 | 0 | 100% (95% lower bound 93.2%) | 2.5% |
+| LangPro (Chen et al. 2021, Table 3) | | | | 98.0 | 58.1 |
+| Martínez-Gómez et al. 2017 (same) | | | | 97.0 | 63.6 |
+
 ## Limitations to state up front
 
 - The grammar is restricted to FraCaS's constructions: 18.5% of MED is
   reached, and on Haruta's subset the pipeline is at the "unknown"
   baseline. This is a precision paper, not a coverage paper.
 - Every FraCaS safeguard was added after a wrong answer on FraCaS; the
-  name check after one on MED. Only the frozen MED run is held out.
+  name check after one on MED. The held-out runs are MED (before the
+  name check) and SICK (after it, pre-registered).
 - The name check covers naming only. Constructions with no word of
   their own are covered only when listed (the progressive and the
   passive are); a false background fact is not caught (the telicity
@@ -116,9 +129,9 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
 
 ## Gaps
 
-1. **[decide] A held-out test of the fixed pipeline.** MED is used up.
-   Options: another monotonicity set (HELP, Yanaka et al. 2019b), a
-   SICK sample, or report the post-hoc figures as post-hoc only.
+1. **[have] A held-out test of the fixed pipeline**: SICK, above. Its
+   precision sample is small (52 answers); a larger one needs more reach,
+   not more tuning.
 2. **[gap] Related work**, all read: Bernardy & Chatzikyriakidis
    2017/2019/2021, Mineshima et al. 2015, Haruta et al. 2020, Abzianidze
    2015, Ljunglöf & Siverbo 2012, Yanaka et al. 2019, Chen et al. 2021.
