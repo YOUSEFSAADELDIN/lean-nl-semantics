@@ -62,7 +62,7 @@ its 2017 subset (FraCoq .83), 74.1% on its 2019 set (.89), 73.9% on its
 2021 set (.81). Below FraCoq everywhere; FraCoq uses a hand-built
 treebank and partly hand-made proofs.
 
-### Ablations (CI run 38179774490)
+### Ablations (CI run 38197306129)
 
 | switched off | wrong, as translated | wrong, background |
 |---|---|---|
@@ -71,7 +71,7 @@ treebank and partly hand-made proofs.
 | every reading → strong only | 4 | 4 |
 | every reading → any reading (FraCoq's rule) | 5 | 6 |
 | presupposition in "no" claims | 0 | 1 |
-| determiners and numerals in names (name check on) | 0 | 2 (progressive) |
+| determiners, numerals, progressive mark in names (name check on) | 0 | 0 |
 | telicity | 0 | 2 |
 | non-subsective / non-veridical exclusions | 0 | 2 |
 
@@ -102,8 +102,9 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
   baseline. This is a precision paper, not a coverage paper.
 - Every FraCaS safeguard was added after a wrong answer on FraCaS; the
   name check after one on MED. Only the frozen MED run is held out.
-- The name check sees words, not constructions with no word (the
-  progressive's two remaining wrong answers in the ablation).
+- The name check covers naming only. Constructions with no word of
+  their own are covered only when listed (the progressive is); a false
+  background fact is not caught (the telicity ablation's 2 wrong).
 - No lexical knowledge: MED's lexical problems can only be "unknown".
 
 ## Gaps
@@ -114,9 +115,7 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
 2. **[gap] Citations still unread**: the MED paper (Yanaka et al. 2019,
    BlackboxNLP; how labels were made), NeuralLog (Chen, Gao & Moss
    2021; reports 93.4 on all of MED).
-3. **[gap] The progressive in the name check**, so the ablation's last
-   two naming errors are caught by the check too (optional).
-4. **[gap] Related work**: Bernardy & Chatzikyriakidis 2017/2019/2021,
+3. **[gap] Related work**: Bernardy & Chatzikyriakidis 2017/2019/2021,
    Mineshima et al. 2015, Haruta et al. 2020, Abzianidze 2015,
    Ljunglöf & Siverbo 2012 (read); Yanaka et al. 2019, Chen et al. 2021
    (not yet read).

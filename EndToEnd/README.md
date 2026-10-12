@@ -542,19 +542,24 @@ pronouns, a floated "all"); a negation, a verb taking a clause, an
 adverb, a pronoun or a conjunction counts. It reads the naming code in
 use, so it also guards any later change to it.
 
+It compares the phrases of the sentences and also the phrases
+background knowledge states facts about without their being in any
+sentence (a weakening; the event "finish" stands for). A construction
+with no word of its own, the progressive, counts as left out when its
+mark is missing from a name.
+
 On FraCaS it refuses one problem, 119, which was "unknown" before; no
 verdict changes. The ablations below show what it covers: with
-determiners and numerals dropped from names, it refuses the problems
-whose names collide instead of answering them wrongly. It does not see
-a construction with no word of its own: dropping the progressive's
-marker still gives two wrong answers (327, 329), and such constructions
-need a marker in the name (`translate.py`'s `NAME_MARKERS`).
+determiners, numerals and the progressive's mark dropped from names, it
+refuses all 13 problems whose names collide instead of answering any of
+them wrongly. It covers naming only: a false background fact (the
+telicity ablation) still gives wrong answers.
 
 ## Soundness ablations
 
 Which of the pipeline's safeguards prevent wrong answers? Each ablation
 switches one off and re-scores (`ablations.py`, `AblationScan.lean`,
-`ablation_report.py`; CI run 38179774490, with the name check in
+`ablation_report.py`; CI run 38197306129, with the name check in
 place). The reading-rule rows reuse the baseline's claims, scored one
 reading at a time. The others regenerate the claims with one safeguard
 patched out, and score the problems whose claims change. Recomputing
@@ -568,7 +573,7 @@ scan exactly (181 and 240), so the two scans agree.
 | every reading → strong readings only | 181/259 | 4 | 240/259 | 4 | 91, 94, 95, 107 |
 | every reading → any reading (FraCoq's rule) | 180/259 | 5 | 239/259 | 6 | 56, 91, 94, 95, 107, 109 |
 | presupposition in "no" claims | 181/259 | 0 | 239/259 | 1 | 78 |
-| determiners, numerals and the progressive in names | 180/259 | 0 | 234/259 | 2 | 327, 329 |
+| determiners, numerals and the progressive in names | 179/259 | 0 | 234/259 | 0 | |
 | telicity | 181/259 | 0 | 234/259 | 2 | 304, 329 |
 | non-subsective/non-veridical exclusions | 181/259 | 0 | 238/259 | 2 | 198, 201 |
 | parse-ranking filters | 173/262 | 0 | 230/262 | 0 | |
@@ -584,14 +589,14 @@ What this shows:
 - **Each semantic safeguard prevents specific wrong answers:**
   - the imperfective paradox (telicity): 2;
   - non-subsective adjectives and non-veridical adverbs: 2;
-  - keeping the progressive's marker in names: 2 (327, 329);
   - the presupposition in "no" claims: 1.
 - **The name check subsumes two safeguards.** Before it, dropping
-  determiners and numerals from names gave 3 wrong answers as
-  translated and 5 with background knowledge (30, 32, 47, 327, 329);
-  with it, the colliding problems (30-32, 46-48, 90) are refused, and
-  only the progressive's two remain. Without the unresolved-pronoun
-  guard, it refuses 134 and 135 itself.
+  determiners, numerals and the progressive's mark from names gave 3
+  wrong answers as translated and 5 with background knowledge (30, 32,
+  47, 327, 329); with it, all 13 problems whose names collide are
+  refused (30-32, 46-48, 90, 153, 273, 274, 294, 327, 329), and none is
+  answered wrongly. Without the unresolved-pronoun guard, it refuses 134
+  and 135 itself.
 - **The parse-ranking filters** change accuracy (10 matches), not
   soundness.
 
