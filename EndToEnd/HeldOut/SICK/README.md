@@ -103,3 +103,6 @@ ENTAILMENT and CONTRADICTION pairs, unreached ones counting as
 
 So on problems nothing in the pipeline was developed on or changed for,
 it gave no wrong answer, and almost no answers.
+
+Every figure here is recomputed by `report.py` from `verdicts.txt` (the
+verdict lines of CI run 38227786430), `SICK_test.tsv` and `sick.json`.

@@ -204,6 +204,14 @@ The two wrong answers left are the two labels that look wrong (536,
 of the pipeline's earlier safeguards (`EndToEnd/README.md`, "The name
 check").
 
+## Reproducing these figures
+
+Every figure above is recomputed by `report.py` from recorded inputs:
+`verdicts.txt` (the verdict lines of CI run 38138826755), `heldout.json`
+(the frozen run's reach), `MED.tsv`, and `namecheck.json` (the post-hoc
+name check's 28 refusals, written by `posthoc_namecheck.py`). With the
+name check, precision of "yes" is 137/139 (98.6%).
+
 ## What this does and does not show
 
 - It is a test of soundness more than accuracy. MED is about monotonicity

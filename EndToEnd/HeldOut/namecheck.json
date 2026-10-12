@@ -1,0 +1,33 @@
+{
+ "checked": 989,
+ "refused": {
+  "1355": "does not translate: `kid` would name phrases that differ in [(), ('no_longer_AdV',)]",
+  "2717": "does not translate: `drinkCoffee` would name phrases that differ in [(), ('PNeg', 'he_Pron', 'say_VS')]",
+  "2718": "does not translate: `drinkBlackCoffee` would name phrases that differ in [(), ('PNeg', 'he_Pron', 'say_VS')]",
+  "3675": "does not translate: `enjoyWatchBaseball` would name phrases that differ in [(), ('PNeg', 'he_Pron', 'say_VS')]",
+  "4023": "does not translate: `haveEnoughMoneyBuyCupOfCoffee` would name phrases that differ in [(), ('even_AdV',)]",
+  "4024": "does not translate: `haveEnoughMoneyBuyCupOfWhiteCoffee` would name phrases that differ in [(), ('even_AdV',)]",
+  "4801": "does not translate: `play_withToyCar` would name phrases that differ in [(), ('UncNeg',)]",
+  "4802": "does not translate: `throwTennisBall` would name phrases that differ in [(), ('UncNeg',)]",
+  "4805": "does not translate: `play_withToy` would name phrases that differ in [(), ('UncNeg',)]",
+  "4806": "does not translate: `throwBall` would name phrases that differ in [(), ('UncNeg',)]",
+  "4848": "does not translate: `eatAtMexicanRestaurant` would name phrases that differ in [(), ('UncNeg',)]",
+  "4850": "does not translate: `useQuarter` would name phrases that differ in [(), ('UncNeg',)]",
+  "4852": "does not translate: `eatAtRestaurant` would name phrases that differ in [(), ('UncNeg',)]",
+  "4854": "does not translate: `useCoin` would name phrases that differ in [(), ('UncNeg',)]",
+  "4864": "does not translate: `watchBaseballMatch` would name phrases that differ in [(), ('UncNeg',)]",
+  "4882": "does not translate: `throwBall` would name phrases that differ in [(), ('UncNeg',)]",
+  "4886": "does not translate: `throwTennisBall` would name phrases that differ in [(), ('UncNeg',)]",
+  "4893": "does not translate: `eatAtRestaurant` would name phrases that differ in [(), ('UncNeg',)]",
+  "4894": "does not translate: `eatAtMexicanRestaurant` would name phrases that differ in [(), ('UncNeg',)]",
+  "4895": "does not translate: `play_withToy` would name phrases that differ in [(), ('UncNeg',)]",
+  "4896": "does not translate: `play_withToyCar` would name phrases that differ in [(), ('UncNeg',)]",
+  "4897": "does not translate: `useCoin` would name phrases that differ in [(), ('UncNeg',)]",
+  "4898": "does not translate: `useQuarter` would name phrases that differ in [(), ('UncNeg',)]",
+  "4979": "does not translate: `watchBaseballMatch` would name phrases that differ in [(), ('UncNeg',)]",
+  "5067": "does not translate: `spider` would name phrases that differ in [(), ('believe_VS', 'he_Pron')]",
+  "5068": "does not translate: `blackWidow` would name phrases that differ in [(), ('believe_VS', 'he_Pron')]",
+  "5069": "does not translate: `spider` would name phrases that differ in [(), ('believe_VS', 'he_Pron')]",
+  "5070": "does not translate: `arachnid` would name phrases that differ in [(), ('believe_VS', 'he_Pron')]"
+ }
+}
