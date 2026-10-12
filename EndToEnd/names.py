@@ -102,6 +102,13 @@ def _name(t):
         return None
 
 
+# Constructions that change what a phrase means with no word of their own.
+# The translator marks each in the name (`translate.py`'s `NAME_MARKERS`,
+# filled by `readings.py`); one whose marker is missing has been left out,
+# like a dropped word ("was building MTALK" named like "built MTALK").
+CONSTRUCTIONS = {"ProgrVP"}
+
+
 def _lost(t, keep_det: bool) -> tuple[str, ...]:
     """The leaves under `t` that `_leaf_words(t, keep_det)` leaves out of
     the name, other than `DELIBERATE` ones. A node `_leaf_words` names as
@@ -116,7 +123,8 @@ def _lost(t, keep_det: bool) -> tuple[str, ...]:
         parts = [marker, *parts]
     if words(t, keep_det) != parts:
         return ()
-    return tuple(x for a in t.args for x in _lost(a, keep_det))
+    own = (t.head,) if t.head in CONSTRUCTIONS and marker is None else ()
+    return own + tuple(x for a in t.args for x in _lost(a, keep_det))
 
 
 def lost(t) -> tuple[str, ...]:
