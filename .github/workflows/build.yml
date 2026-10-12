@@ -268,6 +268,42 @@ jobs:
           HELDOUT_SCAN: ${{ matrix.registry }}:${{ matrix.shard }}/6
         run: lake env lean EndToEnd/HeldOutScan.lean
 
+  # The second held-out test: SICK's test split through the frozen pipeline
+  # (EndToEnd/HeldOut/SICK/README.md), scored like the main scan, in shards
+  # of each registry run in parallel.
+  sick:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        registry: [as_translated, with_background]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies
+        run: |
+          if [ ! -f lake-manifest.json ]; then
+            lake update
+          fi
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Build the EndToEnd and SICK libraries
+        run: lake build EndToEnd EndToEndSick
+
+      - name: SICK scan, ${{ matrix.registry }} shard ${{ matrix.shard }}/10
+        env:
+          SICK_SCAN: ${{ matrix.registry }}:${{ matrix.shard }}/10
+        run: lake env lean EndToEnd/SickScan.lean
+
   # Phase 2b: the linglib bridge (`bridge/`) is a genuinely separate Lake
   # package with its own manifest, so a version conflict between this
   # repo's (unpinned, tracking `main`) Mathlib and linglib's own pinned
