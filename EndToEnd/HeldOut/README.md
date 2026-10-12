@@ -104,20 +104,27 @@ most of its downward problems stay unknown.
   the claim says something the English does not.
 - **2504** has the same sentence as premise and hypothesis ("You can't
   live on a desolate island"), labelled neutral. Any sound system says
-  yes. MED is inconsistent on such pairs: it has six whose two sentences
-  are the same, labelled entailment twice (1613, 2455) and neutral four
-  times (1612, 2504, 3876, 3907), and one pair that occurs twice with
-  both labels (2048 entailment, 2049 neutral).
+  yes.
 - **536**, "A cold bubbly bath refreshed him" ⊢ "A cold bath refreshed
   him", labelled neutral. "Bubbly" is intersective here, and deleting it
   under "a" is upward monotone, which is what MED's own tag
-  (`upward_monotone`) says. Its reverse, 535 ("a cold bath" ⊢ "a cold
-  bubbly bath"), is labelled neutral as well; at most one direction can
-  fail, and the pipeline answers 535 "unknown" and 536 "yes".
+  (`upward_monotone`) says. The pipeline answers its reverse, 535 ("a
+  cold bath" ⊢ "a cold bubbly bath"), "unknown".
 
-  Neither label is shown wrong by MED's documentation (its README says
-  nothing on how labels were assigned); the evidence above is internal
-  to the dataset.
+Both are defects of how MED's crowdsourced pairs were built (Yanaka et
+al. 2019, §3.1.3). A pair's gold label was set by its direction (a
+downward pair entailment, an upward one non-entailment) and kept when
+three workers agreed; then, "to make the distribution of gold labels
+symmetric", each pair was swapped, premise for hypothesis, and its label
+reversed. The swapped pairs follow their originals (`pairID` n+1):
+- 536 is 535 swapped, with the label not reversed: by the procedure it
+  is entailment. MED has 8 such pairs (535/536, 570/571, 618/619,
+  683/684, 1995/1996, 2010/2011, 2066/2067, 2093/2094).
+- 2504 should be 2503 ("You can't live on an island" ⊢ "... a desolate
+  island", entailment) swapped, and has the swapped label, but its
+  hypothesis repeats its premise. MED has 6 pairs with the same sentence
+  twice (1612, 1613, 2455, 2504, 3876, 3907), and one pair given both
+  labels (2048, 2049).
 
 Counted as the protocol says, that is 3 wrong answers in 140 decided
 (yes) answers with background knowledge, and 1 of 2 without. Against
