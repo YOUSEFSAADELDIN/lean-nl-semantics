@@ -271,10 +271,12 @@ def _name(t):
         return None
 
 
-def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
+def postulates(trees, unary: set[str], binary: set[str], built: list | None = None) -> list[str]:
     """Lean propositions (as text) to add as premises, for a problem whose
     top-ranked clause trees are `trees` and whose generic assembly bound
-    `unary`/`binary` predicate names."""
+    `unary`/`binary` predicate names. Each phrase a fact is stated about
+    that is not itself in `trees` (a weakening, an event "finish" stands
+    for) is appended to `built`, for `names.py`'s check."""
     facts: list[str] = []
 
     def add(f):
@@ -293,6 +295,8 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
                 q = _name(w)
                 if q and q != p and q in unary:
                     add(f"(∀ x, {p} x → {q} x)")
+                    if built is not None:
+                        built.append(w)
 
     # 2. degree-semantics lexicon
     adj_cn = {}  # (adjective lemma, noun-phrase name) -> predicate name
@@ -479,6 +483,8 @@ def postulates(trees, unary: set[str], binary: set[str]) -> list[str]:
             name = _name(event)
             if name in unary and _telic(event):
                 add(f"(∀ x, {name} x → {finished} x)")
+                if built is not None:
+                    built.append(event)
 
     # 5. "always"/"never" (gen_claims.py marks them `always_Adv`/`never_Adv`)
     # quantify over occasions: "ITEL always delivers

@@ -979,11 +979,6 @@ def assemble(idn, sentences):
     bad = [n for n in order if n in LEAN_RESERVED or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", n)]
     if bad:
         return None, f"generated names unusable as Lean binders: {bad}"
-    # No name may stand for two different phrases (`names.py`).
-    clash = name_clashes([c for _r, c, _n, _k in clauses], set(order))
-    if clash:
-        name, diffs = next(iter(clash.items()))
-        return None, f"does not translate: `{name}` would name phrases that differ in {diffs}"
 
     unary = [n for n in order if kinds[n] == "unary"]
     binary = [n for n in order if kinds[n] == "binary"]
@@ -1049,7 +1044,14 @@ def assemble(idn, sentences):
     for relation, noun, fused in encodings:
         if relation in binary and noun in unary and fused in unary:
             meaning.append(f"(∀ x, {fused} x ↔ ∃ y, {noun} y ∧ {relation} x y)")
-    knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary))
+    built: list = []
+    knowledge = postulates([c for _r, c, _n, _k in clauses], set(unary), set(binary), built)
+    # No name may stand for two different phrases (`names.py`): those of
+    # the sentences, and those the background knowledge states facts about.
+    clash = name_clashes([c for _r, c, _n, _k in clauses] + built, set(order))
+    if clash:
+        name, diffs = next(iter(clash.items()))
+        return None, f"does not translate: `{name}` would name phrases that differ in {diffs}"
     head = f"∀ {' '.join(binders)}, "
 
     out = []
