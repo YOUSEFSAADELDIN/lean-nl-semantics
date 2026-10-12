@@ -232,54 +232,6 @@ def fracas_133_bk_yes_0 : Prop :=
 def fracas_133_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (computer maintainComputerGfiOwn : A → Prop) [DecidablePred computer] [DecidablePred maintainComputerGfiOwn] (own : A → A → Prop) [DecidableRel own] (gfi itel : A) (severalCount : Nat), (severalCount ≥ 2) → (AtLeast severalCount computer (own gfi)) → (maintainComputerGfiOwn itel) → (¬ (maintainComputerGfiOwn itel))
 
-def fracas_153_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Some student goToParisByTrain) → (Some student goToParisByTrain)
-
-def fracas_153_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Some student goToParisByTrain) → (¬ (Some student goToParisByTrain))
-
-def fracas_153_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Some student goToParisByTrain) → (Some student goToParisByTrain)
-
-def fracas_153_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Some student goToParisByTrain) → (¬ (Some student goToParisByTrain))
-
-def fracas_153_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Every student goToParisByTrain) → (Some student goToParisByTrain) → ((Every student goToParisByTrain ∧ Some student goToParisByTrain))
-
-def fracas_153_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Every student goToParisByTrain) → (Some student goToParisByTrain) → (¬ ((Every student goToParisByTrain ∧ Some student goToParisByTrain)))
-
-def fracas_153_bk_yes_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Every student goToParisByTrain) → (Some student goToParisByTrain) → ((Every student goToParisByTrain ∧ Some student goToParisByTrain))
-
-def fracas_153_bk_no_1 : Prop :=
-  ∀ {A : Type} [Fintype A] (goToParisByCar student goToParisByTrain : A → Prop) [DecidablePred goToParisByCar] [DecidablePred student] [DecidablePred goToParisByTrain] (john : A), (goToParisByCar john) → (Every student goToParisByTrain) → (Some student goToParisByTrain) → (¬ ((Every student goToParisByTrain ∧ Some student goToParisByTrain)))
-
-def fracas_273_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (writeReportSmithWriteReport jones)
-
-def fracas_273_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (¬ (writeReportSmithWriteReport jones))
-
-def fracas_273_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (∀ x, writeReportJonesWriteReport x → writeReport x) → (∀ x, writeReportSmithWriteReport x → writeReport x) → (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (writeReportSmithWriteReport jones)
-
-def fracas_273_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (∀ x, writeReportJonesWriteReport x → writeReport x) → (∀ x, writeReportSmithWriteReport x → writeReport x) → (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (¬ (writeReportSmithWriteReport jones))
-
-def fracas_274_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (writeReportSmithWriteReport jones)
-
-def fracas_274_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (¬ (writeReportSmithWriteReport jones))
-
-def fracas_274_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (∀ x, writeReportJonesWriteReport x → writeReport x) → (∀ x, writeReportSmithWriteReport x → writeReport x) → (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (writeReportSmithWriteReport jones)
-
-def fracas_274_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (writeReport writeReportJonesWriteReport writeReportSmithWriteReport : A → Prop) [DecidablePred writeReport] [DecidablePred writeReportJonesWriteReport] [DecidablePred writeReportSmithWriteReport] (smith jones : A), (∀ x, writeReportJonesWriteReport x → writeReport x) → (∀ x, writeReportSmithWriteReport x → writeReport x) → (writeReport smith) → (writeReport jones) → (writeReportJonesWriteReport smith) → (¬ (writeReportSmithWriteReport jones))
-
 def fracas_281_yes_0 : Prop :=
   ∀ {A : Type} [Fintype A] (runTheBusinessIn1991 business runTheBusinessIn1992 : A → Prop) [DecidablePred runTheBusinessIn1991] [DecidablePred business] [DecidablePred runTheBusinessIn1992] (smith theBusiness : A), (runTheBusinessIn1991 smith) → (business theBusiness) → (runTheBusinessIn1992 smith)
 
@@ -292,42 +244,6 @@ def fracas_281_bk_yes_0 : Prop :=
 def fracas_281_bk_no_0 : Prop :=
   ∀ {A : Type} [Fintype A] (runTheBusinessIn1991 business runTheBusinessIn1992 : A → Prop) [DecidablePred runTheBusinessIn1991] [DecidablePred business] [DecidablePred runTheBusinessIn1992] (smith theBusiness : A), (runTheBusinessIn1991 smith) → (business theBusiness) → (¬ (runTheBusinessIn1992 smith))
 
-def fracas_294_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (runOwnBusinessInTwoYears runOwnBusiness : A → Prop) [DecidablePred runOwnBusinessInTwoYears] [DecidablePred runOwnBusiness] (smith : A), (runOwnBusinessInTwoYears smith) → (runOwnBusiness smith)
-
-def fracas_294_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (runOwnBusinessInTwoYears runOwnBusiness : A → Prop) [DecidablePred runOwnBusinessInTwoYears] [DecidablePred runOwnBusiness] (smith : A), (runOwnBusinessInTwoYears smith) → (¬ (runOwnBusiness smith))
-
-def fracas_294_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (runOwnBusinessInTwoYears runOwnBusiness : A → Prop) [DecidablePred runOwnBusinessInTwoYears] [DecidablePred runOwnBusiness] (smith : A), (∀ x, runOwnBusinessInTwoYears x → runOwnBusiness x) → (runOwnBusinessInTwoYears smith) → (runOwnBusiness smith)
-
-def fracas_294_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (runOwnBusinessInTwoYears runOwnBusiness : A → Prop) [DecidablePred runOwnBusinessInTwoYears] [DecidablePred runOwnBusiness] (smith : A), (∀ x, runOwnBusinessInTwoYears x → runOwnBusiness x) → (runOwnBusinessInTwoYears smith) → (¬ (runOwnBusiness smith))
-
-def fracas_327_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (finishMtalkIn1993 itel)
-
-def fracas_327_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (buildMtalkIn1993 itel) → (¬ (finishMtalkIn1993 itel))
-
-def fracas_327_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (∀ x, buildMtalkIn1993 x → finishMtalkIn1993 x) → (buildMtalkIn1993 itel) → (finishMtalkIn1993 itel)
-
-def fracas_327_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (buildMtalkIn1993 finishMtalkIn1993 : A → Prop) [DecidablePred buildMtalkIn1993] [DecidablePred finishMtalkIn1993] (itel : A), (∀ x, buildMtalkIn1993 x → finishMtalkIn1993 x) → (buildMtalkIn1993 itel) → (¬ (finishMtalkIn1993 itel))
-
-def fracas_329_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (winContractIn1993 itel)
-
-def fracas_329_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (winContractFromApcomIn1993 itel) → (¬ (winContractIn1993 itel))
-
-def fracas_329_bk_yes_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (∀ x, winContractFromApcomIn1993 x → winContractIn1993 x) → (winContractFromApcomIn1993 itel) → (winContractIn1993 itel)
-
-def fracas_329_bk_no_0 : Prop :=
-  ∀ {A : Type} [Fintype A] (winContractFromApcomIn1993 winContractIn1993 : A → Prop) [DecidablePred winContractFromApcomIn1993] [DecidablePred winContractIn1993] (itel : A), (∀ x, winContractFromApcomIn1993 x → winContractIn1993 x) → (winContractFromApcomIn1993 itel) → (¬ (winContractIn1993 itel))
-
 /-- The ablation's changed and newly reached problems, as in `EndToEnd.registry`. -/
 def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (1, .yes, [``Ablations.CoarseNames.fracas_001_yes_0], [``Ablations.CoarseNames.fracas_001_no_0]),
@@ -338,13 +254,7 @@ def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (73, .unknown, [``Ablations.CoarseNames.fracas_073_yes_0], [``Ablations.CoarseNames.fracas_073_no_0]),
   (78, .undef, [``Ablations.CoarseNames.fracas_078_yes_0, ``Ablations.CoarseNames.fracas_078_yes_1], [``Ablations.CoarseNames.fracas_078_no_0, ``Ablations.CoarseNames.fracas_078_no_1]),
   (133, .yes, [``Ablations.CoarseNames.fracas_133_yes_0], [``Ablations.CoarseNames.fracas_133_no_0]),
-  (153, .yes, [``Ablations.CoarseNames.fracas_153_yes_0, ``Ablations.CoarseNames.fracas_153_yes_1], [``Ablations.CoarseNames.fracas_153_no_0, ``Ablations.CoarseNames.fracas_153_no_1]),
-  (273, .unknown, [``Ablations.CoarseNames.fracas_273_yes_0], [``Ablations.CoarseNames.fracas_273_no_0]),
-  (274, .unknown, [``Ablations.CoarseNames.fracas_274_yes_0], [``Ablations.CoarseNames.fracas_274_no_0]),
-  (281, .unknown, [``Ablations.CoarseNames.fracas_281_yes_0], [``Ablations.CoarseNames.fracas_281_no_0]),
-  (294, .yes, [``Ablations.CoarseNames.fracas_294_yes_0], [``Ablations.CoarseNames.fracas_294_no_0]),
-  (327, .unknown, [``Ablations.CoarseNames.fracas_327_yes_0], [``Ablations.CoarseNames.fracas_327_no_0]),
-  (329, .unknown, [``Ablations.CoarseNames.fracas_329_yes_0], [``Ablations.CoarseNames.fracas_329_no_0])
+  (281, .unknown, [``Ablations.CoarseNames.fracas_281_yes_0], [``Ablations.CoarseNames.fracas_281_no_0])
 ]
 
 /-- The same, with background knowledge. -/
@@ -357,13 +267,7 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
   (73, .unknown, [``Ablations.CoarseNames.fracas_073_bk_yes_0], [``Ablations.CoarseNames.fracas_073_bk_no_0]),
   (78, .undef, [``Ablations.CoarseNames.fracas_078_bk_yes_0, ``Ablations.CoarseNames.fracas_078_bk_yes_1], [``Ablations.CoarseNames.fracas_078_bk_no_0, ``Ablations.CoarseNames.fracas_078_bk_no_1]),
   (133, .yes, [``Ablations.CoarseNames.fracas_133_bk_yes_0], [``Ablations.CoarseNames.fracas_133_bk_no_0]),
-  (153, .yes, [``Ablations.CoarseNames.fracas_153_bk_yes_0, ``Ablations.CoarseNames.fracas_153_bk_yes_1], [``Ablations.CoarseNames.fracas_153_bk_no_0, ``Ablations.CoarseNames.fracas_153_bk_no_1]),
-  (273, .unknown, [``Ablations.CoarseNames.fracas_273_bk_yes_0], [``Ablations.CoarseNames.fracas_273_bk_no_0]),
-  (274, .unknown, [``Ablations.CoarseNames.fracas_274_bk_yes_0], [``Ablations.CoarseNames.fracas_274_bk_no_0]),
-  (281, .unknown, [``Ablations.CoarseNames.fracas_281_bk_yes_0], [``Ablations.CoarseNames.fracas_281_bk_no_0]),
-  (294, .yes, [``Ablations.CoarseNames.fracas_294_bk_yes_0], [``Ablations.CoarseNames.fracas_294_bk_no_0]),
-  (327, .unknown, [``Ablations.CoarseNames.fracas_327_bk_yes_0], [``Ablations.CoarseNames.fracas_327_bk_no_0]),
-  (329, .unknown, [``Ablations.CoarseNames.fracas_329_bk_yes_0], [``Ablations.CoarseNames.fracas_329_bk_no_0])
+  (281, .unknown, [``Ablations.CoarseNames.fracas_281_bk_yes_0], [``Ablations.CoarseNames.fracas_281_bk_no_0])
 ]
 
 end CoarseNames
