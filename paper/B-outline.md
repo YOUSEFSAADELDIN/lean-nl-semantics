@@ -62,7 +62,7 @@ its 2017 subset (FraCoq .83), 74.1% on its 2019 set (.89), 73.9% on its
 2021 set (.81). Below FraCoq everywhere; FraCoq uses a hand-built
 treebank and partly hand-made proofs.
 
-### Ablations (CI run 38197306129)
+### Ablations (CI run 38273607580)
 
 | switched off | wrong, as translated | wrong, background |
 |---|---|---|
@@ -74,6 +74,7 @@ treebank and partly hand-made proofs.
 | determiners, numerals, progressive mark in names (name check on) | 0 | 0 |
 | telicity | 0 | 2 |
 | non-subsective / non-veridical exclusions | 0 | 2 |
+| the name check (alone; reaches 119 again) | 0 | 0 |
 
 Without the name check, the names row was 3 and 5 (CI run 38105846712).
 

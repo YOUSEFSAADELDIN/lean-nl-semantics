@@ -561,7 +561,7 @@ telicity ablation) still gives wrong answers.
 
 Which of the pipeline's safeguards prevent wrong answers? Each ablation
 switches one off and re-scores (`ablations.py`, `AblationScan.lean`,
-`ablation_report.py`; CI run 38197306129, with the name check in
+`ablation_report.py`; CI run 38273607580, with the name check in
 place). The reading-rule rows reuse the baseline's claims, scored one
 reading at a time. The others regenerate the claims with one safeguard
 patched out, and score the problems whose claims change. Recomputing
@@ -580,6 +580,7 @@ scan exactly (181 and 240), so the two scans agree.
 | non-subsective/non-veridical exclusions | 181/259 | 0 | 238/259 | 2 | 198, 201 |
 | parse-ranking filters | 173/262 | 0 | 230/262 | 0 | |
 | unresolved-pronoun guard | 181/259 | 0 | 240/259 | 0 | |
+| the name check | 181/260 | 0 | 240/260 | 0 | |
 
 What this shows:
 - **Committing to one reading buys almost nothing and costs wrong
@@ -599,6 +600,9 @@ What this shows:
   refused (30-32, 46-48, 90, 153, 273, 274, 294, 327, 329), and none is
   answered wrongly. Without the unresolved-pronoun guard, it refuses 134
   and 135 itself.
+- **The name check alone prevents nothing on FraCaS**: switched off, it
+  lets 119 through again, still "unknown". Its effect shows when another
+  safeguard is gone (above) and on held-out data (MED 2718).
 - **The parse-ranking filters** change accuracy (10 matches), not
   soundness.
 
