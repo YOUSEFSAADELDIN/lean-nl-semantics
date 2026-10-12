@@ -354,6 +354,14 @@
    ],
    "newly_reached": [],
    "no_longer_reached": []
+  },
+  "no_name_check": {
+   "description": "A name may stand for two different phrases (`names.py`'s check is not run).",
+   "changed": [],
+   "newly_reached": [
+    119
+   ],
+   "no_longer_reached": []
   }
  }
 }

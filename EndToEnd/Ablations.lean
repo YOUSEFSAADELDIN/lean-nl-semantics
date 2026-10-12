@@ -578,6 +578,34 @@ def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
 
 end NoLexicalExclusions
 
+/-! ## `no_name_check`: A name may stand for two different phrases (`names.py`'s check is not run). -/
+
+namespace NoNameCheck
+
+def fracas_119_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (useWorkstation mary)
+
+def fracas_119_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (¬ (useWorkstation mary))
+
+def fracas_119_bk_yes_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (useWorkstation mary)
+
+def fracas_119_bk_no_0 : Prop :=
+  ∀ {A : Type} [Fintype A] (student female workstation useWorkstation : A → Prop) [DecidablePred student] [DecidablePred female] [DecidablePred workstation] [DecidablePred useWorkstation] (use has : A → A → Prop) [DecidableRel use] [DecidableRel has] (mary : A) (workstationOf : A → A), (∀ x, useWorkstation x ↔ ∃ y, workstation y ∧ use x y) → (No student (fun x => use x (workstationOf x))) → (∀ x, student x → female x ∧ has x (workstationOf x) ∧ workstation (workstationOf x)) → (student mary) → (¬ (useWorkstation mary))
+
+/-- The ablation's changed and newly reached problems, as in `EndToEnd.registry`. -/
+def registry : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
+  (119, .no, [``Ablations.NoNameCheck.fracas_119_yes_0], [``Ablations.NoNameCheck.fracas_119_no_0])
+]
+
+/-- The same, with background knowledge. -/
+def registryBk : List (Nat × Answer × List Lean.Name × List Lean.Name) := [
+  (119, .no, [``Ablations.NoNameCheck.fracas_119_bk_yes_0], [``Ablations.NoNameCheck.fracas_119_bk_no_0])
+]
+
+end NoNameCheck
+
 /-- Every ablation: its name, and its registries without and with
 background knowledge. -/
 def all : List (String × List (Nat × Answer × List Lean.Name × List Lean.Name) × List (Nat × Answer × List Lean.Name × List Lean.Name)) := [
@@ -586,7 +614,8 @@ def all : List (String × List (Nat × Answer × List Lean.Name × List Lean.Nam
   ("no_telicity", NoTelicity.registry, NoTelicity.registryBk),
   ("no_parse_filters", NoParseFilters.registry, NoParseFilters.registryBk),
   ("no_pronoun_guard", NoPronounGuard.registry, NoPronounGuard.registryBk),
-  ("no_lexical_exclusions", NoLexicalExclusions.registry, NoLexicalExclusions.registryBk)
+  ("no_lexical_exclusions", NoLexicalExclusions.registry, NoLexicalExclusions.registryBk),
+  ("no_name_check", NoNameCheck.registry, NoNameCheck.registryBk)
 ]
 
 end FraCaS.EndToEnd.Ablations
