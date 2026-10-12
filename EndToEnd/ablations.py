@@ -98,6 +98,13 @@ def _no_lexical_exclusions():
 
 
 # name -> (Lean namespace, patch, whether it changes parsing)
+def _no_name_check():
+    """A name may stand for two different phrases (`names.py`'s check is
+    not run)."""
+    import gen_claims
+    gen_claims.name_clashes = lambda trees, used: {}
+
+
 ABLATIONS = {
     "no_presupposition": ("NoPresupposition", _no_presupposition, False),
     "coarse_names": ("CoarseNames", _coarse_names, False),
@@ -105,6 +112,7 @@ ABLATIONS = {
     "no_parse_filters": ("NoParseFilters", _no_parse_filters, True),
     "no_pronoun_guard": ("NoPronounGuard", _no_pronoun_guard, False),
     "no_lexical_exclusions": ("NoLexicalExclusions", _no_lexical_exclusions, False),
+    "no_name_check": ("NoNameCheck", _no_name_check, False),
 }
 
 
