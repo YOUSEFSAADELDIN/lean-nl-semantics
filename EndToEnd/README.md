@@ -545,8 +545,10 @@ use, so it also guards any later change to it.
 It compares the phrases of the sentences and also the phrases
 background knowledge states facts about without their being in any
 sentence (a weakening; the event "finish" stands for). A construction
-with no word of its own, the progressive, counts as left out when its
-mark is missing from a name.
+with no word of its own counts as left out when its mark is missing
+from a name: the progressive, which names mark, and the passive, which
+they do not, so "(be) impressed" and "impress" never pass as one phrase
+(no FraCaS or MED result changes).
 
 On FraCaS it refuses one problem, 119, which was "unknown" before; no
 verdict changes. The ablations below show what it covers: with

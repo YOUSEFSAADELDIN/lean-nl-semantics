@@ -103,8 +103,9 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
 - Every FraCaS safeguard was added after a wrong answer on FraCaS; the
   name check after one on MED. Only the frozen MED run is held out.
 - The name check covers naming only. Constructions with no word of
-  their own are covered only when listed (the progressive is); a false
-  background fact is not caught (the telicity ablation's 2 wrong).
+  their own are covered only when listed (the progressive and the
+  passive are); a false background fact is not caught (the telicity
+  ablation's 2 wrong).
 - No lexical knowledge: MED's lexical problems can only be "unknown".
 
 ## Gaps
