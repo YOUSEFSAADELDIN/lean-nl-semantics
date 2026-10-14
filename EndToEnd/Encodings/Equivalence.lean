@@ -136,34 +136,27 @@ theorem det_transfer {N A : Type} [Fintype N] [Fintype A] (e : N → A)
   | most =>
     simp only [detT, detP]
     convert most_t e he C Q
-    all_goals exact Subsingleton.elim _ _
   | both =>
     simp only [detT, detP]
     convert both_t e he C Q
-    all_goals exact Subsingleton.elim _ _
   | neither =>
     simp only [detT, detP]
     convert neither_t e he C Q
-    all_goals exact Subsingleton.elim _ _
   | atLeast k =>
     simp only [detT, detP]
     convert atLeast_t e he k C Q
-    all_goals exact Subsingleton.elim _ _
   | atMost k =>
     simp only [detT, detP]
     convert atMost_t e he k C Q
-    all_goals exact Subsingleton.elim _ _
   | exactly k =>
     simp only [detT, detP]
     convert exactly_t e he k C Q
-    all_goals exact Subsingleton.elim _ _
 
 theorem more_transfer {N A : Type} [Fintype N] [Fintype A] (e : N → A)
     (he : Function.Injective e) (C Q S : A → Prop) :
     MoreT e C Q S ↔ moreP (fun x => IsA e x ∧ C x) Q S := by
   simp only [moreP]
   convert more_t e he C Q S
-  all_goals exact Subsingleton.elim _ _
 
 /-! ## Models -/
 
@@ -328,9 +321,11 @@ theorem pvalid_NI : PValid premisesNI conclusionNI := by
   have h4 := hΓ (.quant (.atMost 1) false (.verb ()) .top) (by simp [premisesNI])
   simp only [PModel.sat, detP, Pred.eval, AtLeast, AtMost, Every, card] at h1 h2 h3 h4
   exfalso
-  refine absurd (le_trans h1 (le_trans (Finset.card_le_card fun x hx => ?_) h4)) (by decide)
-  simp only [Finset.mem_filter] at hx ⊢
-  exact ⟨hx.1, ⟨h2 x hx.2.1, h3 x hx.2.1⟩, trivial⟩
+  have key := le_trans h1 (le_trans (Finset.card_le_card (by
+    intro x hx
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hx ⊢
+    exact ⟨h2 x (by simpa using hx), h3 x (by simpa using hx)⟩)) h4)
+  omega
 
 /-- So, by `valid_iff`, the entailment holds with nouns as types too,
 in every model whose embeddings are injective. -/
@@ -350,7 +345,8 @@ def counterModel : TModel Bool Unit Empty where
 
 theorem counterModel_not_injective : ¬ Function.Injective (counterModel.emb true) := by
   intro h
-  exact absurd (h (a₁ := true) (a₂ := false) rfl) (by decide)
+  have := h (a₁ := true) (a₂ := false) rfl
+  exact absurd this (by decide : (true : Bool) ≠ false)
 
 /-- **Without injectivity the equivalence fails.** The entailment is valid
 with nouns as predicates, and with nouns as types over injective
