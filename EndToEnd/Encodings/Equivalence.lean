@@ -313,6 +313,15 @@ def premisesNI : List (Formula Bool Unit Empty) :=
 /-- The conclusion: "some n is nothing". -/
 def conclusionNI : Formula Bool Unit Empty := .quant .some true .top (.not .top)
 
+/-- Counting is monotone in the predicate. The decidability instances
+are implicit, not instance-implicit, so they are taken from the counts
+being compared rather than synthesized afresh. -/
+theorem card_filter_mono {A : Type} [Fintype A] {p q : A → Prop}
+    {ip : DecidablePred p} {iq : DecidablePred q} (h : ∀ x, p x → q x) :
+    (Finset.univ.filter p).card ≤ (Finset.univ.filter q).card :=
+  Finset.card_le_card fun x hx =>
+    Finset.mem_filter.mpr ⟨Finset.mem_univ _, h x (Finset.mem_filter.mp hx).2⟩
+
 theorem pvalid_NI : PValid premisesNI conclusionNI := by
   intro M hΓ
   have h1 := hΓ (.quant (.atLeast 2) true .top .top) (by simp [premisesNI])
@@ -324,11 +333,10 @@ theorem pvalid_NI : PValid premisesNI conclusionNI := by
   simp only [PModel.sat, detP, AtLeast, AtMost] at h1 h4
   simp only [PModel.sat, detP, Every, Pred.eval] at h2 h3
   exfalso
-  have key := le_trans h1 (le_trans (Finset.card_le_card (by
+  have key := le_trans h1 (le_trans (card_filter_mono (by
     intro x hx
-    obtain ⟨-, ⟨hn, -⟩, -⟩ := Finset.mem_filter.mp hx
-    exact Finset.mem_filter.mpr
-      ⟨Finset.mem_univ _, ⟨h2 x ⟨hn, trivial⟩, h3 x ⟨hn, trivial⟩⟩, trivial⟩)) h4)
+    obtain ⟨⟨hn, -⟩, -⟩ := hx
+    exact ⟨⟨h2 x ⟨hn, trivial⟩, h3 x ⟨hn, trivial⟩⟩, trivial⟩)) h4)
   omega
 
 /-- So, by `valid_iff`, the entailment holds with nouns as types too,
