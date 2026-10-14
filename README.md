@@ -95,17 +95,16 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   confirmed GF tree — 803 `linearize` checks across all nine FraCaS
   sections (`gf/run_gf_tests.py`), validated against a real local
   GF/RGL toolchain (not just parsed as text) before ever being pushed.
-  `gf/translate.py` additionally cross-checks a subset of Sections 1-2
-  by translating a GF tree straight into the same Lean `Prop` shape
-  the hand-written proof already uses — a genuine mechanical
-  cross-check, not a similarity check
-  (`LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean` wires one such
-  tree, problem 2's first premise, directly into its real proved
-  theorem). Later sections (5 onward) deliberately don't extend
-  `translate.py`'s default mode, which this cross-check uses — each one's whole point is a distinction (privative
-  adjectives, assumed comparative relations, factivity) that
-  `translate.py`'s own generic predicate-fusion would silently collapse
-  rather than translate faithfully — but still get real GF sentences.
+  `gf/translate.py` also cross-checks 167 problems across all nine
+  sections by translating their GF trees into the Lean `Prop` the
+  hand-written proof uses, and proving it from that proof — a
+  mechanical cross-check, not a similarity check
+  (`LeanNLSemantics/FraCaS/Section1/GFCrossCheckBatch.lean`). From
+  Section 5 on, most of these go through a per-problem builder
+  (`CUSTOM_BUILD` in `scripts/gen_gf_cross_check.py`) rather than
+  `translate.py`'s default mode: those sections turn on distinctions
+  (privative adjectives, comparative relations, factivity) that the
+  default mode's generic predicate fusion would collapse.
   A handful of problems per section are skipped for GF purposes with a
   documented reason (a construction this grammar has no combinator for,
   e.g. embedded questions, or specific calendar-date arithmetic) — see
@@ -249,12 +248,13 @@ consistency check, not a blind-prediction accuracy score.
   English for every FraCaS sentence this grammar can build (803 checks
   across all nine sections), rather than each sentence being hand-
   formalized with no independent check on its own English gloss.
-  `gf/translate.py` additionally cross-checks a subset of Sections 1-2
-  by translating a GF tree straight into the same Lean `Prop` shape the
-  hand-written proof uses, with one such tree wired directly into its
-  real proved theorem as a genuine mechanical cross-check (not just a
-  standalone proposition) — see `gf/NOTES.md`/`gf/translate.py` and
-  `LeanNLSemantics/FraCaS/Section1/GFCrossCheck.lean`. Free parsing
+  `gf/translate.py` also cross-checks 167 problems across all nine
+  sections: `scripts/gen_gf_cross_check.py` translates each one's GF
+  trees into a Lean `Prop` and proves it from the hand-written theorem
+  (`LeanNLSemantics/FraCaS/Section1/GFCrossCheckBatch.lean`, regenerated
+  and compared in CI), so a translation that disagrees with the
+  hand-written statement fails the build. `GFCrossCheck.lean` holds the
+  first such check, written by hand; see `gf/NOTES.md`. Free parsing
   against GF's own full English grammar turned out not to be usable for
   this — it's built to be maximally permissive and produces an
   effectively unbounded number of alternate readings for even a simple
@@ -266,8 +266,8 @@ consistency check, not a blind-prediction accuracy score.
   FraCaS's own closed sentence/vocabulary set, not general English —
   see the GF integration note above for why. GF's resource grammar
   library covers many languages under one abstract syntax, so the
-  abstract syntax and translator are language-agnostic already, but
-  further languages aren't a near-term goal.
+  abstract syntax and translator are language-agnostic already;
+  extending the project to GF's other languages is a goal for later.
 - **Certified monotonicity/natural-logic reasoner** (`LeanNLSemantics/
   FraCaS/Section1/Monotonicity/`) — done, through Phase 5, CI-confirmed.
   A Lean tactic (`mono_nl`) that closes a scoped fragment of FraCaS
