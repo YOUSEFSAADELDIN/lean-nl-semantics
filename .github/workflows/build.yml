@@ -96,6 +96,31 @@ jobs:
       - name: Blind evaluation, unknown/undef pairs (Sections 3-9)
         run: lake env lean LeanNLSemantics/FraCaS/BlindEvalUnknown3to9Scan.lean
 
+      # The same four scans with every proof checked by Lean's kernel
+      # before it counts (BlindEvalCore.lean's `attemptClose` under
+      # BLIND_EVAL_KERNEL_CHECK). The scans above stay the frozen
+      # evaluation; these show which of its verdicts rest on a proof the
+      # kernel accepts (`kernel_check rejected` lines name the others).
+      - name: Blind evaluation, kernel-checked (Sections 1-2)
+        env:
+          BLIND_EVAL_KERNEL_CHECK: "1"
+        run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/BlindEval.lean
+
+      - name: Blind evaluation, kernel-checked, unknown/undef pairs (Sections 1-2)
+        env:
+          BLIND_EVAL_KERNEL_CHECK: "1"
+        run: lake env lean LeanNLSemantics/FraCaS/Section1/Monotonicity/BlindEvalUnknownScan.lean
+
+      - name: Blind evaluation, kernel-checked (Sections 3-9)
+        env:
+          BLIND_EVAL_KERNEL_CHECK: "1"
+        run: lake env lean LeanNLSemantics/FraCaS/BlindEvalSections3to9.lean
+
+      - name: Blind evaluation, kernel-checked, unknown/undef pairs (Sections 3-9)
+        env:
+          BLIND_EVAL_KERNEL_CHECK: "1"
+        run: lake env lean LeanNLSemantics/FraCaS/BlindEvalUnknown3to9Scan.lean
+
       # AssumptionAudit.lean is deliberately not imported by anything
       # either, same reason as Coverage.lean above (it imports the root
       # LeanNLSemantics umbrella, so importing it back would be

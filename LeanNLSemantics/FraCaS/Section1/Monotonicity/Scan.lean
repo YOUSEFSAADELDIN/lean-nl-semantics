@@ -1,4 +1,5 @@
 import Lean
+import Lean.Util.CollectAxioms
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
 
 /-!
@@ -77,5 +78,58 @@ def runTacticBool (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM Boo
   match ← runTacticOn ty tacticStx with
   | .ok () => return true
   | .error _ => return false
+
+/-- Lean's three standard axioms: the only ones an accepted proof may use. -/
+def standardAxioms : List Lean.Name := [``propext, ``Classical.choice, ``Quot.sound]
+
+/-- Why the proof `pf` of `ty` is not accepted, or `none` if it is. It must
+have no metavariables and no `sorry`; the kernel must accept it as a
+theorem of type `ty` (added to a copy of the environment, then
+discarded); and it may use no axiom outside `standardAxioms`. -/
+def kernelRejects (ty pf : Expr) : TermElabM (Option String) := do
+  if ty.hasMVar || pf.hasMVar then return some "metavariables left in the proof"
+  if pf.hasSorry then return some "the proof uses sorry"
+  let name ← mkFreshUserName `kernelCheck
+  let decl := Declaration.thmDecl { name, levelParams := [], type := ty, value := pf }
+  let opts ← getOptions
+  match (← getEnv).unlockAsync.addDeclCore (Core.getMaxHeartbeats opts).toUSize
+      (maxRecDepth.get opts).toUSize decl none with
+  | .error _ => return some "the kernel rejects the proof"
+  | .ok env =>
+    let axioms ← withEnv env (collectAxioms name)
+    match axioms.toList.find? (· ∉ standardAxioms) with
+    | some ax => return some s!"the proof uses the axiom {ax}"
+    | none => return none
+
+/-- `runTacticBool`, with the proof the tactic
+finds checked by `kernelRejects` before it counts. A rejection is logged
+as `kernel_check rejected` and counts as a failed attempt. -/
+def runTacticChecked (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM Bool :=
+  withCurrHeartbeats <| tryCatchRuntimeEx
+    (do
+      let ty ← instantiateMVars ty
+      let mvar ← mkFreshExprMVar ty (kind := .synthetic)
+      let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
+        Lean.Elab.Tactic.evalTactic tacticStx
+      unless remaining.isEmpty do return false
+      let pf ← instantiateMVars mvar
+      match ← kernelRejects ty pf with
+      | none => return true
+      | some why =>
+        logInfo m!"kernel_check rejected {tacticStx.raw}: {why}"
+        return false)
+    (fun _ => pure false)
+
+-- Canaries for `kernelRejects`: it accepts a real proof and rejects a
+-- `sorry` and an ill-typed term (the last can only be caught by the
+-- kernel itself).
+#eval show TermElabM Unit from do
+  let ty := mkConst ``True
+  if let some why ← kernelRejects ty (mkConst ``True.intro) then
+    throwError "kernel check rejects True.intro: {why}"
+  if (← kernelRejects ty (← mkSorry ty false)).isNone then
+    throwError "kernel check accepts sorry"
+  if (← kernelRejects ty (mkConst ``Nat.zero)).isNone then
+    throwError "kernel check accepts an ill-typed proof"
 
 end FraCaS.Section1.Monotonicity

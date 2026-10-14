@@ -270,22 +270,30 @@ and its unarmed fallback `blind_aesop_unfold`, then plain `grind` and
 `Section6/Comparatives.lean`'s own header - are literal `Nat`
 inequalities their own hand proofs already close with bare `omega`;
 `intros` first since `omega` doesn't peel leading implications itself).
-Stops at the first success. Every step is a sound, kernel-checked proof
-search, so adding steps can only turn "unknown" into a verdict the
+Stops at the first success. Every step is a proof search whose result
+the kernel can check (and does, under `BLIND_EVAL_KERNEL_CHECK`, below),
+so adding steps can only turn "unknown" into a verdict the
 translated `Prop` genuinely supports, or expose jointly inconsistent
 premises as a flagged contradiction - a resulting mismatch with gold then
-points at the translation, never at the search. -/
+points at the translation, never at the search.
+
+A step counts when its tactic leaves no goal open (`runTacticBool`); the
+proof term is not given to the kernel. With the environment variable
+`BLIND_EVAL_KERNEL_CHECK` set, each proof is kernel-checked first
+(`runTacticChecked`, `Scan.lean`), and a rejected proof counts as a
+failed step. The chain itself is the same either way. -/
 def attemptClose (ty : Expr) : TermElabM Bool := do
-  if ← runTacticBool ty (← `(tactic| mono_nl)) then return true
-  if ← runTacticBool ty (← `(tactic| exist_nl)) then return true
-  if ← runTacticBool ty (← `(tactic| mono_nl_compose)) then return true
-  if ← runTacticBool ty (← `(tactic| most_nl)) then return true
-  if ← runTacticBool ty (← `(tactic| every_most_nl)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_aesop)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_aesop_unfold)) then return true
-  if ← runTacticBool ty (← `(tactic| grind)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_grind)) then return true
-  if ← runTacticBool ty (← `(tactic| (intros; omega))) then return true
+  let run := if (← IO.getEnv "BLIND_EVAL_KERNEL_CHECK").isSome then runTacticChecked else runTacticBool
+  if ← run ty (← `(tactic| mono_nl)) then return true
+  if ← run ty (← `(tactic| exist_nl)) then return true
+  if ← run ty (← `(tactic| mono_nl_compose)) then return true
+  if ← run ty (← `(tactic| most_nl)) then return true
+  if ← run ty (← `(tactic| every_most_nl)) then return true
+  if ← run ty (← `(tactic| blind_aesop)) then return true
+  if ← run ty (← `(tactic| blind_aesop_unfold)) then return true
+  if ← run ty (← `(tactic| grind)) then return true
+  if ← run ty (← `(tactic| blind_grind)) then return true
+  if ← run ty (← `(tactic| (intros; omega))) then return true
   return false
 
 /-- Whether a (post-Pi-peeling) head constant name is a negation
