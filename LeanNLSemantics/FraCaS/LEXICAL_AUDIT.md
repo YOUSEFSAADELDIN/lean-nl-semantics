@@ -84,15 +84,30 @@ Each class above, against the comparison's encodings
 (`EndToEnd/Encodings/README.md`: P extensional Montague, W intensional,
 M nouns as types).
 
-- **Supplied by the types: the 8 noun premises.** In M an element of a
-  modified noun's type is an element of the noun's type, so "an Irish
-  delegate is a delegate" holds by construction and the premise goes.
-  This is Phase 1a's subsectivity result (35 postulates in M against 53
-  in P and 65 in W, Section 5) on Section 1's nouns.
+- **The 8 noun premises: supplied by building the noun phrase from its
+  parts, and only one of them by the types.** In 7 (55, 57, 59, 63, 70,
+  76, 80) the adjective is intersective (Irish, Portuguese, Scandinavian,
+  female), so "an Irish delegate is a delegate" follows in any encoding
+  that states "Irish delegate" as "Irish" and "delegate": P and W as
+  much as M. The premise is needed only because the corpus and the
+  pipeline fuse the phrase into one name. In 29 ("leading
+  businessmen") the adjective is subsective: P and W need a postulate,
+  and M has it in its types. This is Phase 1a's subsectivity result (35
+  postulates in M against 53 in P and 65 in W, Section 5) on one Section
+  1 problem. Phase 3 of the encoding comparison
+  (`EndToEnd/Encodings/README.md`) checks all 8 in Lean. An earlier
+  version of this audit credited all 8 to nouns as types.
 - **Supplied only with a compositional verb phrase: the 3 object
-  premises.** The corpus fuses verb and object (`wonNobelLit`). If the
-  object is a typed noun phrase under a verb that is upward monotone in
-  it, the same coercion supplies them. Under a fused name nothing does.
+  premises.** The corpus fuses verb and object (`wonNobelLit`), and under
+  a fused name nothing supplies them. With the object stated
+  compositionally, under a verb upward monotone in it, the same split
+  applies. In 17 ("the Nobel prize for literature") and 328 ("the
+  contract from APCOM") a restrictive prepositional phrase is dropped,
+  which any compositional encoding allows. In 24 ("interesting
+  results"), "interesting" is subsective in the shared lexicon
+  (`EndToEnd/background.py`), so only M supplies it without a
+  postulate. This is argued, not checked: Phase 3 keeps the verb
+  phrases fused.
 - **Restated, not removed: the 27 stated noun relations.** FraCaS
   states these, so every encoding must assume them. In M they become
   declared coercions between types instead of premises; the knowledge
@@ -123,14 +138,18 @@ M nouns as types).
 
 **In sum**, on FraCaS the noun encoding touches:
 
-- 8 of the 46 added premises (11 with compositional verb phrases);
+- 1 of the 46 added premises (29's), and 1 more (24's) with
+  compositional verb phrases. The other 9 noun and object-noun premises
+  follow from any compositional noun phrase;
 - the 27 noun relations FraCaS states;
 - the 13 adjective premises and 4 adjective steps of Section 5, where
   it changes how they are stated and, at 215, what is valid.
 
 None of the rest depends on it. That fixes the size of the "FraCaS half"
-of the comparison: the effect is concentrated in Section 1's modified
-nouns and Section 5's adjectives.
+of the comparison: the effect is concentrated in Section 5's adjectives.
+In Section 1 it comes down to one subsective adjective. The rest of
+Section 1's modified nouns need only a compositional noun phrase, in any
+encoding.
 
 ## Limits
 

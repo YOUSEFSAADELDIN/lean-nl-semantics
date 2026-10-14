@@ -336,12 +336,88 @@ What it does not cover:
   the equivalence on one entailment. Weaker conditions that would also
   suffice are not explored.
 
+## Phase 3 results: the modified nouns of Section 1 (CI run 38622015149)
+
+The lexical-premise audit found 8 problems whose hand-written proof needs
+an added premise that a modified noun is a kind of the noun: 29, 55, 57,
+59, 63, 70, 76 and 80 ("an Irish delegate is a delegate"). The pipeline
+reaches all 8 and supplies the same fact as background knowledge,
+because it states "Irish delegate" as one fused name, `irishDelegate`.
+Phase 3 asks which encodings supply the fact themselves.
+
+`gen_modified.py` starts from F's own claims without background
+knowledge, so the parse, the readings, the determiners and the verb
+phrases are F's. It restates only the fused names that the pipeline's
+trees build from an adjective and a noun (and, in 29, from "used to be"
+and such a noun). It uses the adjective classes of `background.py`, as
+Phase 1a does:
+
+- **P**: "Irish delegate" is `fun x => delegate x ∧ irish x`. "Leading
+  businessman" is `leading businessman`, with subsectivity a postulate.
+- **W**: as P, with the decomposed nouns and adjectives as intensions at
+  `w₀`; "leading" takes the noun's intension.
+- **M**: P's claim lifted as in Phase 2, so "some Irish delegate" is
+  `SomeT eDelegate (fun x => irish x) …`. "Leading" is indexed by the
+  type `Businessman`, as in Phase 1a, so subsectivity is built in.
+
+"Used to" is an opaque operator in all three, with one counted postulate:
+it is upward monotone.
+
+| | pipeline's prover | generic prover | valid answers | stipulated facts |
+|---|---|---|---|---|
+| F, no background knowledge | 0/8 | 0/8 | 0/8 | 0 |
+| F, background knowledge | **7/8** | 2/8 | 7/8 | 8 background facts |
+| P (extensional Montague) | 2/8 | 2/8 | 7/8 | 2 (29: subsectivity, "used to") |
+| W (intensional Montague) | 2/8 | 2/8 | 7/8 | 2 (29: subsectivity, "used to") |
+| M (MTT) | 1/8 (after `Pullback.lean`) | 1/8 | 7/8 | **1** (29: "used to") |
+
+No row gives a wrong answer. "Valid answers" adds the claims proved by
+hand in `ModifiedCommitments.lean`. None of the encodings gets 76:
+its second reading treats "few" as the opaque `Few`, whose one postulate
+lets the scope shrink but not the restrictor. F with background knowledge
+misses it for the same reason.
+
+1. **7 of the 8 premises come from fused names, not from nouns as
+   predicates.** In 55, 57, 59, 63, 70, 76 and 80 the adjective is
+   intersective (Irish, Portuguese, Scandinavian, female). Any encoding
+   that builds "Irish delegate" from "Irish" and "delegate" has "an
+   Irish delegate is a delegate" for free, P and W as much as M. Only F
+   needs it stated, because `irishDelegate` and `delegate` are
+   unrelated names. This corrects the audit, which credited all 8 to
+   nouns as types.
+2. **Only 29 tells M apart.** "Leading" is subsective. P and W need a
+   postulate that a leading businessman is a businessman; M has it in
+   the types. That is Phase 1a's subsectivity result again, on one
+   Section 1 problem.
+3. **M's counting needs no injectivity here.** In each counting problem
+   the premise and the hypothesis count the same noun's type ("at least
+   three female commissioners", "at least three commissioners"), so
+   `cardT_mono` settles them with no condition on the embedding. The
+   individuation question of Phase 2 arises only when two different
+   nouns are counted against each other.
+4. **The cost is automation, for all three decomposed encodings.** The
+   pipeline's prover gets 7 of F's claims with background knowledge but
+   only 2 of P's and W's and 1 of M's, the same claims stated
+   compositionally. Every miss is a counting claim or M's 29, and all are
+   valid. The prover's monotonicity tactics expect a plain predicate as
+   the restrictor, and here the restrictor is `fun x => delegate x ∧
+   irish x`, or a typed count. The pipeline's prover is built for F's
+   fused names. Reading M's counts on the noun's own type
+   (`Pullback.lean`) did not help.
+
+What this phase does not show:
+- 8 problems is a small set, and all are development problems.
+- The verb phrases stay fused, as F has them: "won the contract from
+  APCOM" is still one name. So the audit's 3 object-noun premises (17,
+  24, 328) are not tested.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
 - **1b**: Section 3 (anaphora): F against M.
 - **2**: every problem the pipeline reaches, its own claims with nouns as types.
 - **Equivalence theorem**: over a fragment, nouns as types with injective embeddings and nouns as predicates validate the same entailments; without injectivity they do not (`Equivalence.lean`).
+- **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.
