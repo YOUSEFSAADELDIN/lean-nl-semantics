@@ -195,6 +195,34 @@ here. The chain was itself developed on this corpus (see "Other
 limitations" below), so 336/342 is not a held-out figure either; freezing
 it keeps the number from drifting further.
 
+## Every proof checked by the kernel (CI run 38532790634)
+
+The scans count a claim as proved when a tactic leaves no goal open; the
+proof term itself is not given to Lean's kernel. To check that each
+verdict rests on a proof the kernel accepts, CI also runs all four scans
+a second time with `BLIND_EVAL_KERNEL_CHECK` set: the same chain, but
+each proof must contain no `sorry` or metavariable, the kernel must
+accept it as a theorem of the claim, and it may use no axiom beyond
+`propext`, `Classical.choice` and `Quot.sound` (`runTacticChecked`,
+`Section1/Monotonicity/Scan.lean`). A rejected proof counts as a failed
+step.
+
+The kernel rejected no proof, and every verdict is the same: 336/342 in
+both runs (Sections 1-2: 42/42, 22/25 and 46/46; Sections 3-9: 21/24,
+44/44, 15/15, 22/22, 49/49, 6/6, 9/9 and 60/60). So the number above is
+kernel-checked. The frozen scans stay the official ones; the checked
+ones run beside them in the same job.
+
+This was worth checking: the end-to-end pipeline's prover shares
+`exist_nl` with this chain, and there the kernel rejected three proofs
+(`EndToEnd/README.md`, "The kernel check"). `exist_nl` proves that a
+count is positive with `of_decide_eq_true rfl`, which the kernel
+accepts only if `decide` evaluates to `true`. That holds for a numeral
+and fails for a count that is a variable ("several", "a few"). No proof
+in this corpus's scans hit that case (the checked run rejected none),
+so the flaw never showed here; it is not fixed, because this chain is
+frozen.
+
 ## What's still excluded, and why
 
 Nothing in the hand-translated evaluation: all 342 problems are attempted.

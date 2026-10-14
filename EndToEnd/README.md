@@ -258,8 +258,12 @@ and 11 ("A few great tenors sing popular music" ⇒ ...), both correct
 positive with `mkDecideProof`, which builds `of_decide_eq_true rfl`
 without evaluating `decide`. For a numeral the term is correct; for a
 count that is a variable, as "several" and "a few" are here, it is
-ill-typed, and only the kernel notices. No other verdict changed, and
-no answer became wrong.
+ill-typed, and only the kernel notices. The kernel's own message
+(CI run 38532790634) says exactly that: `id (Eq.refl true)` has type
+`true = true` where `decide (severalCount ≥ 1) = true` is expected (and
+`aFewCount` for 11). No other verdict changed, and no answer became
+wrong. The hand-written corpus's evaluation, which shares `exist_nl`,
+passes the same check with no proof rejected (`BLIND_EVAL.md`).
 
 **Anaphora** (CI run 38087617550) reached 114-120, matched 114-118 in
 both variants and 120 with background knowledge, matched 131 and 133
