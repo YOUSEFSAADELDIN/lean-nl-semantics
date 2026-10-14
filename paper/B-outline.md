@@ -133,9 +133,17 @@ pipeline frozen at ac92c4e, name check included.
 1. **[have] A held-out test of the fixed pipeline**: SICK, above. Its
    precision sample is small (52 answers); a larger one needs more reach,
    not more tuning.
-2. **[gap] Related work**, all read: Bernardy & Chatzikyriakidis
-   2017/2019/2021, Mineshima et al. 2015, Haruta et al. 2020, Abzianidze
-   2015, Ljunglöf & Siverbo 2012, Yanaka et al. 2019, Chen et al. 2021.
+2. **[have] Related work**: drafted in `paper/B/main.tex` (Bernardy &
+   Chatzikyriakidis 2017/2019/2021, Mineshima et al. 2015, Haruta et al.
+   2020, Abzianidze 2015, Martínez-Gómez et al. 2017, Ljunglöf & Siverbo
+   2011, Yanaka et al. 2019, Chen et al. 2021).
+
+## The draft
+
+`paper/B/main.tex`: an 8-page ACL-format draft of this outline
+(`make -C paper/B` builds it; the ACL style files are fetched, not
+copied). It adds one section the outline lacks: every wrong answer the
+pipeline has given, and the step of the translation it came from.
 
 ## Out of scope for this paper
 
