@@ -1,5 +1,6 @@
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.BlindEvalCore
 import EndToEnd.Quantifiers
+import Lean.Util.CollectAxioms
 
 /-!
 # The end-to-end pipeline's prover
@@ -20,6 +21,12 @@ FraCaS's English:
   106);
 - `blind_refute_count`: refutes a positive count, at least or exactly,
   by refuting `Some` (FraCaS 46).
+
+Every proof a tactic finds is then checked before it counts
+(`runTacticChecked`): no metavariables or `sorry` left in it, accepted by
+Lean's kernel as a theorem of the claim, and using no axiom beyond
+`propext`, `Classical.choice` and `Quot.sound`. A rejected proof is
+logged (`kernel_check rejected`) and the next tactic is tried.
 
 Each was added after seeing a specific end-to-end claim fail, so the
 end-to-end scores are development-set figures. Keeping them here, not in
@@ -193,25 +200,78 @@ example {A : Type} (leave : A → Prop) (leaveTime : A → ℕ) (smith jones : A
     leave smith → leave jones → (leave smith ∧ leaveTime smith < leaveTime jones) →
     (leave jones ∧ leave smith ∧ leaveTime jones > leaveTime smith) := by grind
 
+/-- Lean's three standard axioms: the only ones an accepted proof may use. -/
+def standardAxioms : List Lean.Name := [``propext, ``Classical.choice, ``Quot.sound]
+
+/-- Why the proof `pf` of `ty` is not accepted, or `none` if it is. It must
+have no metavariables and no `sorry`; the kernel must accept it as a
+theorem of type `ty` (added to a copy of the environment, then
+discarded); and it may use no axiom outside `standardAxioms`. -/
+def kernelRejects (ty pf : Expr) : TermElabM (Option String) := do
+  if ty.hasMVar || pf.hasMVar then return some "metavariables left in the proof"
+  if pf.hasSorry then return some "the proof uses sorry"
+  let name ← mkFreshUserName `endToEndKernelCheck
+  let decl := Declaration.thmDecl { name, levelParams := [], type := ty, value := pf }
+  let opts ← getOptions
+  match (← getEnv).unlockAsync.addDeclCore (Core.getMaxHeartbeats opts).toUSize
+      (maxRecDepth.get opts).toUSize decl none with
+  | .error _ => return some "the kernel rejects the proof"
+  | .ok env =>
+    let axioms ← withEnv env (collectAxioms name)
+    match axioms.toList.find? (· ∉ standardAxioms) with
+    | some ax => return some s!"the proof uses the axiom {ax}"
+    | none => return none
+
+/-- `runTacticBool` (`Monotonicity/Scan.lean`), with the proof the tactic
+finds checked by `kernelRejects` before it counts. A rejection is logged
+as `kernel_check rejected` and counts as a failed attempt. -/
+def runTacticChecked (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM Bool :=
+  withCurrHeartbeats <| tryCatchRuntimeEx
+    (do
+      let ty ← instantiateMVars ty
+      let mvar ← mkFreshExprMVar ty (kind := .synthetic)
+      let remaining ← Lean.Elab.Tactic.run mvar.mvarId! do
+        Lean.Elab.Tactic.evalTactic tacticStx
+      unless remaining.isEmpty do return false
+      let pf ← instantiateMVars mvar
+      match ← kernelRejects ty pf with
+      | none => return true
+      | some why =>
+        logInfo m!"kernel_check rejected {tacticStx.raw}: {why}"
+        return false)
+    (fun _ => pure false)
+
+-- Canaries for `kernelRejects`: it accepts a real proof and rejects a
+-- `sorry` and an ill-typed term (the last can only be caught by the
+-- kernel itself).
+#eval show TermElabM Unit from do
+  let ty := mkConst ``True
+  if let some why ← kernelRejects ty (mkConst ``True.intro) then
+    throwError "kernel check rejects True.intro: {why}"
+  if (← kernelRejects ty (← mkSorry ty false)).isNone then
+    throwError "kernel check accepts sorry"
+  if (← kernelRejects ty (mkConst ``Nat.zero)).isNone then
+    throwError "kernel check accepts an ill-typed proof"
+
 open FraCaS.Section1.Monotonicity in
 /-- The end-to-end chain: the steps of `attemptClose`, in the same order,
 with `mono_nl_upward` for `mono_nl` and `blind_aesop_e2e` for
 `blind_aesop`, then `blind_count`, `blind_exactly_no` and
 `blind_refute_count` last. -/
 def attemptCloseEndToEnd (ty : Expr) : Lean.Elab.Term.TermElabM Bool := do
-  if ← runTacticBool ty (← `(tactic| mono_nl_upward)) then return true
-  if ← runTacticBool ty (← `(tactic| exist_nl)) then return true
-  if ← runTacticBool ty (← `(tactic| mono_nl_compose)) then return true
-  if ← runTacticBool ty (← `(tactic| most_nl)) then return true
-  if ← runTacticBool ty (← `(tactic| every_most_nl)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_aesop_e2e)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_aesop_unfold)) then return true
-  if ← runTacticBool ty (← `(tactic| grind)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_grind)) then return true
-  if ← runTacticBool ty (← `(tactic| (intros; omega))) then return true
-  if ← runTacticBool ty (← `(tactic| blind_count)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_exactly_no)) then return true
-  if ← runTacticBool ty (← `(tactic| blind_refute_count)) then return true
+  if ← runTacticChecked ty (← `(tactic| mono_nl_upward)) then return true
+  if ← runTacticChecked ty (← `(tactic| exist_nl)) then return true
+  if ← runTacticChecked ty (← `(tactic| mono_nl_compose)) then return true
+  if ← runTacticChecked ty (← `(tactic| most_nl)) then return true
+  if ← runTacticChecked ty (← `(tactic| every_most_nl)) then return true
+  if ← runTacticChecked ty (← `(tactic| blind_aesop_e2e)) then return true
+  if ← runTacticChecked ty (← `(tactic| blind_aesop_unfold)) then return true
+  if ← runTacticChecked ty (← `(tactic| grind)) then return true
+  if ← runTacticChecked ty (← `(tactic| blind_grind)) then return true
+  if ← runTacticChecked ty (← `(tactic| (intros; omega))) then return true
+  if ← runTacticChecked ty (← `(tactic| blind_count)) then return true
+  if ← runTacticChecked ty (← `(tactic| blind_exactly_no)) then return true
+  if ← runTacticChecked ty (← `(tactic| blind_refute_count)) then return true
   return false
 
 end FraCaS.EndToEnd
