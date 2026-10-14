@@ -1,0 +1,164 @@
+id	record	index	tag	text	note
+1	in_translation		paraphrase	Some italian becameGreatestTenor	
+5	added	0	existence	∃ x, ambitious x	"""the really ambitious tenors"" presupposes there are some"
+7	in_translation		paraphrase	Some greatTenor swedish	
+8	in_translation		reading	Some greatTenor german	"""many"" translated as some"
+9	in_translation		reading	Some greatTenor british	"""several"" translated as some"
+11	in_translation		paraphrase	Some greatTenor singsPopular	
+17	added	1	object_noun	∀ x, wonNobelLit x → wonNobel x	the Nobel prize for literature is a Nobel prize
+18	stated_noun	1		Every european person	Every European is a person.
+19	stated_noun	1		Every european person	Every European is a person.
+20	stated_noun	1		Every european person	Every European is a person.
+21	stated_noun	1		Every residentMemberState individual	All residents of member states are individuals.
+23	added	1	vp	∀ x, finishOnTime x → finish x	finished on time => finished
+24	added	1	object_noun	∀ x, interestingResult x → result x	interesting results are results
+25	added	1	vp	∀ x, publishedInNewspapers x → published x	published in major national newspapers => published
+26	stated_noun	1		Every european person	All Europeans are people.
+27	stated_noun	1		Every committee person	All committee members are people.
+28	stated_noun	1		Every Committee People	All committee members are people.
+29	added	1	noun	∀ x, leadingBusinessman x → businessman x	a leading businessman is a businessman
+31	added	1	vp	∀ x, lotOfTime x → someTime x	spend a lot of time => spend time
+34	stated_noun	1		Every Dom Person	Every European is a person.
+35	stated_noun	1		Every Dom Person	Every European is a person.
+36	stated_noun	1		Every Dom Person	Every European is a person.
+37	stated_noun	1		Every Dom Person	All residents of member states are individuals.
+38	added	1	vp	∀ x, onTime x → finish x	finished on time => finished
+42	stated_noun	1		Every Dom Person	All Europeans are people.
+43	stated_noun	1		Every Committee People	All committee members are people.
+44	stated_noun	1		Every committee person	All committee members are people.
+46	added	1	vp	∀ x, lotOfTime x → timeAtHome x	spend a lot of time => spend time
+48	added	1	vp	∀ x, lotOfTime x → timeAtHome x	spend a lot of time => spend time
+49	stated_noun	1		Every swede scandinavian	Every Swede is a Scandinavian.
+50	stated_noun	1		Every P R	Every Canadian resident is a resident of the North American continent.
+51	stated_noun	1		Every P R	Every Canadian resident is a resident of the North American continent.
+52	stated_noun	1		Every P R	Every Canadian resident is a resident of the North American continent.
+53	stated_noun	1		Every P R	All residents of major western countries are residents of western countries.
+55	added	1	noun	Every irishDelegate delegate	an Irish delegate is a delegate
+57	added	1	noun	Every portugueseDelegate delegate	a Portuguese delegate is a delegate
+59	added	1	noun	Every femaleCommitteeMember committeeMember	a female committee member is a committee member
+63	added	1	noun	Every femaleCommissioner commissioner	a female commissioner is a commissioner
+65	stated_noun	1		Every R P	Every Swede is a Scandinavian.
+66	stated_noun	1		Every canadianResident naResident	Every Canadian resident is a resident of the North American continent.
+67	stated_noun	1		Every canadianResident naResident	Every Canadian resident is a resident of the North American continent.
+68	stated_noun	1		Every canadianResident naResident	Every Canadian resident is a resident of the North American continent.
+69	stated_noun	1		Every residentMajorWestern residentWestern	All residents of major western countries are residents of western countries.
+70	added	1	noun	Every scandinavianDelegate delegate	a Scandinavian delegate is a delegate
+76	added	1	noun	Every femaleCommittee committee	a female committee member is a committee member
+80	added	1	noun	Every femaleCommissioner commissioner	a female commissioner is a commissioner
+81	in_translation		paraphrase	jonesSigned	
+82	in_translation		paraphrase	jonesSigned	
+87	in_translation		paraphrase	Every rep atMeeting	
+90	in_translation		reading	Every onAgenda readOut	definite plural object as every
+92	in_translation		reading	Every atMeeting voted	"""all the people"" as every"
+93	in_translation		reading	Every atMeeting voted	"floated ""all"" as every"
+96	in_translation		reading	Every ancientGreek notedPhilosopher	"floated ""all"" as every"
+97	in_translation		reading	Some softwareFault blamed	bare plural as some
+100	added	1	existence	∃ x, clientAtDemo x	"""clients at the demonstration"" presupposes there are some"
+112	in_translation		reading	smithSignedTwo ∧ jonesSignedTwo	"distributive reading of ""two contracts"""
+114	in_translation		paraphrase	usedBy mary maryWorkstation	
+115	in_translation		presupposition	hasA mary maryWorkstation	"""her workstation"" presupposes she has one"
+116	in_translation		presupposition	female mary	"""her"" presupposes female"
+121	in_translation		discourse	delivered smith itel report ∧ delivered smith itel invoice ∧ delivered smith itel proposal	
+122	in_translation		discourse	∀ c, committee c → ∃ ch, chairman ch c ∧ appointedByMembers ch c	
+128	in_translation		discourse	Every colleagueOf hated	
+133	in_translation		discourse	∀ x, ownsGFI x → maintainsITEL x	
+138	in_translation		discourse	signed smith (coverPageOf r95103)	
+139	in_translation		paraphrase	∃ d, awarded d d	
+140	in_translation		voice	said john (hurt bill bill)	"""hurt himself"" and ""been hurt"" translated alike"
+142	in_translation		discourse	spokeBillMary	
+144	in_translation		discourse	spokeAt4BillMary	
+145	in_translation		discourse	spokeAt5BillMary	
+146	in_translation		discourse	spokeBillMary	
+147	in_translation		discourse	¬ spokeBillMaryMonday	
+148	in_translation		discourse	spokeBillMary	
+149	in_translation		discourse	Every student spokeMary	
+150	in_translation		discourse	wentTo bill paris train	
+151	in_translation		discourse	wentTo bill berlin train	
+152	in_translation		discourse	wentTo bill berlin car	
+153	in_translation		discourse	Every (fun _ : Student => True) (fun s => goingTo s paris train)	
+154	in_translation		discourse	wentTo bill paris train	
+155	in_translation		discourse	∃ c, car c ∧ owns bill c	
+157	in_translation		discourse	∃ c, car c ∧ blue c ∧ owns bill c	
+159	in_translation		discourse	∃ c, car c ∧ fast c ∧ owns bill c	
+160	in_translation		discourse	∃ c, car c ∧ fast c ∧ red c ∧ owns bill c	
+162	in_translation		discourse	∃ c, car c ∧ slow c ∧ red c ∧ owns bill c	
+163	in_translation		discourse	¬ knowsWhyJohnPaperAccepted	
+164	in_translation		discourse	spokeJohnSue	
+165	in_translation		discourse	spokeJohnMaryFriday	
+166	in_translation		discourse	spokeJohnMaryFriday	
+168	in_translation		discourse	fortyFiveWomenWorkPartTime	
+169	in_translation		discourse	johnFoundMaryBeforeBillFoundMary	
+170	in_translation		discourse	johnFoundMaryBeforeJohnFoundBill	
+171	in_translation		discourse	wantsKnowHowManyWomenPT	
+172	in_translation		discourse	wantsKnowWhichMenPT	
+175	in_translation		discourse	billSaidMaryWroteReport	
+176	in_translation		discourse	johnSaidBillWroteReport	
+178	in_translation		discourse	billSaidPeterWroteReport	
+180	in_translation		discourse	johnBoughtCar	
+182	in_translation		discourse	represents jones (companyOf jones)	
+183	in_translation		discourse	represents jones (companyOf smith)	
+185	in_translation		discourse	claimedCosted jones jones jones	
+186	in_translation		discourse	claimedCosted jones jones smith	
+187	in_translation		discourse	claimedCosted jones smith smith	
+189	in_translation		discourse	represents mary (companyOf mary)	
+190	in_translation		discourse	represents mary (companyOf john)	
+191	in_translation		discourse	condBillFrank_CarlAlan	
+193	in_translation		discourse	condBillFrankBoss_CarlAlanWife	
+195	in_translation		discourse	condAllThree_AllThree	
+196	in_translation		discourse	∃ a, auditor a ∧ ∀ r, report r → signed a r	
+198	added	0	adjective	∀ x, formerUnivStudent x → ¬ univStudent x	a former university student is not a university student (privative)
+199	in_translation		adjective	successful	"""successful former student"" read with ""successful"" intersective"
+202	stated_noun	0		∀ x, mammal x → animal x	Every mammal is an animal.
+203	in_translation		adjective	fourLegged dumbo	"""four-legged animal"" read intersectively"
+204	added	0	adjective	∀ x, small x → ¬ large x	small and large exclude each other
+205	added	0	adjective	∀ x, large x → ¬ small x	large and small exclude each other
+208	added	0	adjective	∀ x y, small x → large y → smallerThan x y	a small thing is smaller than a large one
+209	added	0	adjective	∀ x y, small x → large y → ¬ largerThan x y	a small thing is not larger than a large one
+210	added	1	adjective	∀ x, smallAnimal x → ¬ largeAnimal x	a small animal is not a large animal
+211	added	1	adjective	∀ x, largeAnimal x → ¬ smallAnimal x	a large animal is not a small animal
+212	added	4	adjective	∀ x y, smallAnimal x → largeAnimal y → largerThan y x	a large animal is larger than a small one
+214	stated_noun	0		∀ x, legalAuth x → lawLect x	All legal authorities are law lecturers.
+214	stated_noun	1		∀ x, lawLect x → legalAuth x	All law lecturers are legal authorities.
+216	in_translation		adjective	fatterThanBill	"""a fatter politician than Bill"" read as fatter than Bill"
+218	in_translation		adjective	cleverKim	"""a clever person"" read as clever"
+220	added	0	adjective	∀ x y, fasterThan x y → fast y → fast x	faster than something fast is fast
+223	added	0	adjective	∀ x y, fasterThan x y → slow x → ¬ fast y	faster than something, and slow: the other is not fast
+224	added	0	adjective	∀ x y, asFastAs x y → fast y → fast x	as fast as something fast is fast
+227	added	0	adjective	∀ x y, asFastAs x y → slow x → ¬ fast y	as fast as something, and slow: the other is not fast
+229	added	0	adjective	∀ x y, asFastAs x y → ¬ slowerThan x y	as fast as excludes slower than
+236	in_translation		discourse	itelWonAPCOMContract	
+237	in_translation		discourse	itelWonMoreThanOneOrder	
+244	in_translation		discourse	apcomHasMoreImportantCustomerThanITELIs	
+245	in_translation		discourse	apcomHasMoreImportantCustomerThanITELHas	
+249	in_translation		paraphrase	fasterThan pc itelzx	
+250	in_translation		reading	fasterThan pc itelzx	"""or"" read as ""and"""
+251	in_translation		modifier	hasFactory	
+258	added	0	time	∀ y, existedAt y → foundedYear ≤ y	a company does not exist before it is founded
+259	added	2	time	∀ d, startDay + duration ≤ d → conferenceOver d	a conference is over once its days have passed
+284	added	2	time	∀ h, startHour + durationHours ≤ h → finishedBy h	writing is finished once its duration has passed
+288	in_translation		modifier	wroteReport	
+290	in_translation		modifier	discovered	
+294	in_translation		modifier	ranBusiness	
+297	in_translation		modifier	ownedChain	
+300	in_translation		modifier	livedInBirmingham	
+302	in_translation		modifier	ranBusiness	
+306	in_translation		modifier	discoveredSpecies	
+307	added	1	time	inYear1994 july1994	July 1994 is in 1994
+311	in_translation		discourse	leftHouse < taxiToStation	
+315	added	0	time	arrivalDay ≥ 3	arrival is at least three days into the calendar
+316	added	1	antonym	∀ t, unemployedAt t → ¬ employed t	unemployed excludes employed
+318	added	1	time	maryStart < maryEnd	an event ends after it starts
+320	added	0	verb	knewNeverAllowed → neverAllowedToWriteMemoirs	know is factive
+322	added	0	verb	knewFuture → (discovers ∧ furious)	know is factive
+325	added	0	verb	∀ x, knowsWasAsleep x → discovers x	knowing one has been asleep is discovering it (premise 1 is not translated)
+326	added	0	verb	∀ y, built y → finished y	building something finishes it
+328	added	0	object_noun	∀ y, wonFromAPCOM y → wonAContract y	the contract from APCOM is a contract
+331	in_translation		paraphrase	smithLeft	
+332	in_translation		paraphrase	jonesLeft	
+334	added	0	verb	knewWon → won	know is factive
+336	added	0	verb	managedToWin → won	manage is implicative
+338	in_translation		paraphrase	won	
+339	in_translation		paraphrase	¬ won	
+342	added	0	verb	sawSign → signed	seeing an event happen entails it happened
+345	in_translation		paraphrase	sawSign	
+346	in_translation		paraphrase	sawSign ∨ sawCrossOut	

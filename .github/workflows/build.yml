@@ -10,6 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The lexical-premise audit (LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md):
+      # fails if a corpus statement no longer matches what the audit
+      # records about it.
+      - name: Lexical-premise audit
+        run: python3 scripts/lexical_audit.py
+
       - name: Install elan
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \

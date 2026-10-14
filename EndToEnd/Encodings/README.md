@@ -285,5 +285,6 @@ What this phase does not show:
 - **1a**: Section 5 (adjectives), all four encodings.
 - **1b**: Section 3 (anaphora): F against M.
 - **2**: every problem the pipeline reaches, its own claims with nouns as types.
+- **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.
