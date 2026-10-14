@@ -118,9 +118,11 @@ FraCaS's own wording needs (relative ``who'', existential ``there
 are'', VP ellipsis, gapping, fragments, the progressive), each confirmed
 by a linearization check. It does not say which tree goes with which
 sentence. Readings are ranked by size, with ties broken by attaching
-adverbials as low as possible. On the 406 sentences with a confirmed
-hand-built tree that the translator covers, the top-ranked reading
-translates to the same proposition as the hand tree for 405.
+adverbials as low as possible. On the project's 486 sentences with a confirmed hand-built
+tree (its own versions of FraCaS sentences, some reworded), every hand
+tree is among the readings; for the 406 the translator covers, the
+top-ranked reading translates to the same proposition as the hand tree
+for 405. The tie-breaker was chosen on these same sentences.
 
 \paragraph{Discourse.} Ellipsis and one-anaphora are resolved by copying
 the antecedent's verb phrase or noun; a gapped clause copies its
@@ -293,7 +295,8 @@ and on held-out data (\S\ref{sec:heldout}).
 \section{Development results: FraCaS}
 \label{sec:fracas}
 
-\paragraph{Reach.} Of FraCaS's 342 problems, 259 (75.7\%) are carried
+\paragraph{Reach.} Of FraCaS's 342 problems with a hypothesis (4 of the
+346 in MacCartney's version have none), 259 (75.7\%) are carried
 through. Of the rest, 65 stop at a sentence the grammar does not parse,
 17 at a reading the translator does not cover (including 119, refused by
 the name check), and one at a name that is a Lean keyword. The remaining
@@ -320,10 +323,13 @@ the 83 unreached problems as \unk{}, corpus-wide accuracy is 57.6\% and
 
 \paragraph{Results.} Table~\ref{tab:fracas} gives the results. No
 reached problem is answered wrongly in either variant. Every mismatch is
-\unk{} against a \yes{} or \no{} label. Among these, some are FraCaS
-committing to one reading of an ambiguous sentence (e.g.\ 13, 76, 107,
-109, 160, 230, 233, 239) and one (69) is a slip in FraCaS itself; the
-rest need knowledge or anaphora the pipeline lacks.
+\unk{} against a \yes{} or \no{} label. With background knowledge there
+are 19: 13 where FraCaS commits to one reading of an ambiguous sentence
+(13, 76, 86, 87, 100, 107, 109, 129, 160, 230, 233, 239, 250), a slip in
+FraCaS itself (69), three inferences the pipeline deliberately does not
+make (140: what is said closed under entailment; 199, 218: ``successful''
+and ``clever'' as intersective), and two where a fronted ``since'' would
+have to force a continuous reading (255, 257).
 
 \paragraph{Against systems that parse FraCaS's English.}
 \citet{mineshima-etal-2015-higher}'s ccg2lambda parses with a
@@ -369,7 +375,7 @@ of this pipeline on all three of its problem sets. Scored under FraCoq's own ame
 and rules, the pipeline with background knowledge gets 81.9\% of the
 2017 problem set (FraCoq 0.83), 74.1\% of the 2019 set (0.89) and 73.9\%
 of the 2021 set (0.81). The settings differ: FraCoq starts from a
-treebank with one hand-built tree per sentence
+treebank with one manually chosen tree per sentence
 \citep{ljunglof-siverbo-2011-bilingual}, its proofs needed human
 intervention, and it counts an ambiguous problem as \yes{} if one reading
 entails the hypothesis.
@@ -402,7 +408,8 @@ the name check & 0 & 0 \\
 \bottomrule
 \end{tabular}
 \caption{Wrong answers on FraCaS with one safeguard switched off.
-``Any reading'' is FraCoq's rule. Matched problems change by at most
+``Any reading'' answers \yes{} if some reading proves the hypothesis,
+the rule FraCoq's amended labels follow. Matched problems change by at most
 one in the reading rows, and by 2 and 6 in the names row.}
 \label{tab:ablations}
 \end{table}
@@ -454,7 +461,7 @@ repository, and a script recomputes every figure from them.
 \subsection{MED, before the name check}
 
 MED \citep{yanaka-etal-2019-neural} has 5,382 single-premise problems
-labelled entailment or neutral; we exclude the 37 taken from FraCaS. Of
+labelled entailment or non-entailment (neutral); we exclude the 37 taken from FraCaS. Of
 the remaining 5,345, 989 are reached (18.5\%): 1,891 need a closed-class
 word the grammar lacks, 1,807 do not parse, and 658 do not translate. A
 \yes{} on neutral or a \no{} on entailment is wrong; \unk{} on
@@ -491,13 +498,15 @@ on a neutral problem:
 \item \textbf{2718} is a real translation error, the collision of
 \S\ref{sec:names}: ``Tom said he didn't drink black coffee''
 $\Rightarrow$ ``Tom said he didn't drink coffee''. On FraCaS, every
-attitude verb had been caught first by a reading that declines negated
-complements, so the gap never showed.
+attitude report was handled by a dedicated reading, which declines a
+negated complement or a pronoun subject; 2718 has both, so it fell
+through to the default naming, which drops the verb and the negation.
 \item \textbf{536} (``A cold bubbly bath refreshed him'' $\Rightarrow$
 ``A cold bath refreshed him'') and \textbf{2504} (premise and hypothesis
 the same sentence) follow from how MED built its crowdsourced pairs.
-Each pair's label was set by its monotonicity direction, and then each
-pair was swapped and its label reversed \citep[\S3.1.3]{yanaka-etal-2019-neural}.
+Labels were computed from monotonicity and kept where all three
+workers agreed; then, where possible, each pair was swapped and its
+label reversed \citep[\S3.1.3]{yanaka-etal-2019-neural}.
 536 is 535 swapped with its label left unreversed (MED has 8 such
 pairs); 2504 should be 2503 swapped, but its hypothesis repeats its premise
 (MED has 6 pairs with the same sentence twice).
@@ -548,7 +557,7 @@ generated, with the pipeline frozen at that commit.
 as translated & 19 & 0 & 100\% & 0.9\% \\
 with BK & 52 & 0 & 100\% & 2.5\% \\
 \midrule
-LangPro & & & 98.0 & 58.1 \\
+LangPro (2017) & & & 98.0 & 58.1 \\
 Mart\'inez-G\'omez et al. & & & 97.0 & 63.6 \\
 \bottomrule
 \end{tabular}
@@ -556,7 +565,10 @@ Mart\'inez-G\'omez et al. & & & 97.0 & 63.6 \\
 Recall is over all 2,116 entailment and contradiction pairs, unreached
 pairs counting as \unk{}. With 52 of 52 correct, the 95\%
 Clopper--Pearson lower bound on precision is 93.2\%. The last two rows
-are as tabulated by \citet[Table 3]{chen-etal-2021-neurallog}.}
+are as tabulated by \citet[Table 3]{chen-etal-2021-neurallog}, citing
+\citet{abzianidze-2017-langpro} and
+\citet{martinez-gomez-etal-2017-demand}, on SICK's 4,927 test pairs; the
+release we use has 4,906.}
 \label{tab:sick}
 \end{table}
 
@@ -623,8 +635,8 @@ collision itself rather than listing the word classes a name must keep.
 CCG parses and proves them in Coq with a 30-second timeout; its authors
 note that their FraCaS figures are not an evaluation on unseen data.
 \citet{haruta-etal-2020-logical} extend it to comparatives and
-generalized quantifiers and evaluate on held-out sets, including the MED
-subset above. FraCoq
+generalized quantifiers, and also evaluate on the MED subset above and
+on a new set of comparative problems. FraCoq
 \citep{bernardy-chatzikyriakidis-2017-type,bernardy-chatzikyriakidis-2019-wide,bernardy-chatzikyriakidis-2021-applied}
 translates GF trees from the FraCaS treebank
 \citep{ljunglof-siverbo-2011-bilingual} into Coq and covers all sections,
@@ -636,7 +648,8 @@ agrees. ccg2lambda's FraCaS results do not report wrong answers
 separately from accuracy.
 
 \paragraph{Precision on SICK and MED.} LangPro
-\citep{abzianidze-2015-tableau}, a natural-logic tableau prover, and
+\citep{abzianidze-2015-tableau,abzianidze-2017-langpro}, a natural-logic
+tableau prover, and
 \citet{martinez-gomez-etal-2017-demand}, ccg2lambda with lexical
 knowledge injected on demand, are reported at 98.0 and 97.0 precision and
 58.1 and 63.6 recall on SICK \citep[Table 3]{chen-etal-2021-neurallog}. NeuralLog \citep{chen-etal-2021-neurallog}
@@ -690,6 +703,12 @@ construction with no word of its own is covered only when listed (the
 progressive and the passive are). A false background premise is outside
 it: the telicity ablation's two wrong answers are of that kind. The
 deliberate omissions are simplifications: the claims are tenseless.
+Two exemptions are not compared: a node the translator names as a whole
+(``the items'' as \nm{every}), and one idiom named by part of its
+phrase (``comes cheap'' as \nm{cheap}).
+\item \textbf{Finite domains.} Claims quantify over an arbitrary
+\emph{finite} domain, so an inference valid only in finite models would
+be accepted.
 \item \textbf{No lexical knowledge.} MED's and SICK's lexical problems
 can only be \unk{}. Adding lexical knowledge would make some of the
 collisions the name check refuses matter (MED~4897).
