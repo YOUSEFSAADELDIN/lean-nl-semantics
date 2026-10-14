@@ -319,12 +319,16 @@ theorem pvalid_NI : PValid premisesNI conclusionNI := by
   have h2 := hΓ (.quant .every true .top (.isA false)) (by simp [premisesNI])
   have h3 := hΓ (.quant .every true .top (.verb ())) (by simp [premisesNI])
   have h4 := hΓ (.quant (.atMost 1) false (.verb ()) .top) (by simp [premisesNI])
-  simp only [PModel.sat, detP, Pred.eval, AtLeast, AtMost, Every, card] at h1 h2 h3 h4
+  -- `Pred.eval` is left folded inside the counts: rewriting a `filter`'s
+  -- predicate would leave its decidability instance behind.
+  simp only [PModel.sat, detP, AtLeast, AtMost] at h1 h4
+  simp only [PModel.sat, detP, Every, Pred.eval] at h2 h3
   exfalso
   have key := le_trans h1 (le_trans (Finset.card_le_card (by
     intro x hx
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hx ⊢
-    exact ⟨h2 x (by simpa using hx), h3 x (by simpa using hx)⟩)) h4)
+    obtain ⟨-, ⟨hn, -⟩, -⟩ := Finset.mem_filter.mp hx
+    exact Finset.mem_filter.mpr
+      ⟨Finset.mem_univ _, ⟨h2 x ⟨hn, trivial⟩, h3 x ⟨hn, trivial⟩⟩, trivial⟩)) h4)
   omega
 
 /-- So, by `valid_iff`, the entailment holds with nouns as types too,
