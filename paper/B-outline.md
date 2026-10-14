@@ -36,33 +36,39 @@ one check, and test it on problems it was never developed on.
 
 ## Results
 
-### FraCaS (development set; CI run 38176812855)
+### FraCaS (development set; CI run 38523449354, every proof kernel-checked)
 
 | | matched | wrong |
 |---|---|---|
 | reached | 259 / 342 | |
 | always "unknown" | 90 / 259 | |
-| as translated | 181 / 259 | 0 |
-| with background knowledge | 240 / 259 | 0 |
+| as translated | 179 / 259 | 0 |
+| with background knowledge | 238 / 259 | 0 |
 
 ### Against systems that parse FraCaS's English
 
 Same 181 problems and labels as ccg2lambda (Mineshima et al. 2015,
 Table 3, checked against the paper); this pipeline's figures from CI run
-38101249418 (no problem in these sections changed since):
+38523449354 (kernel-checked):
 
 | | quantifiers | plurals | adjectives | comparatives | verbs | attitudes | total |
 |---|---|---|---|---|---|---|---|
 | ccg2lambda | .77 | .67 | .68 | .48 | .62 | .77 | .69 |
 | Haruta et al. 2020 (73 / 22 / 31 problems) | .92 | - | .86 | .77 | - | - | - |
-| this pipeline, background knowledge | .96 | .70 | .91 | .65 | .88 | .77 | .834 |
+| this pipeline, background knowledge | .93 | .70 | .91 | .65 | .88 | .77 | .823 |
 
-FraCoq, under its own labels and rules (`compare_fracoq.py`): 81.9% on
-its 2017 subset (FraCoq .83), 74.1% on its 2019 set (.89), 73.9% on its
-2021 set (.81). Below FraCoq everywhere; FraCoq uses a hand-built
-treebank and partly hand-made proofs.
+FraCoq, under its own labels and rules (`compare_fracoq.py`): 80.7% on
+its 2017 subset (FraCoq .83), 73.4% on its 2019 set (.89), 73.3% on its
+2021 set (.81). Below FraCoq on all three sets; FraCoq uses a treebank
+of manually chosen trees and partly hand-made proofs.
 
-### Ablations (CI run 38273607580)
+**The kernel check** (CI run 38523449354): every proof is now checked by
+Lean's kernel before it counts. It rejected `exist_nl`'s proofs of three
+correct "yes" answers (FraCaS 9 and 11, SICK 3731): the tactic proves a
+count positive with a term that is ill-typed when the count is a
+variable. Before the check: 181 and 240 on FraCaS, 52 on SICK.
+
+### Ablations (CI run 38523449354; wrong answers unchanged from 38273607580)
 
 | switched off | wrong, as translated | wrong, background |
 |---|---|---|
@@ -102,15 +108,15 @@ Without the name check, the names row was 3 and 5 (CI run 38105846712).
   "unknown" anyway, but some would turn wrong once lexical knowledge is
   added (`HeldOut/README.md`, 4897).
 
-### Held-out: SICK, the fixed pipeline (CI run 38227786430)
+### Held-out: SICK, the fixed pipeline (CI run 38227786430; kernel-checked re-run 38523449354)
 
 Pre-registered (`HeldOut/SICK/README.md`, committed before the claims);
 pipeline frozen at ac92c4e, name check included.
 
 | | reached | decided | wrong | precision | recall (whole split) |
 |---|---|---|---|---|---|
-| as translated | 1,416 / 4,906 | 19 | 0 | 100% | 0.9% |
-| background knowledge | 1,416 / 4,906 | 52 | 0 | 100% (95% lower bound 93.2%) | 2.5% |
+| as translated | 1,416 / 4,906 | 18 (19 before the kernel check) | 0 | 100% | 0.9% |
+| background knowledge | 1,416 / 4,906 | 51 (52 before the kernel check) | 0 | 100% (95% lower bound 93.0%) | 2.4% |
 | LangPro (Chen et al. 2021, Table 3) | | | | 98.0 | 58.1 |
 | Martínez-Gómez et al. 2017 (same) | | | | 97.0 | 63.6 |
 
@@ -131,7 +137,7 @@ pipeline frozen at ac92c4e, name check included.
 ## Gaps
 
 1. **[have] A held-out test of the fixed pipeline**: SICK, above. Its
-   precision sample is small (52 answers); a larger one needs more reach,
+   precision sample is small (51 answers); a larger one needs more reach,
    not more tuning.
 2. **[have] Related work**: drafted in `paper/B/main.tex` (Bernardy &
    Chatzikyriakidis 2017/2019/2021, Mineshima et al. 2015, Haruta et al.

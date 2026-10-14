@@ -41,14 +41,16 @@ agrees. A fused predicate name is refused when it would stand for two
 different phrases: we show that this one collision is the mechanism
 behind every naming error the pipeline has made, and that a check for
 it subsumes two earlier safeguards. On the 259 FraCaS problems the
-pipeline reaches (75.7\%), it matches 240 with no wrong answer;
+pipeline reaches (75.7\%), it matches 238 with no wrong answer;
 this is a development-set figure. On held-out data it is a precision
 system with very low recall. On MED, with the pipeline frozen, it gave
 3 wrong answers in 140; one was a real translation error, which the
 name check now refuses, and two are defects of how MED's pairs were
 built. On SICK's test split, pre-registered after the fix, it
-answered 52 of 4,906 pairs, all correctly (95\% lower bound on
-precision 93.2\%), for a recall of 2.5\%.
+answered 51 of 4,906 pairs, all correctly (95\% lower bound on
+precision 93.0\%), for a recall of 2.4\%. Checking every proof with
+Lean's kernel, rather than trusting the tactics, removed three correct
+answers whose proofs were ill-typed.
 \end{abstract}
 
 \section{Introduction}
@@ -95,7 +97,7 @@ made, on FraCaS and on held-out data, and refuse it with one check.
 On MED \citep{yanaka-etal-2019-neural}, run before the name check, the
 pipeline gave three wrong answers in 140; we analyse each. On SICK
 \citep{marelli-etal-2014-sick}, run after it with a protocol committed
-before any claim was generated, it gave none in 52, at a recall of 2.5\%.
+before any claim was generated, it gave none in 51, at a recall of 2.4\%.
 \end{enumerate}
 The code, the generated claims and the verdicts of every run cited here
 will be released with the paper.
@@ -184,8 +186,11 @@ fragment, then \nm{aesop}, \nm{grind}, \nm{omega} and counting
 arguments over cardinal quantifiers. A \yes{} answer means every
 reading's \yes{} claim closed; a \no{} answer means every reading's
 \no{} claim closed; a problem where both close counts as a wrong answer;
-anything else is \unk{}. Every closed claim is checked by Lean's kernel.
-Continuous integration regenerates all claims from the English and fails
+anything else is \unk{}. A tactic that leaves no goal open has not
+yet produced a proof: every proof term is then checked by Lean's
+kernel, and must contain no \nm{sorry} and use no axiom beyond Lean's
+standard three, before the claim counts. This check matters in
+practice (\S\ref{sec:ledger}). Continuous integration regenerates all claims from the English and fails
 on any difference from the committed copy, so the scored claims are
 reproducible.
 
@@ -311,13 +316,13 @@ anaphora, and numbers written as digits.
 & matched & wrong \\
 \midrule
 always \unk{} (baseline) & 90 / 259 & -- \\
-as translated & 181 / 259 & 0 \\
-with background knowledge & 240 / 259 & 0 \\
+as translated & 179 / 259 & 0 \\
+with background knowledge & 238 / 259 & 0 \\
 \bottomrule
 \end{tabular}
 \caption{FraCaS, the 259 reached problems (development set). Counting
-the 83 unreached problems as \unk{}, corpus-wide accuracy is 57.6\% and
-74.9\%, against a 31.0\% baseline.}
+the 83 unreached problems as \unk{}, corpus-wide accuracy is 57.0\% and
+74.3\%, against a 31.0\% baseline.}
 \label{tab:fracas}
 \end{table}
 
@@ -351,14 +356,14 @@ development-set figures.
 \toprule
 section (problems) & ours & ours+BK & ccg2l. & H20 \\
 \midrule
-quantifiers (74) & .76 & .96 & .77 & .92 \\
+quantifiers (74) & .73 & .93 & .77 & .92 \\
 plurals (33) & .70 & .70 & .67 & -- \\
 adjectives (22) & .32 & .91 & .68 & .86 \\
 comparatives (31) & .48 & .65 & .48 & .77 \\
 verbs (8) & .50 & .88 & .62 & -- \\
 attitudes (13) & .77 & .77 & .77 & -- \\
 \midrule
-total (181) & .635 & .834 & .69 & -- \\
+total (181) & .624 & .823 & .69 & -- \\
 \bottomrule
 \end{tabular}
 \caption{Accuracy on the 181 FraCaS problems ccg2lambda is scored on
@@ -372,8 +377,8 @@ unreached problems as \unk{}.}
 FraCoq \citep{bernardy-chatzikyriakidis-2017-type,bernardy-chatzikyriakidis-2019-wide,bernardy-chatzikyriakidis-2021-applied}
 is the strongest published logic-based FraCaS system, and it is ahead
 of this pipeline on all three of its problem sets. Scored under FraCoq's own amended labels
-and rules, the pipeline with background knowledge gets 81.9\% of the
-2017 problem set (FraCoq 0.83), 74.1\% of the 2019 set (0.89) and 73.9\%
+and rules, the pipeline with background knowledge gets 80.7\% of the
+2017 problem set (FraCoq 0.83), 73.4\% of the 2019 set (0.89) and 73.3\%
 of the 2021 set (0.81). The settings differ: FraCoq starts from a
 treebank with one manually chosen tree per sentence
 \citep{ljunglof-siverbo-2011-bilingual}, its proofs needed human
@@ -554,17 +559,18 @@ generated, with the pipeline frozen at that commit.
 \toprule
 & decided & wrong & precision & recall \\
 \midrule
-as translated & 19 & 0 & 100\% & 0.9\% \\
-with BK & 52 & 0 & 100\% & 2.5\% \\
+as translated & 18 & 0 & 100\% & 0.9\% \\
+with BK & 51 & 0 & 100\% & 2.4\% \\
 \midrule
 LangPro (2017) & & & 98.0 & 58.1 \\
 Mart\'inez-G\'omez et al. & & & 97.0 & 63.6 \\
 \bottomrule
 \end{tabular}
-\caption{SICK test split, pre-registered (1,416 of 4,906 reached).
-Recall is over all 2,116 entailment and contradiction pairs, unreached
-pairs counting as \unk{}. With 52 of 52 correct, the 95\%
-Clopper--Pearson lower bound on precision is 93.2\%. The last two rows
+\caption{SICK test split, pre-registered (1,416 of 4,906 reached),
+every proof kernel-checked; the pre-registered run, before the kernel
+check, counted 19 and 52. Recall is over all 2,116 entailment and
+contradiction pairs, unreached pairs counting as \unk{}. With 51 of 51
+correct, the 95\% Clopper--Pearson lower bound on precision is 93.0\%. The last two rows
 are as tabulated by \citet[Table 3]{chen-etal-2021-neurallog}, citing
 \citet{abzianidze-2017-langpro} and
 \citet{martinez-gomez-etal-2017-demand}, on SICK's 4,927 test pairs; the
@@ -574,16 +580,16 @@ release we use has 4,906.}
 
 The pipeline reaches 1,416 pairs (28.9\%); 2,714 do not parse, 454
 parse but do not translate, and 322 need a closed-class word.
-Table~\ref{tab:sick} gives the results. It proves 49 entailments, nearly
+Table~\ref{tab:sick} gives the results. It proves 48 entailments, nearly
 all by deleting a modifier in an upward position (``A wild deer is
 jumping a fence'' $\Rightarrow$ ``A deer is jumping a fence''), and 3
 contradictions of the form ``A N is V-ing'' / ``No N is V-ing''. Of the
-reached pairs, 543 of 592 entailments and 59 of 62 contradictions stay
+reached pairs, 544 of 592 entailments and 59 of 62 contradictions stay
 \unk{}; SICK's entailments typically need lexical knowledge (``man''
 $\sqsubseteq$ ``person'') or paraphrase. Accuracy over the whole split,
 for context only, is .579 against a .569 all-\unk{} baseline.
 
-The precision sample is small: 52 of 52 correct
+The precision sample is small: 51 of 51 correct
 cannot be told apart from LangPro's 98.0 or
 \citeauthor{martinez-gomez-etal-2017-demand}'s 97.0
 \citep{clopper-pearson-1934}. What the test shows is narrower: on data
@@ -626,6 +632,20 @@ making belongs to a class already seen on FraCaS: MED~2718 is the same
 collision as FraCaS 30, through a word class (verbs taking a clause)
 that FraCaS never exposed. This is why the name check tests the
 collision itself rather than listing the word classes a name must keep.
+
+\paragraph{Answers without a proof.} One more kind of error never
+produced a wrong verdict. Until the kernel check was added, a claim
+counted as proved when a tactic left no goal open. Adding the check
+removed three correct \yes{} answers: FraCaS 9 and 11 and SICK pair 3731
+(``A few swimmers are racing in a lake'' $\Rightarrow$ ``Swimmers are
+racing in a lake''). All three were closed by the certified monotonicity
+fragment's existential rule. It proves that a count is positive with a
+term asserting that \nm{decide} returns \nm{true}, without evaluating
+it; that is correct when the count is a numeral. For ``several'' and
+``a few'', whose count is a variable, the term is ill-typed, and only
+the kernel notices. The answers were right, but
+nothing proved them. The figures in this paper are the kernel-checked
+ones. MED's verdicts were unchanged.
 
 \section{Related work}
 \label{sec:related}
@@ -691,9 +711,9 @@ failure; the name check was added after a MED failure. Only the SICK
 run tests the pipeline as it is.
 \item \textbf{Coverage.} The grammar is a controlled language fit to
 FraCaS. It reaches 18.5\% of MED and 28.9\% of SICK, and recall on SICK
-is 2.5\%. On Haruta et al.'s MED subset the pipeline is at the
+is 2.4\%. On Haruta et al.'s MED subset the pipeline is at the
 all-\unk{} baseline.
-\item \textbf{Small precision samples.} 52 held-out answers on SICK and
+\item \textbf{Small precision samples.} 51 held-out answers on SICK and
 140 on MED cannot distinguish our precision from that of LangPro or
 Mart\'inez-G\'omez et al.
 \item \textbf{What the name check does not cover.} It compares phrases by

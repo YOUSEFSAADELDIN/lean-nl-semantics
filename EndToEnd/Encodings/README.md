@@ -212,11 +212,14 @@ to, there is no noun there to make a type of.
 On the 137 (with background knowledge; 0 wrong answers in every row).
 The first run (38125879289) also had 119, since refused by the
 pipeline's name check; it was unmatched in every row, and no other
-verdict changed:
+verdict changed. With every proof kernel-checked (CI run 38523449354), F
+with the pipeline's prover matches 123, not 125: the proofs of 9 and 11
+came from `exist_nl` and are rejected by the kernel (`EndToEnd/README.md`,
+"The kernel check"). No other row changes:
 
 | | pipeline's prover | generic prover (`aesop`, `grind`) |
 |---|---|---|
-| F (pipeline) | **125** | 104 |
+| F (pipeline) | **123** | 104 |
 | M (nouns as types) | 65 | 97 |
 | M, rewritten into F's form first (`*_transfer`) | 95 | - |
 | MInj (injective embeddings), rewritten first | 95 | - |
@@ -224,7 +227,7 @@ verdict changed:
 | problems | F, generic | M, generic | F, pipeline's prover | M, best |
 |---|---|---|---|---|
 | only every / some / no (63) | 60 | **60** | 60 | 60 |
-| a counting determiner, `Many` or `Few` (74) | 44 | 37 | 65 | 37 |
+| a counting determiner, `Many` or `Few` (74) | 44 | 37 | 63 | 37 |
 
 1. **No accuracy edge for M, and no loss outside counting.** On the 63
    problems quantified only by every, some and no, M and F match the same
@@ -252,7 +255,7 @@ verdict changed:
 3. **The gap is the prover's.** The pipeline's prover is built for F's
    syntax. Rewriting M's claims into F's quantifiers by the transfer
    lemmas recovers nothing beyond what the generic prover finds: 95
-   with injectivity or without, against F's 125. The likely reason is
+   with injectivity or without, against F's 123. The likely reason is
    that after the rewrite the restrictor is a term (`IsA eN`), not a
    predicate variable, and the pipeline's monotonicity and counting
    tactics look for variables. That has not been checked tactic by

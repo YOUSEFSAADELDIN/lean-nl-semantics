@@ -226,21 +226,40 @@ dictionary entries for every word FraCaS uses was tried and rejected: it
 unlocked only 25 sentences (nearly all untranslatable) at up to 34,902
 readings per sentence.
 
-**Result** (CI run 38176812855), on those 259 problems:
+**Result** (CI run 38523449354, every proof checked by the kernel), on
+those 259 problems:
 
 | | matched | wrong answers |
 |---|---|---|
 | always "unknown" (baseline) | 90/259 (34.7%) | — |
-| as translated | **181/259 (69.9%)** | **0** |
-| with background knowledge | **240/259 (92.7%)** | **0** |
+| as translated | **179/259 (69.1%)** | **0** |
+| with background knowledge | **238/259 (91.9%)** | **0** |
 
 (Before the name check the pipeline also reached 119, answered
 "unknown" against gold "no"; no other verdict changed.)
 
-Counting the 82 problems the pipeline cannot yet reach as "unknown",
-corpus-wide that is 197/342 (57.6%) as translated and 256/342 (74.9%)
+Counting the 83 problems the pipeline cannot yet reach as "unknown",
+corpus-wide that is 195/342 (57.0%) as translated and 254/342 (74.3%)
 with background knowledge, against a 31.0% baseline ("unknown" also
 counts as matching FraCaS's "undef").
+
+**The kernel check.** Until CI run 38523449354 the prover accepted a
+claim when a tactic left no goal open, without giving the proof to
+Lean's kernel. Every proof is now kernel-checked before it counts
+(`Prover.lean`'s `runTacticChecked`): it must contain no `sorry` or
+metavariable, the kernel must accept it as a theorem of the claim, and
+it may use no axiom beyond `propext`, `Classical.choice` and
+`Quot.sound`. The check rejected the proofs of two answers, 9 ("Several
+great tenors are British" ⇒ "There are great tenors who are British")
+and 11 ("A few great tenors sing popular music" ⇒ ...), both correct
+"yes" answers: the earlier figures, 181/259 and 240/259 (CI run
+38176812855), counted them. The cause is `exist_nl`
+(`Section1/Monotonicity/Existential.lean`): it proves that a count is
+positive with `mkDecideProof`, which builds `of_decide_eq_true rfl`
+without evaluating `decide`. For a numeral the term is correct; for a
+count that is a variable, as "several" and "a few" are here, it is
+ill-typed, and only the kernel notices. No other verdict changed, and
+no answer became wrong.
 
 **Anaphora** (CI run 38087617550) reached 114-120, matched 114-118 in
 both variants and 120 with background knowledge, matched 131 and 133
@@ -561,26 +580,26 @@ telicity ablation) still gives wrong answers.
 
 Which of the pipeline's safeguards prevent wrong answers? Each ablation
 switches one off and re-scores (`ablations.py`, `AblationScan.lean`,
-`ablation_report.py`; CI run 38273607580, with the name check in
-place). The reading-rule rows reuse the baseline's claims, scored one
+`ablation_report.py`; CI run 38523449354, with the name check and the
+kernel check in place). The reading-rule rows reuse the baseline's claims, scored one
 reading at a time. The others regenerate the claims with one safeguard
 patched out, and score the problems whose claims change. Recomputing
 the every-reading rule from the per-claim results reproduces the main
-scan exactly (181 and 240), so the two scans agree.
+scan exactly (179 and 238), so the two scans agree.
 
 | switched off | as translated: matched | wrong | with background knowledge: matched | wrong | wrong answers it lets through |
 |---|---|---|---|---|---|
-| nothing (the pipeline) | 181/259 | 0 | 240/259 | 0 | |
-| every reading → weak readings only | 182/259 | 1 | 241/259 | 2 | 56, 109 |
-| every reading → strong readings only | 181/259 | 4 | 240/259 | 4 | 91, 94, 95, 107 |
-| every reading → any reading (FraCoq's rule) | 180/259 | 5 | 239/259 | 6 | 56, 91, 94, 95, 107, 109 |
-| presupposition in "no" claims | 181/259 | 0 | 239/259 | 1 | 78 |
-| determiners, numerals and the progressive in names | 179/259 | 0 | 234/259 | 0 | |
-| telicity | 181/259 | 0 | 234/259 | 2 | 304, 329 |
-| non-subsective/non-veridical exclusions | 181/259 | 0 | 238/259 | 2 | 198, 201 |
-| parse-ranking filters | 173/262 | 0 | 230/262 | 0 | |
-| unresolved-pronoun guard | 181/259 | 0 | 240/259 | 0 | |
-| the name check | 181/260 | 0 | 240/260 | 0 | |
+| nothing (the pipeline) | 179/259 | 0 | 238/259 | 0 | |
+| every reading → weak readings only | 180/259 | 1 | 239/259 | 2 | 56, 109 |
+| every reading → strong readings only | 179/259 | 4 | 238/259 | 4 | 91, 94, 95, 107 |
+| every reading → any reading (FraCoq's rule) | 178/259 | 5 | 237/259 | 6 | 56, 91, 94, 95, 107, 109 |
+| presupposition in "no" claims | 179/259 | 0 | 237/259 | 1 | 78 |
+| determiners, numerals and the progressive in names | 177/259 | 0 | 232/259 | 0 | |
+| telicity | 179/259 | 0 | 232/259 | 2 | 304, 329 |
+| non-subsective/non-veridical exclusions | 179/259 | 0 | 236/259 | 2 | 198, 201 |
+| parse-ranking filters | 171/262 | 0 | 228/262 | 0 | |
+| unresolved-pronoun guard | 179/259 | 0 | 238/259 | 0 | |
+| the name check | 179/260 | 0 | 238/260 | 0 | |
 
 What this shows:
 - **Committing to one reading buys almost nothing and costs wrong
@@ -621,18 +640,18 @@ uses the C&C CCG parser and Coq "fully automated" with a 30-second
 timeout, on FraCaS sections 1, 2, 5, 6, 8 and 9, "excluding seven
 problems that lack a well-defined answer": exactly this project's `undef`
 problems there (12, 16, 61, 62, 77, 78, 213), so the same 181 problems and
-the same labels. With CI run 38101249418's verdicts
+the same labels. With CI run 38523449354's kernel-checked verdicts
 (`compare_fracoq.py`):
 
 | section (problems) | this pipeline, as translated | with background knowledge | ccg2lambda |
 |---|---|---|---|
-| quantifiers (74) | .76 | **.96** | .77 |
+| quantifiers (74) | .73 | **.93** | .77 |
 | plurals (33) | .70 | **.70** | .67 |
 | adjectives (22) | .32 | **.91** | .68 |
 | comparatives (31) | .48 | **.65** | .48 |
 | verbs (8) | .50 | **.88** | .62 |
 | attitudes (13) | .77 | .77 | .77 |
-| **total (181)** | **.635** | **.834** | **.69** |
+| **total (181)** | **.624** | **.823** | **.69** |
 
 No wrong answers in either variant. Haruta, Mineshima & Bekki (ACL SRW
 2020), ccg2lambda's successor for these phenomena (two CCG parsers,
@@ -694,16 +713,17 @@ do so" (2021).
 from a FraCoq checkout (master, commit 3d86cc1, which reproduces the 2019
 paper's 259 problems exactly) and scores this pipeline's verdicts by
 FraCoq's own rules (only clearly labelled problems; an `Undef` label
-accepts any answer). With the verdicts of CI run 38101249418:
+accepts any answer). With the kernel-checked verdicts of CI run
+38523449354:
 
 | FraCoq problem set | problems | this pipeline, as translated | with background knowledge | FraCoq (paper) |
 |---|---|---|---|---|
-| 2017: sections 1, 2, 5, 6, 9 | 171 | 63.2% | 81.9% | 0.83 (on 174) |
-| 2019: all but section 7 | 259 | 59.5% | 74.1% | 0.89 |
-| 2021: all sections | 326 | 56.1% | 73.9% | 0.81 (on 329) |
+| 2017: sections 1, 2, 5, 6, 9 | 171 | 62.0% | 80.7% | 0.83 (on 174) |
+| 2019: all but section 7 | 259 | 58.7% | 73.4% | 0.89 |
+| 2021: all sections | 326 | 55.5% | 73.3% | 0.81 (on 329) |
 
 On the 2017 sections, per section with background knowledge: quantifiers
-70/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
+68/74 (FraCoq .96), plurals 22/33 (.76), adjectives 19/20 (.95),
 comparatives 19/31 (.56), attitudes 10/13 (.85). Under FraCoq's labels one
 answer counts as wrong: 5, whose label FraCoq overrules from yes to
 unknown ("missing hypothesis: there are italian tenors"); under the
@@ -738,4 +758,6 @@ further problems (such as 199) as unclear.
   on MED, 1 on FraCaS); it was added after the held-out test, so its
   MED figures are post-hoc. The pipeline with it was then tested on
   SICK's test split, pre-registered (`HeldOut/SICK/README.md`): 1,416 of
-  4,906 pairs reached, 52 answered, none wrong; recall 2.5%.
+  4,906 pairs reached, 52 answered, none wrong; recall 2.5%. With every
+  proof kernel-checked (CI run 38523449354), 51 answers, none wrong;
+  recall 2.4%.

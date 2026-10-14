@@ -117,10 +117,11 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   a generic ranker and translated by `gf/translate.py` under the
   pipeline's own readings of ambiguous English (`EndToEnd/readings.py`),
   scored by its own prover. Every "yes" or "no" it gives is a Lean
-  proof of the translated claim, so its errors can only come from
-  translation; it is evaluated by how many it makes. It reaches 259 of
-  342 problems and matches gold on 181 of them as translated (240 with
-  problem-independent background knowledge), with no wrong answers.
+  proof of the translated claim, checked by Lean's kernel, so its
+  errors can only come from translation; it is evaluated by how many it
+  makes. It reaches 259 of 342 problems and matches gold on 179 of them
+  as translated (238 with problem-independent background knowledge),
+  with no wrong answers.
   These are **development-set** figures: the pipeline was extended by
   looking at which of these same problems failed. Full write-up:
   `EndToEnd/README.md`. On a held-out set it was never developed on
@@ -132,7 +133,8 @@ and a [plain-language entailment walkthrough](https://yousefsaadeldin.github.io/
   28 of the 989 (a post-hoc figure, not a held-out one). On a second
   held-out set, pre-registered and run after the check (SICK's test
   split, `EndToEnd/HeldOut/SICK/`), it reaches 1,416 of 4,906 pairs and
-  gives 52 answers, all correct: no wrong answers, 2.5% recall.
+  gives 51 answers, all correct: no wrong answers, 2.4% recall (52
+  before every proof was kernel-checked; one had no valid proof).
 
   This is deliberately not aimed at general English coverage — FraCaS
   is a small, closed vocabulary and sentence set, and covering it was

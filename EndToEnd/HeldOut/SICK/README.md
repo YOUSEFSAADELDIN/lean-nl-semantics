@@ -106,3 +106,29 @@ it gave no wrong answer, and almost no answers.
 
 Every figure here is recomputed by `report.py` from `verdicts.txt` (the
 verdict lines of CI run 38227786430), `SICK_test.tsv` and `sick.json`.
+
+## Re-run with every proof kernel-checked (CI run 38523449354)
+
+*Added after the run above.* Until then the prover accepted a claim when
+a tactic left no goal open, without giving the proof to Lean's kernel.
+It now checks every proof with the kernel before it counts
+(`EndToEnd/Prover.lean`, `runTacticChecked`). The claims, the pipeline
+and the protocol are unchanged; only the verification of each proof is
+stricter.
+
+| | decided | correct | **wrong** | precision | recall (whole split) | accuracy (whole split) |
+|---|---|---|---|---|---|---|
+| as translated | 18 | 18 | **0** | 100% | 0.9% | .572 |
+| with background knowledge | 51 | 51 | **0** | 100% (95% lower bound 93.0%) | 2.4% | .579 |
+
+One answer went: pair 3731, "A few swimmers are racing in a lake" ⇒
+"Swimmers are racing in a lake" (ENTAILMENT), answered "yes" in both
+variants of the run above. Its proof came from `exist_nl`, which proves
+that a count is positive with a term the kernel rejects when the count
+is a variable, as "a few" is here (`EndToEnd/README.md`, "The kernel
+check"). The answer was right, but the run above had no valid proof of
+it. Every other verdict is the same in both runs.
+
+These are the figures to cite: the pre-registered run counted one
+answer that no valid proof supported. `verdicts_kernel.txt` holds this
+run's verdict lines (`python3 report.py verdicts_kernel.txt`).

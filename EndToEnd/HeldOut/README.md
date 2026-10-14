@@ -212,6 +212,13 @@ Every figure above is recomputed by `report.py` from recorded inputs:
 name check's 28 refusals, written by `posthoc_namecheck.py`). With the
 name check, precision of "yes" is 137/139 (98.6%).
 
+## Re-run with every proof kernel-checked
+
+CI run 38523449354 scored the same frozen claims with every proof
+checked by Lean's kernel before it counts (`EndToEnd/README.md`, "The
+kernel check"). All 989 verdicts are unchanged in both variants, so
+every figure above stands.
+
 ## What this does and does not show
 
 - It is a test of soundness more than accuracy. MED is about monotonicity
