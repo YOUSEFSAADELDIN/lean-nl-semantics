@@ -248,10 +248,10 @@ came from `exist_nl` and are rejected by the kernel (`EndToEnd/README.md`,
    So M with injective embeddings (MInj) states each problem as F does,
    with "n" read as `IsA eN`. Each predicate is `IsA` of its subtype's
    inclusion, so the two have the same valid claims. The exceptions are
-   the opaque `Many` and `Few`, stated at every type in M. That last
-   step is an argument from the per-determiner lemmas; it is not
-   mechanized claim by claim. F counts individuals without saying so;
-   M has to state it, one postulate per counted noun.
+   the opaque `Many` and `Few`, stated at every type in M. That step is
+   now a theorem over a fragment (`Equivalence.lean`, below), not a
+   check of each claim. F counts individuals without saying so; M has
+   to state it, one postulate per counted noun.
 3. **The gap is the prover's.** The pipeline's prover is built for F's
    syntax. Rewriting M's claims into F's quantifiers by the transfer
    lemmas recovers nothing beyond what the generic prover finds: 95
@@ -283,11 +283,65 @@ What this phase does not show:
   adjective applied to a noun, so MTT's treatment of modification is
   not tested (Phase 1a tests it on Section 5).
 
+## The equivalence theorem (`Equivalence.lean`)
+
+Phase 2's argument that M with injective embeddings and F validate the
+same claims went determiner by determiner. `Equivalence.lean` proves it
+for whole entailments, over a fragment closed under the connectives:
+
+- predicates of individuals: verbs, "is an N", `⊤`, and their `∧`, `∨`
+  and `¬`;
+- formulas: every, some, no, most, both, neither, at least k, at most k
+  and exactly k over a noun, with a restrictor and a scope; "more N
+  that R are Q than are S"; a predicate of a named individual; and
+  `¬`, `∧`, `∨`, `→`.
+
+"Every N is an M" is a formula of the fragment, so lexical facts about
+nouns are premises like any other.
+
+Each formula has two meanings. In a predicate model (`PModel`), a noun is
+a predicate of a finite domain and each determiner is the corpus's own
+(`Every`, `AtLeast`, ...). In a typed model (`TModel`), a noun is a finite
+type with an embedding into the domain. There each determiner is the
+typed one (`EveryT`, `AtLeastT`, ...) and "is an N" is `IsA`.
+
+- **`valid_iff`**: an entailment from a list of premises is valid over
+  all typed models with injective embeddings exactly when it is valid
+  over all predicate models. A typed model is read as the predicate
+  model of its images (`TModel.shadow`), and the two satisfy the same
+  formulas (`TModel.sat_iff_shadow`, by `det_transfer` and
+  `more_transfer`). A predicate model is read as the typed model of its
+  subtypes (`PModel.lift`), whose shadow is the model itself
+  (`PModel.lift_shadow`).
+- **`not_valid_without_injectivity`**: dropping injectivity breaks the
+  equivalence. The premises are "at least two n", "every n is an m",
+  "every n is v" and "at most one m is v". With predicates they are
+  inconsistent, so they entail "some n is nothing" (`pvalid_NI`). A
+  typed model whose two elements of `n` are one individual satisfies
+  them and not the conclusion.
+
+What it does not cover:
+
+- It is about the fragment, not the corpus or the pipeline's claims. No
+  claim is translated into `Formula`, so it does not certify any Phase 2
+  verdict. It says what Phase 2's MInj row should find: the same valid
+  claims as F, where the claims fall in the fragment.
+- It leaves out `Many` and `Few` (opaque, and stated at every type in
+  M), anaphora (Phase 1b), and adjectives that take the noun as an
+  argument (Phase 1a). Those are where the encodings were found to
+  differ, and none is in the fragment.
+- Verbs are one-place predicates of individuals, and individuals are
+  named directly. Relations and quantified objects are not in it.
+- Injectivity is shown sufficient, and its absence is shown to break
+  the equivalence on one entailment. Weaker conditions that would also
+  suffice are not explored.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
 - **1b**: Section 3 (anaphora): F against M.
 - **2**: every problem the pipeline reaches, its own claims with nouns as types.
+- **Equivalence theorem**: over a fragment, nouns as types with injective embeddings and nouns as predicates validate the same entailments; without injectivity they do not (`Equivalence.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.
