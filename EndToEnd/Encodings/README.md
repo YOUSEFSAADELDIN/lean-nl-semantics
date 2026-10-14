@@ -365,14 +365,17 @@ it is upward monotone.
 
 | | pipeline's prover | generic prover | valid answers | stipulated facts |
 |---|---|---|---|---|
-| F, no background knowledge | 0/8 | 0/8 | 0/8 | 0 |
+| F, no background knowledge | 0/8 | 0/8 | 0/8 (argued) | 0 |
 | F, background knowledge | **7/8** | 2/8 | 7/8 | 8 background facts |
 | P (extensional Montague) | 2/8 | 2/8 | 7/8 | 2 (29: subsectivity, "used to") |
 | W (intensional Montague) | 2/8 | 2/8 | 7/8 | 2 (29: subsectivity, "used to") |
 | M (MTT) | 1/8 (after `Pullback.lean`) | 1/8 | 7/8 | **1** (29: "used to") |
 
 No row gives a wrong answer. "Valid answers" adds the claims proved by
-hand in `ModifiedCommitments.lean`. None of the encodings gets 76:
+hand in `ModifiedCommitments.lean` (built in CI run 38625945101). F
+without background knowledge is not valid on any of the 8, since nothing
+relates its fused names (`irishDelegate`, `delegate`). That is argued,
+not shown by countermodels. None of the encodings gets 76:
 its second reading treats "few" as the opaque `Few`, whose one postulate
 lets the scope shrink but not the restrictor. F with background knowledge
 misses it for the same reason.
