@@ -1,5 +1,6 @@
 import Lean
 import Lean.Util.CollectAxioms
+import Lean.Util.CollectLevelParams
 import LeanNLSemantics.FraCaS.Section1.Monotonicity.Tactic
 
 /-!
@@ -90,11 +91,16 @@ def kernelRejects (ty pf : Expr) : TermElabM (Option String) := do
   if ty.hasMVar || pf.hasMVar then return some "metavariables left in the proof"
   if pf.hasSorry then return some "the proof uses sorry"
   let name ← mkFreshUserName `kernelCheck
-  let decl := Declaration.thmDecl { name, levelParams := [], type := ty, value := pf }
+  -- the claim's own universe parameters (`{A : Type*}`), which the
+  -- theorem must declare for the kernel to accept its statement at all
+  let levelParams := (collectLevelParams (collectLevelParams {} ty) pf).params.toList
+  let decl := Declaration.thmDecl { name, levelParams, type := ty, value := pf }
   let opts ← getOptions
   match (← getEnv).unlockAsync.addDeclCore (Core.getMaxHeartbeats opts).toUSize
       (maxRecDepth.get opts).toUSize decl none with
-  | .error _ => return some "the kernel rejects the proof"
+  | .error e =>
+    let msg ← (e.toMessageData opts).toString
+    return some s!"the kernel rejects the proof: {((msg.toList.take 300).asString).replace "\n" " "}"
   | .ok env =>
     let axioms ← withEnv env (collectAxioms name)
     match axioms.toList.find? (· ∉ standardAxioms) with
@@ -131,5 +137,11 @@ def runTacticChecked (ty : Expr) (tacticStx : Lean.TSyntax `tactic) : TermElabM 
     throwError "kernel check accepts sorry"
   if (← kernelRejects ty (mkConst ``Nat.zero)).isNone then
     throwError "kernel check accepts an ill-typed proof"
+  -- a claim over `{A : Type u}`, like the corpus's `{A : Type*}` theorems
+  let u := Level.param `u
+  let polyTy := mkForall `A .implicit (mkSort (mkLevelSucc u)) (mkConst ``True)
+  let polyPf := mkLambda `A .implicit (mkSort (mkLevelSucc u)) (mkConst ``True.intro)
+  if let some why ← kernelRejects polyTy polyPf then
+    throwError "kernel check rejects a universe-polymorphic proof: {why}"
 
 end FraCaS.Section1.Monotonicity
