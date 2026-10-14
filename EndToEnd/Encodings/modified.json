@@ -1,0 +1,159 @@
+{
+ "problems": {
+  "29": {
+   "decomposed": {
+    "usedToBusinessman": "used to be businessman",
+    "usedToLeadingBusinessman": "used to be leading (subsective) businessman"
+   },
+   "postulates": {
+    "P": 2,
+    "W": 2,
+    "M": 1
+   },
+   "postulate_kinds": {
+    "P": [
+     "subsectivity",
+     "verb"
+    ],
+    "W": [
+     "subsectivity",
+     "verb"
+    ],
+    "M": [
+     "verb"
+    ]
+   },
+   "M_types": [
+    "businessman",
+    "commissioner"
+   ]
+  },
+  "55": {
+   "decomposed": {
+    "irishDelegate": "irish (intersective) delegate"
+   },
+   "postulates": {
+    "P": 0,
+    "W": 0,
+    "M": 0
+   },
+   "postulate_kinds": {
+    "P": [],
+    "W": [],
+    "M": []
+   },
+   "M_types": [
+    "delegate"
+   ]
+  },
+  "57": {
+   "decomposed": {
+    "portugueseDelegate": "portuguese (intersective) delegate"
+   },
+   "postulates": {
+    "P": 0,
+    "W": 0,
+    "M": 0
+   },
+   "postulate_kinds": {
+    "P": [],
+    "W": [],
+    "M": []
+   },
+   "M_types": [
+    "delegate"
+   ]
+  },
+  "59": {
+   "decomposed": {
+    "femaleCommitteeMember": "female (intersective) committeeMember"
+   },
+   "postulates": {
+    "P": 0,
+    "W": 0,
+    "M": 0
+   },
+   "postulate_kinds": {
+    "P": [],
+    "W": [],
+    "M": []
+   },
+   "M_types": [
+    "committeeMember"
+   ]
+  },
+  "63": {
+   "decomposed": {
+    "femaleCommissioner": "female (intersective) commissioner"
+   },
+   "postulates": {
+    "P": 0,
+    "W": 0,
+    "M": 0
+   },
+   "postulate_kinds": {
+    "P": [],
+    "W": [],
+    "M": []
+   },
+   "M_types": [
+    "commissioner"
+   ]
+  },
+  "70": {
+   "decomposed": {
+    "scandinavianDelegate": "scandinavian (intersective) delegate"
+   },
+   "postulates": {
+    "P": 0,
+    "W": 0,
+    "M": 0
+   },
+   "postulate_kinds": {
+    "P": [],
+    "W": [],
+    "M": []
+   },
+   "M_types": [
+    "delegate"
+   ]
+  },
+  "76": {
+   "decomposed": {
+    "femaleCommitteeMember": "female (intersective) committeeMember"
+   },
+   "postulates": {
+    "P": 0,
+    "W": 0,
+    "M": 0
+   },
+   "postulate_kinds": {
+    "P": [],
+    "W": [],
+    "M": []
+   },
+   "M_types": [
+    "committeeMember"
+   ]
+  },
+  "80": {
+   "decomposed": {
+    "femaleCommissioner": "female (intersective) commissioner"
+   },
+   "postulates": {
+    "P": 0,
+    "W": 0,
+    "M": 0
+   },
+   "postulate_kinds": {
+    "P": [],
+    "W": [],
+    "M": []
+   },
+   "M_types": [
+    "commissioner"
+   ]
+  }
+ },
+ "skipped": {}
+}

@@ -263,6 +263,35 @@ jobs:
           LIFTED_SCAN: ${{ matrix.scan }}
         run: lake env lean EndToEnd/LiftedScan.lean
 
+  # Phase 3 of the noun-encoding comparison: the modified nouns of Section 1
+  # (the 8 problems the lexical-premise audit tags `noun`) in F, P, W and M
+  # (see EndToEnd/ModifiedScan.lean).
+  encodings-modified:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies
+        run: |
+          if [ ! -f lake-manifest.json ]; then
+            lake update
+          fi
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Build the EndToEnd and lifted-claims libraries
+        run: lake build EndToEnd EndToEndLifted
+
+      - name: Phase 3 scan
+        run: lake env lean EndToEnd/ModifiedScan.lean
+
   # The held-out test: MED problems through the frozen end-to-end pipeline
   # (EndToEnd/HeldOut/README.md), scored like the main scan, in 6 shards
   # per registry (one serial run exceeds two hours).
@@ -535,9 +564,11 @@ jobs:
           python3 EndToEnd/Encodings/gen_encodings.py
           python3 EndToEnd/Encodings/gen_anaphora.py
           python3 EndToEnd/Encodings/gen_lifted.py
+          python3 EndToEnd/Encodings/gen_modified.py
           git diff --exit-code EndToEnd/Encodings/Section5.lean EndToEnd/Encodings/postulates.json \
             EndToEnd/Encodings/Section3.lean EndToEnd/Encodings/assumptions3.json \
-            EndToEnd/Encodings/Lifted.lean EndToEnd/Encodings/lifted.json
+            EndToEnd/Encodings/Lifted.lean EndToEnd/Encodings/lifted.json \
+            EndToEnd/Encodings/Modified.lean EndToEnd/Encodings/modified.json
 
       - name: Regenerate the soundness ablations and check they match
         run: |
