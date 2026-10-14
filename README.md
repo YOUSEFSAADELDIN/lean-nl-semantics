@@ -301,7 +301,8 @@ consistency check, not a blind-prediction accuracy score.
   deliberately unprovable claim instead, where the correct outcome is
   that *neither* direction closes (`BlindEvalUnknownScan.lean`,
   `BlindEvalUnknown3to9Scan.lean`). CI-confirmed: **336/342 (98.2%)**
-  automated verdicts match FraCaS's gold answer, with every problem in
+  automated verdicts match FraCaS's gold answer (each resting on a
+  proof Lean's kernel accepts, `BLIND_EVAL.md`), with every problem in
   the corpus attempted, against a 31.0% always-"unknown" baseline; the 6
   misses are proofs the chain fails to find, never wrong ones. (An
   earlier round's 314/322 was produced while the chain's `aesop` step
