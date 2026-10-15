@@ -74,12 +74,13 @@ Read in full: the five papers below. Cited only through them: Asher
 - **Dot-setoids for copredication** (§4.2, p. 134): ⟨a1,b1⟩ = ⟨a2,b2⟩ iff
   a1 =_A a2 ∨ b1 =_B b2, so `Three` over it gives double distinctness
   (ex. 47). p. 135 says "Our definition does result in an equivalence
-  relation". **To check:** a disjunction of two equivalence relations is
-  not transitive in general. With x = (volume 1, C&P), y = (volume 2,
+  relation". **Checked: it does not** (`Criteria.lean`,
+  `dotSame_not_transitive`). With x = (volume 1, C&P), y = (volume 2,
   C&P) and z = (volume 2, NfU), x and y agree informationally, y and z
-  physically, and x and z in neither. Their `Three` only uses pairwise
-  distinctness, so its predictions may not depend on transitivity.
-  Not yet checked in Lean.
+  physically, and x and z in neither. It is transitive if each volume
+  has one text (`dotSame_trans_of`). Their `Three` uses only pairwise
+  distinctness, which is exactly distinctness in both (`atLeastDot_iff`),
+  so their predictions do not depend on transitivity.
 - **The anthology case** (n. 4, p. 123): they adopt Asher's and Gotham's
   view that physically identical books can be informationally
   different, while saying they "incline to believe" otherwise. That
@@ -140,10 +141,12 @@ Read in full: the five papers below. Cited only through them: Asher
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).
-  - Possibly the transitivity problem above, if it checks out.
-- **To add:** Gotham's (103) as a control; Luo's passenger example;
-  double distinctness for "picked up and mastered three books"; the
-  transitivity check.
+  - The transitivity problem above (checked), and that it does not
+    affect their predictions.
+- **Added** (`Criteria.lean`): Gotham's (100) and (103) in his wording;
+  Luo's passengers; double distinctness, shown to coincide with
+  Chatzikyriakidis & Luo's dot-setoid `Three`; and the transitivity
+  check.
 - **Not yet read:** Asher (2011) itself, Gupta (1980), Retoré (2013),
   Bekki (2014) and Tanaka et al. (2015) on DTS, Cooper (2011) on TTR
   copredication.

@@ -537,9 +537,37 @@ identity, nouns as types say what predicates say, in the whole fragment.
 Counting by another criterion, as "mastered three books" counts texts,
 they say what one-domain predicates cannot.
 
+**Four checks from the literature (`Criteria.lean`, CI run 38671403438).**
+`paper/A-literature.md` has the sources.
+
+- **Gotham's (100) and (103), in his wording, for every `n`.** (100)
+  ("...mastered every book ⇒ mastered `n` books") is invalid with dot
+  types for `n ≥ 2` and valid with one-domain predicates. (103) ("...defaced
+  every book ⇒ defaced `n` books") is valid in both, since both verbs
+  count physical objects.
+- **Luo's (2012) passengers.** "EasyJet transported `n` passengers ⇒
+  `n` persons" is invalid with a passenger type embedded in the persons
+  (one person on `n` journeys), and its converse is valid. With
+  one-domain predicates it is valid.
+- **Double distinctness.** "John picked up and mastered `n` books" is
+  stated as `n` books distinct physically and informationally
+  (`AtLeastBoth`). It entails "picked up `n` books" and "mastered `n`
+  books" (Gotham's (122)-(123)). It is exactly Chatzikyriakidis & Luo's
+  (2018) `Three` over their dot-setoid (`atLeastDot_iff`), so the two
+  accounts agree on it.
+- **The dot-setoid's relation is not transitive.** Chatzikyriakidis &
+  Luo (2018, p. 135) say "same volume or same text" "does result in an
+  equivalence relation". It does not: two copies of one text in
+  different volumes, plus a second text bound into one of the volumes
+  (`dotSame_not_transitive`). It is transitive once each volume has one
+  text (`dotSame_trans_of`), the view their n. 4 inclines to. Their
+  counting uses only pairwise distinctness, so their predictions do not
+  depend on it.
+
 What this phase does not show:
-- Three constructed problems. It shows the encodings can differ, and
-  where. It does not measure how often this happens in text.
+- A handful of problems from the literature. It shows the encodings can
+  differ, and where. It does not measure how often this happens in
+  text.
 - Only P, P+ and M are stated. W is P here: nothing in these problems is
   intensional.
 - The problems are stated by hand, not produced by the pipeline, which
@@ -554,7 +582,7 @@ What this phase does not show:
 - **2**: every problem the pipeline reaches, its own claims with nouns as types.
 - **Equivalence theorem**: over a fragment, nouns as types with injective embeddings and nouns as predicates validate the same entailments; without injectivity they do not (`Equivalence.lean`).
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
-- **4**: individuation and copredication, beyond FraCaS: three constructed problems in P, P+ and M, for every number, and the equivalence theorem without injectivity (`Copredication.lean`, `Counting.lean`).
+- **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.
