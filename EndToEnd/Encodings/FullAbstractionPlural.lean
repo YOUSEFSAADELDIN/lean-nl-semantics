@@ -87,15 +87,20 @@ inductive PForm (Noun Verb Rel PVerb Name : Type) where
 variable {Noun Verb Rel PVerb Name A : Type}
 
 /-- `Y` is a plurality of `k` of the noun's things covering exactly `X`. -/
-def NounI.pl (I : NounI A) (k : Nat) (X : Finset A) : Prop :=
+def _root_.FraCaS.Encodings.FullAbstraction.NounI.pl (I : NounI A) (k : Nat) (X : Finset A) : Prop :=
   ∃ Y : Finset I.T, Y.image I.emb = X ∧ (Y.image I.crit).card = k
 
 /-- The individuals of all the noun's things: "the `N`s". -/
-noncomputable def NounI.all (I : NounI A) : Finset A := Finset.univ.image I.emb
+noncomputable def _root_.FraCaS.Encodings.FullAbstraction.NounI.all (I : NounI A) : Finset A := Finset.univ.image I.emb
 
-theorem NounI.mem_all (I : NounI A) (x : A) : x ∈ I.all ↔ I.ext x :=
-  ⟨fun h => let ⟨y, _, hy⟩ := Finset.mem_image.mp h; ⟨y, hy⟩,
-   fun ⟨y, hy⟩ => Finset.mem_image.mpr ⟨y, Finset.mem_univ _, hy⟩⟩
+theorem _root_.FraCaS.Encodings.FullAbstraction.NounI.mem_all (I : NounI A) (x : A) :
+    x ∈ I.all ↔ I.ext x := by
+  constructor
+  · intro h
+    obtain ⟨y, -, hy⟩ := Finset.mem_image.mp h
+    exact ⟨y, hy⟩
+  · rintro ⟨y, hy⟩
+    exact Finset.mem_image.mpr ⟨y, Finset.mem_univ _, hy⟩
 
 structure PCtx (Noun Verb Rel PVerb Name A : Type) where
   noun : Noun → NounI A
@@ -149,8 +154,10 @@ def ObsEqP (n0 : Noun) (I I' : NounI A) : Prop :=
 /-! ## Agreement -/
 
 /-- Nouns that no sentence can tell apart by what it reads off them. -/
-def NEq (J J' : NounI A) : Prop :=
-  (∀ x, J.ext x ↔ J'.ext x) ∧ (∀ P, J.count P = J'.count P) ∧ (∀ k X, J.pl k X ↔ J'.pl k X)
+structure NEq (J J' : NounI A) : Prop where
+  ext : ∀ x, J.ext x ↔ J'.ext x
+  count : ∀ P, J.count P = J'.count P
+  pl : ∀ k X, J.pl k X ↔ J'.pl k X
 
 theorem all_eq {J J' : NounI A} (hE : ∀ x, J.ext x ↔ J'.ext x) : J.all = J'.all :=
   Finset.ext fun x => by rw [J.mem_all, J'.mem_all]; exact hE x
@@ -180,7 +187,7 @@ theorem eval_congr : ∀ (φ : PForm Noun Verb Rel PVerb Name) (ρ : Nat → A) 
   | .isA n t, ρ, σ => by
     show (M.noun n).ext (t.eval M.name ρ) ↔ (M'.noun n).ext (t.eval M'.name ρ)
     rw [hn]
-    exact (hN n).1 _
+    exact (hN n).ext _
   | .eq t u, ρ, σ => by
     show t.eval M.name ρ = u.eval M.name ρ ↔ t.eval M'.name ρ = u.eval M'.name ρ
     rw [hn]
@@ -196,17 +203,21 @@ theorem eval_congr : ∀ (φ : PForm Noun Verb Rel PVerb Name) (ρ : Nat → A) 
         (fun x => M'.eval Q (push x ρ) σ)
     exact (detBy_congr _ _ d (fun x => eval_congr C (push x ρ) σ)
       (fun x => eval_congr Q (push x ρ) σ)).trans
-      (detBy_obs _ _ (hN n).1 (hN n).2.1 d _ _)
+      (detBy_obs _ _ (hN n).ext (hN n).count d _ _)
   | .more n C Q S, ρ, σ => by
     show (M.noun n).count (fun x => M.eval C (push x ρ) σ ∧ M.eval Q (push x ρ) σ) >
         (M.noun n).count (fun x => M.eval C (push x ρ) σ ∧ M.eval S (push x ρ) σ) ↔
       (M'.noun n).count (fun x => M'.eval C (push x ρ) σ ∧ M'.eval Q (push x ρ) σ) >
         (M'.noun n).count (fun x => M'.eval C (push x ρ) σ ∧ M'.eval S (push x ρ) σ)
-    rw [count_congr (M.noun n) (fun x => and_congr (eval_congr C (push x ρ) σ)
-        (eval_congr Q (push x ρ) σ)),
-      count_congr (M.noun n) (fun x => and_congr (eval_congr C (push x ρ) σ)
-        (eval_congr S (push x ρ) σ)),
-      (hN n).2.1, (hN n).2.1]
+    have e1 : (M.noun n).count (fun x => M.eval C (push x ρ) σ ∧ M.eval Q (push x ρ) σ) =
+        (M'.noun n).count (fun x => M'.eval C (push x ρ) σ ∧ M'.eval Q (push x ρ) σ) :=
+      (count_congr (M.noun n) (fun x => and_congr (eval_congr C (push x ρ) σ)
+        (eval_congr Q (push x ρ) σ))).trans ((hN n).count _)
+    have e2 : (M.noun n).count (fun x => M.eval C (push x ρ) σ ∧ M.eval S (push x ρ) σ) =
+        (M'.noun n).count (fun x => M'.eval C (push x ρ) σ ∧ M'.eval S (push x ρ) σ) :=
+      (count_congr (M.noun n) (fun x => and_congr (eval_congr C (push x ρ) σ)
+        (eval_congr S (push x ρ) σ))).trans ((hN n).count _)
+    rw [e1, e2]
   | .pverb q k, _, σ => by
     show M.pverb q (σ k) ↔ M'.pverb q (σ k)
     rw [hp]
@@ -214,13 +225,13 @@ theorem eval_congr : ∀ (φ : PForm Noun Verb Rel PVerb Name) (ρ : Nat → A) 
     show t.eval M.name ρ ∈ σ k ↔ t.eval M'.name ρ ∈ σ k
     rw [hn]
   | .coll (.exactly k) n φ, ρ, σ =>
-    exists_congr fun X => and_congr ((hN n).2.2 k X) (eval_congr φ ρ (push X σ))
+    exists_congr fun X => and_congr ((hN n).pl k X) (eval_congr φ ρ (push X σ))
   | .coll (.atLeast k) n φ, ρ, σ =>
     exists_congr fun j => exists_congr fun X =>
-      and_congr Iff.rfl (and_congr ((hN n).2.2 j X) (eval_congr φ ρ (push X σ)))
+      and_congr Iff.rfl (and_congr ((hN n).pl j X) (eval_congr φ ρ (push X σ)))
   | .the n φ, ρ, σ => by
     show M.eval φ ρ (push (M.noun n).all σ) ↔ M'.eval φ ρ (push (M'.noun n).all σ)
-    rw [all_eq (hN n).1]
+    rw [all_eq (hN n).ext]
     exact eval_congr φ ρ _
 
 end
