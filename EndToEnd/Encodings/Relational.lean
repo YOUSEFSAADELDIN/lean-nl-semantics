@@ -458,10 +458,12 @@ theorem agreeR_iff_kernel (M : CModel Noun Verb Name) (v : Verb) :
   · intro h n y y'
     refine M.kernel_of_agree v (fun verb φ => ?_) n y y'
     have key := h verb (fun _ _ _ => False) (Formula.toForm φ) (fun _ => M.emb n y)
-    have e1 := (Formula.toForm_eval (cI (M.withVerb verb) (fun _ _ _ => False))
-      (fun _ => M.emb n y) φ).trans (cI_satF (M.withVerb verb) (fun _ _ _ => False) φ)
-    have e2 := (Formula.toForm_eval (pI (M.withVerb verb).toTModel.shadow (fun _ _ _ => False))
-      (fun _ => M.emb n y) φ).trans (pI_satF (M.withVerb verb).toTModel.shadow (fun _ _ _ => False) φ)
+    have e1 := (Formula.toForm_eval (cI (M.withVerb verb)
+      (fun _ _ _ => False : Rel → M.A → M.A → Prop)) (fun _ => M.emb n y) φ).trans
+      (cI_satF (M.withVerb verb) (fun _ _ _ => False : Rel → M.A → M.A → Prop) φ)
+    have e2 := (Formula.toForm_eval (pI (M.withVerb verb).toTModel.shadow
+      (fun _ _ _ => False : Rel → M.A → M.A → Prop)) (fun _ => M.emb n y) φ).trans
+      (pI_satF (M.withVerb verb).toTModel.shadow (fun _ _ _ => False : Rel → M.A → M.A → Prop) φ)
     exact e1.symm.trans (key.trans e2)
   · intro hk verb rel φ ρ
     exact ((cI_agree_of_kernel (M.withVerb verb) hk rel).trans
