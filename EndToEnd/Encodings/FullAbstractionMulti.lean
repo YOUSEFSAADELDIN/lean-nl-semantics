@@ -305,8 +305,14 @@ def bcrit : Bool → Fin 3 → Fin 2
   | true, y => if y = 0 then 0 else 1
   | false, y => if y = 2 then 1 else 0
 
-theorem bcrit_02 : ∀ i, ∀ a ∈ ({0, 2} : Finset (Fin 3)), ∀ b ∈ ({0, 2} : Finset (Fin 3)),
-    bcrit i a = bcrit i b → a = b := by decide
+/-- `b0` and `b2`. -/
+def S02 : Finset (Fin 3) := {0, 2}
+
+theorem S02_card : 2 ≤ S02.card := by decide
+
+theorem mem_S02 : ∀ y, y ∈ S02 → y = 0 ∨ y = 2 := by decide
+
+theorem bcrit_02 : ∀ i, ∀ a ∈ S02, ∀ b ∈ S02, bcrit i a = bcrit i b → a = b := by decide
 
 theorem bcrit_01 : ∀ a b : Fin 3, (a = 0 ∨ a = 1) → (b = 0 ∨ b = 1) →
     bcrit false a = bcrit false b := by decide
@@ -332,12 +338,11 @@ theorem books_12 (x : Fin 3 → A) (hx : Function.Injective x) : (books x).count
 
 theorem books_union (x : Fin 3 → A) : 2 ≤ (books x).count (fun z => P01 x z ∨ P12 x z) := by
   unfold NounM.count
-  refine (le_countF_iff _ _ 2).mpr ⟨({0, 2} : Finset (Fin 3)), by decide, fun y hy => ?_,
+  refine (le_countF_iff _ _ 2).mpr ⟨S02, S02_card, fun y hy => ?_,
     fun i a ha b hb => bcrit_02 i a (Finset.mem_coe.mp ha) b (Finset.mem_coe.mp hb)⟩
-  rcases Finset.mem_insert.mp hy with rfl | hy
+  rcases mem_S02 y hy with rfl | rfl
   · exact Or.inl (Or.inl rfl)
-  · rw [Finset.mem_singleton.mp hy]
-    exact Or.inr (Or.inr rfl)
+  · exact Or.inr (Or.inr rfl)
 
 theorem books_inter (x : Fin 3 → A) : 1 ≤ (books x).count (fun z => P01 x z ∧ P12 x z) :=
   (one_le_count_iff _ _).mpr ⟨(1 : Fin 3), Or.inr rfl, Or.inl rfl⟩
