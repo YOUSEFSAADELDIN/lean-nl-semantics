@@ -408,3 +408,7 @@ end FraCaS.Encodings.FullAbstractionMulti
 /-- info: 'FraCaS.Encodings.FullAbstractionMulti.obsEqM_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms FraCaS.Encodings.FullAbstractionMulti.obsEqM_iff
+
+/-- info: 'FraCaS.Encodings.FullAbstractionMulti.not_single' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FraCaS.Encodings.FullAbstractionMulti.not_single
