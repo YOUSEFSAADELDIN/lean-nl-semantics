@@ -100,6 +100,7 @@ theorem split_eq_ssub (v : Finset A → ℕ) (S : Finset A) :
     by_cases hb : R = S
     · subst hb
       rw [if_pos (Finset.Subset.refl _), if_pos rfl, if_neg (ssubset_irrefl _)]
+      omega
     · by_cases ha : R ⊆ S
       · rw [if_pos ha, if_neg hb, if_pos (Finset.ssubset_iff_subset_ne.mpr ⟨ha, hb⟩)]
         omega
@@ -271,7 +272,7 @@ theorem count_congr (I : NounI A) {P P' : A → Prop} (h : ∀ x, P x ↔ P' x) 
   exact countBy_congr fun y => h _
 
 theorem count_empty (I : NounI A) (hA : IsEmpty A) (P : A → Prop) : I.count P = 0 := by
-  haveI : IsEmpty I.T := ⟨fun y => hA.false (I.emb y)⟩
+  have : IsEmpty I.T := ⟨fun y => hA.false (I.emb y)⟩
   unfold NounI.count countBy
   simp
 
@@ -450,6 +451,6 @@ theorem obsEq_byInd_iff [Fintype A] (v : Verb) (n0 : Noun) (I J : NounI A) :
       rw [count_byInd, count_byInd]
       congr 1
       exact Finset.filter_congr (fun x _ => and_congr (hE x) Iff.rfl)
-    exact (agree_of M n0 hE hc).eval φ ρ
+    exact (agree_of (I := I.byInd) (I' := J.byInd) M n0 hE hc).eval φ ρ
 
 end FraCaS.Encodings.FullAbstraction
