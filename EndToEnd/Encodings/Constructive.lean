@@ -27,10 +27,13 @@ the two encodings on that ground.
   with nouns as predicates. Each typed context agrees with its
   predicate reading (`TCtx.shadow_eval`) and each predicate context with
   its typed reading (`PCtx.lift_eval`), formula by formula.
-- **Without classical axioms.** The proofs avoid `simp` and classical
-  lemmas. Lean's `#print axioms` at the end of the file lists the
-  axioms `provT_iff` depends on; `Classical.choice` is not among them,
-  so the equivalence holds intuitionistically.
+- **Without any axioms.** `provT_iff` depends on no axioms at all: not
+  classical choice, not propositional or function extensionality. The
+  `#guard_msgs` check at the end of the file fails the build if that
+  ever changes. So the equivalence is a theorem of the bare type theory,
+  intuitionistic and without extensionality. The earlier, finite-model
+  theorems (`validI_iff`, `validRI_iff`, ...) use classical choice for
+  counting.
 -/
 
 namespace FraCaS.Encodings.Constructive
@@ -325,4 +328,6 @@ theorem provT_iff (Γ : List (CForm Noun Verb Rel Name)) (φ : CForm Noun Verb R
 
 end FraCaS.Encodings.Constructive
 
+/-- info: 'FraCaS.Encodings.Constructive.provT_iff' does not depend on any axioms -/
+#guard_msgs in
 #print axioms FraCaS.Encodings.Constructive.provT_iff

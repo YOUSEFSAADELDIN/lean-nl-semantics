@@ -941,6 +941,33 @@ What remains outside is the undecidability claim itself, that (*) as a
 typing rule makes type checking as hard as validity. That is C&L's
 claim, and not checked here.
 
+## The equivalence, proof-theoretically (`Constructive.lean`, CI run 38804770603)
+
+Every comparison above is by validity over finite models, with classical
+logic for counting. For Modern Type Theories, entailment is derivability
+in an intuitionistic type theory. `Constructive.lean` compares the
+encodings on that ground.
+
+- **Contexts, not models.** A typed context (`TCtx`) is any type of
+  individuals, any type for each noun with an embedding, and any
+  predicates and relations. A predicate context (`PCtx`) likewise.
+  Nothing is finite or decidable. An entailment is derivable when it
+  holds in every context (`ProvT`, `ProvP`). A proof of that is a
+  derivation from the context's variables.
+- **Counting without decidability.** "At least `k` `N`s are `P`" is a
+  list of `k` elements of `N`'s type, each `P`, with pairwise distinct
+  individuals (`AtLeastE`). "At most" and "exactly" are built from it.
+  "Most" and "more ... than" compare two counts and are not included.
+- **`provT_iff`.** Every, some, no, at least, at most and exactly `k`,
+  one- and two-place verbs, identity, connectives and nested quantifiers
+  derive the same entailments with nouns as types and with nouns as
+  predicates.
+- **No axioms.** Lean reports that `provT_iff` depends on no axioms at
+  all: not classical choice, not propositional or function
+  extensionality. A `#guard_msgs` check fails the build if that changes.
+  The equivalence is a theorem of the bare type theory, so it holds by
+  MTT's own notion of entailment, not only by classical model theory.
+
 ## Type checking stays decidable (`TypeCheck.lean`, CI run 38802195701)
 
 Chatzikyriakidis & Luo (2017, p. 51) object to using a noun both as a
@@ -1002,6 +1029,7 @@ nouns as types (Phases 2 and 3).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
+- **Proof-theoretic equivalence**: derivability over arbitrary contexts, with no axioms (`Constructive.lean`).
 - **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.
 - **Translation theorem with several criteria per noun**, covering copredication (`TranslationMulti.lean`).

@@ -182,6 +182,7 @@ together:
 | subsective adjectives (FraCaS 29) | a subsectivity postulate, the same stipulation as the type |
 | the verb choosing how a noun counts | carries over to predicates unchanged |
 | the "both" view makes type checking undecidable (C&L 2017) | only if (*) is a typing rule; with the link proved about models, type checking is decidable |
+| MTT's entailment is derivability, not model-theoretic validity | the equivalence also holds as derivability, provable with no axioms at all |
 | "competent" (FraCaS 215) | noun-relative adjectives, with predicates too; extensional adjectives fail with types too |
 
 ---
@@ -403,6 +404,7 @@ that is the literature's point.
   - `Translation.lean`: the translation theorem, `validC_iff`.
   - `Modifiers.lean`: the "heavy book" argument and subsectivity.
   - `TypeCheck.lean`: a type checker proved correct.
+  - `Constructive.lean`: the equivalence as derivability, with no axioms.
   - `VerbCriteria.lean`: one entry for "book", with the verb choosing
     how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun
