@@ -422,11 +422,26 @@ What this phase does not show:
 ## Phase 4 results: individuation and copredication (`Copredication.lean`, CI run 38659837431)
 
 FraCaS does not test the cases Chatzikyriakidis & Luo use to argue for
-nouns as types. Phase 4 states three small problems in their style. They
-were constructed for this phase, not taken from a dataset, and the
-expected answers are judgments from that literature. Each claim is
-settled in Lean in three encodings. The phase reads the MTT core's
-`Individuation.lean` and `DotTypes.lean` without changing them.
+nouns as types. Phase 4 states three small problems from that
+literature and settles each claim in Lean in three encodings. The phase
+reads the MTT core's `Individuation.lean` and `DotTypes.lean` without
+changing them.
+
+Sources. I1 is Gotham's (2017, §3.3.2, ex. 100) argument "John picked
+up three books. John mastered every book. ⇒ John mastered three books",
+which he judges invalid (three copies of one text), with "every book he
+picked up" for "every book". Gotham (§4.3, n. 34) also shows that
+Chatzikyriakidis & Luo's (2015) nouns-as-types account, which counts
+elements of the type `Book`, makes that argument valid. Chatzikyriakidis
+& Luo (2018) answer with common nouns as setoids: a noun comes with an
+identity criterion, set by the domain of the predicate applied to it
+("pick up" counts by physical sameness, "master" by informational
+sameness; their (39)-(43)). M below is that account for these
+sentences. The anthology case behind I2 (one volume, several texts) is
+Asher's (2011), discussed by Gotham (2017, Figs. 3 and 5) and by
+Chatzikyriakidis & Luo (2018, n. 4), who adopt it while saying they
+incline to think a physically identical book cannot be informationally
+different.
 
 - **I1** "John picked up two books. John mastered every book he picked
   up." ⇒ "John mastered two books." Not entailed: the two books may be
@@ -458,9 +473,11 @@ The encodings:
 1. **P answers I1 wrongly, and the claim is valid in P**
    (`P_I1_valid`). With one domain and one count, "picked up two books"
    and "mastered two books" count the same individuals whenever the
-   same books are picked up and mastered. This is the second
-   verdict-level difference the comparison has found, after 215 in
-   Phase 1a, and the first outside FraCaS.
+   same books are picked up and mastered. Nouns as types without
+   identity criteria do the same (Gotham's point about Chatzikyriakidis
+   & Luo 2015; `validI_iff` below shows why, for a whole fragment). The
+   difference is the identity criteria, as Chatzikyriakidis & Luo
+   (2018) argue, not the types.
 2. **M leaves I1 and I2 open, and makes each one's assumption
    explicit.** I1's countermodel is `MTT.v`'s own two copies of one text
    (`M_I1_not_valid`, from `MTT.two_books_phy` and

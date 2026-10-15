@@ -5,10 +5,16 @@ import EndToEnd.Encodings.Equivalence
 # Phase 4: individuation and copredication
 
 FraCaS does not test the cases Chatzikyriakidis & Luo use to argue for
-nouns as types. This file states three small problems in their style, in
-three encodings, and settles each claim in Lean. It reads the MTT core
-(`LeanNLSemantics/MTT/Individuation.lean`, `DotTypes.lean`) and changes
-nothing there.
+nouns as types. This file states three small problems from that
+literature, in three encodings, and settles each claim in Lean. It reads
+the MTT core (`LeanNLSemantics/MTT/Individuation.lean`, `DotTypes.lean`)
+and changes nothing there.
+
+I1 is Gotham's (2017, Journal of Semantics 34: 333-371, §3.3.2, ex. 100)
+argument, with "every book he picked up" for "every book". M is
+Chatzikyriakidis & Luo's (2018, Oslo Studies in Language 10(2): 121-141)
+identity-criteria account: the predicate's domain sets the criterion a
+noun counts by. See `EndToEnd/Encodings/README.md`, Phase 4.
 
 The problems, about a shelf of books:
 
