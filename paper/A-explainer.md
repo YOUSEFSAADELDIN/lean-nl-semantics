@@ -144,6 +144,33 @@ views can come apart in this fragment.
 difference exactly when, and only when, a noun counts by an identity
 criterion that differs from counting individuals.
 
+### And even that difference goes away: the translation theorem
+
+Predicate accounts can count by criteria too. Gotham (2017) does it by
+putting more things in the domain (copies, texts, the composite books
+made of both) and counting by relations like "same text". The
+**translation theorem** (`validC_iff`, in `Translation.lean`) proves
+that this is enough, in general, for the fragment.
+
+Translate a sentence word by word: every word stays the same except
+"is" (identity), which becomes "is the same individual as". Then the
+sentence is valid with nouns as types and identity criteria exactly
+when its translation is valid with nouns as predicates, over a domain
+with an identity relation and criteria.
+
+So nouns being *types* never matters for which inferences are valid in
+the fragment. What matters is the **ontology**, meaning what the domain
+contains and how things are counted. That ties every earlier result
+together:
+
+| claimed advantage | what actually delivers it |
+|---|---|
+| quantifiers and counting | nothing: the two views are equivalent |
+| identity criteria | a richer domain plus criteria, with predicates |
+| anaphora | dependent types, with predicates |
+| selectional restrictions | sorts, with predicates |
+| copredication counting | two criteria at once; one setoid can't do it |
+
 ---
 
 ## 4. Where they really do differ: identity criteria
@@ -299,6 +326,7 @@ telling the authors.
 | Recognising predicates for types (Retoré 2013), who leaves open how a type relates to its predicate | An answer to that open question, for the fragment |
 | Selectional restrictions as type errors (Chatzikyriakidis & Luo 2017); many-sorted alternatives (Asher 2011; Retoré 2013) | The proof that well-formedness depends only on which verb slots a noun fits, so many-sorted predicates accept exactly what MTT accepts |
 | Quantifier scope ("every student read some book") | The equivalence and characterization extended to two-place verbs |
+| Predicate accounts with criteria (Gotham 2017; Asher 2011) | The translation theorem: nouns as types with criteria are a word-by-word notational variant of them, for the fragment |
 
 The honest framing: Paper A *mechanizes and sharpens* an existing
 debate. It proves exactly where the two views agree, and it pinpoints
@@ -315,8 +343,10 @@ that is the literature's point.
 > fragment of English quantifiers the two give exactly the same valid
 > inferences, as long as you count by individuals. They differ exactly when
 > a noun brings its own way of counting, like 'mastered three books'
-> counting texts while 'picked up three books' counts copies. On the
-> FraCaS benchmark that almost never comes up."
+> counting texts while 'picked up three books' counts copies. And even
+> then, I proved that a word-by-word translation into predicates over a
+> richer domain gives back exactly the same valid inferences. So the
+> real choice is about ontology, not about types."
 
 **Questions a professor may ask, with honest answers:**
 
@@ -354,6 +384,7 @@ that is the literature's point.
     `CModel.agree_iff_kernel`.
   - `Relational.lean`: everything above, with two-place verbs.
   - `Selection.lean`: selectional restrictions.
+  - `Translation.lean`: the translation theorem, `validC_iff`.
   - `Copredication.lean`: the books for two.
   - `Criteria.lean`: Gotham's examples, passengers, double
     distinctness, and transitivity.

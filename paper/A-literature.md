@@ -277,6 +277,14 @@ both types and predicates. Page numbers below are the preprint's.
 - **Apparently new**, relative to these five papers:
   - `valid_iff` and `validI_iff`: a fragment-wide equivalence, with the
     exact condition.
+  - `validC_iff` (`Translation.lean`): nouns as types with identity
+    criteria (C&L 2018, one criterion per noun) and nouns as predicates
+    over a domain with an identity relation and criteria (the shape of
+    Gotham's and Asher's accounts) validate the same entailments, by a
+    word-by-word translation that sends identity to "same individual".
+    Neither Gotham nor C&L state such a correspondence; Gotham's
+    critique of C&L (2015) and C&L's (2018) reply compare them on
+    examples.
   - `wt_iff_of_sameFit` and `wt_sorts_iff` (`Selection.lean`):
     well-formedness sees only which argument types a noun fits, so
     sorted predicates accept what MTT accepts. Retoré (2013, §5.2)

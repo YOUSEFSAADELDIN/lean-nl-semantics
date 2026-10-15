@@ -742,6 +742,68 @@ What this phase does not show:
 - The number of sorts `S.sorts` needs is the number of distinct
   profiles. Nothing here bounds it for a real lexicon.
 
+## The translation theorem (`Translation.lean`, CI run 38703463185)
+
+The earlier results each reduce one claimed advantage of nouns as types.
+This one covers the case they left open: nouns that count by their own
+identity criteria (Chatzikyriakidis & Luo 2018), where nouns as
+predicates over the individuals do differ (`Characterization.lean`).
+The predicate accounts of such counting (Gotham 2017; Asher 2011) keep
+nouns as predicates but enrich the model: the domain contains the things
+counted, such as passenger journeys or composite books, and there are
+relations of individuation to count by.
+
+- **Source.** Nouns as types with identity criteria (`CModel`, `cI`),
+  over the two-place fragment of `Relational.lean`.
+- **Target.** Nouns as predicates with criteria (`PCModel`, `pcI`):
+  - one finite domain;
+  - nouns, verbs and relations as predicates of it;
+  - a relation `same` of being one individual, which they respect;
+  - a criterion per noun, which its determiners count by.
+- **The translation (`tr`)** is word by word. Every word and
+  construction goes to itself, except identity ("`t` is `u`"), which
+  goes to `same`.
+
+**`validC_iff`**: an entailment is valid in the source exactly when its
+translation is valid in the target. Two model constructions prove it:
+
+- `toPC`: a typed model becomes a predicate model. Its domain is the
+  individuals plus one object for each element of each noun's type,
+  each object standing for its individual (`toPC_eval`).
+- `PCModel.quotC`: a predicate model becomes a typed model. Its
+  individuals are `same`-classes and its types are the nouns' members
+  (`quot_eval`).
+
+So in this fragment nouns as types, even with identity criteria, are
+inferentially a notational variant of nouns as predicates. What the
+predicate side needs is ontology: a domain that contains what is
+counted, and an identity relation to say when two of those things are
+one individual. Together with the earlier results:
+
+| claimed advantage of nouns as types | what delivers it | where |
+|---|---|---|
+| quantifiers and counting | nothing: equivalent when counting individuals | `validI_iff`, `validRI_iff` |
+| identity criteria in counting | criteria over a richer domain, with predicates | `validC_iff` |
+| anaphora (Section 3) | dependent types, with predicates | Phase 1b (D) |
+| selectional restrictions | sorts, with predicates | `wt_sorts_iff` |
+| copredicated counting | two criteria (Gotham); not one setoid | `exists_setoid_iff` |
+
+What it does not show:
+- Each noun has one criterion. Copredication counts by two at once,
+  and `DotSetoid.lean` shows one setoid cannot do it. The target would
+  need a pair of criteria per noun, and the counting of determiners
+  other than numerals under two criteria is not settled in the
+  literature.
+- The lexicon must be finite (`Fintype Noun`), so that `toPC`'s domain
+  is finite.
+- It is about validity in the fragment. It says nothing about which
+  encoding is easier to compute with, where Phase 2 found types cost
+  the generic prover, or about intensional adjectives (Phase 1a).
+- The target's domain is built from the source's types, as Gotham's
+  composite objects are built from their parts. A reader who objects to
+  that ontology objects to the predicate accounts themselves, not to
+  this construction.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
@@ -751,6 +813,7 @@ What this phase does not show:
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
+- **Translation theorem**: nouns as types with identity criteria and nouns as predicates over a domain with an identity relation and criteria validate the same entailments, by a word-by-word translation (`Translation.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.
