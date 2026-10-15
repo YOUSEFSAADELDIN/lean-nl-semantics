@@ -924,15 +924,70 @@ sentences are well formed:
 | anaphora (Section 3) | predicates without dependent types | predicates with dependent types (DTS) | Phase 1b, D |
 | quantifiers and counting individuals | nothing | | `validI_iff`, `validRI_iff` |
 
-Not settled here:
-- **The "both" view needs undecidable type checking (C&L 2017, p.
-  51).** That is about an object theory with a rule `x : Man ↔
-  man(x)`. The correspondences above are theorems about models, in the
-  metatheory, so the objection does not reach them. This is argued,
-  not proved.
-- **Intensional adjectives ("competent", 215)** need intensional
-  predicates or types (Phase 1a). That is a choice between intensional
-  and extensional predicates, not between predicates and types.
+Two more rows, with their own sections below:
+
+- **The "both" view needs undecidable type checking (C&L 2017, p. 51).**
+  It holds against the rule (*) "x : Man iff man(x)" inside a type
+  theory. It fails against two encodings with decidable type checking,
+  related by theorems about their models (`check_iff`, `both_shadow`,
+  `both_lift`).
+- **"Competent" (FraCaS 215).** It holds against extensional
+  adjectives, with types or predicates alike. It fails against
+  noun-relative adjectives, with types or predicates alike
+  (`fracas215_ext_P`, `fracas215_ext_T`, `fracas215_not_P`,
+  `fracas215_not_T`).
+
+What remains outside is the undecidability claim itself, that (*) as a
+typing rule makes type checking as hard as validity. That is C&L's
+claim, and not checked here.
+
+## Type checking stays decidable (`TypeCheck.lean`, CI run 38802195701)
+
+Chatzikyriakidis & Luo (2017, p. 51) object to using a noun both as a
+type and as a predicate (Retoré 2013). It needs (*) "x : Man if and only
+if man(x) is true", which "cannot simply [be] stipulate[d]": as a rule
+of the type theory it would make typing depend on the truth of
+propositions.
+
+- **`check`, `check_iff`, `wtDecidable`.** Well-typedness in the
+  fragment is decided by a program that reads only the formula, the
+  context, and the lexicon's types and subtyping. It is proved to agree
+  with `WT`. No model and no truth of any proposition is consulted.
+- **`wtSortsDecidable`.** The same program decides well-typedness in
+  the sorted predicate lexicon, through `wt_sorts_iff`.
+- **`both_shadow`, `both_lift`.** (*) holds between models, as a
+  theorem. In a typed model's predicate reading, being an `n` is being
+  in the image of `n`'s type. In a predicate model's typed reading,
+  being in the image of `n`'s type is being an `n`. The validity
+  theorems are proved from these, in the metatheory.
+- **`heavy_book_checked`.** The checker accepts "John picked up and
+  mastered every heavy book" by computation.
+
+So the objection is right about (*) as a typing rule, and does not reach
+this kind of "both": two encodings with decidable typing, related by
+theorems about their models.
+
+## "Competent": intensional or extensional, not types or predicates (`Modifiers.lean`, CI run 38802195701)
+
+FraCaS 215: "All legal authorities are law lecturers. All law lecturers
+are legal authorities. ⇒ All competent legal authorities are competent
+law lecturers?" (gold unknown). Phase 1a found that extensional
+predicates wrongly prove it, and types do not. Four encodings separate
+the two questions. An adjective is extensional when coextensive nouns
+give coextensive modified nouns (`ExtP`, `ExtT`).
+
+| | extensional adjectives | noun-relative adjectives |
+|---|---|---|
+| nouns as types | valid, wrong (`fracas215_ext_T`) | not valid, right (`fracas215_not_T`) |
+| nouns as predicates | valid, wrong (`fracas215_ext_P`) | not valid, right (`fracas215_not_P`) |
+
+With extensional adjectives, types and predicates validate the same
+entailments (`validSubExt_iff`), as they do without (`validSub_iff`).
+So 215's verdict tracks extensionality, not types. MTT gets it right
+because its adjectives are noun-relative (`competent : LegalAuthority
+→ Prop`) and nothing makes them extensional. Intensional predicates
+(Montague's adjectives as functions of properties, Phase 1a's W) get it
+right for the same reason.
 
 The cost runs the other way: generic provers find fewer proofs with
 nouns as types (Phases 2 and 3).
@@ -947,6 +1002,7 @@ nouns as types (Phases 2 and 3).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
+- **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.
 - **Translation theorem with several criteria per noun**, covering copredication (`TranslationMulti.lean`).
 - **Translation theorem**: nouns as types with identity criteria and nouns as predicates over a domain with an identity relation and criteria validate the same entailments, by a word-by-word translation (`Translation.lean`).

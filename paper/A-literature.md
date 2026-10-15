@@ -146,7 +146,10 @@ Read in full: the nine papers below, and the relevant pages of Asher
   undecidable. `IsA` and `Equivalence.lean`'s `shadow`/`lift` relate the
   two readings in the metatheory, as a theorem about models, not as a
   rule of the object theory, so this objection does not apply to them.
-  The paper should say so.
+  **Checked** (`TypeCheck.lean`): type checking in the fragment is
+  decidable, by a checker proved correct (`check_iff`), and (*) holds
+  between models (`both_shadow`, `both_lift`). Their claim that (*) as
+  a typing rule makes typing undecidable is not checked.
 - **Predicational forms** `p_A`, `NOT`, `P_A` for "John is (not) a man"
   (§3, Coq in §4). Our `IsA e x` is a predicational form of the
   judgement x : A, defined through the embedding.
