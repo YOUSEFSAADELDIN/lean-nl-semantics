@@ -368,8 +368,9 @@ What it does not cover:
 - Verbs are one-place predicates of individuals, and individuals are
   named directly. Relations and quantified objects are not in it.
 - Injectivity is shown sufficient, and its absence is shown to break
-  the equivalence on one entailment. Weaker conditions that would also
-  suffice are not explored.
+  the equivalence on one entailment. The exact condition, for nouns
+  that count by any identity criterion, is the characterization in
+  Phase 4 (`Characterization.lean`).
 
 ## Phase 3 results: the modified nouns of Section 1 (CI run 38622015149)
 
@@ -562,6 +563,36 @@ noun counts by, not types as such. Counting by the individuals' own
 identity, nouns as types say what predicates say, in the whole fragment.
 Counting by another criterion, as "mastered three books" counts texts,
 they say what one-domain predicates cannot.
+
+**The characterization (`Characterization.lean`).** The converse holds
+too, so the last paragraph is exact. Let each noun count by an
+arbitrary identity criterion: a function `crit n` from its type, with
+two elements counting as one when it gives them the same value
+(`CModel`, `CModel.satC`). Fix the nouns, their types, embeddings and
+criteria. Then the typed semantics and the predicate semantics agree on
+every formula of the fragment, under every interpretation of the verbs,
+**if and only if** each criterion identifies two elements exactly when
+they are one individual (`CModel.agree_iff_kernel`).
+
+- Sufficiency (`CModel.satC_iff_shadow_of_kernel`): such a criterion
+  counts what `countI` counts (`countBy_eq_of_kernel`), and
+  `TModel.sat_iff_shadowI` applies.
+- Necessity (`CModel.kernel_of_agree`): a criterion can differ from
+  individual identity in two ways, and one sentence detects each.
+  - If it **splits an individual** (Luo's passengers: one person on two
+    journeys), "at most one N is v" is true with predicates and false by
+    the criterion, with `v` true of that individual only.
+  - If it **merges individuals** (Gotham's books counted as texts: two
+    copies of one text), "at least two N are v" is true with predicates
+    and false by the criterion, with `v` true of the two individuals
+    only.
+- `valid_iff`'s injectivity is the case of a noun that counts its type's
+  own elements, the criterion `id` (`injective_iff_kernel_id`).
+
+The statement is per frame, under all interpretations of the verbs. It
+needs one verb in the vocabulary to state the two sentences. It does
+not say which entailments separate the encodings for a given frame and
+a fixed interpretation of the verbs.
 
 **Four checks from the literature (`Criteria.lean`, CI run 38671403438).**
 `paper/A-literature.md` has the sources.

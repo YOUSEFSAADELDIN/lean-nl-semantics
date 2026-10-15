@@ -66,12 +66,12 @@ the same size. -/
 theorem card_image_eq_of_kernel {f : N → B} {g : N → C} [DecidableEq B] [DecidableEq C]
     (S : Finset N) (h : ∀ x ∈ S, ∀ y ∈ S, f x = f y ↔ g x = g y) :
     (S.image f).card = (S.image g).card := by
-  have hfst : Set.InjOn Prod.fst ↑(S.image fun x => (f x, g x)) := by
+  have hfst : Set.InjOn (Prod.fst : B × C → B) ((S.image fun x => (f x, g x) : Finset (B × C)) : Set (B × C)) := by
     intro a ha b hb hab
     obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp ha)
     obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp hb)
     exact Prod.ext hab ((h x hx y hy).mp hab)
-  have hsnd : Set.InjOn Prod.snd ↑(S.image fun x => (f x, g x)) := by
+  have hsnd : Set.InjOn (Prod.snd : B × C → C) ((S.image fun x => (f x, g x) : Finset (B × C)) : Set (B × C)) := by
     intro a ha b hb hab
     obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp ha)
     obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp hb)
@@ -247,7 +247,7 @@ counts its type's own elements: the criterion `id` is the individuals'
 identity exactly when the embedding is injective. -/
 theorem injective_iff_kernel_id {T A : Type} (e : T → A) :
     Function.Injective e ↔ ∀ y y' : T, id y = id y' ↔ e y = e y' :=
-  ⟨fun hinj y y' => ⟨fun h => congrArg e h, fun h => hinj h⟩,
+  ⟨fun hinj _ _ => ⟨fun h => congrArg e h, fun h => hinj h⟩,
     fun h y y' hy => (h y y').mpr hy⟩
 
 end FraCaS.Encodings.Equivalence

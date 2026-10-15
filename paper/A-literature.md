@@ -265,6 +265,13 @@ both types and predicates. Page numbers below are the preprint's.
 - **Apparently new**, relative to these five papers:
   - `valid_iff` and `validI_iff`: a fragment-wide equivalence, with the
     exact condition.
+  - The characterization (`CModel.agree_iff_kernel`): for nouns counting
+    by any identity criterion, the encodings agree under all verb
+    interpretations iff each criterion is the individuals' identity.
+    Its two failure modes, splitting an individual and merging
+    individuals, are Luo's passengers and Gotham's books. C&L (2018)'s
+    "sub-setoid" remark (p. 130) is the informal sufficiency half; the
+    necessity half is in none of the papers read here.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).

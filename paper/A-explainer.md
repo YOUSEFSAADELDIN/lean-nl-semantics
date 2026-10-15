@@ -109,9 +109,34 @@ Both hold for a whole *fragment*: every, some, no, most, both, neither,
 at least / at most / exactly *k*, "more ... than", and the connectives.
 They are not checked one example at a time.
 
+### The converse: the characterization theorem
+
+`validI_iff` says: count by individuals, and the two views agree. The
+**characterization theorem** (`CModel.agree_iff_kernel`, in
+`Characterization.lean`) adds the other direction. Give each noun *any*
+rule for when two of its things count as one (its identity criterion).
+Then the two views agree on every sentence of the fragment, whatever the
+verbs mean, **if and only if** that rule says "same" exactly when the
+two things are the same individual.
+
+The proof of the "only if" half is the useful part, because it says
+*how* a criterion can go wrong, and which sentence catches it:
+
+- **It splits one individual into several.** One person on two flights
+  is two passengers. Then "at most one passenger is v" (with v true of
+  that person only) is true with predicates and false with types.
+- **It merges several individuals into one.** Two copies of one novel
+  are one book, counted as texts. Then "at least two books are v" (with
+  v true of the two copies only) is true with predicates and false with
+  types.
+
+These are exactly Luo's passengers and Gotham's books. So those two
+famous examples are not just examples: they are the *only two ways* the
+views can come apart in this fragment.
+
 **In one line:** in this fragment, nouns as types make a logical
-difference only when a noun counts by its own identity criterion rather
-than by individuals.
+difference exactly when, and only when, a noun counts by an identity
+criterion that differs from counting individuals.
 
 ---
 
@@ -226,6 +251,7 @@ telling the authors.
 | Not ours (cite it) | Ours |
 |---|---|
 | Nouns as types (Ranta 1994; Luo 2012) | The fragment-wide equivalence theorems, `valid_iff` and `validI_iff` |
+| The passengers and books examples, as examples | The characterization theorem: those two kinds of example are the only ways the views come apart in the fragment |
 | Identity criteria for nouns (Geach; Luo 2012) | Showing that the 2015 axiom is exactly the equivalence condition |
 | The books argument (Gotham 2017, ex. 100) | The transitivity observation about the 2018 paper |
 | Verbs choosing the counting criterion (Asher 2011; Chatzikyriakidis & Luo 2018) | The FraCaS-scale comparison (Phases 1–3) |
@@ -245,7 +271,7 @@ that is the literature's point.
 > "Formal semanticists disagree about whether nouns should be predicates
 > or types. I proved, with Lean checking every step, that for a large
 > fragment of English quantifiers the two give exactly the same valid
-> inferences, as long as you count by individuals. They differ only when
+> inferences, as long as you count by individuals. They differ exactly when
 > a noun brings its own way of counting, like 'mastered three books'
 > counting texts while 'picked up three books' counts copies. On the
 > FraCaS benchmark that almost never comes up."
@@ -279,6 +305,8 @@ that is the literature's point.
 - Proofs:
   - `EndToEnd/Encodings/Equivalence.lean`: `valid_iff`.
   - `Counting.lean`: `validI_iff`, and the books for any number.
+  - `Characterization.lean`: the characterization theorem,
+    `CModel.agree_iff_kernel`.
   - `Copredication.lean`: the books for two.
   - `Criteria.lean`: Gotham's examples, passengers, double
     distinctness, and transitivity.
