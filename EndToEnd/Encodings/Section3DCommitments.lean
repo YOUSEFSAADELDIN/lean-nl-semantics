@@ -69,7 +69,7 @@ theorem d_133 : fracas_133_yes := by
 
 theorem d_138 : fracas_138_yes := by
   unfold fracas_138_yes
-  intro _ _ _ _ _ _ _ _ h
+  intro _ _ _ _ _ _ _ _ _ h
   exact h
 
 end FraCaS.Encodings.S3D
