@@ -320,7 +320,14 @@ both types and predicates. Page numbers below are the preprint's.
     by every sentence of the fragment in every context iff they have the
     same counting units with the same multiplicities; for nouns counting
     individuals, iff their extensions agree. None of these papers states
-    what sentences can observe of a noun. Open for several criteria.
+    what sentences can observe of a noun. With several criteria
+    (`obsEqM_iff`, `FullAbstractionMulti.lean`), indistinguishable iff
+    the same counts; and three books (two copies of one text, two texts
+    in one volume) are counted as no single criterion of any kind can
+    count them (`not_single`), since one-criterion counts are
+    submodular. Gotham (2017) and C&L (2018) argue copredication needs
+    both criteria from examples; this proves no single criterion can
+    stand in for them, judged by sentences alone.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).

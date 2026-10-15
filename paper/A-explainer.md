@@ -211,8 +211,22 @@ so all that matters is the noun's extension, as Montague had it
 
 So, for inference, a count noun means a collection of units. Types with
 criteria and predicates with criteria are two ways of writing that
-collection down. It is not yet proved for nouns that count in two ways
-at once (copredication).
+collection down.
+
+For nouns that count in two ways at once (copredication), the same holds
+with the counts themselves in place of the units (`obsEqM_iff`). And
+here something new appears (`not_single`). Take three books: the first
+two are copies of one text, and the last two are two texts bound in one
+volume. Counting books distinct both as volumes and as texts:
+- the first two are one book;
+- the last two are one book;
+- all three are two books (the first and the third).
+No noun with a single criterion, of any kind, gives those numbers. With
+one criterion, "how many among X or Y" plus "how many among X and Y" can
+never exceed "how many among X" plus "how many among Y", and here it is
+2 + 1 against 1 + 1. So copredication really is two criteria at once,
+not one criterion in disguise, and that is visible from sentences
+alone.
 
 ---
 
@@ -374,6 +388,7 @@ telling the authors.
 | Quantifier scope ("every student read some book") | The equivalence and characterization extended to two-place verbs |
 | Predicate accounts with criteria (Gotham 2017; Asher 2011) | The translation theorem: nouns as types with criteria are a word-by-word notational variant of them, for the fragment |
 | Montague's nouns as sets of individuals | Full abstraction: what sentences see of a noun is exactly its counting units, and for nouns that count individuals, exactly its extension |
+| Copredication needs two criteria (Gotham 2017; C&L 2018), and a setoid can't do it (ours, `DotSetoid.lean`) | No single criterion of any kind is indistinguishable by sentences from some copredicated nouns |
 
 The honest framing: Paper A *mechanizes and sharpens* an existing
 debate. It proves exactly where the two views agree, and it pinpoints
@@ -436,6 +451,8 @@ that is the literature's point.
   - `TypeCheck.lean`: a type checker proved correct.
   - `Constructive.lean`: the equivalence as derivability, with no axioms.
   - `FullAbstraction.lean`: what sentences see of a noun, `obsEq_iff`.
+  - `FullAbstractionMulti.lean`: the same with several criteria, and
+    three books no single criterion counts, `not_single`.
   - `VerbCriteria.lean`: one entry for "book", with the verb choosing
     how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun

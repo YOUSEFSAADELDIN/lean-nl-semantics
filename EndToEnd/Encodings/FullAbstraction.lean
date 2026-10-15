@@ -40,9 +40,9 @@ set `S` are all units less those meeting its complement, and the units
 equal to `S` follow by strong induction on `S`. The vocabulary needs one
 verb.
 
-What it does not cover: nouns with two criteria (copredication). There
-counting is a largest matching, and whether the counts determine the
-noun's structure is open.
+Nouns with several criteria (copredication) are in
+`FullAbstractionMulti.lean`: there the counts are all sentences see,
+and they need not come from any single criterion.
 -/
 
 namespace FraCaS.Encodings.FullAbstraction

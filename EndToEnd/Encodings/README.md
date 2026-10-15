@@ -1054,10 +1054,39 @@ which is why the translation theorem holds. One person on three
 journeys is three passenger units covering that person; two copies of
 one novel, counted as texts, are one unit covering both.
 
-Not covered: nouns with several criteria (`TranslationMulti.lean`).
-There counting is a largest matching, and whether the counts determine
-the noun's structure is open. The domain is finite, as in the other
-model-theoretic results.
+The domain is finite, as in the other model-theoretic results. Nouns
+with several criteria are in the next section.
+
+## Full abstraction with several criteria (`FullAbstractionMulti.lean`, CI run 38814363115)
+
+With a family of criteria (`TranslationMulti.lean`), the `P`s are as many
+as the largest set of `P`s pairwise distinct under every criterion: with
+volumes and texts, a largest matching.
+
+- **`obsEqM_iff`.** Two interpretations of such a noun are
+  indistinguishable by every formula in every context exactly when they
+  give every set of individuals the same count. The counts fix the
+  extension too. One verb is enough.
+- **`not_single`: copredication is not one criterion in disguise.** Three
+  books: `b0` and `b1` are two copies of one text, and `b1` and `b2` are
+  two texts in one volume. Counted by volume and text at once, `b0` and
+  `b1` are one book, `b1` and `b2` are one book, all three are two. No
+  interpretation with one criterion (any type, embedding and criterion)
+  is indistinguishable from this. With one criterion,
+  `count (P ∪ Q) + count (P ∩ Q) ≤ count P + count Q`
+  (`count_toM_submod`), and here `2 + 1 > 1 + 1`. `DotSetoid.lean` ruled
+  out an equivalence relation on the books' own type; this rules out
+  every single criterion, judged by sentences alone.
+- **`criteria_hidden`.** The counts do not fix what each criterion does
+  alone: two things at one individual, alike by one criterion and
+  distinct by the other, are indistinguishable from one thing there.
+  This is because every quantifier in this fragment counts by the whole
+  family. With the verb choosing the criteria (`VerbCriteria.lean`), the
+  separate criteria are visible by construction.
+
+So with one criterion a noun means a multiset of units; with several it
+means its counting function, which no single criterion need produce. No
+simpler structure than the counting function is claimed.
 
 ## Phases
 
@@ -1069,7 +1098,7 @@ model-theoretic results.
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
-- **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`).
+- **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`).
 - **Proof-theoretic equivalence**: derivability over arbitrary contexts, with no axioms (`Constructive.lean`).
 - **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.
