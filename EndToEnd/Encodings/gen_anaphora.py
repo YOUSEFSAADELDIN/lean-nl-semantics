@@ -24,6 +24,15 @@ accommodated, as a Σ-hypothesis restricted to the possessor's type rather
 than a function on every individual. `MTT/DependentAnaphora.lean` states
 some of these problems the same way by hand; this generates them.
 
+A second encoding, **D**, states the same discourses with nouns as
+*predicates* over one type of entities, as Dependent Type Semantics
+itself does (Bekki 2014: "a man entered" is `(Σu:(Σx:e) man(x))
+enter(π₁u)`), keeping the Σ-typed proof objects: "every report has a
+cover page" is `(x : E) → report x → Σ' y : E, coverPage y ∧ haveV x y`.
+D differs from M only in how nouns are stated, so comparing them asks
+whether M's saving (no stipulated functions) is owed to nouns as types or
+to dependent types. It is written to `Section3D.lean`.
+
 Run: `python3 EndToEnd/Encodings/gen_anaphora.py` (needs the gf binary).
 Do not hand-edit the output.
 """
@@ -31,6 +40,7 @@ from __future__ import annotations
 
 import json
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -40,7 +50,27 @@ from translate import _leaf_words, camel_name  # noqa: E402
 
 OUT = HERE / "Section3.lean"
 COUNTS = HERE / "assumptions3.json"
+OUT_D = HERE / "Section3D.lean"
+COUNTS_D = HERE / "assumptions3D.json"
 PROBLEMS = (114, 115, 116, 117, 118, 119, 120, 131, 132, 133, 138)
+
+
+@dataclass(frozen=True)
+class DClass(MClass):
+    """A class in D: the individuals (`E`) that are of noun `noun` and
+    satisfy the further conditions. The noun's predicate is the first
+    condition; a non-intersective adjective takes it as its argument."""
+
+    noun: str = ""
+
+    @property
+    def index(self) -> str:
+        if len(self.conds) == 1:
+            return self.noun
+        return f"(fun z => {' ∧ '.join(self.cond('z'))})"
+
+    def add(self, cond: str) -> "DClass":
+        return DClass(self.base, self.emb, (*self.conds, cond), self.noun)
 
 
 def _verb(head: str) -> str:
@@ -49,7 +79,8 @@ def _verb(head: str) -> str:
 
 
 class Discourse:
-    def __init__(self):
+    def __init__(self, enc: str = "M"):
+        self.enc = enc
         self.nouns: list[str] = []
         self.adjs: dict[str, str] = {}
         self.preds: list[str] = []  # intersective adjectives on individuals
@@ -77,7 +108,17 @@ class Discourse:
     # -- lexicon -------------------------------------------------------
     def noun(self, n):
         self._add(self.nouns, n)
+        if self.enc == "D":
+            return DClass("E", "id", (f"{n} §",), n)
         return MClass(_type_name(n), f"e{_type_name(n)}")
+
+    def forall(self, cls, x, body):
+        """`∀ x` of class `cls`, with `body`. In D the noun's predicate gets
+        a named hypothesis, `h{x}`, which a dependency is applied to."""
+        conds = cls.cond(x)
+        if self.enc == "D":
+            return f"∀ {x} : E, ∀ h{x} : {conds[0]}, {' → '.join([*conds[1:], body])}"
+        return f"∀ {x} : {cls.base}, {' → '.join([*conds, body])}"
 
     def name(self, np):
         n = camel_name(_leaf_words(np))
@@ -126,13 +167,15 @@ class Discourse:
             proof = next((p for c, n, p in self.deps if c == possessor_cls and n == noun_cls), None)
             if proof is None:
                 proof = self._dependency(possessor_cls, noun_cls, accommodated=True, gender=gender)
-            term = f"({proof} {possessor}).1"
+            arg = f"{possessor} h{possessor}" if self.enc == "D" else possessor
+            term = f"({proof} {arg}).1"
         else:  # a name
             term = None
             for cls, witness in self.member.get(possessor, []):
                 proof = next((p for c, n, p in self.deps if c == cls and n == noun_cls), None)
                 if proof is not None:
-                    term = f"({proof} {witness}.1).1"
+                    arg = f"{witness}.1 {witness}.2.1" if self.enc == "D" else f"{witness}.1"
+                    term = f"({proof} {arg}).1"
                     break
             if term is None:
                 w = self.fresh("acc")
@@ -151,7 +194,8 @@ class Discourse:
         conds = [*noun_cls.cond("y"), f"haveV {cls.elt('x')} {noun_cls.elt('y')}"]
         if gender:
             conds = [f"{gender} {cls.elt('x')}", *conds]
-        self.proofs.append(f"({p} : (x : {cls.base}) → Σ' y : {noun_cls.base}, {' ∧ '.join(conds)})")
+        domain = f"(x : E) → {cls.cond('x')[0]} →" if self.enc == "D" else f"(x : {cls.base}) →"
+        self.proofs.append(f"({p} : {domain} Σ' y : {noun_cls.base}, {' ∧ '.join(conds)})")
         self.assumptions.append(("accommodated" if accommodated else "asserted", f"{cls.base} → {noun_cls.base}"))
         self._add(self.verbs, "haveV")
         self.deps.append((cls, noun_cls, p))
@@ -297,8 +341,8 @@ class Discourse:
 
 
 
-def render(clauses):
-    d = Discourse()
+def render(clauses, enc="M"):
+    d = Discourse(enc)
     props = []
     for role, cl, neg in clauses:
         premise = role != "hypothesis"
@@ -321,18 +365,24 @@ def _clause(d, cl, premise):
         thing = d.possessive(vp.args[1].args[0], vp.args[1].args[1], x, cls)
         body = f"{v} {cls.elt(x)} {thing}"
         body = f"¬ ({body})" if no else body
-        return f"∀ {x} : {cls.base}, {' → '.join([*cls.cond(x), body])}"
+        return d.forall(cls, x, body)
     return d.clause(cl, premise)
 
 
-def claim(clauses):
-    d, props = render(clauses)
+def claim(clauses, enc="M"):
+    d, props = render(clauses, enc)
     premises, hyp = props[:-1], props[-1]
     b = ["{E : Type}"]
-    for n in d.nouns:
-        b.append(f"({_type_name(n)} : Type) (e{_type_name(n)} : {_type_name(n)} → E)")
-    for a in d.adjs:
-        b.append(f"({a} : Type → E → Prop)")
+    if enc == "D":
+        if d.nouns:
+            b.append(f"({' '.join(d.nouns)} : E → Prop)")
+        for a in d.adjs:
+            b.append(f"({a} : (E → Prop) → E → Prop)")
+    else:
+        for n in d.nouns:
+            b.append(f"({_type_name(n)} : Type) (e{_type_name(n)} : {_type_name(n)} → E)")
+        for a in d.adjs:
+            b.append(f"({a} : Type → E → Prop)")
     if d.preds:
         b.append(f"({' '.join(d.preds)} : E → Prop)")
     if d.verbs:
@@ -353,26 +403,42 @@ def claim(clauses):
 
 def main() -> None:
     problems = {p[0]: p for p in gen_claims.load_problems()}
+    trees = {}
+    for idn in PROBLEMS:
+        _i, premises, hypothesis, _a = problems[idn]
+        try:
+            trees[idn] = resolved(idn, premises, hypothesis)
+        except Unsupported as err:
+            trees[idn] = err
+    write(problems, trees, "M", OUT, COUNTS, "S3",
+          "FraCaS Section 3 in M, with dependent types")
+    write(problems, trees, "D", OUT_D, COUNTS_D, "S3D",
+          "FraCaS Section 3 in D: nouns as predicates, with dependent types")
+
+
+def write(problems, trees, enc, out, counts_path, ns, title) -> None:
     lines = [
         "-- Generated by EndToEnd/Encodings/gen_anaphora.py - do not hand-edit; re-run it.",
         "import Mathlib",
         "import LeanNLSemantics.FraCaS.Types",
         "",
         "/-!",
-        "# FraCaS Section 3 in M, with dependent types",
+        f"# {title}",
         "",
         "From the end-to-end pipeline's own resolved trees; see the generator's",
         "header and `EndToEnd/Encodings/README.md`.",
         "-/",
         "",
-        "namespace FraCaS.Encodings.S3",
+        f"namespace FraCaS.Encodings.{ns}",
         "",
     ]
     registry, counts, skipped = [], {}, {}
     for idn in PROBLEMS:
         _i, premises, hypothesis, answer = problems[idn]
         try:
-            yes, no, assumed = claim(resolved(idn, premises, hypothesis))
+            if isinstance(trees[idn], Exception):
+                raise trees[idn]
+            yes, no, assumed = claim(trees[idn], enc)
         except Unsupported as err:
             skipped[idn] = str(err)
             continue
@@ -385,12 +451,12 @@ def main() -> None:
         ",\n".join(registry),
         "]",
         "",
-        "end FraCaS.Encodings.S3",
+        f"end FraCaS.Encodings.{ns}",
         "",
     ]
-    OUT.write_text("\n".join(lines))
-    COUNTS.write_text(json.dumps({"skipped": skipped, "assumptions": counts}, indent=1) + "\n")
-    print(f"{len(registry)} problems; skipped: {skipped}")
+    out.write_text("\n".join(lines))
+    counts_path.write_text(json.dumps({"skipped": skipped, "assumptions": counts}, indent=1) + "\n")
+    print(f"{enc}: {len(registry)} problems; skipped: {skipped}")
 
 
 if __name__ == "__main__":

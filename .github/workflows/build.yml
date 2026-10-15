@@ -567,6 +567,7 @@ jobs:
           python3 EndToEnd/Encodings/gen_modified.py
           git diff --exit-code EndToEnd/Encodings/Section5.lean EndToEnd/Encodings/postulates.json \
             EndToEnd/Encodings/Section3.lean EndToEnd/Encodings/assumptions3.json \
+            EndToEnd/Encodings/Section3D.lean EndToEnd/Encodings/assumptions3D.json \
             EndToEnd/Encodings/Lifted.lean EndToEnd/Encodings/lifted.json \
             EndToEnd/Encodings/Modified.lean EndToEnd/Encodings/modified.json
 

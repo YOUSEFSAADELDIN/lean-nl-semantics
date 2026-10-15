@@ -1,0 +1,61 @@
+{
+ "skipped": {},
+ "assumptions": {
+  "114": [
+   [
+    "accommodated",
+    "mary's E"
+   ]
+  ],
+  "115": [
+   [
+    "accommodated",
+    "mary's E"
+   ]
+  ],
+  "116": [
+   [
+    "accommodated",
+    "mary's E"
+   ]
+  ],
+  "117": [
+   [
+    "accommodated",
+    "E \u2192 E"
+   ]
+  ],
+  "118": [
+   [
+    "accommodated",
+    "E \u2192 E"
+   ]
+  ],
+  "119": [
+   [
+    "accommodated",
+    "E \u2192 E"
+   ]
+  ],
+  "120": [],
+  "131": [
+   [
+    "asserted",
+    "E \u2192 E"
+   ]
+  ],
+  "132": [
+   [
+    "asserted",
+    "E \u2192 E"
+   ]
+  ],
+  "133": [],
+  "138": [
+   [
+    "asserted",
+    "E \u2192 E"
+   ]
+  ]
+ }
+}

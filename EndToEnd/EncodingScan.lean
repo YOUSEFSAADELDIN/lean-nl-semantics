@@ -2,6 +2,7 @@ import EndToEnd
 import EndToEnd.Encodings.Section5
 import EndToEnd.Encodings.Commitments
 import EndToEnd.Encodings.Section3
+import EndToEnd.Encodings.Section3D
 
 /-!
 # Noun encodings compared: FraCaS Sections 5 and 3
@@ -72,6 +73,7 @@ elab "#encoding_scan" : command => liftTermElabM do
   runF "F_pipeline_prover" FraCaS.EndToEnd.attemptCloseEndToEnd section5
   runF "F_S3" attemptGeneric section3
   runEncoding "M_S3" FraCaS.Encodings.S3.registry
+  runEncoding "D_S3" FraCaS.Encodings.S3D.registry
   runF "F_S3_pipeline_prover" FraCaS.EndToEnd.attemptCloseEndToEnd section3
 
 end FraCaS.Encodings.Scan
