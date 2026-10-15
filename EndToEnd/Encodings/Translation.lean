@@ -353,9 +353,10 @@ theorem pickT_inr (M : CModel Noun Verb Name) (n : Noun) (y : M.T n)
     (h : ∃ y', M.emb n y' = proj M (.inr ⟨n, y⟩)) : pickT M n (.inr ⟨n, y⟩) h = y := by
   have h' : ∃ y', (Sum.inr ⟨n, y⟩ : M.A ⊕ (Σ m, M.T m)) = .inr ⟨n, y'⟩ := ⟨y, rfl⟩
   unfold pickT
-  rw [dite_cond_eq_true (eq_true h')]
-  have e := (Sigma.mk.inj_iff.mp (Sum.inr.inj (Classical.choose_spec h'))).2
-  exact (eq_of_heq e).symm
+  split
+  · next h'' =>
+    exact (eq_of_heq (Sigma.mk.inj_iff.mp (Sum.inr.inj (Classical.choose_spec h''))).2).symm
+  · next hn => exact absurd h' hn
 
 open Classical in
 /-- An object's value under `n`'s criterion: that of the element of
@@ -367,7 +368,9 @@ noncomputable def critPC (M : CModel Noun Verb Name) (n : Noun) (a : M.A ⊕ (Σ
 theorem critPC_of (M : CModel Noun Verb Name) (n : Noun) (a : M.A ⊕ (Σ m, M.T m))
     (h : ∃ y, M.emb n y = proj M a) : critPC M n a = some (M.crit n (pickT M n a h)) := by
   unfold critPC
-  rw [dite_cond_eq_true (eq_true h)]
+  split
+  · rfl
+  · next hn => exact absurd h hn
 
 theorem critPC_inr (M : CModel Noun Verb Name) (n : Noun) (y : M.T n) :
     critPC M n (.inr ⟨n, y⟩) = some (M.crit n y) := by

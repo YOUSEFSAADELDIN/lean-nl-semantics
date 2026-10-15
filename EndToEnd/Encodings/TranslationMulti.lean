@@ -310,9 +310,10 @@ theorem MCModel.pick_inr (M : MCModel Noun Verb Name) (n : Noun) (y : M.T n)
     (h : ∃ y', M.emb n y' = M.proj (.inr ⟨n, y⟩)) : M.pick n (.inr ⟨n, y⟩) h = y := by
   have h' : ∃ y', (Sum.inr ⟨n, y⟩ : M.A ⊕ (Σ m, M.T m)) = .inr ⟨n, y'⟩ := ⟨y, rfl⟩
   unfold MCModel.pick
-  rw [dite_cond_eq_true (eq_true h')]
-  have e := (Sigma.mk.inj_iff.mp (Sum.inr.inj (Classical.choose_spec h'))).2
-  exact (eq_of_heq e).symm
+  split
+  · next h'' =>
+    exact (eq_of_heq (Sigma.mk.inj_iff.mp (Sum.inr.inj (Classical.choose_spec h''))).2).symm
+  · next hn => exact absurd h' hn
 
 open Classical in
 /-- An object's value under one of `n`'s criteria: that of the element
@@ -324,7 +325,9 @@ noncomputable def critM (M : MCModel Noun Verb Name) (n : Noun) (i : M.ι n)
 theorem critM_of (M : MCModel Noun Verb Name) (n : Noun) (i : M.ι n) (a : M.A ⊕ (Σ m, M.T m))
     (h : ∃ y, M.emb n y = M.proj a) : critM M n i a = some (M.crit n i (M.pick n a h)) := by
   unfold critM
-  rw [dite_cond_eq_true (eq_true h)]
+  split
+  · rfl
+  · next hn => exact absurd h hn
 
 theorem critM_inr (M : MCModel Noun Verb Name) (n : Noun) (i : M.ι n) (y : M.T n) :
     critM M n i (.inr ⟨n, y⟩) = some (M.crit n i y) := by
