@@ -312,7 +312,10 @@ typed one (`EveryT`, `AtLeastT`, ...) and "is an N" is `IsA`.
   formulas (`TModel.sat_iff_shadow`, by `det_transfer` and
   `more_transfer`). A predicate model is read as the typed model of its
   subtypes (`PModel.lift`), whose shadow is the model itself
-  (`PModel.lift_shadow`).
+  (`PModel.lift_shadow`). That reading of a predicate as a type is the
+  linglib bridge's `CN'` (`bridge/LinglibBridge.lean`), whose
+  `CN'.intersective_widen` is also the general form of Phase 3's result
+  on intersective adjectives.
 - **`not_valid_without_injectivity`**: dropping injectivity breaks the
   equivalence. The premises are "at least two n", "every n is an m",
   "every n is v" and "at most one m is v". With predicates they are
@@ -414,6 +417,82 @@ What this phase does not show:
   APCOM" is still one name. So the audit's 3 object-noun premises (17,
   24, 328) are not tested.
 
+## Phase 4 results: individuation and copredication (`Copredication.lean`, CI run 38659837431)
+
+FraCaS does not test the cases Chatzikyriakidis & Luo use to argue for
+nouns as types. Phase 4 states three small problems in their style. They
+were constructed for this phase, not taken from a dataset, and the
+expected answers are judgments from that literature. Each claim is
+settled in Lean in three encodings. The phase reads the MTT core's
+`Individuation.lean` and `DotTypes.lean` without changing them.
+
+- **I1** "John picked up two books. John mastered every book he picked
+  up." ⇒ "John mastered two books." Not entailed: the two books may be
+  two copies of one text. This is the contrast `MTT.v` Part 7 states
+  (CL20 §5.3.1): "picked up two books" counts physical objects,
+  "mastered two books" counts texts.
+- **I2** "John mastered two books. John picked up every book he
+  mastered." ⇒ "John picked up two books." The mirror image: not
+  entailed if one volume can hold two texts (an anthology).
+- **C1** "John picked up and mastered some book." ⇒ "John mastered some
+  book." Copredication without counting, as a control.
+
+The encodings:
+- **P**: one domain of individuals, counted by the corpus's `AtLeast`;
+  "picked up" and "mastered" are predicates of the same individuals.
+- **P+**: P with a stipulated function `textOf` and a determiner that
+  counts through it.
+- **M**: dot types, as in `DotTypes.lean`. "Picked up" is a predicate of
+  a book's physical aspect, "mastered" of its informational aspect, and
+  each counts by its own aspect's identity (`TwoBy`, which is `MTT.v`'s
+  `countGe2` restricted to a predicate).
+
+| | I1 (two copies, one text) | I2 (one volume, two texts) | C1 (copredication only) |
+|---|---|---|---|
+| P (one domain) | **valid: commits to "yes"** | valid | valid |
+| P+ (stipulated `textOf`) | open | - | - |
+| M (dot types) | open; valid if each text has one volume | open; valid if each volume has one text | valid |
+
+1. **P answers I1 wrongly, and the claim is valid in P**
+   (`P_I1_valid`). With one domain and one count, "picked up two books"
+   and "mastered two books" count the same individuals whenever the
+   same books are picked up and mastered. This is the second
+   verdict-level difference the comparison has found, after 215 in
+   Phase 1a, and the first outside FraCaS.
+2. **M leaves I1 and I2 open, and makes each one's assumption
+   explicit.** I1's countermodel is `MTT.v`'s own two copies of one text
+   (`M_I1_not_valid`, from `MTT.two_books_phy` and
+   `MTT.not_two_books_info`). I2's is one volume holding two texts. I1
+   becomes valid once each text has one volume, and I2 once each volume
+   has one text (`M_I1_valid_of`, `M_I2_valid_of`). P assumes both
+   without saying so.
+3. **Predicates can match M, at a price.** P+ leaves I1 open too
+   (`P2_I1_not_valid`), but it needs a stipulated identity function and
+   a determiner that counts through it. That is MTT's identity
+   criterion restated inside the predicate encoding, the same pattern
+   as Phase 1b's stipulated functions.
+4. **Copredication alone changes nothing.** C1 is valid in P and in M
+   (`P_C1_valid`, `M_C1_valid`). The encodings part only when
+   copredication meets counting.
+
+This also changes how the equivalence theorem's limit should be read.
+`not_valid_without_injectivity` shows the encodings part when two
+elements of a noun's type are one individual. Phase 4 shows that this is
+what individuation needs: two copies are two books physically and one
+book informationally. Injectivity is the assumption that a noun counts
+by the individuals' own identity, which P makes for every noun and every
+verb.
+
+What this phase does not show:
+- Three constructed problems with "two" only. It shows the encodings can
+  differ, and where. It does not measure how often this happens in text.
+- Only P, P+ and M are stated. W is P here: nothing in these problems is
+  intensional.
+- The problems are stated by hand, not produced by the pipeline, which
+  has no dot types.
+- Counting under both criteria at once ("John picked up and mastered two
+  books") is not stated. How that sentence counts is itself debated.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
@@ -421,6 +500,7 @@ What this phase does not show:
 - **2**: every problem the pipeline reaches, its own claims with nouns as types.
 - **Equivalence theorem**: over a fragment, nouns as types with injective embeddings and nouns as predicates validate the same entailments; without injectivity they do not (`Equivalence.lean`).
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
+- **4**: individuation and copredication, beyond FraCaS: three constructed problems in P, P+ and M (`Copredication.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.
