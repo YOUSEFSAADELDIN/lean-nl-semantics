@@ -116,8 +116,12 @@ Read in full: the nine papers below, and the relevant pages of Asher
   and Info of e and `book : Phy•Info → t`, "heavy book" needs Phy ≤
   Phy•Info, the wrong direction. Our P avoids this by having no sorts
   at all, one domain. The cost is that it cannot state selectional
-  restrictions ("#the television ate the cake", p. 49), which Paper A
-  does not test.
+  restrictions ("#the television ate the cake", p. 49). Phase 5
+  (`Selection.lean`) tests it: well-formedness depends only on which
+  argument types a noun's type fits, so a many-sorted predicate
+  lexicon (Retoré's option (2)) accepts exactly the sentences a
+  type-per-noun lexicon accepts. The argument holds against one-domain
+  predicates only.
 - **Their argument against "both"** (p. 51): it needs (*) "x : Man iff
   man(x)", which cannot be stipulated without making type checking
   undecidable. `IsA` and `Equivalence.lean`'s `shadow`/`lift` relate the
@@ -265,6 +269,11 @@ both types and predicates. Page numbers below are the preprint's.
 - **Apparently new**, relative to these five papers:
   - `valid_iff` and `validI_iff`: a fragment-wide equivalence, with the
     exact condition.
+  - `wt_iff_of_sameFit` and `wt_sorts_iff` (`Selection.lean`):
+    well-formedness sees only which argument types a noun fits, so
+    sorted predicates accept what MTT accepts. Retoré (2013, §5.2)
+    calls Asher's, Luo's and his logical forms "quite similar"; this
+    makes the point exact for selection, in the fragment.
   - The characterization (`CModel.agree_iff_kernel`): for nouns counting
     by any identity criterion, the encodings agree under all verb
     interpretations iff each criterion is the individuals' identity.

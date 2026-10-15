@@ -365,8 +365,9 @@ What it does not cover:
   M), anaphora (Phase 1b), and adjectives that take the noun as an
   argument (Phase 1a). Those are where the encodings were found to
   differ, and none is in the fragment.
-- Verbs are one-place predicates of individuals, and individuals are
-  named directly. Relations and quantified objects are not in it.
+- Verbs here are one-place. Phase 5 (`Relational.lean`) extends the
+  fragment and both theorems to two-place verbs, nested quantifiers
+  and identity.
 - Injectivity is shown sufficient, and its absence is shown to break
   the equivalence on one entailment. The exact condition, for nouns
   that count by any identity criterion, is the characterization in
@@ -632,6 +633,97 @@ What this phase does not show:
 - Counting under both criteria at once ("John picked up and mastered two
   books") is not stated. How that sentence counts is itself debated.
 
+## Phase 5: two-place verbs and selectional restrictions (`Relational.lean`, `Selection.lean`, CI run 38693145097)
+
+**Two-place verbs (`Relational.lean`).** The fragment so far has
+one-place verbs only, so "every student read some book" is not in it.
+`Relational.lean` adds variables, two-place verbs (`rel`), identity
+(`eq`), and quantifiers whose restrictor and scope are formulas that
+bind a variable. Quantifiers therefore nest, and both scopings of
+"every student read some book" are formulas. All the earlier results
+hold in the larger fragment:
+
+- `validR_iff`: injective embeddings, the same valid entailments (as
+  `valid_iff`).
+- `validRI_iff`: counting individuals, the same valid entailments with
+  no condition (as `validI_iff`).
+- `agreeR_iff_kernel`: nouns counting by identity criteria agree with
+  nouns as predicates, under every interpretation of the verbs and
+  relations, exactly when each criterion is the individuals' identity
+  (as `CModel.agree_iff_kernel`).
+- `Formula.toForm_eval`: the old fragment sits inside the new one, with
+  the same truth values in every encoding.
+- `pvalid_scope`, `tvalid_scope`: one worked example. "Some book was
+  read by every student" entails "every student read some book", with
+  nouns as predicates and, by `validRI_iff`, with nouns as types.
+
+The proofs need nothing new. A quantifier over a noun's type binds its
+variable to an individual, the image of the element, and the
+determiner transfer lemmas hold for any restrictor and scope. Each
+encoding is an interpretation (`Interp`) of the quantifiers, nouns,
+verbs, relations and names, and one evaluation function serves them
+all. Two interpretations that agree pointwise make every formula true
+together (`Interp.Agree.eval`), so each equivalence reduces to one
+agreement lemma per determiner.
+
+**Selectional restrictions (`Selection.lean`).** Chatzikyriakidis & Luo
+(2017: 49) count selectional restrictions for nouns as types:
+"#the television ate the cake" is a type error. That is a claim about
+which sentences are well formed, not which entailments are valid, so it
+is tested by comparing typing judgements. A lexicon (`Sig`) gives each
+noun, verb argument and name a type, with subtyping. `WT` is
+well-typedness: each verb and relation is applied to terms whose types
+are subtypes of its argument types.
+
+- **Well-formedness sees only fit (`wt_iff_of_sameFit`).** Two lexicons
+  whose nouns' and names' types fit the same argument positions make
+  exactly the same sentences well formed. Well-formedness never sees a
+  noun's type, only which argument types it falls under (its
+  profile).
+- **Sorted predicates suffice (`wt_sorts_iff`).** For any lexicon `S`,
+  the many-sorted lexicon `S.sorts` has one sort per profile, and nouns
+  are predicates over their sort, not types of their own. It accepts
+  exactly the sentences `S` accepts. This is Retoré's (2013) option of
+  "a small ontology" of sorts (Asher's position), against option (4), a
+  type per noun (Luo's). For well-formedness the two coincide, given
+  the right sorts.
+- **On well-typed sentences, typing changes no truth value
+  (`domain_irrelevance`).** In a model that respects the types, a
+  well-typed formula is true or false whatever the verbs and relations
+  do outside their argument types. So MTT's verbs, typed on their
+  domains, and predicates of all individuals that extend them make the
+  same well-typed sentences true. The proof needs conservative
+  quantifiers, ones that look only at the noun's members. Typed
+  quantifiers are conservative by construction (`tII_conservative`),
+  and the corpus's determiners are too, by the equivalence
+  (`pI_conservative`).
+- **The difference is the ill-typed sentences.** In the example lexicon
+  (`eSig`), "some table talks" is ill typed (`not_wt_table_talks`), and
+  so it is in the sorted lexicon (`not_wt_sorts_table_talks`). With
+  nouns as predicates over one domain it is well formed and contingent
+  (`table_talks_contingent`). "Some man falls" is well typed by
+  subtyping (`wt_man_falls`).
+
+So selectional restrictions separate MTT from one-domain predicates.
+They do not separate it from many-sorted predicates, which type the
+verbs' arguments the same way. As with dependent types in Section 3,
+the advantage is owed to the type structure around the nouns, not to
+nouns being types.
+
+What this phase does not show:
+- `isA` and identity are checked for scope only. "`t` is an `n`" is well
+  formed for any typed `t`, as Retoré's recognising predicates are
+  defined on the top sort. A stricter rule would make fewer sentences
+  well formed in both lexicons alike.
+- No coercions. Copredication ("picked up and mastered the book") needs
+  them, or dot types, to be well typed at all. Phase 4 states those
+  problems by hand. The comparison of coercion systems (Asher 2011;
+  Retoré 2013; Luo's coercive subtyping) is not made.
+- It is about the fragment, not FraCaS. No FraCaS problem is typed
+  here, and FraCaS is not built to test anomaly.
+- The number of sorts `S.sorts` needs is the number of distinct
+  profiles. Nothing here bounds it for a real lexicon.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
@@ -640,6 +732,7 @@ What this phase does not show:
 - **Equivalence theorem**: over a fragment, nouns as types with injective embeddings and nouns as predicates validate the same entailments; without injectivity they do not (`Equivalence.lean`).
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
+- **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.

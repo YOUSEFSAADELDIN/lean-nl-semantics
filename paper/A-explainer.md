@@ -109,6 +109,12 @@ Both hold for a whole *fragment*: every, some, no, most, both, neither,
 at least / at most / exactly *k*, "more ... than", and the connectives.
 They are not checked one example at a time.
 
+They also hold with **two-place verbs** (`Relational.lean`). There,
+quantifiers can sit inside each other, as in "every student read some
+book", which is the first gap a reviewer would point to. Nothing new
+was needed for the proofs: a quantifier over the type Book still hands
+its verb an individual, so the same counting lemmas apply.
+
 ### The converse: the characterization theorem
 
 `validI_iff` says: count by individuals, and the two views agree. The
@@ -214,6 +220,30 @@ adjective (29) and one adjective that depends on its noun (215). The
 interesting differences are outside FraCaS: the identity-criterion
 cases in section 4.
 
+**Selectional restrictions: well-formedness, not validity.** MTT's
+other selling point is that "#the television ate the cake" is a *type
+error*: "eat" wants something animate, and a television isn't. With
+predicates over one domain the sentence is fine and simply false (or
+true). This is about which sentences are *well formed*, so the project
+compared typing rules, not inferences (`Selection.lean`), and proved
+three things:
+
+1. Whether a sentence type-checks depends on a noun's type only through
+   *which verb slots it fits*. Two lexicons that agree on that accept
+   exactly the same sentences.
+2. So a **many-sorted** predicate lexicon accepts exactly the same
+   sentences. It has a few sorts (human, physical, ...), with nouns as
+   predicates over their sort. "Man" and "woman" can share a sort; they
+   needn't be separate types. This is Asher's and Retoré's kind of
+   system.
+3. For sentences that *do* type-check, typing changes no truth value:
+   what a verb does outside its domain never matters.
+
+So selectional restrictions separate MTT from *one-domain* predicates,
+but not from *many-sorted* predicates. Once again the credit goes to
+the type structure around the nouns (typed verb slots), not to nouns
+being types.
+
 **The one real cost of types is automation.** Generic automatic provers
 find fewer proofs when nouns are types. The proofs exist; the provers
 just search less well. The D encoding shows the cost comes from nouns
@@ -257,6 +287,8 @@ telling the authors.
 | Verbs choosing the counting criterion (Asher 2011; Chatzikyriakidis & Luo 2018) | The FraCaS-scale comparison (Phases 1–3) |
 | The anthology and judges cases (Asher 2011); passengers (Luo 2012) | Machine-checked versions of all of the above |
 | Recognising predicates for types (Retoré 2013), who leaves open how a type relates to its predicate | An answer to that open question, for the fragment |
+| Selectional restrictions as type errors (Chatzikyriakidis & Luo 2017); many-sorted alternatives (Asher 2011; Retoré 2013) | The proof that well-formedness depends only on which verb slots a noun fits, so many-sorted predicates accept exactly what MTT accepts |
+| Quantifier scope ("every student read some book") | The equivalence and characterization extended to two-place verbs |
 
 The honest framing: Paper A *mechanizes and sharpens* an existing
 debate. It proves exactly where the two views agree, and it pinpoints
@@ -281,10 +313,13 @@ that is the literature's point.
 - *"Isn't that obvious?"* For "every" and "some", nearly. The content is
   in counting: exactly which condition makes them agree, proved for a
   whole fragment, and showing that a published axiom is that condition.
-- *"What's the fragment missing?"* Relations between two quantified
-  nouns ("every student read some book"), "many" and "few", anaphora
-  across sentences, and adjectives like "former" or "competent" that
-  depend on the noun.
+- *"What's the fragment missing?"* "Many" and "few", anaphora across
+  sentences, adjectives like "former" or "competent" that depend on the
+  noun, and coercions (the mechanism behind "John began the book").
+  Two-place verbs ("every student read some book") *are* in it now.
+- *"What about selectional restrictions?"* Typing the verbs' argument
+  slots is what does the work, and many-sorted predicate systems do
+  that too. The project proves they accept exactly the same sentences.
 - *"Why Lean?"* So the claims are proofs, not arguments, and anyone can
   re-check them.
 - *"How much did you do yourself?"* Say it straight: an AI assistant
@@ -307,6 +342,8 @@ that is the literature's point.
   - `Counting.lean`: `validI_iff`, and the books for any number.
   - `Characterization.lean`: the characterization theorem,
     `CModel.agree_iff_kernel`.
+  - `Relational.lean`: everything above, with two-place verbs.
+  - `Selection.lean`: selectional restrictions.
   - `Copredication.lean`: the books for two.
   - `Criteria.lean`: Gotham's examples, passengers, double
     distinctness, and transitivity.
