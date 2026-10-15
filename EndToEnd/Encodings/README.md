@@ -786,14 +786,35 @@ one individual. Together with the earlier results:
 | identity criteria in counting | criteria over a richer domain, with predicates | `validC_iff` |
 | anaphora (Section 3) | dependent types, with predicates | Phase 1b (D) |
 | selectional restrictions | sorts, with predicates | `wt_sorts_iff` |
-| copredicated counting | two criteria (Gotham); not one setoid | `exists_setoid_iff` |
+| copredicated counting | two criteria, with predicates (Gotham); not one setoid | `validM_iff`, `exists_setoid_iff` |
+
+**Several criteria per noun (`TranslationMulti.lean`, CI run 38776792804).**
+Copredication counts by two criteria at once, and `DotSetoid.lean` shows
+no single criterion does it. So each noun may have a nonempty family of
+criteria (`MCModel`, `MPCModel`).
+
+- **How counting works (`countF`).** The `P`s are as many as the
+  largest set of `P`s pairwise distinct under every criterion. With
+  two criteria, that is the size of a largest matching between volumes
+  and texts, each book an edge.
+- **Numerals are double distinctness.** With two criteria, "at least
+  `n`" is double distinctness (`le_countF_bool_iff`): Gotham's
+  non-compressibility by PHYS and by INFO, and Chatzikyriakidis & Luo's
+  `Three` over their dot-setoid. "At most `n`" is its negation.
+- **The other determiners.** "Most", "both", "neither" and "exactly"
+  count by the same function. The literature settles only the
+  numerals, so this is the natural extension, not a reading taken from
+  it.
+- **The theorem.** `validM_iff`: with families of criteria, nouns as
+  types and the word-by-word translation into nouns as predicates
+  validate the same entailments. The constructions are those of
+  `Translation.lean` (`toPCM`, `MPCModel.quotM`). Each noun needs at
+  least one criterion. With none, a count would count a type's
+  elements, which `toPCM`'s domain does not preserve.
 
 What it does not show:
-- Each noun has one criterion. Copredication counts by two at once,
-  and `DotSetoid.lean` shows one setoid cannot do it. The target would
-  need a pair of criteria per noun, and the counting of determiners
-  other than numerals under two criteria is not settled in the
-  literature.
+- `Translation.lean` gives each noun one criterion. `TranslationMulti.lean`
+  lifts that (below).
 - The lexicon must be finite (`Fintype Noun`), so that `toPC`'s domain
   is finite.
 - It is about validity in the fragment. It says nothing about which
@@ -813,6 +834,7 @@ What it does not show:
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
+- **Translation theorem with several criteria per noun**, covering copredication (`TranslationMulti.lean`).
 - **Translation theorem**: nouns as types with identity criteria and nouns as predicates over a domain with an identity relation and criteria validate the same entailments, by a word-by-word translation (`Translation.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 

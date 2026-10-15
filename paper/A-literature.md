@@ -282,6 +282,10 @@ both types and predicates. Page numbers below are the preprint's.
     over a domain with an identity relation and criteria (the shape of
     Gotham's and Asher's accounts) validate the same entailments, by a
     word-by-word translation that sends identity to "same individual".
+    `validM_iff` (`TranslationMulti.lean`) extends it to nouns with
+    several criteria, which covers copredicated numerals: with two
+    criteria "at least n" is Gotham's non-compressibility by PHYS and by
+    INFO. Other determiners under two criteria are our extension.
     Neither Gotham nor C&L state such a correspondence; Gotham's
     critique of C&L (2015) and C&L's (2018) reply compare them on
     examples.

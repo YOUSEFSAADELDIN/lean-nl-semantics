@@ -158,6 +158,14 @@ sentence is valid with nouns as types and identity criteria exactly
 when its translation is valid with nouns as predicates, over a domain
 with an identity relation and criteria.
 
+The theorem also holds when a noun counts by several criteria at
+once (`validM_iff`, in `TranslationMulti.lean`). That is the
+copredication case: "picked up and mastered three books" needs three
+books distinct both as volumes and as texts. Counting by two criteria
+means finding the largest set of books that differ both ways. (It is a
+matching problem: volumes on one side, texts on the other, each book a
+line between its volume and its text.)
+
 So nouns being *types* never matters for which inferences are valid in
 the fragment. What matters is the **ontology**, meaning what the domain
 contains and how things are counted. That ties every earlier result
@@ -169,7 +177,7 @@ together:
 | identity criteria | a richer domain plus criteria, with predicates |
 | anaphora | dependent types, with predicates |
 | selectional restrictions | sorts, with predicates |
-| copredication counting | two criteria at once; one setoid can't do it |
+| copredication counting | two criteria at once, with predicates; one setoid can't do it |
 
 ---
 
@@ -385,6 +393,8 @@ that is the literature's point.
   - `Relational.lean`: everything above, with two-place verbs.
   - `Selection.lean`: selectional restrictions.
   - `Translation.lean`: the translation theorem, `validC_iff`.
+  - `TranslationMulti.lean`: the same with several criteria per noun
+    (copredication), `validM_iff`.
   - `Copredication.lean`: the books for two.
   - `Criteria.lean`: Gotham's examples, passengers, double
     distinctness, and transitivity.
