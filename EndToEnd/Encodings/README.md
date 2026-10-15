@@ -784,6 +784,7 @@ one individual. Together with the earlier results:
 |---|---|---|
 | quantifiers and counting | nothing: equivalent when counting individuals | `validI_iff`, `validRI_iff` |
 | identity criteria in counting | criteria over a richer domain, with predicates | `validC_iff` |
+| the verb chooses the criterion (C&L 2018, (43)-(45), (48)-(54)) | nothing: it carries over to predicates | | `validV_iff` |
 | anaphora (Section 3) | dependent types, with predicates | Phase 1b (D) |
 | selectional restrictions | sorts, with predicates | `wt_sorts_iff` |
 | copredicated counting | two criteria, with predicates (Gotham); not one setoid | `validM_iff`, `exists_setoid_iff` |
@@ -874,6 +875,39 @@ The modified noun is its own word here, so the predicate side's
 coextensive modified nouns, which is Phase 1a's problem 215 and is not
 claimed here.
 
+## The verb chooses the criterion (`VerbCriteria.lean`, CI run 38798780646)
+
+The translation theorems above model "book counted physically" and "book
+counted informationally" as two noun senses, as Chatzikyriakidis & Luo's
+(41)-(42) are two setoids. Their account has one lexical entry. "The
+identity criterion of the object CN ... is determined by the domain of
+the predicate" ((43)-(45)), and adjectives have a say too ((48)-(54)).
+`VerbCriteria.lean` formalizes that.
+
+- **The lexicon (`AspLex`)** gives each verb's and relation's arguments
+  an aspect (Phy, Info, ...), the domain of the predicate.
+- **Labelling (`labelQ`)** marks each quantifier with the aspects at
+  which its variable is used in the restrictor or the scope. C&L give
+  no general rule ("a little bit more complicated", p. 136). This one
+  is our reconstruction, and it gives each of their examples (37),
+  (38), (36), (48) and (55).
+- **Models.** A typed model (`VModel`) has one type per noun and one
+  criterion per aspect. A predicate model (`VPModel`) has one predicate
+  per noun and one criterion per aspect, as Gotham's PHYS and INFO. A
+  quantifier counts by the criteria of its label's aspects (`countV`),
+  or by the noun's default criterion when it has none.
+- **`validV_iff`**: with the verb choosing the criterion, an entailment
+  is valid with nouns as types exactly when its word-by-word translation
+  is valid with nouns as predicates.
+- **Gotham's (122) (`gotham122_V`, `gotham122_VP`)**: "John picked up
+  and mastered three books ⇒ John picked up three books" is valid.
+  `labelQ_p122` and `labelQ_h122` show the premise counted both ways
+  and the conclusion physically. With one lexical entry both
+  quantifiers count the same books, so the entailment follows
+  (`VModel.countV_anti`: more criteria count fewer). With two noun
+  senses as unrelated nouns, as in `TranslationMulti.lean`, it would
+  not.
+
 ## The arguments for nouns as types, checked
 
 Every argument for nouns as types in Luo (2012) and Chatzikyriakidis &
@@ -896,10 +930,6 @@ Not settled here:
   man(x)`. The correspondences above are theorems about models, in the
   metatheory, so the objection does not reach them. This is argued,
   not proved.
-- **The verb chooses the criterion (C&L 2018, (43)-(45)).** Here
-  "book" counted physically and "book" counted informationally are two
-  noun senses, as C&L's own (41)-(42) are two setoids. A single lexical
-  entry whose criterion the verb selects is not formalized.
 - **Intensional adjectives ("competent", 215)** need intensional
   predicates or types (Phase 1a). That is a choice between intensional
   and extensional predicates, not between predicates and types.
@@ -916,6 +946,7 @@ nouns as types (Phases 2 and 3).
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
+- **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.
 - **Translation theorem with several criteria per noun**, covering copredication (`TranslationMulti.lean`).
 - **Translation theorem**: nouns as types with identity criteria and nouns as predicates over a domain with an identity relation and criteria validate the same entailments, by a word-by-word translation (`Translation.lean`).

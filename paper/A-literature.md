@@ -71,6 +71,12 @@ Read in full: the nine papers below, and the relevant pages of Asher
 - **The verb's domain sets the criterion** (pp. 131-133, exx. 37-43):
   `Three(Book, Phy, pick up)` counts by =_p, `Three(Book, Info, master)`
   by =_i. That is our M encoding (`Copredication.lean`, `Counting.lean`).
+  With one lexical entry and the verb choosing (`VerbCriteria.lean`),
+  the translation theorem still holds (`validV_iff`). Adjectives have a
+  say too ((48)-(54)), and "how the identity criteria are decided are a
+  little bit more complicated" (p. 136). They give no general rule; our
+  reconstruction (the aspects at which the variable is used in
+  restrictor and scope) gives each of their examples.
 - **Dot-setoids for copredication** (§4.2, p. 134): ⟨a1,b1⟩ = ⟨a2,b2⟩ iff
   a1 =_A a2 ∨ b1 =_B b2, so `Three` over it gives double distinctness
   (ex. 47). p. 135 says "Our definition does result in an equivalence

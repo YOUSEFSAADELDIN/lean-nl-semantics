@@ -512,7 +512,7 @@ theorem gotham122_V : ValidV (Asp := BAsp) bLex [p122] h122 := by
   rw [labelQ_h122]
   refine le_trans h (M.countV_anti ?_ fun x hx => ⟨hx.1, hx.2.1⟩)
   intro k hk
-  simp only [eff, List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hk ⊢
+  simp only [eff, List.mem_cons, List.not_mem_nil, or_false] at hk ⊢
   exact Or.inl hk
 
 theorem gotham122_VP : ValidVP (Asp := BAsp) bLex [p122] h122 :=

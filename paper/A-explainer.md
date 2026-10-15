@@ -180,6 +180,7 @@ together:
 | copredication counting | two criteria at once, with predicates; one setoid can't do it |
 | "heavy book" (C&L 2017) | sorts, with the adjective said of the noun's variable |
 | subsective adjectives (FraCaS 29) | a subsectivity postulate, the same stipulation as the type |
+| the verb choosing how a noun counts | carries over to predicates unchanged |
 
 ---
 
@@ -399,6 +400,8 @@ that is the literature's point.
   - `Selection.lean`: selectional restrictions.
   - `Translation.lean`: the translation theorem, `validC_iff`.
   - `Modifiers.lean`: the "heavy book" argument and subsectivity.
+  - `VerbCriteria.lean`: one entry for "book", with the verb choosing
+    how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun
     (copredication), `validM_iff`.
   - `Copredication.lean`: the books for two.
