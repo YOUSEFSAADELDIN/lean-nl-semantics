@@ -185,6 +185,35 @@ together:
 | MTT's entailment is derivability, not model-theoretic validity | the equivalence also holds as derivability, provable with no axioms at all |
 | "competent" (FraCaS 215) | noun-relative adjectives, with predicates too; extensional adjectives fail with types too |
 
+### Why: what a noun means, as far as inference can tell
+
+The **full abstraction theorem** (`obsEq_iff`, in
+`FullAbstraction.lean`) explains why the translation theorem holds. It
+asks which part of a noun's interpretation sentences can see at all.
+
+Think of a noun as a list of **counting units**. Each unit is one thing
+you would count, together with the individuals it covers. Some examples:
+- One person on three journeys is three passenger units, each covering
+  the same person.
+- Two copies of one novel, counted as texts, are one unit covering both
+  copies.
+
+The theorem says this. Take two interpretations of a noun. No sentence
+of the fragment tells them apart, whatever the other words mean,
+exactly when they have the same units the same number of times.
+"Every", "some" and "no" see only which individuals are covered.
+"Exactly three N are P" sees how many units touch P, and those numbers
+pin the units down.
+
+For a noun that counts individuals, the units are just the individuals,
+so all that matters is the noun's extension, as Montague had it
+(`obsEq_byInd_iff`).
+
+So, for inference, a count noun means a collection of units. Types with
+criteria and predicates with criteria are two ways of writing that
+collection down. It is not yet proved for nouns that count in two ways
+at once (copredication).
+
 ---
 
 ## 4. Where they really do differ: identity criteria
@@ -344,6 +373,7 @@ telling the authors.
 | Selectional restrictions as type errors (Chatzikyriakidis & Luo 2017); many-sorted alternatives (Asher 2011; Retoré 2013) | The proof that well-formedness depends only on which verb slots a noun fits, so many-sorted predicates accept exactly what MTT accepts |
 | Quantifier scope ("every student read some book") | The equivalence and characterization extended to two-place verbs |
 | Predicate accounts with criteria (Gotham 2017; Asher 2011) | The translation theorem: nouns as types with criteria are a word-by-word notational variant of them, for the fragment |
+| Montague's nouns as sets of individuals | Full abstraction: what sentences see of a noun is exactly its counting units, and for nouns that count individuals, exactly its extension |
 
 The honest framing: Paper A *mechanizes and sharpens* an existing
 debate. It proves exactly where the two views agree, and it pinpoints
@@ -405,6 +435,7 @@ that is the literature's point.
   - `Modifiers.lean`: the "heavy book" argument and subsectivity.
   - `TypeCheck.lean`: a type checker proved correct.
   - `Constructive.lean`: the equivalence as derivability, with no axioms.
+  - `FullAbstraction.lean`: what sentences see of a noun, `obsEq_iff`.
   - `VerbCriteria.lean`: one entry for "book", with the verb choosing
     how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun

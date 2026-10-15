@@ -1019,6 +1019,46 @@ right for the same reason.
 The cost runs the other way: generic provers find fewer proofs with
 nouns as types (Phases 2 and 3).
 
+## What a noun means, as far as inference can tell (`FullAbstraction.lean`, CI run 38809883869)
+
+The equivalence and translation theorems compare two encodings. This
+asks the question both point to: which part of a noun's interpretation
+do the fragment's sentences see at all?
+
+A noun is interpreted by a finite type, an embedding into the
+individuals and an identity criterion (`NounI`). Its **counting units**
+are the criterion's values; each covers the individuals its elements
+embed to (`NounI.unit`). `NounI.units S` is how many units cover exactly
+the set `S`.
+
+- **`obsEq_iff` (full abstraction).** Two interpretations of a noun are
+  indistinguishable (`ObsEq`: no formula of the two-place fragment, in
+  any context, meaning any interpretation of the other nouns, the
+  verbs, the relations and the names, tells them apart) exactly when
+  they have the same counting units with the same multiplicities. One
+  verb in the vocabulary is enough.
+- **`obsEq_byInd_iff` (Montague, recovered).** For nouns that count
+  individuals, two interpretations are indistinguishable exactly when
+  their extensions agree.
+- **How.** "Every", "some", "no" and "is an `N`" see only the extension.
+  "Exactly `j` `N`s are `v`", with `v` free to mean any set `P`, sees how
+  many units meet `P` (`count_meets`). Those counts determine the units
+  (`eq_of_meets`): the units inside `S` are all units less those meeting
+  its complement, and the units equal to `S` follow by strong induction
+  on `S`.
+
+So, as far as the fragment's inferences go, a count noun means a
+multiset of nonempty sets of individuals. Nouns as types with criteria
+and nouns as predicates with criteria are two ways of writing one down,
+which is why the translation theorem holds. One person on three
+journeys is three passenger units covering that person; two copies of
+one novel, counted as texts, are one unit covering both.
+
+Not covered: nouns with several criteria (`TranslationMulti.lean`).
+There counting is a largest matching, and whether the counts determine
+the noun's structure is open. The domain is finite, as in the other
+model-theoretic results.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
@@ -1029,6 +1069,7 @@ nouns as types (Phases 2 and 3).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
+- **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`).
 - **Proof-theoretic equivalence**: derivability over arbitrary contexts, with no axioms (`Constructive.lean`).
 - **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.

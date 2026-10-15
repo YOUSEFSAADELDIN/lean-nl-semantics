@@ -315,6 +315,12 @@ both types and predicates. Page numbers below are the preprint's.
     individuals, are Luo's passengers and Gotham's books. C&L (2018)'s
     "sub-setoid" remark (p. 130) is the informal sufficiency half; the
     necessity half is in none of the papers read here.
+  - Full abstraction (`obsEq_iff`, `FullAbstraction.lean`): two
+    interpretations of a noun with one criterion are indistinguishable
+    by every sentence of the fragment in every context iff they have the
+    same counting units with the same multiplicities; for nouns counting
+    individuals, iff their extensions agree. None of these papers states
+    what sentences can observe of a noun. Open for several criteria.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).
