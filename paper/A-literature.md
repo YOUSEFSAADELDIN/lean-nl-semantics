@@ -3,7 +3,7 @@
 What the papers read so far say that bears on Paper A (nouns as types
 against nouns as predicates), with page or example numbers, and how each
 relates to the repository's results (`EndToEnd/Encodings/README.md`).
-Read in full: the five papers below. Cited only through them: Asher
+Read in full: the eight papers below. Cited only through them: Asher
 (2011), whose relevant pages Gotham gives.
 
 ## Gotham (2017), "Composing criteria of individuation in copredication", Journal of Semantics 34: 333-371
@@ -130,6 +130,58 @@ Read in full: the five papers below. Cited only through them: Asher
 - **Proof irrelevance** again (pp. 49-50). Indexed types for gradable and
   temporal nouns (§5) are not relevant to Paper A.
 
+## Bekki (2014), "Representing anaphora with dependent types", LACL 2014, LNCS 8535: 14-29
+
+- **Dependent Type Semantics (DTS)** is Martin-Löf type theory with Π, Σ,
+  equality and ℕ, plus an @-operator for anaphora and presupposition
+  triggers (§3). Nouns are *predicates* over one type of entities `e`:
+  "a man entered" is `(Σu:(Σx:e)M(x))E(π₁u)` (n. 8, ex. 12). The other
+  style, `(Σx:M)L(x)` with the noun as a type, is set aside to avoid
+  making nominal modifiers polymorphic (n. 8, citing Fox & Lappin).
+- **Anaphora resolution is proof search** (Definition 2): an @-term is
+  replaced by a proof term built from the context, for example
+  `π₁π₁π₂(c)` for the donkey (§4, ex. 18).
+- **Relation to Paper A.** This is the third option of Chatzikyriakidis &
+  Luo's (2017) survey: nouns as predicates in a dependent type theory.
+  It matters for Phase 1b. Our M avoids F's stipulated functions by
+  projecting Σ-typed premises, and DTS does the same with nouns as
+  predicates. So the Section 3 saving is owed to dependent types, not
+  to nouns as types (corrected in `EndToEnd/Encodings/README.md`).
+  Chatzikyriakidis & Luo (2017: 50-51) argue DTS keeps the predicate
+  view's trouble with subtyping (Phy, Info and "heavy book"). Paper A
+  does not test subtyping between sorts.
+
+## Tanaka, Mineshima & Bekki (2015), "Resolving modal anaphora in Dependent Type Semantics", JSAI-isAI 2014 Workshops, LNAI 9067: 83-98
+
+- DTS extended with explicit quantification over worlds for modal
+  subordination ("A wolf might enter. It would growl.").
+- Nouns are again predicates, now world-indexed (`wolf_w x`, entities
+  `E_w`; §4).
+- **Bridging** (ex. 12): "John has a house. The door is blue." The axiom
+  `f : Πx:E. house x → Σy:E. door y ∧ have(x,y)` is projected to find the
+  door. That is the same pattern as Phase 1b's "every report has a cover
+  page" in M, here with predicates.
+- Modality itself is outside Paper A's fragment.
+
+## Mery & Retoré (2013), "Semantic types, lexical sorts and classifiers", arXiv:1312.3168 (preprint)
+
+- **Not the paper Chatzikyriakidis & Luo (2017) cite** for "both types and
+  predicates". That is Retoré (2013), "The Montagovian generative lexicon
+  ΛTyn" (TYPES 2013), still unread.
+- **A many-sorted Montague semantics** (TY_n) with lexical modifiers:
+  coercions such as `t₃ : T → Pl` turning a town into a place, attached
+  to words, for selection restrictions and copredication ("Birmingham
+  is a huge place and voted Labour", ex. 5, with a polymorphic
+  conjunction).
+- **The paper's question is which sorts to use.** Its answer is the
+  classifier systems of classifier languages (Japanese, Chinese, sign
+  languages), which are used for counting (§3).
+- **Relation to Paper A.** It is a fourth kind of encoding: nouns as
+  predicates over many sorts, with coercions, which our P (one sort)
+  and M (types with embeddings) bracket but do not test. Classifiers as
+  counting units connect to Luo's (2012, §5) proposal that a classifier
+  or measure word supplies the identity criterion.
+
 ## What this means for Paper A
 
 - I1 is Gotham's (100). M is Chatzikyriakidis & Luo's (2018) account. I2
@@ -147,6 +199,10 @@ Read in full: the five papers below. Cited only through them: Asher
   Luo's passengers; double distinctness, shown to coincide with
   Chatzikyriakidis & Luo's dot-setoid `Three`; and the transitivity
   check.
-- **Not yet read:** Asher (2011) itself, Gupta (1980), Retoré (2013),
-  Bekki (2014) and Tanaka et al. (2015) on DTS, Cooper (2011) on TTR
-  copredication.
+- **Correction from the DTS papers.** Phase 1b's saving (no stipulated
+  functions) is owed to dependent types, which a predicate encoding can
+  also use. Paper A should say so, and could check it in Lean by
+  restating the 11 Section 3 problems with nouns as predicates and
+  Σ-typed premises.
+- **Not yet read:** Asher (2011) itself, Gupta (1980), Retoré (2013,
+  ΛTyn, TYPES 2013), Cooper (2011) on TTR copredication.

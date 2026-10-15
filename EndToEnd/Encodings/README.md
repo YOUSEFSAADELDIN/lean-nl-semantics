@@ -159,6 +159,18 @@ needs. Classically the two are equivalent (a stipulated function exists
 by choice whenever the Σ-premise holds), so this is a difference in what
 is assumed, not in what follows.
 
+**What the Section 3 saving is owed to.** The projections come from
+dependent types (Σ-typed premises whose proof objects can be projected),
+not from stating nouns as types. Dependent Type Semantics (Bekki 2014;
+Tanaka et al. 2015) states nouns as predicates over one type of entities
+(`(Σu:(Σx:e) man(x)) enter(π₁ u)`) and resolves anaphora and bridging by
+the same projections ("John has a house. The door is blue": a premise
+`Πx:e. house(x) → Σy:e. door(y) ∧ have(x,y)`, projected). So a predicate
+encoding in a dependent type theory should need no stipulated functions
+either. F needs them because it is stated in simple types, not because
+its nouns are predicates. This is argued from those papers, not checked
+in Lean: the comparison has no predicate encoding with Σ-typed premises.
+
 ## Findings so far (Phases 1a and 1b)
 
 Across the 34 problems of Sections 5 and 3 the pipeline reaches, with the
@@ -180,7 +192,9 @@ parser, readings and lexicon held fixed:
    M's types (35 postulates against 53 and 65). In Section 3, M states
    possessives and dependencies as projections of the premises' own
    proof objects, where F stipulates a function per possessive and
-   background facts linking fused names.
+   background facts linking fused names. The Section 3 saving is owed to
+   dependent types, which a predicate encoding can also use (Dependent
+   Type Semantics; see Phase 1b), not to nouns as types.
 4. **A cost in proof automation.** One generic prover finds 16/23 (S5)
    and 7/11 (S3) of M's answers against 21/23 and 10/11 of F's. Every
    miss is valid and proved by hand in `Commitments.lean`: M's premises
