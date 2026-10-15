@@ -115,8 +115,8 @@ def heavyBook : Form HNoun HVerb HRel HName :=
 
 theorem wt_heavy_book : WT hbSig [] heavyBook :=
   .quant (.verb (.var List.getElem?_cons_zero) rfl)
-    (.and (.rel (.name .john) (.var List.getElem?_cons_zero) rfl rfl)
-      (.rel (.name .john) (.var List.getElem?_cons_zero) rfl rfl))
+    (.and (.rel (HasTy.name HName.john) (.var List.getElem?_cons_zero) rfl rfl)
+      (.rel (HasTy.name HName.john) (.var List.getElem?_cons_zero) rfl rfl))
 
 /-- The same sentence is well typed with nouns as predicates over sorts. -/
 theorem wt_sorts_heavy_book : WT hbSig.sorts [] heavyBook :=
@@ -125,7 +125,7 @@ theorem wt_sorts_heavy_book : WT hbSig.sorts [] heavyBook :=
 /-- The direction the argument says predicates need fails in MTT's own
 lexicon. -/
 theorem not_phy_le_dot : ¬ hbSig.le HTy.phy HTy.dot :=
-  fun h => absurd (h : leB HTy.phy HTy.dot = true) (by decide)
+  fun h => Bool.false_ne_true h
 
 /-- ... and in the sorted lexicon: the sort of physical objects is not
 below the sort of the dot type, since only the latter fits `master`'s
@@ -134,7 +134,7 @@ theorem not_sorts_phy_le_dot :
     ¬ hbSig.sorts.le (hbSig.prof HTy.phy) (hbSig.prof HTy.dot) := by
   intro h
   have := h HTy.info ⟨Or.inr (Or.inr ⟨HRel.master, rfl⟩), rfl⟩
-  exact absurd (this.2 : leB HTy.phy HTy.info = true) (by decide)
+  exact Bool.false_ne_true this.2
 
 /-- The direction that is used holds in the sorted lexicon: the dot sort
 is below the sort of physical objects. -/
@@ -248,6 +248,6 @@ theorem fracas29_not_T : ¬ TValidRI [p29] h29 := by
     intro _ _
     exact ⟨(), rfl⟩)
   obtain ⟨_, hy⟩ := this () trivial
-  exact absurd hy (by decide)
+  exact Bool.false_ne_true hy
 
 end FraCaS.Encodings.Modifiers
