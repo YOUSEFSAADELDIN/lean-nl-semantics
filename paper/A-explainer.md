@@ -176,11 +176,13 @@ those, the choice almost never matters:
   FraCaS 138: "Every report has a cover page. R-95-103 is a report.
   Smith signed the cover page. ⇒ Smith signed the cover page of
   R-95-103." The type encoding needed no invented helper functions,
-  where the pipeline needed one per possessive. Dependent Type Semantics
-  (Bekki 2014) does the same with nouns as predicates, so the credit
-  goes to *dependent types*, not to nouns as types. The project is now
-  checking this in Lean (the "D" encoding); the build was being fixed
-  when this guide was written.
+  where the pipeline needed one per possessive. But Dependent Type
+  Semantics (Bekki 2014) does the same with nouns as predicates, and
+  the project checked this in Lean. An encoding "D", with nouns as
+  predicates and dependent types, also needs no helper functions, and
+  its automatic prover found more answers than the type encoding's (9
+  of 11 against 7). So the credit goes to *dependent types*, not to
+  nouns as types.
 
 **So:** on FraCaS, the encoding matters mainly for one subsective
 adjective (29) and one adjective that depends on its noun (215). The
@@ -189,7 +191,8 @@ cases in section 4.
 
 **The one real cost of types is automation.** Generic automatic provers
 find fewer proofs when nouns are types. The proofs exist; the provers
-just search less well.
+just search less well. The D encoding shows the cost comes from nouns
+being types, not from dependent types.
 
 ---
 

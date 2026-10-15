@@ -159,17 +159,28 @@ needs. Classically the two are equivalent (a stipulated function exists
 by choice whenever the Σ-premise holds), so this is a difference in what
 is assumed, not in what follows.
 
-**What the Section 3 saving is owed to.** The projections come from
-dependent types (Σ-typed premises whose proof objects can be projected),
-not from stating nouns as types. Dependent Type Semantics (Bekki 2014;
-Tanaka et al. 2015) states nouns as predicates over one type of entities
-(`(Σu:(Σx:e) man(x)) enter(π₁ u)`) and resolves anaphora and bridging by
-the same projections ("John has a house. The door is blue": a premise
-`Πx:e. house(x) → Σy:e. door(y) ∧ have(x,y)`, projected). So a predicate
-encoding in a dependent type theory should need no stipulated functions
-either. F needs them because it is stated in simple types, not because
-its nouns are predicates. This is argued from those papers, not checked
-in Lean: the comparison has no predicate encoding with Σ-typed premises.
+**What the Section 3 saving is owed to: dependent types, checked (CI run
+38683409778).** `gen_anaphora.py` also states the 11 problems in **D**,
+nouns as predicates over one type of entities with M's Σ-typed premises
+kept, as Dependent Type Semantics does (Bekki 2014; Tanaka et al. 2015).
+"Every report has a cover page" is `(x : E) → report x → Σ' y : E,
+coverPage y ∧ haveV x y` (`Section3D.lean`).
+
+| | generic prover: matched | wrong | valid answers: matched | stipulated functions |
+|---|---|---|---|---|
+| F (pipeline: predicates, simple types) | 10/11 | 0 | 10/11 | 7 |
+| M (nouns as types, dependent types) | 7/11 | 0 | 10/11 | **0** |
+| D (nouns as predicates, dependent types) | **9/11** | 0 | 10/11 | **0** |
+
+D needs no stipulated function: possessives and bridging definites are
+projections of the premises' proof objects, as in M, each applied to the
+proof that the possessor is of its noun. Each valid D answer is proved
+in `Section3DCommitments.lean`. So the saving is owed to dependent
+types, not to stating nouns as types. F needs stipulated functions
+because it is stated in simple types. The generic prover also finds more
+of D's answers than of M's (9 against 7). Phase 1b's automation cost
+comes from M's embeddings (`eStudent x = mary`), not from the
+projections.
 
 ## Findings so far (Phases 1a and 1b)
 
@@ -193,8 +204,9 @@ parser, readings and lexicon held fixed:
    possessives and dependencies as projections of the premises' own
    proof objects, where F stipulates a function per possessive and
    background facts linking fused names. The Section 3 saving is owed to
-   dependent types, which a predicate encoding can also use (Dependent
-   Type Semantics; see Phase 1b), not to nouns as types.
+   dependent types, not to nouns as types: D, nouns as predicates with
+   the same Σ-typed premises, needs no stipulated functions either
+   (Phase 1b).
 4. **A cost in proof automation.** One generic prover finds 16/23 (S5)
    and 7/11 (S3) of M's answers against 21/23 and 10/11 of F's. Every
    miss is valid and proved by hand in `Commitments.lean`: M's premises

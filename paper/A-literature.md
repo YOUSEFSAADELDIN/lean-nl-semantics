@@ -274,11 +274,11 @@ both types and predicates. Page numbers below are the preprint's.
   Luo's passengers; double distinctness, shown to coincide with
   Chatzikyriakidis & Luo's dot-setoid `Three`; and the transitivity
   check.
-- **Correction from the DTS papers.** Phase 1b's saving (no stipulated
-  functions) is owed to dependent types, which a predicate encoding can
-  also use. Paper A should say so, and could check it in Lean by
-  restating the 11 Section 3 problems with nouns as predicates and
-  Σ-typed premises.
+- **Correction from the DTS papers, checked.** Phase 1b's saving (no
+  stipulated functions) is owed to dependent types. D, the 11 Section 3
+  problems with nouns as predicates and Σ-typed premises, needs no
+  stipulated functions either, and the generic prover finds 9/11 of its
+  answers against M's 7/11 (`EndToEnd/Encodings/README.md`, Phase 1b).
 - **Retoré's open question is answered for the fragment.** He leaves
   open how type judgements x : T relate to their recognising predicates
   T̂(x) (§5.3). Paper A's equivalence theorems answer it for the
