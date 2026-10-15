@@ -20,7 +20,7 @@ file keeps one lexical entry per noun and lets the sentence choose.
 
 - **The lexicon (`AspLex`)** gives each verb's and relation's argument
   an aspect (`Phy`, `Info`, ...): the domain of the predicate.
-- **Elaboration (`elab`)** labels each quantifier with the aspects at
+- **Elaboration (`labelQ`)** labels each quantifier with the aspects at
   which its variable is used, in the restrictor or the scope. This
   reconstruction of the rule gives each of C&L's examples (37), (38),
   (36), (48) and (55).
@@ -81,19 +81,19 @@ def uses (L : AspLex Verb Rel Asp) : Form Noun Verb Rel Name → Nat → List As
 
 /-- Label each quantifier with the aspects its variable is used at, in
 its restrictor and its scope. -/
-def elab (L : AspLex Verb Rel Asp) : Form Noun Verb Rel Name → Form (Noun × List Asp) Verb Rel Name
+def labelQ (L : AspLex Verb Rel Asp) : Form Noun Verb Rel Name → Form (Noun × List Asp) Verb Rel Name
   | .verb v t => .verb v t
   | .rel r t u => .rel r t u
   | .isA n t => .isA (n, []) t
   | .eq t u => .eq t u
   | .top => .top
-  | .not φ => .not (elab L φ)
-  | .and φ ψ => .and (elab L φ) (elab L ψ)
-  | .or φ ψ => .or (elab L φ) (elab L ψ)
-  | .imp φ ψ => .imp (elab L φ) (elab L ψ)
-  | .quant d n C Q => .quant d (n, uses L C 0 ++ uses L Q 0) (elab L C) (elab L Q)
+  | .not φ => .not (labelQ L φ)
+  | .and φ ψ => .and (labelQ L φ) (labelQ L ψ)
+  | .or φ ψ => .or (labelQ L φ) (labelQ L ψ)
+  | .imp φ ψ => .imp (labelQ L φ) (labelQ L ψ)
+  | .quant d n C Q => .quant d (n, uses L C 0 ++ uses L Q 0) (labelQ L C) (labelQ L Q)
   | .more n C Q S =>
-    .more (n, uses L C 0 ++ uses L Q 0 ++ uses L S 0) (elab L C) (elab L Q) (elab L S)
+    .more (n, uses L C 0 ++ uses L Q 0 ++ uses L S 0) (labelQ L C) (labelQ L Q) (labelQ L S)
 
 /-- The aspects counted by: those used, or the default when none is. -/
 def eff (d : Asp) : List Asp → List Asp
@@ -174,12 +174,12 @@ noncomputable def vpI (G : VPModel Noun Verb Rel Name Asp) :
 def ValidV (L : AspLex Verb Rel Asp) (Γ : List (Form Noun Verb Rel Name))
     (φ : Form Noun Verb Rel Name) : Prop :=
   ∀ (M : VModel Noun Verb Name Asp) (R : Rel → M.A → M.A → Prop) (ρ : Nat → M.A),
-    (∀ ψ ∈ Γ, Form.eval (vI M R) (elab L ψ) ρ) → Form.eval (vI M R) (elab L φ) ρ
+    (∀ ψ ∈ Γ, Form.eval (vI M R) (labelQ L ψ) ρ) → Form.eval (vI M R) (labelQ L φ) ρ
 
 def ValidVP (L : AspLex Verb Rel Asp) (Γ : List (Form Noun Verb Rel Name))
     (φ : Form Noun Verb Rel Name) : Prop :=
   ∀ (G : VPModel Noun Verb Rel Name Asp) (ρ : Nat → G.A),
-    (∀ ψ ∈ Γ, Form.eval (vpI G) (tr (elab L ψ)) ρ) → Form.eval (vpI G) (tr (elab L φ)) ρ
+    (∀ ψ ∈ Γ, Form.eval (vpI G) (tr (labelQ L ψ)) ρ) → Form.eval (vpI G) (tr (labelQ L φ)) ρ
 
 /-! ## From predicates to types -/
 
@@ -460,12 +460,12 @@ theorem validV_iff (L : AspLex Verb Rel Asp) (Γ : List (Form Noun Verb Rel Name
   constructor
   · intro h G ρ hΓ
     have key := G.quot_eval
-    exact (key (elab L φ) ρ).mp (h G.quotV G.relQ (Quotient.mk G.setoid ∘ ρ)
-      fun ψ hψ => (key (elab L ψ) ρ).mpr (hΓ ψ hψ))
+    exact (key (labelQ L φ) ρ).mp (h G.quotV G.relQ (Quotient.mk G.setoid ∘ ρ)
+      fun ψ hψ => (key (labelQ L ψ) ρ).mpr (hΓ ψ hψ))
   · intro h M R ρ hΓ
     have key := toVP_eval M R
-    exact (key (elab L φ) (Sum.inl ∘ ρ)).mp (h (toVP M R) (Sum.inl ∘ ρ)
-      fun ψ hψ => (key (elab L ψ) (Sum.inl ∘ ρ)).mpr (hΓ ψ hψ))
+    exact (key (labelQ L φ) (Sum.inl ∘ ρ)).mp (h (toVP M R) (Sum.inl ∘ ρ)
+      fun ψ hψ => (key (labelQ L ψ) (Sum.inl ∘ ρ)).mpr (hΓ ψ hψ))
 
 end
 
@@ -498,18 +498,18 @@ def h122 : Form BNoun Empty BRel BName :=
   .quant (.atLeast 3) .book .top (.rel .pickUp (.name .john) (.var 0))
 
 /-- Elaboration counts the premise both ways and the conclusion physically. -/
-theorem elab_p122 : elab bLex p122 =
+theorem labelQ_p122 : labelQ bLex p122 =
     .quant (.atLeast 3) (.book, [.phy, .info]) .top
       (.and (.rel .pickUp (.name .john) (.var 0)) (.rel .master (.name .john) (.var 0))) := rfl
 
-theorem elab_h122 : elab bLex h122 =
+theorem labelQ_h122 : labelQ bLex h122 =
     .quant (.atLeast 3) (.book, [.phy]) .top (.rel .pickUp (.name .john) (.var 0)) := rfl
 
 theorem gotham122_V : ValidV (Asp := BAsp) bLex [p122] h122 := by
   intro M R ρ hΓ
   have h := hΓ p122 (List.mem_singleton_self _)
-  rw [elab_p122] at h
-  rw [elab_h122]
+  rw [labelQ_p122] at h
+  rw [labelQ_h122]
   refine le_trans h (M.countV_anti ?_ fun x hx => ⟨hx.1, hx.2.1⟩)
   intro k hk
   simp only [eff, List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hk ⊢
