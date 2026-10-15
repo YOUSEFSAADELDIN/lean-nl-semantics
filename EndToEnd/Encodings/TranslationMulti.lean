@@ -1,4 +1,5 @@
 import EndToEnd.Encodings.Translation
+import EndToEnd.Encodings.Criteria
 
 /-!
 # The translation theorem with several criteria per noun
@@ -54,7 +55,7 @@ open Classical in
 criterion `c i`. -/
 noncomputable def countF {N ι : Type} {K : ι → Type} [Fintype N] (c : ∀ i, N → K i)
     (P : N → Prop) : Nat :=
-  ((Finset.univ.filter P).powerset.filter (fun S => ∀ i, Set.InjOn (c i) (S : Set N))).sup
+  ((Finset.univ.filter P).powerset.filter (fun S : Finset N => ∀ i, Set.InjOn (c i) ↑S)).sup
     Finset.card
 
 theorem le_countF_iff {N ι : Type} {K : ι → Type} [Fintype N] (c : ∀ i, N → K i)
@@ -64,7 +65,8 @@ theorem le_countF_iff {N ι : Type} {K : ι → Type} [Fintype N] (c : ∀ i, N 
   unfold countF
   constructor
   · intro h
-    obtain ⟨S, hS, he⟩ := Finset.exists_mem_eq_sup _ ⟨∅, by simp⟩ Finset.card
+    obtain ⟨S, hS, he⟩ := Finset.exists_mem_eq_sup _
+      ⟨∅, Finset.mem_filter.mpr ⟨Finset.empty_mem_powerset _, fun _ => by simp⟩⟩ Finset.card
     rw [he] at h
     rw [Finset.mem_filter, Finset.mem_powerset] at hS
     exact ⟨S, h, fun x hx => (Finset.mem_filter.mp (hS.1 hx)).2, hS.2⟩
@@ -85,7 +87,7 @@ theorem le_countF_bool_iff {N : Type} {K : Bool → Type} [Fintype N] (c : ∀ i
 
 /-- A map that carries the `P'`s to `P`s and reflects every criterion
 does not lose count. -/
-theorem countF_le_of_map {N N' ι : Type} {K K' : ι → Type} [Fintype N] [Fintype N']
+theorem countF_le_of_map {N N' ι : Type} {K K' : ι → Type} {_ : Fintype N} {_ : Fintype N'}
     {c : ∀ i, N → K i} {c' : ∀ i, N' → K' i} {P : N → Prop} {P' : N' → Prop} (g : N' → N)
     (hι : Nonempty ι) (hP : ∀ a, P' a → P (g a))
     (hc : ∀ i a b, P' a → P' b → c i (g a) = c i (g b) → c' i a = c' i b) :
