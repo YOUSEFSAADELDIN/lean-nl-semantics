@@ -3,7 +3,7 @@
 What the papers read so far say that bears on Paper A (nouns as types
 against nouns as predicates), with page or example numbers, and how each
 relates to the repository's results (`EndToEnd/Encodings/README.md`).
-Read in full: the eight papers below, and the relevant pages of Asher
+Read in full: the nine papers below, and the relevant pages of Asher
 (2011).
 
 ## Gotham (2017), "Composing criteria of individuation in copredication", Journal of Semantics 34: 333-371
@@ -199,11 +199,50 @@ Read in full: the eight papers below, and the relevant pages of Asher
   page" in M, here with predicates.
 - Modality itself is outside Paper A's fragment.
 
+## Retoré (2013), "A type theoretical framework for natural language semantics: the Montagovian generative lexicon", HAL hal-00779214v2 (preprint); published as "The Montagovian generative lexicon ΛTyn", TYPES 2013, LIPIcs 26 (2014)
+
+The paper Chatzikyriakidis & Luo (2017) cite for the view that nouns are
+both types and predicates. Page numbers below are the preprint's.
+
+- **ΛTyn** (§2.3, pp. 8-9) is a many-sorted higher-order logic in Girard's
+  system F. It has base types e₁, ..., eₙ for sorts, plus t. Each word
+  has a principal λ-term and optional λ-terms, each marked rigid or
+  flexible, which do the coercions (§2.4, Fig. 3).
+- **Five options for the base types** (§2.2, p. 7): (1) one type e;
+  (2) a small ontology (Asher's position); (3) classifiers (Mery &
+  Retoré); (4) a type per common noun (Luo); (5) a type per formula. For
+  each type τ "there should be a corresponding predicate τ̂ : e → t
+  which recognises τ entities among entities of a larger type"
+  (pp. 7-8), with the presupposition P(ι(P)), or ι(τ̂) : τ (n. 10).
+- **That is the "both" view**, and it is our construction. τ̂ over a top
+  type e is our `IsA e` over the individuals. Reading a typed model as
+  its predicates (`TModel.shadow`) and a predicate as its type
+  (`PModel.lift`) are the two directions Retoré needs. §5.3 (p. 20)
+  leaves open "the relation ... between type judgements x : T that, as
+  linguistic presuppositions, cannot be denied and predicates T̂(x)
+  that can be denied". `valid_iff` and `validI_iff` answer it for a
+  fragment, as a theorem about models: stating a noun by its type or
+  by its recognising predicate validates the same entailments, provided
+  counting is by the individuals.
+- **Copredication** (Term 1, p. 9; §3.1) is a polymorphic AND applying P
+  and Q to f(x) and g(x) for optional terms f : ξ → α and g : ξ → β
+  ("Liverpool is vast and voted"). Rigid terms block infelicitous
+  copredication ("#Liverpool voted and won").
+- **Counting** (§4.2, p. 18): a cardinality operator ||_|| : Πα.(α → t) →
+  ℕ counts at whatever type it is given. With coercions f : ξ → α,
+  counting a property at ξ or at α can differ. That is the individuation
+  question, but the paper does not raise it, and its copredication
+  examples do not count.
+- **Determiners** are Hilbert ε, τ (and ι, η) terms, generic elements
+  rather than generalized quantifiers (§4.1). Outside Paper A's fragment.
+- **Comparison** (§5.2, pp. 19-20): Asher's, Luo's and Retoré's logical
+  forms "are quite similar". The differences are in the metalogic and
+  in whether coercions are word-driven or type-driven.
+
 ## Mery & Retoré (2013), "Semantic types, lexical sorts and classifiers", arXiv:1312.3168 (preprint)
 
 - **Not the paper Chatzikyriakidis & Luo (2017) cite** for "both types and
-  predicates". That is Retoré (2013), "The Montagovian generative lexicon
-  ΛTyn" (TYPES 2013), still unread.
+  predicates". That is Retoré (2013), above.
 - **A many-sorted Montague semantics** (TY_n) with lexical modifiers:
   coercions such as `t₃ : T → Pl` turning a town into a place, attached
   to words, for selection restrictions and copredication ("Birmingham
@@ -240,6 +279,11 @@ Read in full: the eight papers below, and the relevant pages of Asher
   also use. Paper A should say so, and could check it in Lean by
   restating the 11 Section 3 problems with nouns as predicates and
   Σ-typed premises.
-- **Not yet read:** Gupta (1980), Retoré (2013, ΛTyn, TYPES 2013),
-  Cooper (2011) on TTR copredication. Of Asher (2011), only ch. 5,
-  pp. 146-159.
+- **Retoré's open question is answered for the fragment.** He leaves
+  open how type judgements x : T relate to their recognising predicates
+  T̂(x) (§5.3). Paper A's equivalence theorems answer it for the
+  fragment, so the paper can present them as that answer.
+- **Not yet read:** Gupta (1980); Cooper (2011), "Copredication,
+  quantification and frames", LACL 2011, LNCS 6736: 64-79 (the PDF
+  supplied was Chatzikyriakidis & Luo 2015 again). Of Asher (2011), only
+  ch. 5, pp. 146-159.
