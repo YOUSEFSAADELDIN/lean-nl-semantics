@@ -121,7 +121,7 @@ theorem one_le_count_iff (I : NounM A) (P : A → Prop) :
   rw [le_countF_iff]
   constructor
   · rintro ⟨S, h1, hP, -⟩
-    obtain ⟨y, hy⟩ := Finset.card_pos.mp (by omega)
+    obtain ⟨y, hy⟩ : S.Nonempty := Finset.card_pos.mp (by omega)
     exact ⟨y, hP y hy⟩
   · rintro ⟨y, hy⟩
     refine ⟨{y}, (Finset.card_singleton y).symm.le, fun z hz => ?_, fun i => ?_⟩
@@ -131,7 +131,7 @@ theorem one_le_count_iff (I : NounM A) (P : A → Prop) :
       exact Set.injOn_singleton _ _
 
 theorem ext_iff_one_le (I : NounM A) (x : A) : I.ext x ↔ 1 ≤ I.count (fun z => z = x) :=
-  (one_le_count_iff I _).symm
+  (one_le_count_iff I (fun z => z = x)).symm
 
 theorem count_empty (I : NounM A) (hA : IsEmpty A) (P : A → Prop) : I.count P = 0 := by
   by_contra h
@@ -260,6 +260,16 @@ theorem countF_unit {N K : Type} [Fintype N] (c : N → K) (P : N → Prop) :
         _ = c (g k2) := hab
         _ = k2.val := (hg k2).2
 
+theorem mem_img (J : NounI A) (R : A → Prop) (k : J.K) :
+    k ∈ J.img R ↔ ∃ y, R (J.emb y) ∧ J.crit y = k := by
+  unfold NounI.img
+  constructor
+  · intro hk
+    obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hk
+    exact ⟨y, (Finset.mem_filter.mp hy).2, rfl⟩
+  · rintro ⟨y, hy, rfl⟩
+    exact Finset.mem_image.mpr ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hy⟩, rfl⟩
+
 theorem count_toM (J : NounI A) (R : A → Prop) : J.toM.count R = (J.img R).card :=
   countF_unit J.crit (fun y => R (J.emb y))
 
@@ -270,29 +280,18 @@ theorem count_toM_submod (J : NounI A) (P Q : A → Prop) :
   rw [count_toM, count_toM, count_toM, count_toM]
   have hU : J.img (fun z => P z ∨ Q z) = J.img P ∪ J.img Q := by
     ext k
+    rw [mem_img, Finset.mem_union, mem_img, mem_img]
     constructor
-    · intro hk
-      obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hk
-      rcases (Finset.mem_filter.mp hy).2 with h | h
-      · exact Finset.mem_union_left _
-          (Finset.mem_image.mpr ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩, rfl⟩)
-      · exact Finset.mem_union_right _
-          (Finset.mem_image.mpr ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, h⟩, rfl⟩)
-    · intro hk
-      rcases Finset.mem_union.mp hk with hk | hk
-      · obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hk
-        exact Finset.mem_image.mpr
-          ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, Or.inl (Finset.mem_filter.mp hy).2⟩, rfl⟩
-      · obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hk
-        exact Finset.mem_image.mpr
-          ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, Or.inr (Finset.mem_filter.mp hy).2⟩, rfl⟩
+    · rintro ⟨y, h | h, rfl⟩
+      · exact Or.inl ⟨y, h, rfl⟩
+      · exact Or.inr ⟨y, h, rfl⟩
+    · rintro (⟨y, h, rfl⟩ | ⟨y, h, rfl⟩)
+      · exact ⟨y, Or.inl h, rfl⟩
+      · exact ⟨y, Or.inr h, rfl⟩
   have hI : J.img (fun z => P z ∧ Q z) ⊆ J.img P ∩ J.img Q := by
     intro k hk
-    obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hk
-    have hPQ := (Finset.mem_filter.mp hy).2
-    exact Finset.mem_inter.mpr
-      ⟨Finset.mem_image.mpr ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hPQ.1⟩, rfl⟩,
-       Finset.mem_image.mpr ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hPQ.2⟩, rfl⟩⟩
+    obtain ⟨y, ⟨h1, h2⟩, rfl⟩ := (mem_img J _ k).mp hk
+    exact Finset.mem_inter.mpr ⟨(mem_img J P _).mpr ⟨y, h1, rfl⟩, (mem_img J Q _).mpr ⟨y, h2, rfl⟩⟩
   rw [hU]
   have e := Finset.card_union_add_card_inter (J.img P) (J.img Q)
   have l := Finset.card_le_card hI
@@ -333,8 +332,8 @@ theorem books_12 (x : Fin 3 → A) (hx : Function.Injective x) : (books x).count
 
 theorem books_union (x : Fin 3 → A) : 2 ≤ (books x).count (fun z => P01 x z ∨ P12 x z) := by
   unfold NounM.count
-  refine (le_countF_iff _ _ 2).mpr ⟨{0, 2}, by decide, fun y hy => ?_,
-    fun i a ha b hb => bcrit_02 i a ha b hb⟩
+  refine (le_countF_iff _ _ 2).mpr ⟨({0, 2} : Finset (Fin 3)), by decide, fun y hy => ?_,
+    fun i a ha b hb => bcrit_02 i a (Finset.mem_coe.mp ha) b (Finset.mem_coe.mp hb)⟩
   rcases Finset.mem_insert.mp hy with rfl | hy
   · exact Or.inl (Or.inl rfl)
   · rw [Finset.mem_singleton.mp hy]
