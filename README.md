@@ -9,19 +9,37 @@ translates FraCaS from its English automatically, and a bridge to
 `linglib`, a Montagovian (predicate semantics) library, for comparing
 the two approaches.
 
-It has four parts, each self-contained, with its own code, checks and
-results:
+## Map of the repository
 
-1. **MTT core** (`LeanNLSemantics/MTT/`): the semantics itself.
-2. **The FraCaS corpus** (`LeanNLSemantics/FraCaS/`): all 342 problems as
-   hand-written Lean theorems, with a certified monotonicity reasoner, a
-   GF cross-check of their English, and an evaluation of whether a fixed
-   prover recovers each gold answer (`BLIND_EVAL.md`).
-3. **The linglib bridge** (`bridge/`): MTT's nouns-as-types against
-   linglib's nouns-as-predicates, as a separate Lake package.
-4. **The end-to-end pipeline** (`EndToEnd/`): FraCaS translated
-   automatically from its original English and scored by its own prover
-   (`EndToEnd/README.md`).
+It has four parts, each self-contained, with its own code, checks and
+results. A part may read definitions from an earlier one, but never
+changes it.
+
+| Folder | What it is | State |
+|---|---|---|
+| `LeanNLSemantics/MTT/` | **1. MTT core.** The nouns-as-types theory, ported from `MTT.v` | Finished |
+| `LeanNLSemantics/FraCaS/` | **2. The FraCaS corpus.** All 342 FraCaS problems written by hand in Lean (nouns as predicates), with a certified monotonicity reasoner, a GF cross-check of their English, an evaluation of a fixed prover on them (`BLIND_EVAL.md`), and the lexical-premise audit (`LEXICAL_AUDIT.md`) | Finished |
+| `bridge/` | **3. The linglib bridge.** Links MTT's noun types to linglib's noun predicates; a separate Lake package | Finished, exploratory |
+| `EndToEnd/` | **4. The end-to-end pipeline.** FraCaS's English translated to Lean automatically and proved by a fixed prover (`EndToEnd/README.md`) | **Paper B** |
+| `EndToEnd/Encodings/` | The comparison of nouns as types with nouns as predicates: Phases 1-3 and the equivalence theorem (`EndToEnd/Encodings/README.md`) | **Paper A** |
+
+Supporting folders:
+
+| Folder | What it is |
+|---|---|
+| `gf/` | The Grammatical Framework grammar the pipeline parses with |
+| `paper/` | Paper B's draft (`paper/B/`) and outline |
+| `scripts/` | Generators and checks for the files `gf/` and `FraCaS/` commit |
+| `viz/` | The website: data exports and the live pages |
+
+So the two papers live here:
+
+- **Paper B** (a sound-by-construction FraCaS pipeline): `EndToEnd/` and
+  `paper/B/`.
+- **Paper A** (nouns as types against nouns as predicates):
+  `EndToEnd/Encodings/` and `LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`. It
+  draws on `LeanNLSemantics/MTT/` for the MTT side. It sits inside
+  `EndToEnd/` only because it reuses the pipeline's parses.
 
 **Which parts are MTT.** Only parts 1 and 3 use nouns as types. Parts 2
 and 4 state every problem with nouns as *predicates* over one domain of
