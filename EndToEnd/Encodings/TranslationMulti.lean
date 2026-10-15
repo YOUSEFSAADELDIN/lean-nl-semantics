@@ -65,11 +65,11 @@ theorem le_countF_iff {N ι : Type} {K : ι → Type} [Fintype N] (c : ∀ i, N 
   unfold countF
   constructor
   · intro h
-    obtain ⟨S, hS, he⟩ := Finset.exists_mem_eq_sup _
-      ⟨∅, Finset.mem_filter.mpr ⟨Finset.empty_mem_powerset _, fun _ => by simp⟩⟩ Finset.card
-    rw [he] at h
-    rw [Finset.mem_filter, Finset.mem_powerset] at hS
-    exact ⟨S, h, fun x hx => (Finset.mem_filter.mp (hS.1 hx)).2, hS.2⟩
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · exact ⟨∅, Nat.zero_le _, by simp, fun _ => by simp⟩
+    · obtain ⟨S, hS, hle⟩ := (Finset.le_sup_iff hn).mp h
+      rw [Finset.mem_filter, Finset.mem_powerset] at hS
+      exact ⟨S, hle, fun x hx => (Finset.mem_filter.mp (hS.1 hx)).2, hS.2⟩
   · rintro ⟨S, hn, hP, hc⟩
     refine le_trans hn (Finset.le_sup (f := Finset.card) ?_)
     rw [Finset.mem_filter, Finset.mem_powerset]
