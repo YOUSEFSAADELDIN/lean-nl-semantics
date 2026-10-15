@@ -825,6 +825,88 @@ What it does not show:
   that ontology objects to the predicate accounts themselves, not to
   this construction.
 
+## Two arguments about adjectives (`Modifiers.lean`, CI run 38790801238)
+
+**"Heavy book" (Chatzikyriakidis & Luo 2017, pp. 47-48).** Their
+argument against nouns as predicates once sorts such as `Phy` and `Info`
+exist: with `book : Phy • Info → t` and `heavy : (Phy → t) → (Phy → t)`,
+`heavy(book)` needs `Phy ≤ Phy • Info` by contravariance, "the wrong
+direction". They extend it to Dependent Type Semantics (p. 51).
+
+The argument applies the adjective to the noun *predicate*. A sorted
+encoding can apply it to the noun's *variable*: "every heavy book" binds
+a variable of the noun's sort and says `heavy` of it, as MTT's own
+`Σx : Book. heavy(x)` does. What that needs is `Phy • Info ≤ Phy`, the
+right direction, which MTT assumes too.
+
+- `wt_heavy_book`: in their lexicon (`Book ≤ Phy • Info`, `Phy • Info ≤
+  Phy`, `Phy • Info ≤ Info`), "John picked up and mastered every heavy
+  book" is well typed.
+- `wt_sorts_heavy_book`: so it is with nouns as predicates over sorts
+  (`wt_sorts_iff`).
+- `not_phy_le_dot`, `not_sorts_phy_le_dot`: `Phy ≤ Phy • Info` fails in
+  both lexicons, and neither needs it. `sorts_dot_le_phy`: the
+  direction that is used holds.
+
+So the argument holds against one design, adjectives typed as modifiers
+of `Phy`-predicates. It does not hold against sorted predicates as such.
+
+**Subsectivity (FraCaS 29).** Phase 3 found that 29 ("every
+commissioner is a leading businessman ⇒ every commissioner is a
+businessman") is the one modified-noun problem where nouns as types
+supply the needed fact and predicates need a postulate.
+
+- `validSub_iff` proves the two are the same stipulation in two places.
+  Counting individuals, an entailment is valid over typed models whose
+  modified nouns have a coercion into their nouns (`Coercive`, MTT's
+  first projection out of `Σx : N. a(x)`) exactly when it is valid over
+  predicate models with the subsectivity postulate (`Subsective`).
+- 29 is valid on both sides with the stipulation (`fracas29_P`,
+  `fracas29_T`).
+- It fails on both sides without it (`fracas29_not_P`,
+  `fracas29_not_T`). Types get subsectivity by choosing the Σ-type for
+  "leading businessman", the same lexical decision as the postulate
+  that "leading" is subsective.
+
+The modified noun is its own word here, so the predicate side's
+"leading businessman" need not depend only on the extension of
+"businessman". With an extensional modifier, coextensive nouns get
+coextensive modified nouns, which is Phase 1a's problem 215 and is not
+claimed here.
+
+## The arguments for nouns as types, checked
+
+Every argument for nouns as types in Luo (2012) and Chatzikyriakidis &
+Luo (2017, 2018) that concerns which entailments are valid or which
+sentences are well formed:
+
+| argument | holds against | fails against | where |
+|---|---|---|---|
+| identity criteria in counting (Luo 2012; passengers) | one-domain predicates counting individuals | predicates over a richer domain with criteria | `validC_iff`, `Characterization.lean` |
+| copredicated counting (C&L 2015, 2018) | one-domain predicates | predicates with two criteria (Gotham); and C&L's own single setoid fails | `validM_iff`, `no_setoid` |
+| selectional restrictions (C&L 2017, p. 49) | one-domain predicates | sorted predicates | `wt_sorts_iff` |
+| "heavy book" (C&L 2017, pp. 47-48, 51) | adjectives as modifiers of `Phy`-predicates | sorted predicates, adjective said of the variable | `wt_sorts_heavy_book` |
+| subsective adjectives (FraCaS 29) | predicates without a postulate | predicates with the subsectivity postulate | `validSub_iff` |
+| anaphora (Section 3) | predicates without dependent types | predicates with dependent types (DTS) | Phase 1b, D |
+| quantifiers and counting individuals | nothing | | `validI_iff`, `validRI_iff` |
+
+Not settled here:
+- **The "both" view needs undecidable type checking (C&L 2017, p.
+  51).** That is about an object theory with a rule `x : Man ↔
+  man(x)`. The correspondences above are theorems about models, in the
+  metatheory, so the objection does not reach them. This is argued,
+  not proved.
+- **The verb chooses the criterion (C&L 2018, (43)-(45)).** Here
+  "book" counted physically and "book" counted informationally are two
+  noun senses, as C&L's own (41)-(42) are two setoids. A single lexical
+  entry whose criterion the verb selects is not formalized.
+- **Intensional adjectives ("competent", 215)** need intensional
+  predicates or types (Phase 1a). That is a choice between intensional
+  and extensional predicates, not between predicates and types.
+
+The cost runs the other way: generic provers find fewer proofs with
+nouns as types (Phases 2 and 3).
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
@@ -834,6 +916,7 @@ What it does not show:
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
+- **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.
 - **Translation theorem with several criteria per noun**, covering copredication (`TranslationMulti.lean`).
 - **Translation theorem**: nouns as types with identity criteria and nouns as predicates over a domain with an identity relation and criteria validate the same entailments, by a word-by-word translation (`Translation.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).

@@ -122,7 +122,12 @@ Read in full: the nine papers below, and the relevant pages of Asher
   (DTS: Bekki; Tanaka et al.), and as both (Retoré).
 - **Their argument against predicates** (pp. 47-48): with subtypes Phy
   and Info of e and `book : Phy•Info → t`, "heavy book" needs Phy ≤
-  Phy•Info, the wrong direction. Our P avoids this by having no sorts
+  Phy•Info, the wrong direction. **Checked** (`Modifiers.lean`): the
+  argument types `heavy : (Phy → t) → (Phy → t)` as a modifier of the
+  noun predicate. Said of the noun's variable instead, as MTT's
+  `Σx : Book. heavy(x)` does, the sorted encoding needs only
+  Phy•Info ≤ Phy, which MTT assumes, and accepts "John picked up and
+  mastered every heavy book" (`wt_sorts_heavy_book`). Our P avoids this by having no sorts
   at all, one domain. The cost is that it cannot state selectional
   restrictions ("#the television ate the cake", p. 49). Phase 5
   (`Selection.lean`) tests it: well-formedness depends only on which

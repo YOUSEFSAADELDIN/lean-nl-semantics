@@ -178,6 +178,8 @@ together:
 | anaphora | dependent types, with predicates |
 | selectional restrictions | sorts, with predicates |
 | copredication counting | two criteria at once, with predicates; one setoid can't do it |
+| "heavy book" (C&L 2017) | sorts, with the adjective said of the noun's variable |
+| subsective adjectives (FraCaS 29) | a subsectivity postulate, the same stipulation as the type |
 
 ---
 
@@ -225,9 +227,12 @@ those, the choice almost never matters:
 - **Phase 3:** 8 problems needed an extra fact like "an Irish delegate
   is a delegate". In 7, any encoding that builds "Irish delegate" from
   "Irish" and "delegate" supplies it, predicates included. Only one,
-  FraCaS 29 ("leading businessmen"), needs nouns as types, because
-  "leading" is a *subsective* adjective: a leading businessman is a
-  businessman, but not necessarily a leading person.
+  FraCaS 29 ("leading businessmen"), needs more, because "leading" is
+  a *subsective* adjective: a leading businessman is a businessman, but
+  not necessarily a leading person. Types build this in; predicates
+  need a postulate that "leading" is subsective. `Modifiers.lean`
+  proves these are the same stipulation in two places. With it, both
+  get 29; without it, neither does.
 - **Phase 1a, FraCaS 215:**
   > All legal authorities are law lecturers. All law lecturers are
   > legal authorities. ⇒ All competent legal authorities are competent
@@ -393,6 +398,7 @@ that is the literature's point.
   - `Relational.lean`: everything above, with two-place verbs.
   - `Selection.lean`: selectional restrictions.
   - `Translation.lean`: the translation theorem, `validC_iff`.
+  - `Modifiers.lean`: the "heavy book" argument and subsectivity.
   - `TranslationMulti.lean`: the same with several criteria per noun
     (copredication), `validM_iff`.
   - `Copredication.lean`: the books for two.
