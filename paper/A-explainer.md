@@ -228,6 +228,18 @@ never exceed "how many among X" plus "how many among Y", and here it is
 not one criterion in disguise, and that is visible from sentences
 alone.
 
+**Plurals don't change the answer** (`obsEqP_iff`, in
+`FullAbstractionPlural.lean`). Add plural sentences: "three passengers
+gathered", "the books are heavy together", "each of them read one". Let
+a plurality of passengers be a collection of the noun's own things (here
+journeys), as nouns as types would have it. Then three journeys by one
+person form a group of three passengers, or two, or one. That looks like
+it could reveal more of a noun than singular sentences do. It doesn't:
+two interpretations are still indistinguishable exactly when they have
+the same units. A group of k passengers covering exactly some people
+exists exactly when some k units each touch those people and together
+cover them, and that depends only on the units.
+
 ---
 
 ## 4. Where they really do differ: identity criteria
@@ -453,6 +465,8 @@ that is the literature's point.
   - `FullAbstraction.lean`: what sentences see of a noun, `obsEq_iff`.
   - `FullAbstractionMulti.lean`: the same with several criteria, and
     three books no single criterion counts, `not_single`.
+  - `FullAbstractionPlural.lean`: the same with plurals and collective
+    verbs, `obsEqP_iff`.
   - `VerbCriteria.lean`: one entry for "book", with the verb choosing
     how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun

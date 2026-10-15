@@ -327,7 +327,11 @@ both types and predicates. Page numbers below are the preprint's.
     count them (`not_single`), since one-criterion counts are
     submodular. Gotham (2017) and C&L (2018) argue copredication needs
     both criteria from examples; this proves no single criterion can
-    stand in for them, judged by sentences alone.
+    stand in for them, judged by sentences alone. With plurals
+    (`obsEqP_iff`, `FullAbstractionPlural.lean`): collective numerals,
+    definite plurals, collective verbs and "one of them", with a
+    plurality of `N`s a set of the noun's own things counted by its
+    criterion; indistinguishable still iff the same units.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).

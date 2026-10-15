@@ -1088,6 +1088,50 @@ So with one criterion a noun means a multiset of units; with several it
 means its counting function, which no single criterion need produce. No
 simpler structure than the counting function is claimed.
 
+## Full abstraction with plurals (`FullAbstractionPlural.lean`, CI run 38818866053)
+
+The fragments above are singular. `PForm` adds plural variables, bound
+separately from individual ones, and:
+
+- "exactly `k` / at least `k` `N`s together are such that `φ`" (`coll`);
+- "the `N`s are such that `φ`" (`the`);
+- collective verbs ("gathered", "lifted the piano") of a plurality
+  (`pverb`);
+- "`t` is one of them" (`among`), which with the singular quantifiers
+  gives distributive readings.
+
+**A plurality of `N`s is a set of the noun's own things**, not of
+individuals. A collective verb is true or false of the individuals they
+embed to, and the plurality counts as as many `N`s as the criterion has
+values on it (`NounI.pl`). This is the reading closest to nouns as types.
+Three journeys by one person are a plurality of three passengers, of two
+or of one, all covering that one person. So plural sentences could in
+principle see more than singular ones: which sets of individuals the
+noun's units can jointly cover, and with how many units.
+
+- **`obsEqP_iff`.** They do not. Two interpretations of a noun are
+  indistinguishable by every formula of the plural fragment in every
+  context exactly when they have the same counting units, with the same
+  multiplicities.
+- **How.** A plurality of `k` things covering exactly `X` exists exactly
+  when some `k` units each meet `X` and together cover it (`pl_iff_keys`).
+  That is a fact about the units as a multiset (`pl_iff_m`), so equal
+  units give equal pluralities. The other direction needs only singular
+  sentences, as before.
+
+So adding plurals and collective predication does not change what a
+noun means for inference: still its multiset of units.
+
+Not covered: cumulative and other polyadic plural readings beyond what
+nesting `coll`, `among` and the singular quantifiers expresses; mass
+nouns; nouns with several criteria in the plural fragment. The domain is
+finite.
+
+The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
+`obsEqP_iff`) carry `#guard_msgs` checks that they depend only on
+`propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
+`sorry` gets in.
+
 ## Phases
 
 - **1a**: Section 5 (adjectives), all four encodings.
@@ -1098,7 +1142,7 @@ simpler structure than the counting function is claimed.
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
-- **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`).
+- **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`).
 - **Proof-theoretic equivalence**: derivability over arbitrary contexts, with no axioms (`Constructive.lean`).
 - **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.
