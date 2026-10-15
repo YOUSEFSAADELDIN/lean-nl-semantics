@@ -317,7 +317,9 @@ typed one (`EveryT`, `AtLeastT`, ...) and "is an N" is `IsA`.
   `CN'.intersective_widen` is also the general form of Phase 3's result
   on intersective adjectives.
 - **`not_valid_without_injectivity`**: dropping injectivity breaks the
-  equivalence. The premises are "at least two n", "every n is an m",
+  equivalence, when the typed models count elements of a noun's type.
+  Counting individuals instead removes the condition altogether
+  (`validI_iff`, Phase 4). The premises are "at least two n", "every n is an m",
   "every n is v" and "at most one m is v". With predicates they are
   inconsistent, so they entail "some n is nothing" (`pvalid_NI`). A
   typed model whose two elements of `n` are one individual satisfies
@@ -483,9 +485,40 @@ book informationally. Injectivity is the assumption that a noun counts
 by the individuals' own identity, which P makes for every noun and every
 verb.
 
+**For every number (`Counting.lean`, CI run 38666051248).** `countBy f P`
+counts the things that are `P` by the criterion "same `f`-value". With
+the individuals' own identity it is the corpus's `card`, and at two it is
+`TwoBy` (`countBy_of_injective`, `countBy_two_iff`). The results above
+hold for every `n ≥ 2`. P makes I1 and I2 valid for every `n`
+(`P_I1_valid`, `P_I2_valid`). M leaves both open for every `n ≥ 2`, with
+`n` copies of one text and one volume holding `n` texts as
+countermodels (`M_I1_not_valid`, `M_I2_not_valid`). I1 becomes valid
+once a book's text determines its volume, and I2 once its volume
+determines its text (`M_I1_valid_of`, `M_I2_valid_of`). P+ with a
+stipulated function to a sort of texts leaves I1 open for every
+`n ≥ 2` (`P2_I1_not_valid`).
+
+**The equivalence without injectivity (`Counting.lean`).** The same
+counting removes the equivalence theorem's condition. Let the typed
+models' counting determiners count individuals: two elements of a
+noun's type that are one individual count once (`countI`). Then nouns as
+types and nouns as predicates validate exactly the same entailments of
+the fragment, with no condition on the embeddings (`validI_iff`). The
+key step is that counting a noun's elements by their individuals is
+counting the individuals of that noun (`countBy_emb`). With injective
+embeddings the two ways of counting agree (`TModel.satI_iff_sat`), so
+`valid_iff` is the special case. The example that fails without
+injectivity holds again (`tvalidI_NI`).
+
+So what separates the encodings in counting is the identity criterion a
+noun counts by, not types as such. Counting by the individuals' own
+identity, nouns as types say what predicates say, in the whole fragment.
+Counting by another criterion, as "mastered three books" counts texts,
+they say what one-domain predicates cannot.
+
 What this phase does not show:
-- Three constructed problems with "two" only. It shows the encodings can
-  differ, and where. It does not measure how often this happens in text.
+- Three constructed problems. It shows the encodings can differ, and
+  where. It does not measure how often this happens in text.
 - Only P, P+ and M are stated. W is P here: nothing in these problems is
   intensional.
 - The problems are stated by hand, not produced by the pipeline, which
@@ -500,7 +533,7 @@ What this phase does not show:
 - **2**: every problem the pipeline reaches, its own claims with nouns as types.
 - **Equivalence theorem**: over a fragment, nouns as types with injective embeddings and nouns as predicates validate the same entailments; without injectivity they do not (`Equivalence.lean`).
 - **3**: the 8 modified-noun problems the audit found, in F, P, W and M (`gen_modified.py`, `Modified.lean`, `ModifiedCommitments.lean`).
-- **4**: individuation and copredication, beyond FraCaS: three constructed problems in P, P+ and M (`Copredication.lean`).
+- **4**: individuation and copredication, beyond FraCaS: three constructed problems in P, P+ and M, for every number, and the equivalence theorem without injectivity (`Copredication.lean`, `Counting.lean`).
 - **Lexical-premise audit** of the hand-written corpus, all 342 problems: which premises the formalization supplies, and which of them nouns-as-types would supply instead (`LeanNLSemantics/FraCaS/LEXICAL_AUDIT.md`).
 
 These are development-set problems, as everywhere in this project.
