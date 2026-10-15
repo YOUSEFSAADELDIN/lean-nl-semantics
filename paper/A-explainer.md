@@ -271,8 +271,18 @@ telling the authors.
      volume.
    - Copy 1 and that other novel share neither.
 
-   Their counting only compares books in pairs, so their predictions
-   are unaffected. The finding is real but small.
+   Their numerals compare books in pairs, so their predictions come out
+   right. But the problem is deeper than one wrong word. The project
+   proved (`DotSetoid.lean`) that **no** equivalence relation works in
+   that library. Whatever relation you pick, some "picked up and
+   mastered two books" sentence gets miscounted: it counts one book
+   where there are two, or two where there is one. A relation that
+   works exists exactly when "same volume or same text" happens to be
+   transitive. Their own footnote 4 accepts libraries like this one.
+   So their setoid framework, in which every count comes from one
+   equivalence relation, cannot express the counting they want.
+   Gotham's account uses two separate relations (physical and
+   informational), and the theorem says you can't merge them into one.
 
 ---
 
@@ -283,7 +293,7 @@ telling the authors.
 | Nouns as types (Ranta 1994; Luo 2012) | The fragment-wide equivalence theorems, `valid_iff` and `validI_iff` |
 | The passengers and books examples, as examples | The characterization theorem: those two kinds of example are the only ways the views come apart in the fragment |
 | Identity criteria for nouns (Geach; Luo 2012) | Showing that the 2015 axiom is exactly the equivalence condition |
-| The books argument (Gotham 2017, ex. 100) | The transitivity observation about the 2018 paper |
+| The books argument (Gotham 2017, ex. 100) | The proof that no single equivalence relation (no setoid) gives the 2018 paper's copredication counting in libraries it accepts |
 | Verbs choosing the counting criterion (Asher 2011; Chatzikyriakidis & Luo 2018) | The FraCaS-scale comparison (Phases 1–3) |
 | The anthology and judges cases (Asher 2011); passengers (Luo 2012) | Machine-checked versions of all of the above |
 | Recognising predicates for types (Retoré 2013), who leaves open how a type relates to its predicate | An answer to that open question, for the fragment |
@@ -347,6 +357,7 @@ that is the literature's point.
   - `Copredication.lean`: the books for two.
   - `Criteria.lean`: Gotham's examples, passengers, double
     distinctness, and transitivity.
+  - `DotSetoid.lean`: no setoid counts copredicated books.
 
 ## 10. Glossary
 

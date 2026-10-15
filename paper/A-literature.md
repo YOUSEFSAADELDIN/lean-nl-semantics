@@ -80,7 +80,15 @@ Read in full: the nine papers below, and the relevant pages of Asher
   physically, and x and z in neither. It is transitive if each volume
   has one text (`dotSame_trans_of`). Their `Three` uses only pairwise
   distinctness, which is exactly distinctness in both (`atLeastDot_iff`),
-  so their predictions do not depend on transitivity.
+  so their predictions are those of double distinctness.
+- **No equivalence relation would do** (`DotSetoid.lean`). Some
+  equivalence relation gives double distinctness by their (32) exactly
+  when "same volume or same text" is transitive on the books at hand
+  (`exists_setoid_iff`). In the library above none does (`no_setoid`).
+  So, given n. 4, p. 135's "as long as it is an equivalence relation,
+  it would do" cannot be met. Gotham (2017: 338-339, (11), (14)) uses
+  two relations, PHYS and INFO, "transitive and symmetric" each, and
+  never claims their union is an equivalence.
 - **The anthology case** (n. 4, p. 123): they adopt Asher's and Gotham's
   view that physically identical books can be informationally
   different, while saying they "incline to believe" otherwise. That
@@ -284,8 +292,11 @@ both types and predicates. Page numbers below are the preprint's.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).
-  - The transitivity problem above (checked), and that it does not
-    affect their predictions.
+  - The transitivity problem above (checked), and its strengthening:
+    no equivalence relation gives the dot-setoid counting once a text
+    has two copies and a volume two texts (`exists_setoid_iff`,
+    `no_setoid`). Their predictions survive; the claim that a setoid
+    delivers them does not.
 - **Added** (`Criteria.lean`): Gotham's (100) and (103) in his wording;
   Luo's passengers; double distinctness, shown to coincide with
   Chatzikyriakidis & Luo's dot-setoid `Three`; and the transitivity

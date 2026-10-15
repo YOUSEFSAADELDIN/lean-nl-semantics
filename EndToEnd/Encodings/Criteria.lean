@@ -37,6 +37,8 @@ the counting of `Counting.lean` (`countBy f P`: the `P`s counted by "same
    volume has one text (`dotSame_trans_of`), the view their n. 4 says
    they incline to. Their counting uses only pairwise distinctness
    (point 3), so their predictions do not depend on transitivity.
+   `DotSetoid.lean` shows that no other equivalence relation would do
+   either.
 -/
 
 namespace FraCaS.Encodings.Criteria

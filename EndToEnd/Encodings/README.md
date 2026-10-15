@@ -619,8 +619,26 @@ a fixed interpretation of the verbs.
   different volumes, plus a second text bound into one of the volumes
   (`dotSame_not_transitive`). It is transitive once each volume has one
   text (`dotSame_trans_of`), the view their n. 4 inclines to. Their
-  counting uses only pairwise distinctness, so their predictions do not
-  depend on it.
+  `Three` uses only pairwise distinctness, so their predictions are
+  those of double distinctness.
+- **No setoid does it (`DotSetoid.lean`, CI run 38697690966).** The
+  failure is not in the choice of relation. For any books, volumes and
+  texts, *some* equivalence relation's pairwise-distinctness numerals
+  agree with double distinctness, for every number and predicate,
+  exactly when "same volume or same text" is transitive on those books
+  (`exists_setoid_iff`). The only candidate is that relation. So in the
+  library above, two copies of *Crime and Punishment* with one bound
+  next to *Notes from Underground*, no setoid works (`no_setoid`). Every
+  equivalence relation on those three books miscounts "picked up and
+  mastered two books" for some choice of what John picked up and
+  mastered (`library_counts`). Their n. 4 accepts such libraries,
+  following Asher and Gotham. Under that view, their remark (p. 135)
+  that "as long as it is an equivalence relation, it would do" cannot
+  be met, and the counting in their (47) cannot come from a setoid.
+  Gotham (2017, (11), (14)) states the reading with two relations,
+  PHYS and INFO, each transitive and symmetric, and never makes their
+  union an equivalence. The theorem says the two cannot be traded for
+  one.
 
 What this phase does not show:
 - A handful of problems from the literature. It shows the encodings can
