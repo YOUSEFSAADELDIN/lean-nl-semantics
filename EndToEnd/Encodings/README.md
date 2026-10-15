@@ -319,7 +319,11 @@ typed one (`EveryT`, `AtLeastT`, ...) and "is an N" is `IsA`.
 - **`not_valid_without_injectivity`**: dropping injectivity breaks the
   equivalence, when the typed models count elements of a noun's type.
   Counting individuals instead removes the condition altogether
-  (`validI_iff`, Phase 4). The premises are "at least two n", "every n is an m",
+  (`validI_iff`, Phase 4). Injectivity is the axiom Chatzikyriakidis &
+  Luo (2015, n. 9 and Appendix A) add to their Coq development to count
+  books as physical and as informational objects. By `valid_iff`, it is
+  exactly the condition under which their account validates what the
+  predicate account does (`paper/A-literature.md`). The premises are "at least two n", "every n is an m",
   "every n is v" and "at most one m is v". With predicates they are
   inconsistent, so they entail "some n is nothing" (`pvalid_NI`). A
   typed model whose two elements of `n` are one individual satisfies
