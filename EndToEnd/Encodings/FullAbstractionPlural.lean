@@ -287,7 +287,7 @@ theorem pl_iff_keys (I : NounI A) (k : Nat) (X : Finset A) :
         obtain ⟨x, hxu, hxX⟩ := h1 c hc
         obtain ⟨y, hyc, rfl⟩ := (I.mem_unit _ _).mp hxu
         exact Finset.mem_image.mpr
-          ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, by rw [hyc]; exact hc, hxX⟩, rfl⟩
+          ⟨y, Finset.mem_filter.mpr ⟨Finset.mem_univ _, by rw [hyc]; exact hc, hxX⟩, hyc⟩
 
 /-- `k` units, as a sub-multiset `m` of the units `u`, each meeting `X`,
 together covering `X`. -/
