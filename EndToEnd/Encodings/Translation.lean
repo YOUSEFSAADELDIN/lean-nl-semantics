@@ -33,7 +33,7 @@ identity, connectives, nested quantifiers).
 identity criteria exactly when its translation is valid with nouns as
 predicates and criteria. Two model constructions do it:
 
-- `CModel.toPC`: a typed model becomes a predicate model whose domain
+- `toPC`: a typed model becomes a predicate model whose domain
   is its individuals plus one object for each element of each noun's
   type (the passenger journeys, say), each object standing for its
   individual (`toPC_eval`).
@@ -239,7 +239,7 @@ def PCModel.relQ (G : PCModel Noun Verb Rel Name) :
 
 theorem PCModel.mk_eq (G : PCModel Noun Verb Rel Name) {a b : G.A} :
     Quotient.mk G.setoid a = Quotient.mk G.setoid b ↔ G.same a b :=
-  ⟨Quotient.exact, Quotient.sound⟩
+  ⟨Quotient.exact, fun h => Quotient.sound h⟩
 
 theorem PCModel.term_mk (G : PCModel Noun Verb Rel Name) (ρ : Nat → G.A) :
     ∀ t : Term Name, Term.eval G.quotC.name (Quotient.mk G.setoid ∘ ρ) t =
@@ -293,14 +293,14 @@ theorem PCModel.quot_eval (G : PCModel Noun Verb Rel Name) :
   | .quant d n C Q, ρ => by
     have hC : ∀ a : G.A, Form.eval (cI G.quotC G.relQ) C
         (push (Quotient.mk G.setoid a) (Quotient.mk G.setoid ∘ ρ)) ↔
-        Form.eval (pcI G) (tr C) (push a ρ) := fun a => by
-      rw [← comp_push (Quotient.mk G.setoid) a ρ]
-      exact G.quot_eval C (push a ρ)
+        Form.eval (pcI G) (tr C) (push a ρ) := fun a =>
+      (iff_of_eq (congrArg (Form.eval (cI G.quotC G.relQ) C)
+        (comp_push (Quotient.mk G.setoid) a ρ).symm)).trans (G.quot_eval C (push a ρ))
     have hQ : ∀ a : G.A, Form.eval (cI G.quotC G.relQ) Q
         (push (Quotient.mk G.setoid a) (Quotient.mk G.setoid ∘ ρ)) ↔
-        Form.eval (pcI G) (tr Q) (push a ρ) := fun a => by
-      rw [← comp_push (Quotient.mk G.setoid) a ρ]
-      exact G.quot_eval Q (push a ρ)
+        Form.eval (pcI G) (tr Q) (push a ρ) := fun a =>
+      (iff_of_eq (congrArg (Form.eval (cI G.quotC G.relQ) Q)
+        (comp_push (Quotient.mk G.setoid) a ρ).symm)).trans (G.quot_eval Q (push a ρ))
     refine detBy_sim d ?_ ?_ ?_ ?_
     · intro y
       exact ⟨y, hC y.val, hQ y.val⟩
@@ -311,19 +311,19 @@ theorem PCModel.quot_eval (G : PCModel Noun Verb Rel Name) :
   | .more n C Q S, ρ => by
     have hC : ∀ a : G.A, Form.eval (cI G.quotC G.relQ) C
         (push (Quotient.mk G.setoid a) (Quotient.mk G.setoid ∘ ρ)) ↔
-        Form.eval (pcI G) (tr C) (push a ρ) := fun a => by
-      rw [← comp_push (Quotient.mk G.setoid) a ρ]
-      exact G.quot_eval C (push a ρ)
+        Form.eval (pcI G) (tr C) (push a ρ) := fun a =>
+      (iff_of_eq (congrArg (Form.eval (cI G.quotC G.relQ) C)
+        (comp_push (Quotient.mk G.setoid) a ρ).symm)).trans (G.quot_eval C (push a ρ))
     have hQ : ∀ a : G.A, Form.eval (cI G.quotC G.relQ) Q
         (push (Quotient.mk G.setoid a) (Quotient.mk G.setoid ∘ ρ)) ↔
-        Form.eval (pcI G) (tr Q) (push a ρ) := fun a => by
-      rw [← comp_push (Quotient.mk G.setoid) a ρ]
-      exact G.quot_eval Q (push a ρ)
+        Form.eval (pcI G) (tr Q) (push a ρ) := fun a =>
+      (iff_of_eq (congrArg (Form.eval (cI G.quotC G.relQ) Q)
+        (comp_push (Quotient.mk G.setoid) a ρ).symm)).trans (G.quot_eval Q (push a ρ))
     have hS : ∀ a : G.A, Form.eval (cI G.quotC G.relQ) S
         (push (Quotient.mk G.setoid a) (Quotient.mk G.setoid ∘ ρ)) ↔
-        Form.eval (pcI G) (tr S) (push a ρ) := fun a => by
-      rw [← comp_push (Quotient.mk G.setoid) a ρ]
-      exact G.quot_eval S (push a ρ)
+        Form.eval (pcI G) (tr S) (push a ρ) := fun a =>
+      (iff_of_eq (congrArg (Form.eval (cI G.quotC G.relQ) S)
+        (comp_push (Quotient.mk G.setoid) a ρ).symm)).trans (G.quot_eval S (push a ρ))
     exact gt_congr (G.count_quot n fun a => and_congr (hC a) (hQ a))
       (G.count_quot n fun a => and_congr (hC a) (hS a))
 
@@ -381,7 +381,7 @@ open Classical in
 plus one object for each element of each noun's type; an object is an
 `n` when its individual is, and counts by `n`'s criterion as the
 element it stands for. -/
-noncomputable def CModel.toPC (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop) :
+noncomputable def toPC (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop) :
     PCModel Noun Verb Rel Name where
   A := M.A ⊕ (Σ m, M.T m)
   fin := inferInstance
@@ -406,14 +406,14 @@ noncomputable def CModel.toPC (M : CModel Noun Verb Name) (R : Rel → M.A → M
     exact hr
 
 theorem term_proj (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop)
-    (ρ : Nat → (M.toPC R).A) :
-    ∀ t : Term Name, proj M (Term.eval (M.toPC R).name ρ t) = Term.eval M.name (proj M ∘ ρ) t
+    (ρ : Nat → (toPC M R).A) :
+    ∀ t : Term Name, proj M (Term.eval (toPC M R).name ρ t) = Term.eval M.name (proj M ∘ ρ) t
   | .var _ => rfl
   | .name _ => rfl
 
 theorem count_toPC (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop) (n : Noun)
-    {P' : (M.toPC R).A → Prop} {P : M.A → Prop} (h : ∀ a, P' a ↔ P (proj M a)) :
-    (M.toPC R).countP n P' = M.countC n P := by
+    {P' : (toPC M R).A → Prop} {P : M.A → Prop} (h : ∀ a, P' a ↔ P (proj M a)) :
+    (toPC M R).countP n P' = M.countC n P := by
   unfold PCModel.countP CModel.countC
   refine countBy_sim (j := some) (Option.some_injective _) ?_ ?_
   · intro y hy
@@ -427,22 +427,22 @@ theorem count_toPC (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop
 /-- A typed model and its predicate model make the same formulas true,
 identity read as `same`. -/
 theorem toPC_eval (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop) :
-    ∀ (φ : Form Noun Verb Rel Name) (ρ : Nat → (M.toPC R).A),
-      Form.eval (pcI (M.toPC R)) (tr φ) ρ ↔ Form.eval (cI M R) φ (proj M ∘ ρ)
+    ∀ (φ : Form Noun Verb Rel Name) (ρ : Nat → (toPC M R).A),
+      Form.eval (pcI (toPC M R)) (tr φ) ρ ↔ Form.eval (cI M R) φ (proj M ∘ ρ)
   | .verb v t, ρ => by
-    show M.verb v (proj M (Term.eval (M.toPC R).name ρ t)) ↔
+    show M.verb v (proj M (Term.eval (toPC M R).name ρ t)) ↔
       M.verb v (Term.eval M.name (proj M ∘ ρ) t)
     rw [term_proj]
   | .rel r t u, ρ => by
-    show R r (proj M (Term.eval (M.toPC R).name ρ t)) (proj M (Term.eval (M.toPC R).name ρ u)) ↔
+    show R r (proj M (Term.eval (toPC M R).name ρ t)) (proj M (Term.eval (toPC M R).name ρ u)) ↔
       R r (Term.eval M.name (proj M ∘ ρ) t) (Term.eval M.name (proj M ∘ ρ) u)
     rw [term_proj, term_proj]
   | .isA n t, ρ => by
-    show IsA (M.emb n) (proj M (Term.eval (M.toPC R).name ρ t)) ↔
+    show IsA (M.emb n) (proj M (Term.eval (toPC M R).name ρ t)) ↔
       IsA (M.emb n) (Term.eval M.name (proj M ∘ ρ) t)
     rw [term_proj]
   | .eq t u, ρ => by
-    show proj M (Term.eval (M.toPC R).name ρ t) = proj M (Term.eval (M.toPC R).name ρ u) ↔
+    show proj M (Term.eval (toPC M R).name ρ t) = proj M (Term.eval (toPC M R).name ρ u) ↔
       Term.eval M.name (proj M ∘ ρ) t = Term.eval M.name (proj M ∘ ρ) u
     rw [term_proj, term_proj]
   | .top, _ => Iff.rfl
@@ -451,14 +451,14 @@ theorem toPC_eval (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop)
   | .or φ ψ, ρ => or_congr (toPC_eval M R φ ρ) (toPC_eval M R ψ ρ)
   | .imp φ ψ, ρ => imp_congr (toPC_eval M R φ ρ) (toPC_eval M R ψ ρ)
   | .quant d n C Q, ρ => by
-    have hC : ∀ a, Form.eval (pcI (M.toPC R)) (tr C) (push a ρ) ↔
-        Form.eval (cI M R) C (push (proj M a) (proj M ∘ ρ)) := fun a => by
-      rw [← comp_push (proj M) a ρ]
-      exact toPC_eval M R C (push a ρ)
-    have hQ : ∀ a, Form.eval (pcI (M.toPC R)) (tr Q) (push a ρ) ↔
-        Form.eval (cI M R) Q (push (proj M a) (proj M ∘ ρ)) := fun a => by
-      rw [← comp_push (proj M) a ρ]
-      exact toPC_eval M R Q (push a ρ)
+    have hC : ∀ a, Form.eval (pcI (toPC M R)) (tr C) (push a ρ) ↔
+        Form.eval (cI M R) C (push (proj M a) (proj M ∘ ρ)) := fun a =>
+      (toPC_eval M R C (push a ρ)).trans
+        (iff_of_eq (congrArg (Form.eval (cI M R) C) (comp_push (proj M) a ρ)))
+    have hQ : ∀ a, Form.eval (pcI (toPC M R)) (tr Q) (push a ρ) ↔
+        Form.eval (cI M R) Q (push (proj M a) (proj M ∘ ρ)) := fun a =>
+      (toPC_eval M R Q (push a ρ)).trans
+        (iff_of_eq (congrArg (Form.eval (cI M R) Q) (comp_push (proj M) a ρ)))
     refine detBy_sim d ?_ ?_ ?_ ?_
     · intro y
       exact ⟨⟨.inr ⟨n, y⟩, ⟨y, rfl⟩⟩, hC _, hQ _⟩
@@ -471,18 +471,18 @@ theorem toPC_eval (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop)
     · exact count_toPC M R n fun a => and_congr (hC a) (hQ a)
     · exact count_toPC M R n hC
   | .more n C Q S, ρ => by
-    have hC : ∀ a, Form.eval (pcI (M.toPC R)) (tr C) (push a ρ) ↔
-        Form.eval (cI M R) C (push (proj M a) (proj M ∘ ρ)) := fun a => by
-      rw [← comp_push (proj M) a ρ]
-      exact toPC_eval M R C (push a ρ)
-    have hQ : ∀ a, Form.eval (pcI (M.toPC R)) (tr Q) (push a ρ) ↔
-        Form.eval (cI M R) Q (push (proj M a) (proj M ∘ ρ)) := fun a => by
-      rw [← comp_push (proj M) a ρ]
-      exact toPC_eval M R Q (push a ρ)
-    have hS : ∀ a, Form.eval (pcI (M.toPC R)) (tr S) (push a ρ) ↔
-        Form.eval (cI M R) S (push (proj M a) (proj M ∘ ρ)) := fun a => by
-      rw [← comp_push (proj M) a ρ]
-      exact toPC_eval M R S (push a ρ)
+    have hC : ∀ a, Form.eval (pcI (toPC M R)) (tr C) (push a ρ) ↔
+        Form.eval (cI M R) C (push (proj M a) (proj M ∘ ρ)) := fun a =>
+      (toPC_eval M R C (push a ρ)).trans
+        (iff_of_eq (congrArg (Form.eval (cI M R) C) (comp_push (proj M) a ρ)))
+    have hQ : ∀ a, Form.eval (pcI (toPC M R)) (tr Q) (push a ρ) ↔
+        Form.eval (cI M R) Q (push (proj M a) (proj M ∘ ρ)) := fun a =>
+      (toPC_eval M R Q (push a ρ)).trans
+        (iff_of_eq (congrArg (Form.eval (cI M R) Q) (comp_push (proj M) a ρ)))
+    have hS : ∀ a, Form.eval (pcI (toPC M R)) (tr S) (push a ρ) ↔
+        Form.eval (cI M R) S (push (proj M a) (proj M ∘ ρ)) := fun a =>
+      (toPC_eval M R S (push a ρ)).trans
+        (iff_of_eq (congrArg (Form.eval (cI M R) S) (comp_push (proj M) a ρ)))
     exact gt_congr (count_toPC M R n fun a => and_congr (hC a) (hQ a))
       (count_toPC M R n fun a => and_congr (hC a) (hS a))
 
@@ -499,7 +499,7 @@ theorem validC_iff (Γ : List (Form Noun Verb Rel Name)) (φ : Form Noun Verb Re
       fun ψ hψ => (key ψ ρ).mpr (hΓ ψ hψ))
   · intro h M R ρ hΓ
     have key := toPC_eval M R
-    exact (key φ (Sum.inl ∘ ρ)).mp (h (M.toPC R) (Sum.inl ∘ ρ)
+    exact (key φ (Sum.inl ∘ ρ)).mp (h (toPC M R) (Sum.inl ∘ ρ)
       fun ψ hψ => (key ψ (Sum.inl ∘ ρ)).mpr (hΓ ψ hψ))
 
 end
