@@ -404,3 +404,7 @@ theorem criteria_hidden (v : Verb) (n0 : Noun) (a : A) :
     decide
 
 end FraCaS.Encodings.FullAbstractionMulti
+
+/-- info: 'FraCaS.Encodings.FullAbstractionMulti.obsEqM_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FraCaS.Encodings.FullAbstractionMulti.obsEqM_iff

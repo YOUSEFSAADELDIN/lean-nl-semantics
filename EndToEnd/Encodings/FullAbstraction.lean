@@ -454,3 +454,7 @@ theorem obsEq_byInd_iff [Fintype A] (v : Verb) (n0 : Noun) (I J : NounI A) :
     exact (agree_of (I := I.byInd) (I' := J.byInd) M n0 hE hc).eval φ ρ
 
 end FraCaS.Encodings.FullAbstraction
+
+/-- info: 'FraCaS.Encodings.FullAbstraction.obsEq_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FraCaS.Encodings.FullAbstraction.obsEq_iff

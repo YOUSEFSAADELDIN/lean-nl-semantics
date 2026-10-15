@@ -388,3 +388,7 @@ theorem obsEqP_iff [Fintype A] (v : Verb) (n0 : Noun) (I I' : NounI A) :
     exact eval_congr (M := M.set n0 I) (M' := M.set n0 I') rfl rfl rfl rfl (nEq_set M n0 ⟨hE, hc, hp⟩) φ ρ σ
 
 end FraCaS.Encodings.FullAbstractionPlural
+
+/-- info: 'FraCaS.Encodings.FullAbstractionPlural.obsEqP_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FraCaS.Encodings.FullAbstractionPlural.obsEqP_iff
