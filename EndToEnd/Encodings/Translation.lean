@@ -464,10 +464,10 @@ theorem toPC_eval (M : CModel Noun Verb Name) (R : Rel → M.A → M.A → Prop)
       exact ⟨⟨.inr ⟨n, y⟩, ⟨y, rfl⟩⟩, hC _, hQ _⟩
     · intro a
       refine ⟨pickT M n a.val a.2, ?_, ?_⟩
-      · rw [pickT_spec]
-        exact hC a.val
-      · rw [pickT_spec]
-        exact hQ a.val
+      · exact (hC a.val).trans (iff_of_eq (congrArg
+          (fun x => Form.eval (cI M R) C (push x (proj M ∘ ρ))) (pickT_spec M n a.val a.2).symm))
+      · exact (hQ a.val).trans (iff_of_eq (congrArg
+          (fun x => Form.eval (cI M R) Q (push x (proj M ∘ ρ))) (pickT_spec M n a.val a.2).symm))
     · exact count_toPC M R n fun a => and_congr (hC a) (hQ a)
     · exact count_toPC M R n hC
   | .more n C Q S, ρ => by
