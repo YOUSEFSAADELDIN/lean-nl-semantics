@@ -3,8 +3,8 @@
 What the papers read so far say that bears on Paper A (nouns as types
 against nouns as predicates), with page or example numbers, and how each
 relates to the repository's results (`EndToEnd/Encodings/README.md`).
-Read in full: the eight papers below. Cited only through them: Asher
-(2011), whose relevant pages Gotham gives.
+Read in full: the eight papers below, and the relevant pages of Asher
+(2011).
 
 ## Gotham (2017), "Composing criteria of individuation in copredication", Journal of Semantics 34: 333-371
 
@@ -130,6 +130,42 @@ Read in full: the eight papers below. Cited only through them: Asher
 - **Proof irrelevance** again (pp. 49-50). Indexed types for gradable and
   temporal nouns (§5) are not relevant to Paper A.
 
+## Asher (2011), *Lexical Meaning in Context: A Web of Words*, CUP, ch. 5 (pp. 146-159 read)
+
+- **Relative identity for books** (p. 147, ex. 5.37): two copies of one
+  text are b1 =_i b2 and b1 ≠_p b2. Read mereologically, they would be
+  two absolutely distinct objects. That gives ten books for a shelf of
+  Jane Austen's works, which he rejects.
+- **Aspects, not parts** (pp. 149-150). We count "thick individuals",
+  objects under an aspect. "Several physically distinct books [can]
+  have the same informational aspect" (p. 149). When counting objects of
+  • type "we must choose one of these to guide counting and
+  individuation. Thus, predication is constitutive of the domain of
+  quantification" (p. 150). That is the verb-selects-the-criterion view
+  our M encodes, earlier than Chatzikyriakidis & Luo (2018).
+- **One criterion at a time** (p. 157). "We can count books either as
+  informational or as physical objects (though not coherently as
+  both)." Gotham (2017) argues this is too weak for "picked up and
+  mastered three books", which needs both. Our `AtLeastBoth`
+  (`Criteria.lean`) is Gotham's and Chatzikyriakidis & Luo's double
+  distinctness, not Asher's.
+- **The anthology** (p. 157, Figs. 5.6-5.7): one volume holding Jane
+  Austen's seven novels, plus three copies of the Bible, gives four
+  books by the physical criterion and eight by the informational one.
+  That is our I2 countermodel. (5.44) "*The Best of Thomas Hardy* is
+  three books in one" (p. 159) is the same case in one sentence.
+  Footnote 9 (p. 146) says physically identical books "of course" have
+  the same informational content. Read with p. 157, that has to mean a
+  volume's whole content (the collected works) counted as one
+  informational object, so it is not our `OneTextPerVolume`.
+- **Mid-discourse switching** (p. 159, ex. 5.43): "...thus there are ten
+  books on the shelf. Fred has read Emma, the Bible, and Formal
+  Philosophy, that is, three books. Yet Fred has read all of the books
+  on the shelf."
+- **Judges** (p. 159): five judgeships, filled by four people because
+  John fills two. "There are five judges" is true, "five people" false.
+  That is another non-injective case, like Luo's passengers.
+
 ## Bekki (2014), "Representing anaphora with dependent types", LACL 2014, LNCS 8535: 14-29
 
 - **Dependent Type Semantics (DTS)** is Martin-Löf type theory with Π, Σ,
@@ -204,5 +240,6 @@ Read in full: the eight papers below. Cited only through them: Asher
   also use. Paper A should say so, and could check it in Lean by
   restating the 11 Section 3 problems with nouns as predicates and
   Σ-typed premises.
-- **Not yet read:** Asher (2011) itself, Gupta (1980), Retoré (2013,
-  ΛTyn, TYPES 2013), Cooper (2011) on TTR copredication.
+- **Not yet read:** Gupta (1980), Retoré (2013, ΛTyn, TYPES 2013),
+  Cooper (2011) on TTR copredication. Of Asher (2011), only ch. 5,
+  pp. 146-159.
