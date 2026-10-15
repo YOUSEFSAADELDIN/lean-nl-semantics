@@ -39,15 +39,18 @@ relation "would do" cannot be met. Their predictions are those of
 double distinctness, which are right. What fails is the claim that a
 setoid delivers them.
 
-Gotham (2017, (14), p. 339) states the same reading with *two*
-relations, PHYS and INFO, each transitive and symmetric: a plurality
-compressible by neither. That is `AtLeastBoth`, distinct under each of
-two equivalence relations. The theorem says two cannot be traded for
-one.
+Gotham (2017) states the same reading with *two* relations, PHYS and
+INFO, which he notes are transitive and symmetric (p. 338): for "three
+informative books are heavy" ((6), (11), (14), p. 339), a plurality of
+three books compressible by neither. That is `AtLeastBoth`, distinct
+under each of two relations, with no claim that their union is an
+equivalence. The theorem says the two cannot be traded for one.
 
-Since counting a setoid's pairwise-distinct elements is counting its
-equivalence classes, this also places copredication outside counting
-by a single identity criterion, the setting of `Characterization.lean`.
+For an equivalence relation, pairwise distinctness counts equivalence
+classes (a standard fact, not proved here), and counting by an identity
+criterion, as in `Characterization.lean`, counts the classes of one
+equivalence. So copredication's counting is not counting by any single
+identity criterion either.
 -/
 
 namespace FraCaS.Encodings.DotSetoid
@@ -172,11 +175,11 @@ theorem library_counts :
     ¬ AtLeastBoth 2 vol text (fun b => b = .cp1 ∨ b = .cp2) ∧
     ¬ AtLeastBoth 2 vol text (fun b => b = .cp2 ∨ b = .nfu) := by
   refine ⟨?_, ?_, ?_⟩
-  · rw [← atLeastBy_same_iff, atLeastBy_two_pair (x := .cp1) (y := .nfu) (by decide)]
+  · rw [← atLeastBy_same_iff, atLeastBy_two_pair (x := Lib.cp1) (y := Lib.nfu) (by decide)]
     simp [Same, vol, text]
-  · rw [← atLeastBy_same_iff, atLeastBy_two_pair (x := .cp1) (y := .cp2) (by decide)]
+  · rw [← atLeastBy_same_iff, atLeastBy_two_pair (x := Lib.cp1) (y := Lib.cp2) (by decide)]
     simp [Same, vol, text]
-  · rw [← atLeastBy_same_iff, atLeastBy_two_pair (x := .cp2) (y := .nfu) (by decide)]
+  · rw [← atLeastBy_same_iff, atLeastBy_two_pair (x := Lib.cp2) (y := Lib.nfu) (by decide)]
     simp [Same, vol, text]
 
 end FraCaS.Encodings.DotSetoid
