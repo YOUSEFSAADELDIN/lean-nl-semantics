@@ -250,4 +250,137 @@ theorem fracas29_not_T : ¬ TValidRI [p29] h29 := by
   obtain ⟨_, hy⟩ := this () trivial
   exact Bool.false_ne_true hy
 
+
+/-! ## 3. Intensional and extensional adjectives (FraCaS 215)
+
+"All legal authorities are law lecturers. All law lecturers are legal
+authorities. ⇒ All competent legal authorities are competent law
+lecturers?" Gold: unknown. Being competent depends on *as what*. Phase
+1a found the extensional predicate encoding wrongly proves it, and
+types (and intensional predicates) do not.
+
+Here are four encodings: types and predicates, each with or without
+extensional adjectives. An adjective is extensional when the modified
+noun depends only on the noun's extension: coextensive nouns give
+coextensive modified nouns (`ExtP`, `ExtT`).
+
+- **`validSubExt_iff`**: with extensional adjectives, types and
+  predicates validate the same entailments (as `validSub_iff` without).
+- **215 is valid with extensional adjectives, in both encodings**
+  (`fracas215_ext_P`, `fracas215_ext_T`).
+- **215 is not valid without, in both** (`fracas215_not_P`,
+  `fracas215_not_T`).
+
+So 215's verdict tracks whether adjectives see only the noun's
+extension, not whether nouns are types. MTT gets it right because its
+adjectives are noun-relative (`competent : LegalAuthority → Prop`), and
+nothing makes them extensional. Intensional predicates (Montague's
+adjectives as functions of properties; Phase 1a's W) get it right for
+the same reason.
+-/
+
+section
+variable {N Adj Verb Rel Name : Type}
+
+/-- Adjectives see only extensions: coextensive nouns give coextensive
+modified nouns. -/
+def ExtP (M : PModel (N ⊕ (Adj × N)) Verb Name) : Prop :=
+  ∀ a n m, (∀ x, M.noun (.inl n) x ↔ M.noun (.inl m) x) →
+    ∀ x, M.noun (.inr (a, n)) x ↔ M.noun (.inr (a, m)) x
+
+/-- The same for types: nouns whose types have the same image give
+modified nouns whose types have the same image. -/
+def ExtT (M : TModel (N ⊕ (Adj × N)) Verb Name) : Prop :=
+  ∀ a n m, (∀ x, IsA (M.emb (.inl n)) x ↔ IsA (M.emb (.inl m)) x) →
+    ∀ x, IsA (M.emb (.inr (a, n))) x ↔ IsA (M.emb (.inr (a, m))) x
+
+def TValidSubExt (Γ : List (Form (N ⊕ (Adj × N)) Verb Rel Name))
+    (φ : Form (N ⊕ (Adj × N)) Verb Rel Name) : Prop :=
+  ∀ M : TModel (N ⊕ (Adj × N)) Verb Name, Coercive M → ExtT M →
+    ∀ (rel : Rel → M.A → M.A → Prop) (ρ : Nat → M.A),
+      (∀ ψ ∈ Γ, Form.eval (tII M rel) ψ ρ) → Form.eval (tII M rel) φ ρ
+
+def PValidSubExt (Γ : List (Form (N ⊕ (Adj × N)) Verb Rel Name))
+    (φ : Form (N ⊕ (Adj × N)) Verb Rel Name) : Prop :=
+  ∀ M : PModel (N ⊕ (Adj × N)) Verb Name, Subsective M → ExtP M →
+    ∀ (rel : Rel → M.A → M.A → Prop) (ρ : Nat → M.A),
+      (∀ ψ ∈ Γ, Form.eval (pI M rel) ψ ρ) → Form.eval (pI M rel) φ ρ
+
+theorem shadow_ext (M : TModel (N ⊕ (Adj × N)) Verb Name) (h : ExtT M) : ExtP M.shadow := h
+
+theorem lift_ext (M : PModel (N ⊕ (Adj × N)) Verb Name) (h : ExtP M) : ExtT M.lift :=
+  fun a n m hnm x =>
+    (lift_isA M _ x).trans ((h a n m (fun y =>
+      (lift_isA M _ y).symm.trans ((hnm y).trans (lift_isA M _ y))) x).trans (lift_isA M _ x).symm)
+
+/-- **With extensional adjectives, too, types and predicates agree.** -/
+theorem validSubExt_iff (Γ : List (Form (N ⊕ (Adj × N)) Verb Rel Name))
+    (φ : Form (N ⊕ (Adj × N)) Verb Rel Name) : TValidSubExt Γ φ ↔ PValidSubExt Γ φ := by
+  constructor
+  · intro h M hM hE rel ρ hΓ
+    have key := ((pI_agree_lift_shadow M rel).trans (tII_agree_shadow M.lift rel).symm).eval
+    exact (key φ ρ).mpr (h M.lift (lift_coercive M hM) (lift_ext M hE) rel ρ
+      fun ψ hψ => (key ψ ρ).mp (hΓ ψ hψ))
+  · intro h M hM hE rel ρ hΓ
+    have key := (tII_agree_shadow M rel).eval
+    exact (key φ ρ).mpr (h M.shadow (shadow_subsective M hM) (shadow_ext M hE) rel ρ
+      fun ψ hψ => (key ψ ρ).mp (hΓ ψ hψ))
+
+end
+
+inductive N215 | legalAuthority | lawLecturer
+  deriving DecidableEq
+inductive A215 | competent
+  deriving DecidableEq
+
+/-- "All legal authorities are law lecturers." -/
+def p215a : Form (N215 ⊕ (A215 × N215)) Empty Empty Empty :=
+  .quant .every (.inl .legalAuthority) .top (.isA (.inl .lawLecturer) (.var 0))
+
+/-- "All law lecturers are legal authorities." -/
+def p215b : Form (N215 ⊕ (A215 × N215)) Empty Empty Empty :=
+  .quant .every (.inl .lawLecturer) .top (.isA (.inl .legalAuthority) (.var 0))
+
+/-- "All competent legal authorities are competent law lecturers." -/
+def h215 : Form (N215 ⊕ (A215 × N215)) Empty Empty Empty :=
+  .quant .every (.inr (.competent, .legalAuthority)) .top
+    (.isA (.inr (.competent, .lawLecturer)) (.var 0))
+
+/-- With extensional adjectives, predicates prove 215: the premises make
+the two nouns coextensive. -/
+theorem fracas215_ext_P : PValidSubExt [p215a, p215b] h215 := by
+  intro M _ hE rel ρ hΓ
+  have h1 := hΓ p215a (by simp)
+  have h2 := hΓ p215b (by simp)
+  have hco : ∀ x, M.noun (.inl .legalAuthority) x ↔ M.noun (.inl .lawLecturer) x :=
+    fun x => ⟨fun hx => h1 x ⟨hx, trivial⟩, fun hx => h2 x ⟨hx, trivial⟩⟩
+  intro x hx
+  exact (hE .competent _ _ hco x).mp hx.1
+
+/-- ... and so do types. -/
+theorem fracas215_ext_T : TValidSubExt [p215a, p215b] h215 :=
+  (validSubExt_iff _ _).mpr fracas215_ext_P
+
+/-- Without extensional adjectives, predicates do not prove 215, though
+"competent" is subsective. -/
+theorem fracas215_not_P : ¬ PValidSub [p215a, p215b] h215 := by
+  intro h
+  let M : PModel (N215 ⊕ (A215 × N215)) Empty Empty :=
+    ⟨Unit, inferInstance,
+      fun n _ => match n with
+        | .inl _ => True
+        | .inr (_, .legalAuthority) => True
+        | .inr (_, .lawLecturer) => False,
+      fun v => v.elim, fun c => c.elim⟩
+  have hsub : Subsective M := fun _ _ _ _ => trivial
+  have := h M hsub (fun r => r.elim) (fun _ => ()) (by
+    intro ψ hψ
+    simp at hψ
+    rcases hψ with rfl | rfl <;> exact fun _ _ => trivial)
+  exact this () ⟨trivial, trivial⟩
+
+/-- ... and neither do types. -/
+theorem fracas215_not_T : ¬ TValidSub [p215a, p215b] h215 :=
+  fun h => fracas215_not_P ((validSub_iff _ _).mp h)
+
 end FraCaS.Encodings.Modifiers
