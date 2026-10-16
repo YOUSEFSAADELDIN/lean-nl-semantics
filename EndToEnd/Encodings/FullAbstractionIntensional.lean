@@ -317,7 +317,10 @@ interpretation at every world.** -/
 theorem believes_same (M : ICtx Noun Verb Rel Name W A) {n1 n2 : Noun}
     (h : M.noun n1 = M.noun n2) (t : Term Name) (w : W) (ρ : Nat → A) :
     M.eval (.believes t (everyIs n1 n1)) w ρ ↔ M.eval (.believes t (everyIs n2 n1)) w ρ := by
-  simp only [ICtx.eval, everyIs, h]
+  simp only [ICtx.eval, everyIs]
+  generalize M.noun n1 = f at h ⊢
+  subst h
+  exact Iff.rfl
 
 /-- **The hyperintensional attitude does**, even when the two nouns have
 literally the same interpretation: it sees which noun the sentence
@@ -341,6 +344,10 @@ end FraCaS.Encodings.FullAbstractionIntensional
 #guard_msgs in
 #print axioms FraCaS.Encodings.FullAbstractionIntensional.obsEqW_iff
 
-/-- info: 'FraCaS.Encodings.FullAbstractionIntensional.obsEqW_byInd_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/--
+info: 'FraCaS.Encodings.FullAbstractionIntensional.obsEqW_byInd_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
 #guard_msgs in
 #print axioms FraCaS.Encodings.FullAbstractionIntensional.obsEqW_byInd_iff
