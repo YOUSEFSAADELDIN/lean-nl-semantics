@@ -202,10 +202,10 @@ König, Hall; Harary & Holzmann 1974; Trotter 1977.
 
 ## Before drafting
 
-- [gap] Check the Harary & Holzmann statement (or send the paper). If
-  it holds, the exact characterization in contribution 6 is a short
-  formalization away: the claw law and all odd-hole laws, plus the
-  reduction.
+- [gap] Check the Harary & Holzmann statement (or send the paper). The
+  claw law and the odd-cycle laws of every length are now proved
+  (`ForbiddenLaws.lean`); what remains for the exact characterization
+  is the converse and the reduction.
 - [gap] Read Gotham (2022) and Liebesman & Magidor (2019, 2023), the
   rest of the exchange, before section 9 is written.
 - [gap] Expert check of contribution 7.

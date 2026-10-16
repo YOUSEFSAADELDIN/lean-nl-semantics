@@ -1286,15 +1286,38 @@ between the coverage functions and the minima of coverage functions.
   (`f5_subadd`) and obeys the pairwise law (`f5_pairwise`), but breaks
   the odd-cycle law, so it is not counting by two criteria.
 
-The argument works for any odd cycle of length at least 5; only 5 is
-proved. When each individual has one thing, `count2` is the independence
-number of the line graph of a bipartite multigraph (volumes and texts),
-restricted to the set counted. The odd-cycle laws then exclude odd
-holes, and a claw law (not formalized) excludes claws. If the reported
+The law holds for odd cycles of every length (next section). When each
+individual has one thing, `count2` is the independence number of the
+line graph of a bipartite multigraph (volumes and texts), restricted to
+the set counted. The odd-cycle laws then exclude odd holes, and the
+claw law excludes claws. If the reported
 characterization of line graphs of bipartite graphs (claw-, diamond- and
 odd-hole-free; Harary & Holzmann 1974, not seen) holds, this gives an
 exact characterization of that case (`paper/A-literature.md`, graph
 theory entry). The general case remains open.
+
+## The claw law and the odd-cycle laws of every length (`ForbiddenLaws.lean`, CI run 38860685948)
+
+- **`count2_oddCycle`, `IsCount2.oddCycle`.** Take `2m + 1` individuals
+  in a cycle, indexed by `ZMod (2m + 1)`, each counted at least once,
+  every two neighbours counting at most one together. Then for some
+  `i`, individuals `i` and `i + 2` count at most one together. If no
+  two consecutive hubs were equal, their kinds would alternate, and
+  after `2m + 1` steps back at the start a hub would have the opposite
+  kind to itself. `count2_cycle5` is the case `m = 2`. Even cycles have
+  no such law.
+- **`count2_claw`, `IsCount2.claw`.** If `X` has something counted and
+  counts at most one together with each of `Y`, `Z` and `W`, then two
+  of `Y`, `Z`, `W` count at most one together. The three hubs pass
+  through one thing of `X`, two hubs through one thing are equal or of
+  different kinds (`hub_step`), and of three hubs two have the same
+  kind.
+
+Both hold when individuals own several things. In graph terms (one
+thing per individual), the conflict graph has no induced claw and no
+odd hole. Not proved: that these laws, with pair determination and the
+twin condition, suffice (`paper/A2-draft.md`, Conjecture 9.2), or that
+the claw law is independent of the others.
 
 A testable prediction built on `count_submod` and `not_single` is
 drafted in `paper/A-prediction.md` (not run).
@@ -1304,7 +1327,7 @@ citations in `paper/A-literature.md`. Landman (2011a, 2016) have not
 been read directly.
 
 The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
-`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`, `isMinCov_of_isCount2`, `not_pairwise_example`, `count2_cycle5`, `two_laws_not_sufficient`) carry `#guard_msgs` checks that they depend only on
+`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`, `isMinCov_of_isCount2`, `not_pairwise_example`, `count2_cycle5`, `two_laws_not_sufficient`, `IsCount2.claw`, `IsCount2.oddCycle`) carry `#guard_msgs` checks that they depend only on
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
 `sorry` gets in.
 
@@ -1319,6 +1342,7 @@ The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
 - **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`). In intensional contexts (necessity, belief, and a hyperintensional attitude), iff the same units at every world (`FullAbstractionIntensional.lean`).
+- **Claw and odd-cycle laws of every length**: two more laws of counting by two criteria (`ForbiddenLaws.lean`).
 - **Odd-cycle law**: subadditivity and the pairwise law are not sufficient; a third law, about odd cycles, separates a minimum of coverage functions that obeys both from counting by two criteria (`OddCycle.lean`).
 - **Minima of coverage functions**: not every one is counting by two criteria; two laws (subadditivity, pairwise determination of "at most one") separate them (`MinCoverage.lean`).
 - **Two criteria**: counting by two criteria is the least of the mixed single-criterion counts (König's theorem, via Hall), so a minimum of coverage functions (`TwoCriteria.lean`); disjointness of counted atoms (Rothstein, Landman) is the never-splits law (`CountingLaws.noSplit_iff_disjoint`).

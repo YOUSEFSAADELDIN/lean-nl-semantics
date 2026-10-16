@@ -35,8 +35,8 @@ functions directly. Our results:
    exactly the least of a family of mixed single-criterion counts (by
    König's theorem). The class of such functions lies strictly between
    coverage functions and minima of coverage functions. It obeys
-   subadditivity, a pairwise law and an odd-cycle law, and the first
-   two do not characterize it.
+   subadditivity, a pairwise law, a claw law and an odd-cycle law for
+   every odd length. The first two do not characterize it.
 5. **Graph theory.** When each individual has one thing, the class is
    the independence numbers of line graphs of bipartite multigraphs.
    An exact characterization by forbidden configurations follows *if* a
@@ -103,7 +103,7 @@ answer from a speaker's pattern of answers.
 | two criteria = least mixed single criterion (König) | §7, `count2_eq_min`, `copredication_is_min` |
 | no single criterion yields some two-criteria counts | §7.4, `not_single` |
 | coverage ⊊ two criteria ⊊ minima of coverage | §8, `isMinCov_of_isCount2`, `not_subadd_example`, `not_pairwise_example` |
-| three laws of two-criteria counts; the first two insufficient | §8, `count2_subadd`, `count2_pairwise`, `count2_cycle5`, `two_laws_not_sufficient` |
+| laws of two-criteria counts (subadditive, pairwise, claw, odd cycles of every length); the first two insufficient | §8, `count2_subadd`, `count2_pairwise`, `count2_claw`, `count2_oddCycle`, `two_laws_not_sufficient` |
 | graph-theoretic reading and conditional characterization | §9 (partly argued, partly reported) |
 | the debate restated as hypotheses about laws | §10 |
 | a protocol | §11 |
@@ -547,8 +547,32 @@ most one together: count2({x_i, x_{i+2}}) ≤ 1 for some i.
   individuals at distance two through that hub count at most one
   together. ∎
 
-The argument works for any odd cycle of length at least 5. Only length 5
-is formalized.
+**Theorem 8.3′ (odd-cycle laws of every length; `count2_oddCycle`,
+`ForbiddenLaws.IsCount2.oddCycle`).** The same holds for 2m + 1
+individuals in a cycle indexed by ZMod(2m + 1), for every m. If each is
+counted at least once and every two neighbours count at most one
+together, then for some i, the individuals i and i + 2 count at most
+one together. The proof is the one above. If no two consecutive hubs
+are equal, their kinds alternate, so after 2k steps a hub has the kind
+it started with, and after 2m + 1 steps the opposite kind. That is
+impossible, since step 2m + 1 returns to the start. For m = 1 the
+conclusion concerns neighbours and is immediate. Even cycles have no
+such law. In an even cycle of books whose neighbours share, in turn, a
+volume and a text (b0 and b1 a volume, b1 and b2 a text, and so on),
+the hypothesis holds, but every two books two apart count as two.
+
+**Theorem 8.5 (the claw law; `count2_claw`, `ForbiddenLaws.IsCount2.claw`).**
+Let X have something counted. If X counts at most one together with
+each of Y, Z and W, then two of Y, Z, W count at most one together.
+
+*Proof.* Each of X ∪ Y, X ∪ Z, X ∪ W has a hub, and all three pass
+through one thing x of X. Two hubs through one thing are equal or of
+different kinds, since a thing has one volume and one text
+(`hub_step`). Of three hubs, two have the same kind, so they are equal,
+and the corresponding two sets lie on one hub. ∎
+
+The claw law holds when individuals own several things, not only for
+one thing per individual.
 
 ### 8.3 The two laws are not sufficient
 
@@ -596,21 +620,19 @@ iff:
   restricted to each P; and
 - **(b)** that graph is the line graph of a bipartite multigraph.
 
-### 9.2 Matching the laws to forbidden subgraphs (argued, not formalized)
+### 9.2 Matching the laws to forbidden subgraphs (laws formalized; the correspondence argued)
 
 - **The pairwise law is part of (a), not a forbidden subgraph.** A set
   whose pairs all count 1 is a clique, and α of a clique is 1, in every
   graph.
-- **The odd-cycle laws exclude odd holes.** The odd-cycle law of length
-  5 excludes an induced 5-cycle. Indeed f5 is α of the 5-cycle.
-  Excluding all odd holes needs the law for 7, 9, …, which the same
-  argument proves, but which is not formalized.
-- **A claw law.** Suppose a thing conflicts with three others. Then two
-  of those three conflict with each other: by pigeonhole, two of them
-  meet it at the same end (its volume or its text). So line graphs of
-  bipartite multigraphs are claw-free. As a law: if count2({x, y}) =
-  count2({x, z}) = count2({x, w}) = 1, then one of count2({y, z}),
-  count2({y, w}), count2({z, w}) is 1. Not formalized.
+- **The odd-cycle laws exclude odd holes.** The odd-cycle law of
+  length 2m + 1 (Theorem 8.3′, formalized for every m) excludes an
+  induced odd cycle of that length. Indeed f5 is α of the 5-cycle.
+- **The claw law excludes claws** (Theorem 8.5, formalized). Suppose a
+  thing conflicts with three others. Then two of those three conflict
+  with each other: by pigeonhole, two of them meet it at the same end
+  (its volume or its text). So line graphs of bipartite multigraphs are
+  claw-free.
 - **Diamonds do occur**, from two copies of one text bound in one
   volume (parallel edges). Call two adjacent vertices *twins* if they
   have the same other neighbours. In the line graph of a bipartite
@@ -657,8 +679,10 @@ thing per individual, f is in IsCount2 iff:
 
 By §9.2 this is a law-based characterization: the claw law, all
 odd-cycle laws and the twin-diamond condition, on top of pair
-determination. It would be a short formalization away once the
-graph-theoretic result is checked. Its status is: (a) and (b) argued
+determination. The claw law and every odd-cycle law are now proved as
+laws of count2 (Theorems 8.3′ and 8.5). What remains is the converse
+direction: that pair-determined functions obeying them, with the twin
+condition, come from two criteria. Its status is: (a) and (b) argued
 here; the graph class reported.
 
 ### 9.4 The general case is open
@@ -955,9 +979,11 @@ from sentence to sentence. Hence:
 4. **Open: exact laws for IsCount2.** Proposition 9.1 and Conjecture
    9.2 cover the case of one thing per individual, conditional on a
    reported result. The general case (§9.4) is open.
-5. **Not formalized:** the odd-cycle laws beyond length 5, the claw law,
-   the twin analysis, Proposition 7.7's symmetric half, and
-   Proposition 9.1.
+5. **Not formalized:** the twin analysis, Proposition 7.7's symmetric
+   half, Proposition 9.1, and the converse direction of Conjecture 9.2.
+   The odd-cycle laws of every length and the claw law are formalized
+   (`ForbiddenLaws.lean`). No example yet shows that the claw law is
+   independent of the others.
 6. **Mass nouns.** Landman's neat mass nouns suggest a further class,
    choice from a family. Its counting functions, and how they relate to
    minima, are not studied here.
@@ -1071,6 +1097,7 @@ submission.
 | §8.1 | `isMinCov_of_isCount2`, `not_subadd_example`, `not_pairwise_example` | `MinCoverage.lean` | 38843325962 |
 | Thm 8.1, 8.2 | `count2_subadd`, `count2_pairwise` | `MinCoverage.lean` | 38843325962 |
 | Thm 8.3, 8.4 | `count2_cycle5`, `IsCount2.cycle5`, `two_laws_not_sufficient` | `OddCycle.lean` | 38848341001 |
+| Thm 8.3′, 8.5 | `count2_oddCycle`, `IsCount2.oddCycle`, `count2_claw`, `IsCount2.claw`, `hub_step` | `ForbiddenLaws.lean` | 38860685948 |
 
 The main theorems carry `#guard_msgs` checks that they use only
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
@@ -1106,4 +1133,5 @@ of x_{i+1} lie on h_i and on h_{i+1}.
   x_{i+2} lie on that one hub, so x_i and x_{i+2} have count2 ≤ 1
   together. ∎
 
-The same argument works for every odd cycle of length ≥ 5.
+The same argument works for every odd cycle (Theorem 8.3′,
+`ForbiddenLaws.count2_oddCycle`).

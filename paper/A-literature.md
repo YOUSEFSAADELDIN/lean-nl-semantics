@@ -633,11 +633,11 @@ here (not formalized), and what is only reported.
 - **Matching the laws to forbidden subgraphs.** The pairwise law (a set
   whose pairs all count 1 counts 1) holds for α of *every* graph. It is
   part of (a), not a counterpart of a forbidden subgraph. The odd-cycle
-  law excludes an induced 5-cycle (`count2_cycle5`, f5 is α of C5).
-  Excluding all odd holes needs the same law for 7, 9, ... cycles,
-  which is not proved. Claw-freeness is a further law: if a thing
-  conflicts with three others, two of those three conflict (the hub
-  argument of `hub_of_pairwise`). It is not formalized. Diamonds *do*
+  laws exclude induced odd cycles of every length (`count2_cycle5`, f5
+  is α of C5; every length in `ForbiddenLaws.count2_oddCycle`).
+  Claw-freeness is a further law: if a thing conflicts with three
+  others, two of those three conflict (`ForbiddenLaws.count2_claw`,
+  from the hub argument). Diamonds *do*
   occur, from two copies of one text bound in one volume (parallel
   edges). Call two adjacent vertices *twins* if they have the same
   other neighbours. In the line graph of a bipartite multigraph, twins
@@ -668,8 +668,9 @@ here (not formalized), and what is only reported.
   `count2` functions with one thing per individual would be exactly the
   set functions satisfying (a) and (b'). By the points above, (b')
   means: no claw, no odd hole, and no diamond except from merged pairs.
-  That would be an exact law-based characterization of this case, with
-  laws beyond the two we proved: claw, and all odd holes. The general
+  That would be an exact law-based characterization of this case. Its
+  laws (claw, all odd holes) are now proved; the converse is not. The
+  general
   case, where one individual can own several things (a plurality of
   copies counted as one individual), is a "matching number of a union
   of edge groups". In matroid terms that is the rank, in the

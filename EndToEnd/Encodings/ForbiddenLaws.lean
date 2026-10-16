@@ -27,8 +27,8 @@ cycle of odd length the kinds cannot alternate all the way round, so two
 consecutive hubs are equal, and the individuals on either side of them
 share it. For `m = 2` this is `OddCycle.count2_cycle5`. For `m = 1` the
 conclusion is about neighbours and is immediate. Even cycles have no
-such law: an even cycle of books, each sharing a volume with the next
-and a text with the one before, counts as half its length.
+such law: in an even cycle of books whose neighbours share, in turn, a
+volume and a text, every two books two apart count as two.
 
 In graph terms, with one thing per individual, counting by two criteria
 is the independence number of the line graph of a bipartite multigraph.
