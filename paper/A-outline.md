@@ -1,5 +1,10 @@
 # Paper A: outline
 
+Full drafts now exist: `A1-draft.md` (equivalence, translation, full
+abstraction, setoids, FraCaS) and `A2-draft.md` (laws of counting, two
+criteria, graph theory, the debate, the test). Together they cover every
+result below; A1 §20 says how they would merge into one paper.
+
 For you to react to before any prose is written. Every result named is a
 Lean theorem in `EndToEnd/Encodings/` checked by CI (run numbers in that
 directory's `README.md`), or a statement from a paper we have read
