@@ -1263,8 +1263,28 @@ volume if its text is in `S`, by text otherwise, is a single criterion
 
 So the counting functions of nouns with two criteria lie strictly
 between the coverage functions and the minima of coverage functions.
-The exact class is open; the two laws are necessary, not known to be
-sufficient.
+
+## The two laws are not sufficient (`OddCycle.lean`, CI run 38848341001)
+
+- **A third law, `count2_cycle5` (`IsCount2.cycle5`).** Five
+  individuals, each counted at least once, in a cycle where every two
+  neighbours count at most one together: then some two non-neighbours
+  also count at most one together. Proof: things that pairwise share a
+  volume or a text share one volume or one text (`hub_of_pairwise`);
+  each individual's things lie on the hubs of both its pairs, so
+  consecutive hubs are equal or of different kinds, and around an odd
+  cycle they cannot always alternate.
+- **`two_laws_not_sufficient`.** Count, among five individuals in a
+  cycle, the largest set with no two neighbours (`f5`). It is the
+  minimum of five coverage functions (`f5_isMinCov`), subadditive
+  (`f5_subadd`) and obeys the pairwise law (`f5_pairwise`), but breaks
+  the odd-cycle law, so it is not counting by two criteria.
+
+The argument works for any odd cycle of length at least 5; only 5 is
+proved. That suggests a link to perfect graphs (line graphs of bipartite
+graphs are perfect; odd cycles of length at least 5 are not), not
+checked. An exact characterization of counting by two criteria remains
+open.
 
 A testable prediction built on `count_submod` and `not_single` is
 drafted in `paper/A-prediction.md` (not run).
@@ -1273,7 +1293,7 @@ Not yet read: Landman (2011a, 2016) directly; what is said of Landman
 here is Rothstein's report of it.
 
 The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
-`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`, `isMinCov_of_isCount2`, `not_pairwise_example`) carry `#guard_msgs` checks that they depend only on
+`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`, `isMinCov_of_isCount2`, `not_pairwise_example`, `count2_cycle5`, `two_laws_not_sufficient`) carry `#guard_msgs` checks that they depend only on
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
 `sorry` gets in.
 
@@ -1288,6 +1308,7 @@ The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
 - **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`). In intensional contexts (necessity, belief, and a hyperintensional attitude), iff the same units at every world (`FullAbstractionIntensional.lean`).
+- **Odd-cycle law**: subadditivity and the pairwise law are not sufficient; a third law, about odd cycles, separates a minimum of coverage functions that obeys both from counting by two criteria (`OddCycle.lean`).
 - **Minima of coverage functions**: not every one is counting by two criteria; two laws (subadditivity, pairwise determination of "at most one") separate them (`MinCoverage.lean`).
 - **Two criteria**: counting by two criteria is the least of the mixed single-criterion counts (König's theorem, via Hall), so a minimum of coverage functions (`TwoCriteria.lean`); disjointness of counted atoms (Rothstein, Landman) is the never-splits law (`CountingLaws.noSplit_iff_disjoint`).
 - **Laws of counting**: count nouns with one criterion are exactly the integer coverage functions; two laws on counts (additive, single) match never merging and never splitting, give a typology of four kinds of noun, and pick out Montague nouns; a third (submodularity) separates one criterion from several (`CountingLaws.lean`).

@@ -341,6 +341,29 @@ For Paper A:
 - The method she reports (Barner & Snedeker's "Who has more N?") is a
   model for testing our prediction (`paper/A-prediction.md`).
 
+## Landman (2020), *Iceberg Semantics for Mass Nouns and Count Nouns* (Springer); also Landman (2011, 2016)
+
+The book itself could not be read: the upload did not arrive, twice.
+What follows is from a third-party Lean formalization of its core
+(`linglib`, `Linglib/Studies/Landman2020.lean`, read locally), which
+cites the book's sections, and from Rothstein's report (2017, p. 113).
+Check against the book before citing.
+
+- An interpretation is an i-set: a body and a base that generates it
+  under sum. Count: the base is disjoint (§6.1.2). Neat: the base is
+  atomistic with disjoint base-atoms (§6.1.2), so neat mass nouns
+  (*furniture*) have overlapping bases.
+- Counting rests on disjointness: `card_Z(x)` is the number of base
+  elements below `x` (§5.2), and over a disjoint base the cardinality of
+  a sum is the number of generators summed.
+- For Paper A: base elements play the role of our units, and a disjoint
+  base is our "never splits" (`CountingLaws.noSplit_iff_disjoint`). A
+  base element may be a sum of several individuals, so merging is
+  allowed. So Landman's count nouns are the "never splits" column of the
+  typology when the individuals are the atoms that predicates apply to.
+  Luo's passengers and copredicated books are outside it unless the
+  individuals are taken to be other entities.
+
 ## What this means for Paper A
 
 - I1 is Gotham's (100). M is Chatzikyriakidis & Luo's (2018) account. I2

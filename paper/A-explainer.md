@@ -323,7 +323,16 @@ two laws that a minimum of coverage functions need not:
 Three individuals give a minimum of coverage functions that counts 1 on
 every pair and 2 on all three: no noun with criteria counts like that.
 So nouns with two criteria sit strictly between ordinary nouns and
-minima of coverage functions; their exact class is open.
+minima of coverage functions.
+
+Those two laws are not the whole story (`OddCycle.lean`). Put five
+individuals in a ring and count the largest group with no two
+neighbours. That obeys both laws, but no noun counted by volume and text
+counts like it. The reason is a third law: in a ring of five where
+neighbours always "clash" (count as one together), some non-neighbours
+must clash too. Things that clash pairwise all share one volume or one
+text, and around a ring of odd length the shared volumes and texts
+cannot alternate. The full list of laws is still open.
 
 **The prediction, as an experiment.** `paper/A-prediction.md` drafts a
 test: three books (two copies of *Emma*, one of them bound with
