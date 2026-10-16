@@ -358,16 +358,17 @@ theorem f5_pairwise (P Q R : Fin 5 → Prop) (hpq : f5 (fun x => P x ∨ Q x) �
   · exact hqr i j (Or.inr h) (Or.inl h')
   · exact hqr i j (Or.inr h) (Or.inr h')
 
+theorem nd : ∀ i : Fin 5, i ≠ i + 2 ∧ i + 2 ≠ i + 1 ∧ i ≠ i + 2 + 1 := by decide
+
 /-- **The two laws are not sufficient.** `f5` is a minimum of coverage
 functions, subadditive, and obeys the pairwise law, but it is not
 counting by two criteria. -/
 theorem two_laws_not_sufficient :
-    IsMinCov f5 ∧ (∀ P Q, f5 (fun x => P x ∨ Q x) ≤ f5 P + f5 Q) ∧
-      (∀ P Q R, f5 (fun x => P x ∨ Q x) ≤ 1 → f5 (fun x => Q x ∨ R x) ≤ 1 →
+    IsMinCov f5 ∧ (∀ P Q : Fin 5 → Prop, f5 (fun x => P x ∨ Q x) ≤ f5 P + f5 Q) ∧
+      (∀ P Q R : Fin 5 → Prop, f5 (fun x => P x ∨ Q x) ≤ 1 → f5 (fun x => Q x ∨ R x) ≤ 1 →
         f5 (fun x => P x ∨ R x) ≤ 1 → f5 (fun x => P x ∨ Q x ∨ R x) ≤ 1) ∧
       ¬ IsCount2 f5 := by
   refine ⟨f5_isMinCov, f5_subadd, f5_pairwise, fun hf => ?_⟩
-  have nd : ∀ i : Fin 5, i ≠ i + 2 ∧ i + 2 ≠ i + 1 ∧ i ≠ i + 2 + 1 := by decide
   obtain ⟨i, hi⟩ := hf.cycle5 id (fun i => one_le_f5 _ i rfl)
     (fun i => (f5_le_one_iff _).mpr fun a b ha hb => by
       rcases ha with rfl | rfl <;> rcases hb with rfl | rfl
