@@ -297,9 +297,9 @@ are unique. That characterization is a known theorem (Chakrabarty &
 Huang 2012). Paper A cites it; what is new is that count nouns are
 exactly these functions, and the typology built on it.
 
-**How the counting literature fits.** Rothstein (2017) and Landman both
-require the things a count noun counts to be *disjoint*: no part shared
-between two. That is exactly our "never splits" law
+**How the counting literature fits.** Rothstein (2017) and Landman
+(2020) both require the things a count noun counts to be *disjoint*: no
+part shared between two. That is exactly our "never splits" law
 (`noSplit_iff_disjoint`). So passengers (one person, several
 passengers) and copredicated books break their condition when the
 individuals are people or books; those theories must count other

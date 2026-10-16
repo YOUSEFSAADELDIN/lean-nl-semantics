@@ -1215,8 +1215,9 @@ representations of it.
 - **`noSplit_iff_disjoint`.** A noun never splits exactly when its
   units are pairwise disjoint. That is the condition Rothstein (2017,
   p. 109) places on counting contexts ("contextual disjointness is a
-  condition on k") and, as she reports it (p. 113), the condition
-  Landman places on count bases. With `single_iff`, the law
+  condition on k") and the condition Landman (2020, §6.1.2, p. 165)
+  places on count bases ("X is count iff base(X) is disjoint"). With
+  `single_iff`, the law
   `count {x} ≤ 1` is their disjointness, made observable.
 
 ## Two criteria (`TwoCriteria.lean`, CI run 38840693113)
@@ -1239,8 +1240,13 @@ volume if its text is in `S`, by text otherwise, is a single criterion
   a counting context with disjoint atoms; double distinctness is not
   counting in any one context, but the least count over a family of
   them.
-- Every minimum of coverage functions arising from two criteria is
-  false; see the next section.
+- The converse, that every minimum of coverage functions arises from
+  two criteria, is false; see the next section.
+- Whether "picked up and mastered three books" means `count2` (double
+  distinctness) is disputed: Gotham (2017, 2022) says yes, Liebesman &
+  Magidor (2017, 2026) say no, and Sutton (2024) says it depends on
+  the context. The theorems say what each view predicts and are
+  unaffected (`paper/A-literature.md`).
 
 ## Minima of coverage functions (`MinCoverage.lean`, CI run 38843325962)
 
@@ -1281,16 +1287,21 @@ between the coverage functions and the minima of coverage functions.
   the odd-cycle law, so it is not counting by two criteria.
 
 The argument works for any odd cycle of length at least 5; only 5 is
-proved. That suggests a link to perfect graphs (line graphs of bipartite
-graphs are perfect; odd cycles of length at least 5 are not), not
-checked. An exact characterization of counting by two criteria remains
-open.
+proved. When each individual has one thing, `count2` is the independence
+number of the line graph of a bipartite multigraph (volumes and texts),
+restricted to the set counted. The odd-cycle laws then exclude odd
+holes, and a claw law (not formalized) excludes claws. If the reported
+characterization of line graphs of bipartite graphs (claw-, diamond- and
+odd-hole-free; Harary & Holzmann 1974, not seen) holds, this gives an
+exact characterization of that case (`paper/A-literature.md`, graph
+theory entry). The general case remains open.
 
 A testable prediction built on `count_submod` and `not_single` is
 drafted in `paper/A-prediction.md` (not run).
 
-Not yet read: Landman (2011a, 2016) directly; what is said of Landman
-here is Rothstein's report of it.
+Landman (2020) has now been read for chs. 5-7 and §11.3, with page
+citations in `paper/A-literature.md`. Landman (2011a, 2016) have not
+been read directly.
 
 The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
 `obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`, `isMinCov_of_isCount2`, `not_pairwise_example`, `count2_cycle5`, `two_laws_not_sufficient`) carry `#guard_msgs` checks that they depend only on

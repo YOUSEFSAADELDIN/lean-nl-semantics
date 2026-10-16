@@ -3,8 +3,8 @@
 What the papers read so far say that bears on Paper A (nouns as types
 against nouns as predicates), with page or example numbers, and how each
 relates to the repository's results (`EndToEnd/Encodings/README.md`).
-Read in full: the nine papers below, and the relevant pages of Asher
-(2011).
+Read in full: the papers below unless an entry says otherwise; of
+books, the chapters and pages each entry names.
 
 ## Gotham (2017), "Composing criteria of individuation in copredication", Journal of Semantics 34: 333-371
 
@@ -55,7 +55,19 @@ Read in full: the nine papers below, and the relevant pages of Asher
   the axiom that gives Chatzikyriakidis & Luo double distinctness is the
   condition under which their account collapses to the predicate one,
   and with it Gotham's (160).
+- They cite Gotham's evidence that double distinctness is not a
+  cancellable implicature: "John picked up and mastered three books,
+  but he didn't pick up three books" and three similar sentences, their
+  (18)-(21), from Gotham (2012). These are the judgments Liebesman &
+  Magidor (2026, below) dispute for related sentences.
+- n. 9 justifies the axiom: "For the atomic types like Book and PHY, the
+  equality on a subtype coincides with that of the supertype". They add
+  the same axiom for `Info`. Both together say two distinct books are
+  never two copies of one text and never two texts in one volume, so the
+  scenarios that separate the criteria cannot arise.
 - §4 (newspaper, linear dot-types) is not relevant to Paper A.
+- Rechecked against the 12-page PDF supplied (October 2026): the points
+  above stand.
 
 ## Chatzikyriakidis & Luo (2018), "Identity criteria of common nouns and dot-types for copredication", Oslo Studies in Language 10(2): 121-141
 
@@ -318,7 +330,8 @@ and Gupta: none are discussed.
 - **Landman (2011a, 2016), as reported** (p. 113): count predicates have
   a disjoint base, mass predicates an overlapping one; "neat" mass nouns
   like *furniture* overlap vertically (a table, six chairs and the
-  suite each count as one item). Not read directly.
+  suite each count as one item). Now read directly: see the Landman
+  entry below.
 - **Bale & Barner (2009), as reported** (ch. 5, pp. 120-121): count nouns
   and object mass nouns denote "individuated" semi-lattices, generated
   by non-overlapping individuals, and are compared by cardinality.
@@ -341,35 +354,334 @@ For Paper A:
 - The method she reports (Barner & Snedeker's "Who has more N?") is a
   model for testing our prediction (`paper/A-prediction.md`).
 
-## Landman (2020), *Iceberg Semantics for Mass Nouns and Count Nouns* (Springer); also Landman (2011, 2016)
+## Landman (2020), *Iceberg Semantics for Mass Nouns and Count Nouns: A New Framework for Boolean Semantics*, Springer (Studies in Linguistics and Philosophy 105)
 
-The book itself could not be read: the upload did not arrive, twice.
-What follows is from a third-party Lean formalization of its core
-(`linglib`, `Linglib/Studies/Landman2020.lean`, read locally), which
-cites the book's sections, and from Rothstein's report (2017, p. 113).
-Check against the book before citing.
+Read from the book (chapter PDFs supplied October 2026): ch. 5 in full
+(pp. 141-160); §6.1 (pp. 161-172); ch. 7, pp. 189-200 and 205-216;
+§11.3 (pp. 350-361). Page numbers are the book's printed ones, checked
+against the running heads. Searched the whole book for copredication,
+Gotham, Liebesman, dot types, identity criteria, individuation and
+passengers: none are discussed (only "individuation" in titles in the
+references). This entry replaces earlier secondhand notes taken from a
+third-party formalization. Those notes were right on the definitions
+but had the section numbers slightly off.
 
-- An interpretation is an i-set: a body and a base that generates it
-  under sum. Count: the base is disjoint (§6.1.2). Neat: the base is
-  atomistic with disjoint base-atoms (§6.1.2), so neat mass nouns
-  (*furniture*) have overlapping bases.
-- Counting rests on disjointness: `card_Z(x)` is the number of base
-  elements below `x` (§5.2), and over a disjoint base the cardinality of
-  a sum is the number of generators summed.
-- For Paper A: base elements play the role of our units, and a disjoint
-  base is our "never splits" (`CountingLaws.noSplit_iff_disjoint`). A
-  base element may be a sum of several individuals, so merging is
-  allowed. So Landman's count nouns are the "never splits" column of the
-  typology when the individuals are the atoms that predicates apply to.
-  Luo's passengers and copredicated books are outside it unless the
-  individuals are taken to be other entities.
+- **I-sets** (§5.1, p. 143): an NP denotes a pair ⟨body, base⟩ with
+  body ⊆ *base (the base generates the body under sum). For count
+  nouns, "the base is the distribution set, a disjoint set in terms of
+  which the body is counted" (ch. 5 abstract, p. 141).
+- **Cardinality** (§5.2, p. 144): D_Z(x) = (x] ∩ Z "if Z is disjoint",
+  undefined otherwise; card_Z(x) = |D_Z(x)|, "the cardinality of the set
+  of Z-parts of x". Counting relative to an overlapping set is a
+  presupposition failure (p. 145).
+- **Head principle** (§5.3, pp. 145-146): base(NP) = (body(NP)] ∩
+  base(head), so a disjoint head base stays disjoint (lemma, p. 146) and
+  complex NPs inherit count/mass from their head. Numerals, adjectives
+  and *most* then count by the base (§§5.4-5.5, pp. 147-160). "The
+  assumption of a disjoint base ... is the minimal assumption we have to
+  make" (p. 160).
+- **Count, mass, neat, mess** (§6.1.2, pp. 165-167): X is count iff
+  base(X) is disjoint; mass iff (non-null and) not count; neat iff
+  base(X) is atomistic and its set of atoms is disjoint; mess otherwise.
+  "Count i-sets are atomistic i-sets whose base is disjoint; neat i-sets
+  are atomistic i-sets whose set of base-atoms is disjoint" (p. 166).
+  The distinction is "horizontal": it concerns overlap among base
+  elements, not atoms below them (p. 164).
+- **Disjointness is an imperative, not a law** (§6.1.4, pp. 169-172).
+  Count nouns are interpreted at "internal" indices, where the base is
+  disjoint. Overlap is first removed by contextual restriction, which
+  is "pervasive" (p. 171). In "a context of counting" where restriction
+  fails, speakers resort to "pragmagic" (p. 171), changing the ontology.
+  Overlapping bases in counting (body parts, p. 172) are "a puzzler".
+- **Conceptually vs contextually disjoint** (§6.1.4, p. 169; §7.2,
+  pp. 196-200, after Sutton & Filip 2016 and Rothstein 2010). A noun is
+  conceptually disjoint if the union of its bases over all internal
+  indices is disjoint (*cat*), and contextually disjoint otherwise
+  (*fence*). He argues *furniture*, *pottery* and *jewelry* are only
+  contextually disjoint, against Rothstein (pp. 198-200).
+- **Neat mass nouns count by a contextual choice of disjoint set**
+  (§7.1, pp. 189-190; §7.4.2, pp. 208-209; §7.4.3, pp. 214-216). The
+  pottery example has base {teapot, cup, saucer, fruit bowl, cup and
+  saucer, teaset}: overlapping, so mass, but its atoms are disjoint, so
+  neat. The classifier *stuk(s)* and count comparison use stuk_w(P), a
+  disjoint set chosen in context (p. 208). For *pottery*, three
+  "maximally disjoint subsets of base(POTTERY_w)" are "naturally
+  available": the four pieces, {teapot, cup and saucer, fruit bowl}, or
+  {teaset, fruit bowl} (p. 209). "Most pottery costs more than 5 euros"
+  changes truth value with that choice (p. 216).
+- **Double counting via indexing, at a cost** (§11.3, pp. 350-361).
+  *Doppelgänger* (pp. 351-354) is a local repair: two roads sharing a
+  stretch are counted as two by pretending the shared part is two
+  indiscernible parts. *Indexing* (pp. 354-361) pairs each listed item
+  with its own index and counts the indices. It "is used precisely when
+  we want to allow double counting" (p. 358), it is what Rothstein and
+  Mountain semantics build into every count noun (p. 355), and it "comes
+  with a processing cost" when it changes lexical meanings (p. 360).
+  Evidence cited: "The Bordurians and the Szohôdians are two groups of
+  Europeans" is degraded when Szohôd is inside Borduria (pp. 358-359),
+  and so is counting cubes that include sub-cubes (p. 360). No
+  experimental data are reported.
+
+For Paper A:
+
+- Base elements are our units and card_Z is our count for a single
+  criterion. A disjoint base is our "never splits"
+  (`CountingLaws.noSplit_iff_disjoint`). A base element can be a sum of
+  several individuals (the teaset), which is our "merges". So Landman's
+  count nouns (disjoint base) are the never-splits column of the
+  typology, with the base atoms as individuals. Neat mass nouns have
+  overlapping bases, but each count uses one maximal disjoint subset
+  (p. 209): one never-splitting criterion per context, chosen from a
+  family.
+- Copredicated counting (`TwoCriteria.count2_eq_min`) also involves a
+  family of never-splitting criteria, the mixtures, but takes the
+  *least* count over the family, not one contextual choice. Landman's
+  framework has no counterpart of taking a minimum. Rothstein's doesn't
+  either.
+- The submodularity law (`count_submod`) holds for every count in his
+  framework with a fixed disjoint base, and also for each choice of
+  stuk_w, since each is one criterion. It can fail only where the
+  choice varies between the counts compared. That is his pragmagic or
+  contextual shift, and the protocol must hold it fixed
+  (`A-prediction.md`).
+- Indexing makes overlapping items into disjoint atoms. This is our
+  Montague cell (units = individuals) applied to a richer domain, which
+  our translation theorems say always exists. His claim that it is
+  costly gives the experiment a second measure (difficulty or response
+  time) besides the count.
+
+## Liebesman & Magidor (2026), "What copredication can(not) teach us", *Theoretical Linguistics* (advance online), doi:10.1515/tl-2026-2002
+
+Read: §§2.3-2.3.1, 3.1 and 3.2.3 (pp. 14-36 of the advance version).
+
+- **Target.** "Dual Nature" accounts (Asher 2011, Gotham 2017, and in
+  n. 23 Chatzikyriakidis & Luo), which give 'book' one reading and let
+  predicates supply criteria of individuation.
+- **One sentence, two counts** (pp. 19-20, exx. (33)-(36)). "Alice
+  picked up three books" can count *i-books*: a bookseller collecting
+  100 copies each of four new titles says "I will pick up three books,
+  and you can pick up the fourth one tomorrow". "Three books are by
+  Tolstoy" can count volumes: whether a shelf needs reinforcing. On
+  their view the predicate does not fix the criterion; context can
+  override it.
+- **The counterexample** (p. 21, ex. (37); repeated p. 34, (67)). The
+  bookstore holds ten wrinkled copies of *War and Peace* and two of
+  *Wuthering Heights*. "# Exactly one wrinkled book is by Tolstoy" has,
+  "to our ears", no true reading. Asher and Gotham predict it true:
+  Gotham because no two of the ten copies are distinct in both ways.
+- **Property Versatility** (§3.1, pp. 22-26): 'book' is univocal and
+  ranges, by contextual domain restriction, over p-books or over
+  i-books. Properties like *by Tolstoy* or *memorized* are "versatile",
+  true of both kinds. Counting is ordinary counting over the restricted
+  domain (§3.2.3, pp. 32-36). Each reading of (37) is false: ten
+  p-books, or zero wrinkled i-books.
+- **Gotham's (2022) reply** (p. 34, ex. (68)): "Granger memorized three
+  yellow books" has, Gotham says, no reading true of three copies of
+  one text. They answer that memorizing a p-book may require learning
+  its text for the first time (p. 35), and n. 38 doubts the judgment.
+- **Their overall claim** (p. 34): discussions have asked how to
+  generate double-distinctness truth conditions "without paying
+  sufficient attention to the question of whether these sentences
+  really have" them.
+
+For Paper A:
+
+- **Do their cases already count as evidence?** For or against
+  `count2` as the meaning of copredicated numerals: yes, as
+  introspective judgments, contested by Gotham (2022) and accepted by
+  Sutton (2024, below) for neutral contexts. `count2` gives (37) the
+  count 1, so if their judgment is right, double distinctness is wrong
+  for modifier-plus-predicate copredication. For or against our law:
+  no. The law is about four counts by one speaker in one context, and
+  their examples give one count each. Their bookstore cases show
+  something the protocol must control: the criterion can switch from
+  one sentence to the next, and pooled answers from switching speakers
+  can break the law even when each speaker counts by one criterion
+  (`A-prediction.md`, "Reading switches").
+- **Should the protocol test Property Versatility?** Yes, as the main
+  alternative. With a fixed reading, PV counts by one criterion (volumes
+  or texts), so it obeys the law (`count_submod`). It predicts that each
+  speaker's four answers fit the volume column or the text column of the
+  table, never the "both" column. Their (37) also goes in as a separate
+  item, because there `count2` and PV disagree on a single count.
+- The theorems are unaffected: they are claims about what each account
+  predicts, not about which is right. What is at stake is the
+  linguistic reading of `count2` (`TwoCriteria.lean`) as the meaning of
+  "picked up and mastered three books". The paper should present it as
+  the Gotham / C&L hypothesis under test.
+
+## Liebesman & Magidor (2017), "Copredication and property inheritance"
+
+Read: the PDF supplied (a pre-publication version; page numbers below
+are that version's), pp. 1-6. The published venue is probably
+*Philosophical Issues* 27 (2017), from memory, not from the PDF: check it
+before citing.
+
+- 'book' is univocal. Its p-book and i-book readings come from
+  contextual domain restriction (Stanley & Szabó 2000), not ambiguity
+  (pp. 2-4).
+- **A constraint on double counting** (p. 4): "Four colours are on the
+  canvas" (three shades of red, plus red) and "Six wooden things are in
+  the room" have no true reading. "Counting both a determinable and its
+  determinate is ruled out due to some restriction on double counting,
+  as is counting both an object and its parts". They leave open "what
+  the content of the constraint is" and "how it can be overridden"
+  (n. 5 cites Kratzer and Liebesman).
+- For Paper A: their constraint is the informal counterpart of
+  disjointness, our "never splits". Landman (2020, above) gives a
+  formal version: disjointness is the default, and double counting
+  needs costly indexing. Paper A's typology says what follows when the
+  constraint is dropped (splitting nouns, `CountingLaws.single_iff`).
+
+## Liebesman & Magidor (2019), "Copredication, counting, and criteria of individuation: a response to Gotham", *Journal of Semantics* 36(3): 549-561
+
+Not read: no copy available. To be cited as the start of the exchange
+that Gotham (2022) answers and Liebesman & Magidor (2026, above)
+continues.
+
+## Sutton (2024), "Individuation criteria and copredication: modification in context", *Proceedings of Sinn und Bedeutung* 28: 876-894
+
+- **Main question** (p. 877): what mechanisms "underpin when
+  double-distinctness readings arise, and when they do not?"
+- **Account** (pp. 877, 879): a polysemous noun lexically introduces a
+  QUD, "How are we individuating books?", with answers physical,
+  informational, or both. Modifiers answer whichever QUD is highest on
+  the stack. A contextual QUD (which pile of books?) can take priority,
+  and then a modifier restricts the domain instead of the criterion.
+  Counting needs a quantized set relative to context (Sutton & Filip
+  2020; p. 879).
+- **Predictions** (p. 877): (1) double distinctness in neutral contexts;
+  (2) not when a more prominent QUD makes a modifier a domain
+  restrictor; (3) further modifiers can bring it back. *Memorised the
+  first page of* brings it back (ex. (10)); *tore out the first page
+  of* does not (ex. (11); pp. 878, 890).
+- **Word order matters** (p. 878): in the display-pile context, "three
+  damaged, insightful books" allows informational duplicates, but
+  "three damaged books are insightful", "three insightful, damaged
+  books" and "three damaged and insightful books" resist that reading
+  (exx. (6)-(9)).
+- She also finds the anthology reading (two texts in one volume) "at the
+  very least highly contextually restricted" (p. 877, n. 1), siding
+  with Chatzikyriakidis & Luo (2018, n. 4).
+
+For Paper A (relevant to the experiment's design):
+
+- In our terms, her lexical QUD picks the family of criteria: {volume},
+  {text}, or {volume, text} (`count2`). Her prediction 1 says neutral
+  contexts give the two-criteria family, which breaks the law in our
+  scenario. Her prediction 2 says a prominent QUD gives one criterion,
+  which obeys it. So her account predicts that context *switches the
+  law on and off*. That is a sharper test than a single count. The
+  protocol gets a neutral and a QUD condition.
+- Her word-order and modifier effects mean every item must be matched
+  in structure across conditions. Her *memorise* / *tear out* pair
+  gives a within-item manipulation of the predicted criterion.
+- Her n. 1 bears on our scenario, which relies on the anthology (B and
+  C are two books in one volume). The protocol already records which
+  reading participants report.
+
+## Bahramian, Nematollahi & Sabry (2017), "Copredication in homotopy type theory", manuscript (PDF dated 7 November 2017; the acknowledgements mention TYPES post-proceedings reviewers)
+
+- **Model** (§6.4, pp. 13-16): a count noun is an identity type between
+  "prototypes", ⟦Book⟧ = (BookPrototype = PhysicalPrototype) =
+  (BookPrototype = InformationalPrototype). A book's physical and
+  informational aspects ("b qua physical", "b qua informational") are
+  composite paths, (21)-(22). Formalized in Agda.
+- **Counting** (§6.4, p. 17): "picked up and mastered three books" ((24c))
+  requires three books pairwise distinct qua physical *and* pairwise
+  distinct qua informational: double distinctness, with distinctness
+  taken in each aspect type.
+- **Their puzzle** (§6.1, pp. 11-12): "Fred has five books" refutes each
+  of the four single criteria (physical; informational; distinct in
+  either; distinct in both), given the verbs that follow.
+- They claim (§6.6, p. 19) that C&L (2015) and Bekki & Asher (2012) are
+  equally adequate once existential closure is added. The advantage
+  claimed is conceptual, with no subtyping.
+- For Paper A: their predictions on counting are those of double
+  distinctness, so `count2` models them and `not_single` and the
+  submodularity law apply unchanged. Like Gotham, they never put one
+  identity relation on Book, so our setoid impossibility
+  (`DotSetoid.no_setoid`) does not bear on them. It bears on C&L (2018)
+  only. A third proof-assistant formalization of copredication (after
+  C&L's Coq and ours in Lean), worth citing as such.
+
+## Graph theory: matchings and line graphs (the "matching function" check)
+
+Not read in the original: Harary & Holzmann (1974), Trotter (1977) and
+de Werra (1978) could not be fetched here. What follows separates what
+is proved in this repository, what follows by short arguments given
+here (not formalized), and what is only reported.
+
+- **Proved here.** `count2` (`TwoCriteria.lean`) counts the largest set
+  of things no two of which share a volume or a text. Take each thing
+  as an edge from its volume to its text, in a bipartite multigraph.
+  Then `count2` of a set of things is the size of a largest matching
+  among them (by definition). The laws proved are subadditivity, the
+  pairwise law (`MinCoverage.lean`) and the odd-cycle law
+  (`OddCycle.lean`).
+- **A short argument (not formalized).** When each individual has
+  exactly one thing (`emb` a bijection), `count2(P)` is α(H[P]): the
+  size of a largest set of pairwise non-adjacent vertices in the
+  subgraph of H on P. Here H is the conflict graph (two things are
+  adjacent if they share a volume or a text), which is the line graph
+  of that multigraph. Conversely, every line graph of a bipartite
+  multigraph arises this way: its two sides are the two criteria. So,
+  in that case, a set function f is a `count2` function iff (a) f is
+  α of the graph that f itself defines on pairs (x, y adjacent iff
+  f({x, y}) = 1), and (b) that graph is the line graph of a bipartite
+  multigraph.
+- **Matching the laws to forbidden subgraphs.** The pairwise law (a set
+  whose pairs all count 1 counts 1) holds for α of *every* graph. It is
+  part of (a), not a counterpart of a forbidden subgraph. The odd-cycle
+  law excludes an induced 5-cycle (`count2_cycle5`, f5 is α of C5).
+  Excluding all odd holes needs the same law for 7, 9, ... cycles,
+  which is not proved. Claw-freeness is a further law: if a thing
+  conflicts with three others, two of those three conflict (the hub
+  argument of `hub_of_pairwise`). It is not formalized. Diamonds *do*
+  occur, from two copies of one text bound in one volume (parallel
+  edges). Call two adjacent vertices *twins* if they have the same
+  other neighbours. In the line graph of a bipartite multigraph, twins
+  are either parallel edges, or two edges uv, uw where every edge at v
+  is parallel to uv and every edge at w is parallel to uw (an edge at v
+  must meet uw, and v, w are on the same side). Merging each class of
+  twins into one vertex therefore gives the line graph of a simple
+  bipartite graph. Conversely, blowing a vertex of a line graph up
+  into twins is adding parallel edges. So (b) is equivalent to (b'):
+  after merging twins, the graph is the line graph of a simple
+  bipartite graph.
+- **Reported, to check.** The line graphs of simple bipartite graphs
+  are exactly the claw-free, diamond-free, odd-hole-free graphs
+  (Harary & Holzmann 1974, as stated by you; not seen here). A
+  secondary source found by search attributes to them the
+  characterization of line graphs of *triangle-free* graphs as the
+  claw- and diamond-free graphs. Adding "odd-hole-free" for bipartite
+  graphs then follows by a short argument: a shortest odd cycle of
+  length ≥ 5 is chordless, and its edges induce an odd hole in the line
+  graph; conversely an odd hole in the line graph gives an odd cycle.
+  Line graphs of bipartite graphs are perfect (König's edge-colouring
+  theorem; standard). Trotter (1977, *Mathematical Programming* 12:
+  255-259), as summarized by search results: a graph is "line perfect"
+  (its line graph is perfect) iff it has no odd cycle longer than 3.
+  de Werra (1978, *Mathematical Programming* 15: 236-238,
+  doi:10.1007/BF01609025) exists; its content was not found.
+- **What would follow.** If the Harary & Holzmann statement holds,
+  `count2` functions with one thing per individual would be exactly the
+  set functions satisfying (a) and (b'). By the points above, (b')
+  means: no claw, no odd hole, and no diamond except from merged pairs.
+  That would be an exact law-based characterization of this case, with
+  laws beyond the two we proved: claw, and all odd holes. The general
+  case, where one individual can own several things (a plurality of
+  copies counted as one individual), is a "matching number of a union
+  of edge groups". In matroid terms that is the rank, in the
+  intersection of two partition matroids, of a union of groups of
+  elements. It remains open, and no source on it was found.
 
 ## What this means for Paper A
 
 - I1 is Gotham's (100). M is Chatzikyriakidis & Luo's (2018) account. I2
   is Asher's anthology case. Credited in `EndToEnd/Encodings/README.md`
   and `Copredication.lean`.
-- **Apparently new**, relative to these five papers:
+- **Apparently new**, relative to the papers above:
   - `valid_iff` and `validI_iff`: a fragment-wide equivalence, with the
     exact condition.
   - `validC_iff` (`Translation.lean`): nouns as types with identity
@@ -427,15 +739,20 @@ Check against the book before citing.
     submodularity law that copredicated nouns can break. No linguistic
     use of coverage, belief or submodular functions for counting turned
     up in a search, nor in Rothstein (2017, above), which also does not
-    discuss identity criteria or copredication. Her (and, as she
-    reports, Landman's) disjointness condition is our "never splits"
-    law. Counting by two criteria is the least of the mixed
-    single-criterion counts (`TwoCriteria.count2_eq_min`, König's
-    theorem).
+    discuss identity criteria or copredication. Neither does Landman
+    (2020, searched in full). Their disjointness condition is our
+    "never splits" law. Counting by two criteria is the least of the
+    mixed single-criterion counts (`TwoCriteria.count2_eq_min`, König's
+    theorem). Neither Rothstein nor Landman takes a least count over a
+    family of criteria. Landman's neat mass nouns choose one member of
+    such a family per context (p. 209).
     Not every minimum of coverage functions arises that way
-    (`MinCoverage.not_pairwise_example`); the exact class is open, and
-    whether it is known in combinatorics (as a class of bipartite
-    matching functions) has not been checked.
+    (`MinCoverage.not_pairwise_example`), and the two laws do not
+    characterize the class (`OddCycle.two_laws_not_sufficient`). With
+    one thing per individual, the class is the independence numbers of
+    line graphs of bipartite multigraphs. That reduces it to a known
+    graph class, if the Harary & Holzmann statement checks out (graph
+    theory entry above). The general case is open.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).
@@ -457,7 +774,24 @@ Check against the book before citing.
   open how type judgements x : T relate to their recognising predicates
   T̂(x) (§5.3). Paper A's equivalence theorems answer it for the
   fragment, so the paper can present them as that answer.
+- **The empirical premise is contested.** Every novelty claim above
+  about copredication is a claim about what accounts predict, and
+  stands. Whether "picked up and mastered three books" has double
+  distinctness truth conditions at all is disputed. Liebesman & Magidor
+  (2017, 2019, 2026) say no, Gotham (2017, 2022) says yes, and Sutton
+  (2024) says it depends on the QUD. The paper should present
+  `count2` as the hypothesis the law tests, not as established
+  meaning. The protocol (`A-prediction.md`) is designed to decide
+  between these three positions.
 - **Not yet read:** Gupta (1980); Cooper (2011), "Copredication,
   quantification and frames", LACL 2011, LNCS 6736: 64-79 (the PDF
   supplied was Chatzikyriakidis & Luo 2015 again). Of Asher (2011), only
-  ch. 5, pp. 146-159.
+  ch. 5, pp. 146-159. Also, cited by Liebesman & Magidor (2026):
+  Gotham (2022), "Property inheritance, deferred reference and
+  copredication", *Journal of Semantics* 39: 87-116; Liebesman &
+  Magidor (2019, above); (2023), "Copredication and meaning transfer",
+  *Journal of Semantics* 40: 69-91; (2025), *Property Versatility and
+  Copredication*, OUP (ch. 9 §4 on double distinctness); Mery, Moot &
+  Retoré (2019), "Solving the individuation and counting puzzle with
+  λ-DRT and MGL". Graph theory: Harary & Holzmann (1974), Trotter
+  (1977), de Werra (1978) (entry above).
