@@ -202,10 +202,10 @@ König, Hall; Harary & Holzmann 1974; Trotter 1977.
 
 ## Before drafting
 
-- [gap] Check the Harary & Holzmann statement (or send the paper). The
-  claw law and the odd-cycle laws of every length are now proved
-  (`ForbiddenLaws.lean`); what remains for the exact characterization
-  is the converse and the reduction.
+- [have] The exact characterization with one thing per individual
+  (`Count2Laws.isCount2Self_iff`), proved without the Harary & Holzmann
+  statement, and the claw law's independence (`claw_independent`).
+  Checking Harary & Holzmann is now only for citation.
 - [gap] Read Gotham (2022) and Liebesman & Magidor (2019, 2023), the
   rest of the exchange, before section 9 is written.
 - [gap] Expert check of contribution 7.

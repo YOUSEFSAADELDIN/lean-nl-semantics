@@ -668,9 +668,11 @@ here (not formalized), and what is only reported.
   `count2` functions with one thing per individual would be exactly the
   set functions satisfying (a) and (b'). By the points above, (b')
   means: no claw, no odd hole, and no diamond except from merged pairs.
-  That would be an exact law-based characterization of this case. Its
-  laws (claw, all odd holes) are now proved; the converse is not. The
-  general
+  That would be an exact law-based characterization of this case. It
+  is now proved directly, without the Harary & Holzmann statement
+  (`Count2Laws.isCount2Self_iff`, with pair determination, singles and
+  a diamond law). The claw law is shown independent
+  (`claw_independent`). The general
   case, where one individual can own several things (a plurality of
   copies counted as one individual), is a "matching number of a union
   of edge groups". In matroid terms that is the rank, in the

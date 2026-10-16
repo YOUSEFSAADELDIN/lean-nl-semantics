@@ -1315,9 +1315,44 @@ theory entry). The general case remains open.
 
 Both hold when individuals own several things. In graph terms (one
 thing per individual), the conflict graph has no induced claw and no
-odd hole. Not proved: that these laws, with pair determination and the
-twin condition, suffice (`paper/A2-draft.md`, Conjecture 9.2), or that
-the claw law is independent of the others.
+odd hole. That these laws, with pair determination and a diamond law, suffice
+when each individual is one thing is proved in the next section.
+
+## Laws that characterize counting by two criteria (`Count2Laws.lean`, CI run 38865573037)
+
+With one thing per individual, write `pairLe f x y` for `f {x, y} ≤ 1`.
+
+- **`isCount2Self_iff`.** `f` counts individuals by two criteria
+  (`f = count2 c1 c2` on the individuals) exactly when it obeys five
+  laws:
+  - each individual counts one (`Singles`);
+  - `f` is determined by pairs: `f P` is the largest set of `P`s no two
+    of which are `pairLe` (`PairDet`, `pairCount`);
+  - the claw law (`ClawLaw`);
+  - the diamond law: the two middle individuals of a diamond are twins
+    (`DiamondLaw`);
+  - the odd-cycle laws of every length (`OddCycleLaw`).
+- **How the converse goes (`union_of_two_general`).**
+  - Merge twins (`twinSetoid`).
+  - Lines are the common neighbours of two distinct related
+    individuals (`IsLine`), and at most two pass through an individual
+    (`three_lines`, the claw law).
+  - Lines meeting at an individual are adjacent (`lineAdj`). An odd
+    closed walk of lines gives an odd cycle of individuals. The
+    odd-cycle law then yields either a contradiction or a backtrack,
+    which shortens the walk by two (`shorten`, `no_odd`).
+  - So the lines are two-colourable (Mathlib's
+    `two_colorable_iff_forall_loop_even`), and "together on a line of
+    colour `b`" gives the two criteria (`union_of_two`).
+  - This does not use the unchecked Harary & Holzmann statement.
+- **`claw_independent`, `fStar_not_isCount2`.** The independence number
+  of a star with three leaves obeys every law but the claw law, so it
+  is not counting by two criteria, with one thing per individual or
+  several.
+
+Not shown: whether the diamond and odd-cycle laws are independent of the
+others. Not characterized: counting by two criteria when individuals
+own several things.
 
 A testable prediction built on `count_submod` and `not_single` is
 drafted in `paper/A-prediction.md` (not run).
@@ -1327,7 +1362,7 @@ citations in `paper/A-literature.md`. Landman (2011a, 2016) have not
 been read directly.
 
 The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
-`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`, `isMinCov_of_isCount2`, `not_pairwise_example`, `count2_cycle5`, `two_laws_not_sufficient`, `IsCount2.claw`, `IsCount2.oddCycle`) carry `#guard_msgs` checks that they depend only on
+`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`, `isMinCov_of_isCount2`, `not_pairwise_example`, `count2_cycle5`, `two_laws_not_sufficient`, `IsCount2.claw`, `IsCount2.oddCycle`, `isCount2Self_iff`, `claw_independent`) carry `#guard_msgs` checks that they depend only on
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
 `sorry` gets in.
 
@@ -1342,6 +1377,7 @@ The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
 - **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`). In intensional contexts (necessity, belief, and a hyperintensional attitude), iff the same units at every world (`FullAbstractionIntensional.lean`).
+- **Characterization**: with one thing per individual, five laws characterize counting by two criteria; the claw law is independent (`Count2Laws.lean`).
 - **Claw and odd-cycle laws of every length**: two more laws of counting by two criteria (`ForbiddenLaws.lean`).
 - **Odd-cycle law**: subadditivity and the pairwise law are not sufficient; a third law, about odd cycles, separates a minimum of coverage functions that obeys both from counting by two criteria (`OddCycle.lean`).
 - **Minima of coverage functions**: not every one is counting by two criteria; two laws (subadditivity, pairwise determination of "at most one") separate them (`MinCoverage.lean`).

@@ -37,10 +37,12 @@ functions directly. Our results:
    coverage functions and minima of coverage functions. It obeys
    subadditivity, a pairwise law, a claw law and an odd-cycle law for
    every odd length. The first two do not characterize it.
-5. **Graph theory.** When each individual has one thing, the class is
-   the independence numbers of line graphs of bipartite multigraphs.
-   An exact characterization by forbidden configurations follows *if* a
-   reported graph-theoretic result holds.
+5. **An exact characterization.** When each individual is one thing,
+   five laws characterize two-criteria counting exactly: singles, pair
+   determination, the claw law, a diamond law and the odd-cycle laws.
+   The proof is self-contained and machine-checked; it does not use the
+   graph-theoretic results we could not check. The claw law is
+   independent of the other four.
 6. **A test.** Because submodularity holds for every one-criterion
    account at once, it gives a test of double distinctness that does
    not depend on which one-criterion account is right. We relate the
@@ -104,7 +106,7 @@ answer from a speaker's pattern of answers.
 | no single criterion yields some two-criteria counts | §7.4, `not_single` |
 | coverage ⊊ two criteria ⊊ minima of coverage | §8, `isMinCov_of_isCount2`, `not_subadd_example`, `not_pairwise_example` |
 | laws of two-criteria counts (subadditive, pairwise, claw, odd cycles of every length); the first two insufficient | §8, `count2_subadd`, `count2_pairwise`, `count2_claw`, `count2_oddCycle`, `two_laws_not_sufficient` |
-| graph-theoretic reading and conditional characterization | §9 (partly argued, partly reported) |
+| exact characterization with one thing per individual; the claw law independent | §9, `isCount2Self_iff`, `claw_independent` |
 | the debate restated as hypotheses about laws | §10 |
 | a protocol | §11 |
 
@@ -114,8 +116,9 @@ answer from a speaker's pattern of answers.
   That is the hypothesis under test.
 - That the fragment covers mass nouns, measure phrases, classifiers,
   or contextual shifts of criterion within a sentence.
-- An exact characterization of two-criteria counting functions in
-  general. It is open.
+- An exact characterization of two-criteria counting functions when
+  individuals can own several things. It is open; the case of one thing
+  per individual is settled (Theorem 9.2).
 - Any experimental result. None has been run.
 
 ---
@@ -668,26 +671,80 @@ iff:
   cycle longer than 3. de Werra (1978) exists; its content was not
   found.
 
-**Conjecture 9.2 (conditional characterization).** Assume the reported
-characterization of line graphs of bipartite graphs. Then, with one
-thing per individual, f is in IsCount2 iff:
+**Theorem 9.2 (characterization, one thing per individual;
+`Count2Laws.isCount2Self_iff`).** Write pairLe(x, y) for f({x, y}) ≤ 1.
+A function f counts individuals by two criteria (f = count2 c1 c2 for
+some c1, c2 on the individuals) iff it obeys five laws:
 
-- f({x}) = 1 for every individual x;
-- f is pair-determined, in the sense of (a);
-- after merging twins, the pair graph has no claw, no odd hole and no
-  diamond.
+1. **singles:** f({x}) = 1 for every x;
+2. **pair determination:** f(P) is the size of a largest subset of P
+   no two of whose members satisfy pairLe (`pairCount`);
+3. **the claw law**, for individuals;
+4. **the diamond law:** if pairLe(x, y), each of z and w is pairLe with
+   both x and y, and not pairLe(z, w), then x and y are twins: for every
+   u, pairLe(u, x) iff pairLe(u, y);
+5. **the odd-cycle laws of every odd length**, for individuals.
 
-By §9.2 this is a law-based characterization: the claw law, all
-odd-cycle laws and the twin-diamond condition, on top of pair
-determination. The claw law and every odd-cycle law are now proved as
-laws of count2 (Theorems 8.3′ and 8.5). What remains is the converse
-direction: that pair-determined functions obeying them, with the twin
-condition, come from two criteria. Its status is: (a) and (b) argued
-here; the graph class reported.
+The theorem is proved in full and does not rely on the reported
+graph-theoretic result above. Its proof (`union_of_two_general`)
+constructs the two criteria directly:
+
+- **Twins.** Merge individuals that are pairLe with exactly the same
+  individuals (`twinSetoid`). After merging, the diamond law says that
+  the common neighbours of two distinct related individuals are
+  pairwise related.
+- **Lines.** A *line* is such a set of common neighbours (`IsLine`). A
+  line is the line of any two of its distinct members
+  (`line_common`), and two lines sharing two individuals are equal
+  (`line_eq`).
+- **At most two lines per individual** (`three_lines`), by the claw
+  law.
+- **Lines are two-colourable.** Two lines are adjacent if they share an
+  individual (`lineAdj`). Mathlib's `two_colorable_iff_forall_loop_even`
+  reduces this to excluding odd closed walks. Given one of length
+  2m + 1, pick an individual where each consecutive pair of lines
+  meets. That is an odd cycle of individuals, and the odd-cycle law
+  gives i with individuals i and i + 2 related. Two cases:
+  - All three individuals are distinct. Then they lie on one line, and
+    two consecutive lines of the walk are equal, which is a
+    contradiction.
+  - Two of them coincide. Then the walk returns to a line two steps
+    later, and removing those two steps gives a closed walk of length
+    2m − 1 (`shorten`).
+
+  By induction on m, no odd closed walk exists (`no_odd`).
+- **The criteria.** For each colour b, "equal, or together on a line of
+  colour b" is an equivalence relation (`SameCol`). pairLe is the union
+  of the two (`union_of_two`). Pair determination then gives f =
+  count2 (`count2_eq_pairCount`).
+
+Necessity of the five laws is `isCount2Self_iff`'s other direction. The
+claw and odd-cycle laws come from Theorems 8.3′ and 8.5. The diamond
+law has a direct proof (`c_diamond`): if x and y share one criterion
+but not the other, then z and w both share that criterion with x, so
+they share it with each other.
+
+**Theorem 9.3 (the claw law is independent; `Count2Laws.claw_independent`).**
+Let fStar count the largest set of non-neighbours in a star with
+centre 0 and leaves 1, 2, 3, with each individual counting one. Then
+fStar obeys singles, pair determination, the diamond law and the
+odd-cycle laws of every length, but breaks the claw law. So it does not
+count individuals by two criteria, and by the set form of the claw law
+(`IsCount2.claw`), not with several things per individual either
+(`fStar_not_isCount2`).
+
+- The diamond law holds by computation over the four individuals.
+- The odd-cycle laws hold for a simple reason. If the cycle passes
+  through the centre, the centre is related to everything two steps
+  on. If not, consecutive leaves are equal, so the cycle is constant.
+
+Whether the diamond law and the odd-cycle laws are also independent of
+the rest is not shown here.
 
 ### 9.4 The general case is open
 
-When one individual can own several things, f(P) is the size of a
+Theorem 9.2 covers one thing per individual. When one individual can
+own several things, f(P) is the size of a
 largest matching in the union of the edge groups of the individuals in
 P. In matroid terms, it is the rank of a union of groups in the
 intersection of two partition matroids. We found no characterization
@@ -976,14 +1033,14 @@ from sentence to sentence. Hence:
 2. **count2 as meaning is a hypothesis.** The theorems say what it
    implies, not that it is right.
 3. **No data.** The test has not been run.
-4. **Open: exact laws for IsCount2.** Proposition 9.1 and Conjecture
-   9.2 cover the case of one thing per individual, conditional on a
-   reported result. The general case (§9.4) is open.
-5. **Not formalized:** the twin analysis, Proposition 7.7's symmetric
-   half, Proposition 9.1, and the converse direction of Conjecture 9.2.
-   The odd-cycle laws of every length and the claw law are formalized
-   (`ForbiddenLaws.lean`). No example yet shows that the claw law is
-   independent of the others.
+4. **Open: exact laws for IsCount2 in general.** Theorem 9.2 settles
+   the case of one thing per individual. The general case (§9.4) is
+   open.
+5. **Not formalized:** the twin analysis of §9.2, Proposition 7.7's
+   symmetric half, and Proposition 9.1 (all superseded for the
+   characterization by Theorem 9.2, which is formalized). Not shown:
+   whether the diamond and odd-cycle laws are independent of the
+   others; only the claw law's independence is proved (Theorem 9.3).
 6. **Mass nouns.** Landman's neat mass nouns suggest a further class,
    choice from a family. Its counting functions, and how they relate to
    minima, are not studied here.
@@ -1004,8 +1061,8 @@ splitting, and all of them are submodular. Never splitting is the
 disjointness at the heart of Rothstein's and Landman's theories of
 counting. Counting by two criteria at once, as proposed for
 copredication, is the least of a family of such functions. It can break
-submodularity, and its exact laws connect to the structure of line
-graphs. Because submodularity holds for every one-criterion account at
+submodularity. When each individual is one thing, five laws
+characterize it exactly, and the claw law among them is independent. Because submodularity holds for every one-criterion account at
 once, it turns the dispute over copredicated counting into a test on
 each speaker's pattern of answers. The test is designed, and needs only
 to be run.
@@ -1098,6 +1155,8 @@ submission.
 | Thm 8.1, 8.2 | `count2_subadd`, `count2_pairwise` | `MinCoverage.lean` | 38843325962 |
 | Thm 8.3, 8.4 | `count2_cycle5`, `IsCount2.cycle5`, `two_laws_not_sufficient` | `OddCycle.lean` | 38848341001 |
 | Thm 8.3′, 8.5 | `count2_oddCycle`, `IsCount2.oddCycle`, `count2_claw`, `IsCount2.claw`, `hub_step` | `ForbiddenLaws.lean` | 38860685948 |
+| Thm 9.2 | `isCount2Self_iff`, `union_of_two_general`, `union_of_two`, `no_odd`, `shorten`, `three_lines`, `count2_eq_pairCount`, `c_diamond` | `Count2Laws.lean` | 38865573037 |
+| Thm 9.3 | `claw_independent`, `fStar_not_isCount2` | `Count2Laws.lean` | 38865573037 |
 
 The main theorems carry `#guard_msgs` checks that they use only
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
@@ -1113,6 +1172,9 @@ The main theorems carry `#guard_msgs` checks that they use only
 - `TwoCriteria`: `count2`, `mix`, `mixNoun`.
 - `MinCoverage`: `IsCount2`, `IsMinCov`, `f2`, `f3`.
 - `OddCycle`: `onHub`, `U1`, `U2`, `g5`, `f5`.
+- `Count2Laws`: `pairCount`, `pairLe`, `Singles`, `PairDet`, `ClawLaw`,
+  `DiamondLaw`, `OddCycleLaw`, `IsCount2Self`, `twinSetoid`, `Hyp`,
+  `IsLine`, `lineAdj`, `starRel`, `fStar`.
 
 ## Appendix C. Proof of the odd-cycle law, in prose
 
