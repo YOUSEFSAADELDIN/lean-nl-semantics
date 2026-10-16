@@ -1127,8 +1127,49 @@ nesting `coll`, `among` and the singular quantifiers expresses; mass
 nouns; nouns with several criteria in the plural fragment. The domain is
 finite.
 
+## Full abstraction in intensional contexts (`FullAbstractionIntensional.lean`, CI run 38827684833)
+
+`IForm` adds possible worlds to the singular fragment:
+
+- "necessarily `φ`" (`nec`), over an accessibility relation;
+- "`t` believes that `φ`" (`believes`), over each individual's belief
+  worlds. `t` can be a bound variable, so de re and de dicto readings
+  come from scope;
+- "`t` thinks that `φ`" (`thinks`), a hyperintensional attitude: a
+  relation to the sentence itself, not to the set of worlds where it is
+  true.
+
+A context gives each noun an interpretation at each world (type,
+embedding and criterion may all vary), verbs and relations at each
+world, rigid names, and the accessibility relations. Worlds can be any
+type.
+
+- **`obsEqW_iff`.** Two world-indexed interpretations of a noun are
+  indistinguishable by every formula, in every context, at every world,
+  exactly when at every world they have the same counting units. So in
+  intensional contexts a count noun means a function from worlds to
+  multisets of units.
+- **`obsEqW_byInd_iff`.** For nouns that count individuals,
+  indistinguishable exactly when the extensions agree at every world:
+  the noun means its Montague intension.
+- **`believes_same`, `thinks_distinguishes`: hyperintensionality is in
+  the attitude.** Possible-worlds belief cannot tell apart two nouns
+  with the same interpretation at every world. The hyperintensional
+  attitude can, but it sees which noun *symbol* the sentence uses: it
+  separates two nouns with literally the same interpretation. So finer
+  distinctions come from the attitude, whatever nouns denote. And since
+  it does not look at interpretations, full abstraction is unchanged.
+
+This follows the extensional proof world by world; no new combinatorics.
+So intensionality, of this possible-worlds kind, is not where nouns as
+types and nouns as predicates come apart either. Not covered: intensional
+transitive verbs and adjectives that take a noun's intension as an
+argument ("seek a unicorn", "alleged"), which need a decision about what
+such an operator may see of a noun; varying domains; plurals or several
+criteria together with worlds.
+
 The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
-`obsEqP_iff`) carry `#guard_msgs` checks that they depend only on
+`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`) carry `#guard_msgs` checks that they depend only on
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
 `sorry` gets in.
 
@@ -1142,7 +1183,7 @@ The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
 - **4**: individuation and copredication, beyond FraCaS: problems from the literature in P, P+ and M, for every number, the equivalence theorem without injectivity, and four checks of published claims (`Copredication.lean`, `Counting.lean`, `Criteria.lean`).
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
-- **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`).
+- **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`). In intensional contexts (necessity, belief, and a hyperintensional attitude), iff the same units at every world (`FullAbstractionIntensional.lean`).
 - **Proof-theoretic equivalence**: derivability over arbitrary contexts, with no axioms (`Constructive.lean`).
 - **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.

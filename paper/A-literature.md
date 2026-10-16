@@ -223,7 +223,9 @@ Read in full: the nine papers below, and the relevant pages of Asher
   `f : Πx:E. house x → Σy:E. door y ∧ have(x,y)` is projected to find the
   door. That is the same pattern as Phase 1b's "every report has a cover
   page" in M, here with predicates.
-- Modality itself is outside Paper A's fragment.
+- Modality was outside Paper A's fragment until
+  `FullAbstractionIntensional.lean`, which, like DTS here, indexes nouns
+  by worlds (there with types and criteria per world).
 
 ## Retoré (2013), "A type theoretical framework for natural language semantics: the Montagovian generative lexicon", HAL hal-00779214v2 (preprint); published as "The Montagovian generative lexicon ΛTyn", TYPES 2013, LIPIcs 26 (2014)
 
@@ -331,7 +333,14 @@ both types and predicates. Page numbers below are the preprint's.
     (`obsEqP_iff`, `FullAbstractionPlural.lean`): collective numerals,
     definite plurals, collective verbs and "one of them", with a
     plurality of `N`s a set of the noun's own things counted by its
-    criterion; indistinguishable still iff the same units.
+    criterion; indistinguishable still iff the same units. In
+    intensional contexts (`obsEqW_iff`, `FullAbstractionIntensional.lean`):
+    necessity and possible-worlds belief, with world-varying types and
+    criteria; indistinguishable iff the same units at every world. A
+    hyperintensional attitude separates necessarily coextensive nouns
+    only by their symbol (`thinks_distinguishes`). Not checked against
+    any MTT treatment of attitudes or hyperintensionality; none has
+    been read for this project.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).

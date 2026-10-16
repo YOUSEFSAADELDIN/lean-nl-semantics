@@ -240,6 +240,23 @@ the same units. A group of k passengers covering exactly some people
 exists exactly when some k units each touch those people and together
 cover them, and that depends only on the units.
 
+**Intensional contexts don't change it either** (`obsEqW_iff`, in
+`FullAbstractionIntensional.lean`). Add possible worlds, "necessarily",
+and "John believes that ...". Now a noun can mean different things in
+different worlds. What sentences see is the units in each world, and
+nothing else. For nouns that count individuals, that is Montague's
+intension: the extension in each world.
+
+A natural hope is that types give finer meanings than predicates, so
+that "John believes every equilateral triangle is equilateral" could be
+true while "John believes every equiangular triangle is equilateral" is
+false. Possible-worlds belief can't make that distinction, with types or
+with predicates (`believes_same`). An attitude that relates people to
+sentences can (`thinks_distinguishes`), but it does so by looking at
+which word is used. It would tell apart two nouns with exactly the same
+meaning. So finer-grained belief comes from the attitude, not from
+whether nouns are types.
+
 ---
 
 ## 4. Where they really do differ: identity criteria
@@ -467,6 +484,8 @@ that is the literature's point.
     three books no single criterion counts, `not_single`.
   - `FullAbstractionPlural.lean`: the same with plurals and collective
     verbs, `obsEqP_iff`.
+  - `FullAbstractionIntensional.lean`: the same with possible worlds,
+    belief and a hyperintensional attitude, `obsEqW_iff`.
   - `VerbCriteria.lean`: one entry for "book", with the verb choosing
     how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun
