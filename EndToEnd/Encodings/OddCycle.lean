@@ -369,7 +369,7 @@ theorem two_laws_not_sufficient :
         f5 (fun x => P x ∨ R x) ≤ 1 → f5 (fun x => P x ∨ Q x ∨ R x) ≤ 1) ∧
       ¬ IsCount2 f5 := by
   refine ⟨f5_isMinCov, f5_subadd, f5_pairwise, fun hf => ?_⟩
-  obtain ⟨i, hi⟩ := hf.cycle5 id (fun i => one_le_f5 _ i rfl)
+  obtain ⟨i, hi⟩ := IsCount2.cycle5 hf id (fun i => one_le_f5 _ i rfl)
     (fun i => (f5_le_one_iff _).mpr fun a b ha hb => by
       rcases ha with rfl | rfl <;> rcases hb with rfl | rfl
       · exact Or.inl rfl
