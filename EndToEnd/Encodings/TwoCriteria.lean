@@ -73,6 +73,27 @@ theorem countF_eq_count2 {K : Bool → Type} (c : ∀ i, N → K i) (Q : N → P
       (le_count2_iff (c true) (c false) Q (count2 (c true) (c false) Q)).mp le_rfl
     exact (le_countF_bool_iff c Q _).mpr ⟨S, h1, h2, h3, h4⟩
 
+/-- A set splits into the members that are `p` and those that are not. -/
+theorem card_filter_split {α : Type} (s : Finset α) (p : α → Prop) [DecidablePred p] :
+    (s.filter p).card + (s.filter (fun a => ¬ p a)).card = s.card := by
+  have hu : s.filter p ∪ s.filter (fun a => ¬ p a) = s := by
+    ext a
+    simp only [Finset.mem_union, Finset.mem_filter]
+    constructor
+    · rintro (⟨h, -⟩ | ⟨h, -⟩) <;> exact h
+    · intro h
+      by_cases hp : p a
+      · exact Or.inl ⟨h, hp⟩
+      · exact Or.inr ⟨h, hp⟩
+  have hi : (s.filter p ∩ s.filter (fun a => ¬ p a)).card = 0 := by
+    by_contra h0
+    obtain ⟨a, ha⟩ := Finset.card_pos.mp (Nat.pos_of_ne_zero h0)
+    obtain ⟨h1, h2⟩ := Finset.mem_inter.mp ha
+    exact (Finset.mem_filter.mp h2).2 (Finset.mem_filter.mp h1).2
+  have e := Finset.card_union_add_card_inter (s.filter p) (s.filter (fun a => ¬ p a))
+  rw [hu, hi] at e
+  omega
+
 /-! ## Mixed criteria -/
 
 /-- Count by `c1` (volume) when `c2` (text) is in `S`, by `c2` otherwise. -/
@@ -167,7 +188,7 @@ theorem exists_mix_le (c1 : N → K1) (c2 : N → K2) (Q : N → Prop) :
   have hsplit : M.card + ((Finset.univ : Finset {t // t ∈ L}).filter
       (fun t => ¬ ∃ a, f t = Sum.inl a)).card = L.card := by
     rw [← huniv]
-    exact Finset.filter_card_add_filter_neg_card_eq_card _
+    exact card_filter_split _ _
   -- each matched text has a thing with that text and that volume
   have hex : ∀ t ∈ M, ∃ y, Q y ∧ c2 y = t.1 ∧ f t = Sum.inl (c1 y) := by
     intro t ht
@@ -240,7 +261,7 @@ theorem exists_mix_le (c1 : N → K1) (c2 : N → K2) (Q : N → Prop) :
     have e3 := Finset.card_image_le (s := L.filter (fun t => ¬ t ∈ S0)) (f := Sum.inl (β := K1))
     have e4 := Finset.card_image_le (s := S0.biUnion nb) (f := Sum.inr (α := K2))
     have e5 : (L.filter (fun t => t ∈ S0)).card + (L.filter (fun t => ¬ t ∈ S0)).card = L.card :=
-      Finset.filter_card_add_filter_neg_card_eq_card _
+      card_filter_split _ _
     have e6 : S0.card ≤ (L.filter (fun t => t ∈ S0)).card :=
       Finset.card_le_card fun t ht => Finset.mem_filter.mpr ⟨hsub ht, ht⟩
     have hc : countBy (mix c1 c2 S0) Q = ((Finset.univ.filter Q).image (mix c1 c2 S0)).card := rfl
