@@ -287,6 +287,30 @@ theorem units_unique [Fintype A] {u u' : Finset A → Nat} (h0 : u ∅ = 0) (h0'
 theorem units_ofUnits [Fintype A] (u : Finset A → Nat) (h0 : u ∅ = 0) : (ofUnits u).units = u :=
   units_unique (units_empty _) h0 fun P => (count_meets _ P).symm.trans (count_ofUnits u P)
 
+/-! ## Disjointness -/
+
+/-- **Never splitting is disjointness.** A noun never splits an
+individual exactly when its units are pairwise disjoint: the condition
+Rothstein (2017, p. 109) places on counting contexts ("contextual
+disjointness is a condition on k") and Landman places on count bases.
+With `single_iff`, the law `count {x} ≤ 1` is that condition, made
+observable. -/
+theorem noSplit_iff_disjoint (I : NounI A) :
+    NoSplit I ↔ ∀ k ∈ I.keys, ∀ k' ∈ I.keys, k ≠ k' → Disjoint (I.unit k) (I.unit k') := by
+  constructor
+  · intro h k _ k' _ hne
+    refine Finset.disjoint_left.mpr fun x hx hx' => hne ?_
+    obtain ⟨y, hy, rfl⟩ := (I.mem_unit _ _).mp hx
+    obtain ⟨y', hy', he⟩ := (I.mem_unit _ _).mp hx'
+    rw [← hy, ← hy']
+    exact h y y' he.symm
+  · intro h y y' he
+    by_contra hne
+    have hk : I.crit y ∈ I.keys := Finset.mem_image.mpr ⟨y, Finset.mem_univ _, rfl⟩
+    have hk' : I.crit y' ∈ I.keys := Finset.mem_image.mpr ⟨y', Finset.mem_univ _, rfl⟩
+    exact Finset.disjoint_left.mp (h _ hk _ hk' hne) ((I.mem_unit _ _).mpr ⟨y, rfl, rfl⟩)
+      ((I.mem_unit _ _).mpr ⟨y', rfl, he.symm⟩)
+
 end FraCaS.Encodings.CountingLaws
 
 /-- info: 'FraCaS.Encodings.CountingLaws.representation' depends on axioms: [propext, Classical.choice, Quot.sound] -/
