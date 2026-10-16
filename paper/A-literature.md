@@ -301,6 +301,46 @@ checked against the paper before citing.
   (`CountingLaws.representation`). Our uniqueness proof (`eq_of_meets`)
   reproves their uniqueness in our setting. Cite them for both.
 
+## Rothstein (2017), *Semantics for Counting and Measuring*, Cambridge University Press (Key Topics in Semantics and Pragmatics)
+
+Read: ch. 4 in full (pp. 82-116); ch. 5, pp. 117-122. Searched the
+whole book for identity criteria, passengers, copredication, dot types
+and Gupta: none are discussed.
+
+- **Counting is relative to a context k of disjoint atoms** (§4.4).
+  Count nouns are `COUNT_k(N_root) = {<a,k> : a ∈ N_root ∩ k}` (36),
+  "contextual disjointness is a condition on k" (p. 109), and a
+  numeral counts the k-atoms below a plurality, `|π1(x)|_k = 3` (41,
+  p. 112).
+- **What counts as one is context-dependent**: four farmers' fencing is
+  one, two or four fences (32, pp. 107-108); the places you visited
+  (p. 108).
+- **Landman (2011a, 2016), as reported** (p. 113): count predicates have
+  a disjoint base, mass predicates an overlapping one; "neat" mass nouns
+  like *furniture* overlap vertically (a table, six chairs and the
+  suite each count as one item). Not read directly.
+- **Bale & Barner (2009), as reported** (ch. 5, pp. 120-121): count nouns
+  and object mass nouns denote "individuated" semi-lattices, generated
+  by non-overlapping individuals, and are compared by cardinality.
+
+For Paper A:
+
+- The shared disjointness condition is our "never splits" law
+  (`CountingLaws.noSplit_iff_disjoint`, with `single_iff`): units
+  pairwise disjoint iff no individual is counted twice.
+- Luo's passengers and copredicated books break it when the
+  individuals are people or books, so on these theories the atoms must
+  be other entities (journeys, or Gotham's composite books). Our
+  translation theorems say such a richer domain always exists.
+- Double distinctness is not counting in any one context k over the
+  books (it is not even submodular, `not_single`), but it is the least
+  count over a family of contexts, each with disjoint atoms
+  (`TwoCriteria.count2_eq_min`).
+- Our criterion plays the role of her context k; we hold it fixed, she
+  studies how it varies (fences). Combining the two is open.
+- The method she reports (Barner & Snedeker's "Who has more N?") is a
+  model for testing our prediction (`paper/A-prediction.md`).
+
 ## What this means for Paper A
 
 - I1 is Gotham's (100). M is Chatzikyriakidis & Luo's (2018) account. I2
@@ -363,9 +403,12 @@ checked against the paper before citing.
     merging, single iff never splitting, both iff Montague; a
     submodularity law that copredicated nouns can break. No linguistic
     use of coverage, belief or submodular functions for counting turned
-    up in a search (Rothstein's and Landman's work on counting came up
-    and has not been read; Landman's disjointness condition on count
-    nouns may relate to "never splits").
+    up in a search, nor in Rothstein (2017, above), which also does not
+    discuss identity criteria or copredication. Her (and, as she
+    reports, Landman's) disjointness condition is our "never splits"
+    law. Counting by two criteria is the least of the mixed
+    single-criterion counts (`TwoCriteria.count2_eq_min`, König's
+    theorem).
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).

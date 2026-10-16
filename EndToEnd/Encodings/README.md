@@ -1212,14 +1212,44 @@ representations of it.
   count noun whose counts break it must count by more than one
   criterion.
 
-Not yet checked: whether the "never splits" law corresponds to the
-disjointness condition on count nouns in Landman's Iceberg semantics; no
-work on Iceberg semantics or on Rothstein's counting semantics has been
-read for this project. Which counting functions two criteria can produce
-is open.
+- **`noSplit_iff_disjoint`.** A noun never splits exactly when its
+  units are pairwise disjoint. That is the condition Rothstein (2017,
+  p. 109) places on counting contexts ("contextual disjointness is a
+  condition on k") and, as she reports it (p. 113), the condition
+  Landman places on count bases. With `single_iff`, the law
+  `count {x} ≤ 1` is their disjointness, made observable.
+
+## Two criteria (`TwoCriteria.lean`, CI run 38840693113)
+
+A copredicated noun counts things distinct by volume *and* by text.
+Divide the texts into two groups `S` and the rest; counting a thing by
+volume if its text is in `S`, by text otherwise, is a single criterion
+(`mix`).
+
+- **`count2_eq_min`.** The number of things distinct both ways is the
+  least, over all such divisions, of the mixed count. Every mixture
+  counts at least as many (`count2_le_mix`); some mixture counts exactly
+  as many (`exists_mix_le`, König's theorem, proved from Mathlib's Hall
+  theorem). `countF_eq_count2` ties this to `TranslationMulti`'s count.
+- **`copredication_is_min`.** So a copredicated noun counts as the least
+  of a family of nouns with one criterion each, same things and
+  embedding. Each is an integer coverage function
+  (`CountingLaws.representation`): **counting by two criteria is a
+  minimum of coverage functions.** In Rothstein's terms each mixture is
+  a counting context with disjoint atoms; double distinctness is not
+  counting in any one context, but the least count over a family of
+  them.
+- Open: whether every minimum of coverage functions arises from two
+  criteria.
+
+A testable prediction built on `count_submod` and `not_single` is
+drafted in `paper/A-prediction.md` (not run).
+
+Not yet read: Landman (2011a, 2016) directly; what is said of Landman
+here is Rothstein's report of it.
 
 The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
-`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`) carry `#guard_msgs` checks that they depend only on
+`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`, `count2_eq_min`, `copredication_is_min`) carry `#guard_msgs` checks that they depend only on
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
 `sorry` gets in.
 
@@ -1234,6 +1264,7 @@ The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
 - **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`). In intensional contexts (necessity, belief, and a hyperintensional attitude), iff the same units at every world (`FullAbstractionIntensional.lean`).
+- **Two criteria**: counting by two criteria is the least of the mixed single-criterion counts (König's theorem, via Hall), so a minimum of coverage functions (`TwoCriteria.lean`); disjointness of counted atoms (Rothstein, Landman) is the never-splits law (`CountingLaws.noSplit_iff_disjoint`).
 - **Laws of counting**: count nouns with one criterion are exactly the integer coverage functions; two laws on counts (additive, single) match never merging and never splitting, give a typology of four kinds of noun, and pick out Montague nouns; a third (submodularity) separates one criterion from several (`CountingLaws.lean`).
 - **Proof-theoretic equivalence**: derivability over arbitrary contexts, with no axioms (`Constructive.lean`).
 - **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).

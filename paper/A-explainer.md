@@ -297,6 +297,31 @@ are unique. That characterization is a known theorem (Chakrabarty &
 Huang 2012). Paper A cites it; what is new is that count nouns are
 exactly these functions, and the typology built on it.
 
+**How the counting literature fits.** Rothstein (2017) and Landman both
+require the things a count noun counts to be *disjoint*: no part shared
+between two. That is exactly our "never splits" law
+(`noSplit_iff_disjoint`). So passengers (one person, several
+passengers) and copredicated books break their condition when the
+individuals are people or books; those theories must count other
+entities instead, such as journeys.
+
+**What counting by two criteria is.** Take the copredicated books.
+Divide the texts into two groups. Count books whose text is in the first
+group by volume, and the rest by text. That is an ordinary single
+criterion. The number of books distinct both ways is exactly the
+*smallest* count you can get by choosing the groups well
+(`count2_eq_min`; the proof is König's theorem). So double distinctness
+is not one way of counting, but the most conservative of a family of
+ordinary ways. Each of those is a coverage function, so counting by two
+criteria is a minimum of coverage functions.
+
+**The prediction, as an experiment.** `paper/A-prediction.md` drafts a
+test: three books (two copies of *Emma*, one of them bound with
+*Persuasion*), and questions about overlapping groups of them. Counting
+by volume or by text alone obeys the law; "picked up and mastered", if
+it is double distinctness, breaks it. The test separates every
+one-criterion account from copredication at once.
+
 ---
 
 ## 4. Where they really do differ: identity criteria
@@ -529,6 +554,8 @@ that is the literature's point.
     belief and a hyperintensional attitude, `obsEqW_iff`.
   - `CountingLaws.lean`: laws of counting, the typology, and the
     representation theorem.
+  - `TwoCriteria.lean`: counting by two criteria as the least mixed
+    count, `count2_eq_min`.
   - `VerbCriteria.lean`: one entry for "book", with the verb choosing
     how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun
