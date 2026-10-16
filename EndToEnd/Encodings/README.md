@@ -1168,8 +1168,58 @@ argument ("seek a unicorn", "alleged"), which need a decision about what
 such an operator may see of a noun; varying domains; plurals or several
 criteria together with worlds.
 
+## Laws of counting (`CountingLaws.lean`, CI run 38832047031)
+
+The sections above compare encodings. This one states what a count noun
+with one criterion *is*, by laws on its counting function (how many of
+its things are `P`, for each `P`), and treats the encodings as
+representations of it.
+
+- **`representation`, `units_unique`, `units_ofUnits`.** A function
+  `f` is the counting function of some noun exactly when
+  `f P = ∑_S u S · [S meets P]` for some `u`, and `u` (the noun's units)
+  is unique. Such `f` are what combinatorics calls *coverage functions*,
+  with `u` their W-coefficients. Chakrabarty & Huang (2012, "Testing
+  coverage functions", ICALP, Thm 1.1) characterize coverage functions
+  as those with nonnegative W-coefficients, so representation and
+  uniqueness are known mathematics. The paper itself could not be opened
+  from this environment; the statement was taken from its abstract and
+  from search results, and must be checked before citing. What is new
+  is the identification: count nouns with one criterion are exactly the
+  integer coverage functions.
+- **Two laws, stated only in terms of counts.** *Additive*:
+  `count (P ∪ Q) + count (P ∩ Q) = count P + count Q`. *Single*: no
+  individual counted more than once. `additive_iff`: additive exactly
+  when the noun never merges individuals (things counted as one are one
+  individual). `single_iff`: single exactly when it never splits one
+  (things that are one individual count as one).
+- **The typology.** The two laws are independent (`cells_inhabited`):
+
+  | | never splits | splits |
+  |---|---|---|
+  | never merges | Montague nouns | passengers |
+  | merges | copies counted as texts | anthologies counted as texts |
+
+- **`montague_iff`, `montague_obsEq`.** The nouns obeying both laws are
+  exactly those that count as their extension does, and so exactly
+  those no sentence tells apart from counting individuals. This restates
+  the characterization theorem as laws of counting: Luo's passengers and
+  Gotham's books are the two ways to break them.
+- **`count_submod`.** Every noun with one criterion obeys the weaker law
+  `count (P ∪ Q) + count (P ∩ Q) ≤ count P + count Q`. Copredicated
+  nouns can break it (`FullAbstractionMulti.not_single`). So the law
+  separates one criterion from several, which makes it a prediction: a
+  count noun whose counts break it must count by more than one
+  criterion.
+
+Not yet checked: whether the "never splits" law corresponds to the
+disjointness condition on count nouns in Landman's Iceberg semantics; no
+work on Iceberg semantics or on Rothstein's counting semantics has been
+read for this project. Which counting functions two criteria can produce
+is open.
+
 The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
-`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`) carry `#guard_msgs` checks that they depend only on
+`obsEqP_iff`, `obsEqW_iff`, `obsEqW_byInd_iff`, `representation`, `montague_obsEq`) carry `#guard_msgs` checks that they depend only on
 `propext`, `Classical.choice` and `Quot.sound`, so the build fails if a
 `sorry` gets in.
 
@@ -1184,6 +1234,7 @@ The main theorems (`obsEq_iff`, `obsEqM_iff`, `not_single`,
 - **5**: two-place verbs (the equivalence and characterization for nested quantifiers and relations) and selectional restrictions (well-formedness depends only on which argument types each noun fits) (`Relational.lean`, `Selection.lean`).
 - **The verb chooses the criterion**: one lexical entry per noun, each quantifier counting by the aspects its variable is used at, and the translation theorem for it (`VerbCriteria.lean`).
 - **Full abstraction**: two interpretations of a noun are indistinguishable by every sentence in every context iff they have the same counting units; for nouns counting individuals, iff their extensions agree (`FullAbstraction.lean`). With several criteria, iff they have the same counts, and some copredicated nouns count as no single criterion can (`FullAbstractionMulti.lean`). With plurals and collective predication, still iff the same units (`FullAbstractionPlural.lean`). In intensional contexts (necessity, belief, and a hyperintensional attitude), iff the same units at every world (`FullAbstractionIntensional.lean`).
+- **Laws of counting**: count nouns with one criterion are exactly the integer coverage functions; two laws on counts (additive, single) match never merging and never splitting, give a typology of four kinds of noun, and pick out Montague nouns; a third (submodularity) separates one criterion from several (`CountingLaws.lean`).
 - **Proof-theoretic equivalence**: derivability over arbitrary contexts, with no axioms (`Constructive.lean`).
 - **Type checking and 215**: decidable type checking for the fragment, with (*) as a theorem about models (`TypeCheck.lean`); FraCaS 215 tracks extensionality, not types (`Modifiers.lean`).
 - **Adjectives**: the "heavy book" argument and subsectivity (`Modifiers.lean`), and the table of arguments checked.

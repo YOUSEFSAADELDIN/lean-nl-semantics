@@ -257,6 +257,46 @@ which word is used. It would tell apart two nouns with exactly the same
 meaning. So finer-grained belief comes from the attitude, not from
 whether nouns are types.
 
+### From diagnosis to theory: laws of counting
+
+Everything so far compares two encodings. `CountingLaws.lean` says what
+a count noun *is*, using only how it counts: for each property P, how
+many of the noun's things are P.
+
+**Two laws.** A noun is *additive* if counting P-or-Q plus counting
+P-and-Q gives the same as counting P plus counting Q. It is *single* if
+it never counts one individual twice. Each law matches something about
+the noun:
+- additive exactly when it **never merges**: things counted as one are
+  one individual;
+- single exactly when it **never splits**: things that are one
+  individual count as one.
+
+That gives four kinds of noun, and all four exist:
+
+| | never splits | splits |
+|---|---|---|
+| never merges | ordinary nouns ("dog") | passengers |
+| merges | books counted as texts | anthologies counted as texts |
+
+The nouns that obey both laws are exactly the ones that behave like
+Montague's sets of individuals (`montague_iff`). The literature's two
+famous problems, Luo's passengers and Gotham's books, are exactly the
+two ways of breaking the laws.
+
+**A third law, and a prediction.** Every noun with one criterion obeys
+a weaker law: P-or-Q plus P-and-Q is *at most* P plus Q. Copredicated
+nouns can break it (the three books). So: if a noun's counts break that
+law, it must count in more than one way at once. That is a claim about
+language, which a diagnosis cannot make.
+
+**The mathematics already exists.** A function is how some noun counts
+exactly when it is what combinatorics calls a *coverage function*
+(`representation`), and the noun's units are its coefficients, which
+are unique. That characterization is a known theorem (Chakrabarty &
+Huang 2012). Paper A cites it; what is new is that count nouns are
+exactly these functions, and the typology built on it.
+
 ---
 
 ## 4. Where they really do differ: identity criteria
@@ -418,6 +458,7 @@ telling the authors.
 | Predicate accounts with criteria (Gotham 2017; Asher 2011) | The translation theorem: nouns as types with criteria are a word-by-word notational variant of them, for the fragment |
 | Montague's nouns as sets of individuals | Full abstraction: what sentences see of a noun is exactly its counting units, and for nouns that count individuals, exactly its extension |
 | Copredication needs two criteria (Gotham 2017; C&L 2018), and a setoid can't do it (ours, `DotSetoid.lean`) | No single criterion of any kind is indistinguishable by sentences from some copredicated nouns |
+| Coverage functions and their unique coefficients (Chakrabarty & Huang 2012) | Count nouns with one criterion are exactly the integer coverage functions; the typology of nouns by laws of counting |
 
 The honest framing: Paper A *mechanizes and sharpens* an existing
 debate. It proves exactly where the two views agree, and it pinpoints
@@ -486,6 +527,8 @@ that is the literature's point.
     verbs, `obsEqP_iff`.
   - `FullAbstractionIntensional.lean`: the same with possible worlds,
     belief and a hyperintensional attitude, `obsEqW_iff`.
+  - `CountingLaws.lean`: laws of counting, the typology, and the
+    representation theorem.
   - `VerbCriteria.lean`: one entry for "book", with the verb choosing
     how it counts.
   - `TranslationMulti.lean`: the same with several criteria per noun

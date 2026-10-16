@@ -285,6 +285,22 @@ both types and predicates. Page numbers below are the preprint's.
   counting units connect to Luo's (2012, §5) proposal that a classifier
   or measure word supplies the identity criterion.
 
+## Chakrabarty & Huang (2012), "Testing coverage functions", ICALP 2012 (arXiv:1205.1587); journal version "Recognizing coverage functions", SIAM J. Discrete Math. 29(3), 2015
+
+Not read in full: the PDF could not be fetched from this environment.
+What follows is from the abstract and search results, and must be
+checked against the paper before citing.
+
+- A coverage function gives each set T of indices the total weight of
+  the union of sets A_i, i ∈ T. Equivalently f(T) = Σ w(S) over S that
+  meet T, where w is the W-transform of f.
+- Theorem 1.1 (as cited): f is a coverage function iff all its
+  W-coefficients are nonnegative; the W-coefficients are unique.
+- For Paper A: a noun's counting function is exactly such an f, with
+  the individuals as indices and the units as the weighted sets
+  (`CountingLaws.representation`). Our uniqueness proof (`eq_of_meets`)
+  reproves their uniqueness in our setting. Cite them for both.
+
 ## What this means for Paper A
 
 - I1 is Gotham's (100). M is Chatzikyriakidis & Luo's (2018) account. I2
@@ -341,6 +357,15 @@ both types and predicates. Page numbers below are the preprint's.
     only by their symbol (`thinks_distinguishes`). Not checked against
     any MTT treatment of attitudes or hyperintensionality; none has
     been read for this project.
+  - Laws of counting (`CountingLaws.lean`): count nouns with one
+    criterion are exactly the integer coverage functions (the
+    representation is Chakrabarty & Huang's, above); additive iff never
+    merging, single iff never splitting, both iff Montague; a
+    submodularity law that copredicated nouns can break. No linguistic
+    use of coverage, belief or submodular functions for counting turned
+    up in a search (Rothstein's and Landman's work on counting came up
+    and has not been read; Landman's disjointness condition on count
+    nouns may relate to "never splits").
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).
