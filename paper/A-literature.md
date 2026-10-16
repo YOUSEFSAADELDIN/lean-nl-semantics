@@ -409,6 +409,10 @@ For Paper A:
     law. Counting by two criteria is the least of the mixed
     single-criterion counts (`TwoCriteria.count2_eq_min`, König's
     theorem).
+    Not every minimum of coverage functions arises that way
+    (`MinCoverage.not_pairwise_example`); the exact class is open, and
+    whether it is known in combinatorics (as a class of bipartite
+    matching functions) has not been checked.
   - The diagnosis that the injectivity axiom Chatzikyriakidis & Luo
     (2015) add is exactly that condition.
   - The FraCaS-scale comparison (Phases 1-3).

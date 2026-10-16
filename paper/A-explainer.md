@@ -315,6 +315,16 @@ is not one way of counting, but the most conservative of a family of
 ordinary ways. Each of those is a coverage function, so counting by two
 criteria is a minimum of coverage functions.
 
+The converse is false (`MinCoverage.lean`). Counting by criteria obeys
+two laws that a minimum of coverage functions need not:
+- the count of P-or-Q is at most the count of P plus the count of Q;
+- if every pair among three groups holds at most one countable thing,
+  so do all three together.
+Three individuals give a minimum of coverage functions that counts 1 on
+every pair and 2 on all three: no noun with criteria counts like that.
+So nouns with two criteria sit strictly between ordinary nouns and
+minima of coverage functions; their exact class is open.
+
 **The prediction, as an experiment.** `paper/A-prediction.md` drafts a
 test: three books (two copies of *Emma*, one of them bound with
 *Persuasion*), and questions about overlapping groups of them. Counting
