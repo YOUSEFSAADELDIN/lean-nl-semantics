@@ -128,12 +128,12 @@ theorem additive_iff (I : NounI A) : Additive I ↔ NoMerge I := by
   · intro h y y' hc
     by_contra hne
     have e := h (fun z => z = I.emb y) (fun z => z = I.emb y')
-    have h0 : img I (fun z => z = I.emb y ∧ z = I.emb y') = ∅ := by
-      rw [Finset.eq_empty_iff_forall_not_mem]
-      intro k hk
+    have h0 : (img I (fun z => z = I.emb y ∧ z = I.emb y')).card = 0 := by
+      by_contra h0
+      obtain ⟨k, hk⟩ := Finset.card_pos.mp (Nat.pos_of_ne_zero h0)
       obtain ⟨z, ⟨h1, h2⟩, -⟩ := (mem_img I _ k).mp hk
       exact hne (h1.symm.trans h2)
-    rw [count_img, count_img, count_img, count_img, img_or, h0, Finset.card_empty] at e
+    rw [count_img, count_img, count_img, count_img, img_or, h0] at e
     have e2 := Finset.card_union_add_card_inter (img I (fun z => z = I.emb y))
       (img I (fun z => z = I.emb y'))
     have hin : I.crit y ∈ img I (fun z => z = I.emb y) ∩ img I (fun z => z = I.emb y') :=
@@ -242,20 +242,29 @@ noncomputable def ofUnits [Fintype A] (u : Finset A → Nat) : NounI A :=
 theorem count_ofUnits [Fintype A] (u : Finset A → Nat) (P : A → Prop) :
     (ofUnits u).count P = meetsSum u P := by
   have himg : img (ofUnits u) P =
-      (Finset.univ.filter (fun R : Finset A => ∃ x ∈ R, P x)).sigma
-        (fun R => (Finset.univ : Finset (Fin (u R)))) := by
+      ((Finset.univ.filter (fun R : Finset A => ∃ x ∈ R, P x)).sigma
+        (fun R => (Finset.univ : Finset (Fin (u R)))) : Finset ((S : Finset A) × Fin (u S))) := by
     ext ⟨R, i⟩
-    rw [mem_img, Finset.mem_sigma, Finset.mem_filter]
     constructor
-    · rintro ⟨⟨R', i', x⟩, hP, he⟩
+    · intro h
+      obtain ⟨⟨R', i', x⟩, hP, he⟩ := (mem_img (ofUnits u) P _).mp h
       obtain ⟨rfl, -⟩ := Sigma.mk.inj_iff.mp he
-      exact ⟨⟨Finset.mem_univ _, x.1, x.2, hP⟩, Finset.mem_univ _⟩
-    · rintro ⟨⟨-, x, hx, hP⟩, -⟩
-      exact ⟨⟨R, i, ⟨x, hx⟩⟩, hP, rfl⟩
-  rw [count_img, himg, Finset.card_sigma, Finset.sum_filter]
-  unfold meetsSum
-  refine Finset.sum_congr rfl fun R _ => ?_
-  split_ifs <;> simp
+      exact Finset.mem_sigma.mpr
+        ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, x.1, x.2, hP⟩, Finset.mem_univ _⟩
+    · intro h
+      obtain ⟨hR, -⟩ := Finset.mem_sigma.mp h
+      obtain ⟨x, hx, hP⟩ := (Finset.mem_filter.mp hR).2
+      exact (mem_img (ofUnits u) P _).mpr ⟨⟨R, i, ⟨x, hx⟩⟩, hP, rfl⟩
+  calc (ofUnits u).count P = (img (ofUnits u) P).card := count_img _ _
+    _ = ((Finset.univ.filter (fun R : Finset A => ∃ x ∈ R, P x)).sigma
+          (fun R => (Finset.univ : Finset (Fin (u R))))).card := congrArg Finset.card himg
+    _ = ∑ R ∈ Finset.univ.filter (fun R : Finset A => ∃ x ∈ R, P x),
+          (Finset.univ : Finset (Fin (u R))).card := Finset.card_sigma _ _
+    _ = meetsSum u P := by
+      rw [Finset.sum_filter]
+      unfold meetsSum
+      refine Finset.sum_congr rfl fun R _ => ?_
+      split_ifs <;> simp
 
 /-- **Representation.** A counting function comes from a noun with one
 criterion exactly when it is `P ↦ ∑_S u S · [S meets P]` for some `u`:
